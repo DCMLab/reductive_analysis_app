@@ -1,0 +1,31 @@
+Test verovio for interactive applications (rerendering times seem slow?)
+
+Format for storing the induced graphs (MEI)
+
+The basic idea is to have a facility to load a MEI/MXL file, and to render
+it to a webpage.
+
+The basic interaction the user does with the score is to select several
+notes and reduce them to a subset. This also adds a grouping to these
+notes, which in a schenkerian graph likely would be illustrated using a
+slur or tie (possibly with P/N/IN notations etc.)
+
+The reduced notes are greyed out as a first step.
+
+After a suitable set of reductions has been made to the score, the user can
+click a button to rerender the score with the reduced notes removed, and
+can then add a new set of reductions, and repeat until some sort of Urlinie
+is achieved.
+
+In the code, this is accomplished by, storing the following information:
+
+The original score (and its rendering).
+
+The reduction sets (essentially directed hyperedges).
+
+The intermediate scores (and their renderings).
+
+And, of course a bunch of other things.
+
+
+

@@ -29,3 +29,28 @@ And, of course a bunch of other things.
 
 
 
+Steps:
+
+1. Load MEI/XML
+
+1.5. Get MEI/XML back
+
+2. Mark notes
+
+3. Mark notes and join them with lines
+
+4. Mark notes and choose some to be more salient
+
+5. Save edge information in XML structure
+
+6. Get saved edge information back from downloaded data
+
+7. Hide some notes and re-render
+
+8. Build dependency DAG of edge relations
+
+9. Automatically choose edges to hide
+
+10. Slide through more or less reduced version of the score
+
+

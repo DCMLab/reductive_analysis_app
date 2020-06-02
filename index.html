@@ -32,14 +32,15 @@
 	    var data;
 	    var reader = new FileReader();
 	    var changes = false;
+	    var actions = [];
 
-            function toggleSelected(item,ev) { 
+            function toggleSelected(item,extra) { 
 	      if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
 		item.setAttribute("style","fill:black");
 		selected = selected.filter(x =>  x !== item);
 		extraselected = extraselected.filter(x =>  x !== item);
 	      } else {
-		if(ev.shiftKey) {
+		if(extra) {
 		  item.setAttribute("style","fill:red");
 		  extraselected.push(item);
 		}else {
@@ -60,17 +61,21 @@
 	      newElement.style.stroke = "#000";
 	      newElement.style.strokeWidth = "15px"; 
 	      parent.appendChild(newElement);
+	      return newElement;
 	    }
 
             function draw_edge() {
+	      var added = [];
 	      for(var i = 1; i < selected.length; i++) {
 		note1 = note_coords(selected[i-1]);
 		note2 = note_coords(selected[i]);
-		line(note1,note2);
+		added.push(line(note1,note2));
 	      }
+	      return added;
 	    }
             
             function add_edge() {
+	      var added = [];
 	      for(var i = 0; i < selected.length; i++) {
 		var elem = mei.createElement("node");
 		// This node represent that note
@@ -82,6 +87,7 @@
 		// But should have a separate XML ID
 		elem.setAttribute("id","gn-" + selected[i].getAttribute("id"));
 		mei_graph.appendChild(elem);
+		added.push(elem);
 	      }
 	      for(var i = 1; i < selected.length; i++) {
 		// So that we can refer to the node (not the note) ID in
@@ -90,19 +96,38 @@
 		elem.setAttribute("from","#gn-"+selected[i-1].getAttribute("id"));
 		elem.setAttribute("to","#gn-"+selected[i].getAttribute("id"));
 		mei_graph.appendChild(elem);
+		added.push(elem);
 	      }
+	      return added;
 	    }
 
 
             function handleKeypress(ev) {
-	      if (selected.length == 0 && extraselected == 0) {
-		return;
-	      }else if (ev.key == "Enter"){
+	      if (ev.key == "Enter"){
+		if (selected.length == 0 && extraselected == 0) {
+		  return;}
 		changes = true;
-		draw_edge(); // Draw the edge
-		add_edge();  // Add it to the MEI
+		added = [];
+		added.push(draw_edge()); // Draw the edge
+		added.push(add_edge());  // Add it to the MEI
+		
+		actions.push([added,selected,extraselected]);
 		selected.forEach(toggleSelected); // De-select
+	      } else if (ev.key == "u") { // UNDO
+		// Get latest action
+		[added,sel,extra] = actions.pop();
+		// Deselect the current selection, if any
+		selected.forEach(toggleSelected);
+		extraselected.forEach(function(x) {toggleSelected(x,true);});
+		// Remove added elements
+		added.flat().forEach(function(x) {x.parentNode.removeChild(x);});
+		// Select last selection
+		sel.forEach(function(x) {toggleSelected(x);});
+		extra.forEach(function(x) {toggleSelected(x,true);});
+	      }else {
+		console.log(ev.key);
 	      }
+
 	    }
 
 	    // Function to download data to a file
@@ -178,7 +203,7 @@
 		  pageHeight: 10000, breaks: "none"});
 	      $("#svg_output").html(svg);
 	      for (let n of document.getElementsByClassName("note")) {
-		  n.addEventListener('click', function(ev) {toggleSelected(n,ev) } )
+		  n.addEventListener('click', function(ev) {toggleSelected(n,ev.shiftKey) } )
 	      }
 	      document.addEventListener('keypress',function(ev) {handleKeypress(ev);});
 	    }

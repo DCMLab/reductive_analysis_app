@@ -27,7 +27,8 @@
             var extraselected = [];
             var vrvToolkit = new verovio.toolkit();
 	    var svg;
-	    var musicxml;
+	    var mei;
+	    var mei_graph;
 	    var data;
 	    var reader = new FileReader();
 	    var changes = false;
@@ -61,25 +62,46 @@
 	      parent.appendChild(newElement);
 	    }
 
+            function draw_edge() {
+	      for(var i = 1; i < selected.length; i++) {
+		note1 = note_coords(selected[i-1]);
+		note2 = note_coords(selected[i]);
+		line(note1,note2);
+	      }
+	    }
+            
+            function add_edge() {
+	      for(var i = 0; i < selected.length; i++) {
+		var elem = mei.createElement("node");
+		// This node represent that note
+		var label = mei.createElement("label");
+		var note = mei.createElement("note");
+		note.setAttribute("sameas","#"+selected[i].getAttribute("id"));
+		elem.appendChild(label);
+		label.appendChild(note);
+		// But should have a separate XML ID
+		elem.setAttribute("id","gn-" + selected[i].getAttribute("id"));
+		mei_graph.appendChild(elem);
+	      }
+	      for(var i = 1; i < selected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#gn-"+selected[i-1].getAttribute("id"));
+		elem.setAttribute("to","#gn-"+selected[i].getAttribute("id"));
+		mei_graph.appendChild(elem);
+	      }
+	    }
 
 
             function handleKeypress(ev) {
-	      if (ev.key == "Enter"){
-		if (selected.length == 0 && extraselected == 0) {
-		  return;
-		}else{
-		  changes = true;
-		  for(var i = 1; i < selected.length; i++) {
-		    note1 = note_coords(selected[i-1]);
-		    note2 = note_coords(selected[i]);
-		    line(note1,note2);
-		  }
-		  selected.forEach(toggleSelected);
-
-		  /* Draw stuff to indicate status of selected and
-		   * extraselected stuff*/
-		  /* Add as hyperedge to underlying MusicXML */
-		}
+	      if (selected.length == 0 && extraselected == 0) {
+		return;
+	      }else if (ev.key == "Enter"){
+		changes = true;
+		draw_edge(); // Draw the edge
+		add_edge();  // Add it to the MEI
+		selected.forEach(toggleSelected); // De-select
 	      }
 	    }
 
@@ -109,10 +131,23 @@
 		      note.getElementsByTagName("use")[0].y.animVal.value]
 
 	    }
+             
+            function add_or_fetch_graph() {
+	      var existing = mei.getElementsByTagName("graph");
+	      if(existing.length) {
+		// TODO: Not just grab the first one.
+		return existing[0];
+	      }
+	      var elem = mei.createElement("graph");
+	      elem.setAttribute("type","directed");
+	      mei.getElementsByTagName("body")[0].appendChild(elem);
+	      return elem;
+	    }
+
 
 
 	    function save() {
-	      var saved = new XMLSerializer().serializeToString(musicxml);
+	      var saved = new XMLSerializer().serializeToString(mei);
 	      download(saved, "download.mei", "text/xml");
 	    }
 
@@ -137,7 +172,8 @@
 	      console.log("woo");
 	      data = reader.result;
 	      parser = new DOMParser();
-	      musicxml = parser.parseFromString(data,"text/xml");
+	      mei = parser.parseFromString(data,"text/xml");
+	      mei_graph = add_or_fetch_graph();
 	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none"});
 	      $("#svg_output").html(svg);
@@ -161,7 +197,7 @@
                 , dataType: "text"
                 , success: function(data) {
 		    parser = new DOMParser();
-		    musicxml = parser.parseFromString(data,"text/xml");
+		    mei = parser.parseFromString(data,"text/xml");
                     svg = vrvToolkit.renderData(data, {});
                     $("#svg_output").html(svg);
 		    for (let n of document.getElementsByClassName("note")) {

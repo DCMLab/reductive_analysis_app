@@ -30,6 +30,7 @@
 	    var musicxml;
 	    var data;
 	    var reader = new FileReader();
+	    var changes = false;
 
             function toggleSelected(item,ev) { 
 	      if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
@@ -47,14 +48,38 @@
 	      }
 	    }
 
+            function line(p1,p2) {
+	      var sibling = document.getElementsByClassName("system")[0];
+	      var parent = sibling.parentNode;
+	      var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'line');
+	      newElement.setAttribute("x1",p1[0]);
+	      newElement.setAttribute("y1",p1[1]);
+	      newElement.setAttribute("x2",p2[0]);
+	      newElement.setAttribute("y2",p2[1]);
+	      newElement.style.stroke = "#000";
+	      newElement.style.strokeWidth = "15px"; 
+	      parent.appendChild(newElement);
+	    }
+
+
 
             function handleKeypress(ev) {
 	      if (ev.key == "Enter"){
-		if (selected.length == 0 && extraselected == 0)
+		if (selected.length == 0 && extraselected == 0) {
 		  return;
-		/* Draw stuff to indicate status of selected and
-		 * extraselected stuff*/
-		/* Add as hyperedge to underlying MusicXML */
+		}else{
+		  changes = true;
+		  for(var i = 1; i < selected.length; i++) {
+		    note1 = note_coords(selected[i-1]);
+		    note2 = note_coords(selected[i]);
+		    line(note1,note2);
+		  }
+		  selected.forEach(toggleSelected);
+
+		  /* Draw stuff to indicate status of selected and
+		   * extraselected stuff*/
+		  /* Add as hyperedge to underlying MusicXML */
+		}
 	      }
 	    }
 
@@ -79,13 +104,27 @@
 		}
 	    }
 
-	    function save() {
-	      var saved = new XMLSerializer().serializeToString(musicxml.documentElement);
-	      download(saved, "download.mei", "text/xml");
+            function note_coords(note) {
+	      return [note.getElementsByTagName("use")[0].x.animVal.value,
+		      note.getElementsByTagName("use")[0].y.animVal.value]
+
 	    }
 
 
+	    function save() {
+	      var saved = new XMLSerializer().serializeToString(musicxml);
+	      download(saved, "download.mei", "text/xml");
+	    }
+
+	    function savesvg() {
+	      var saved = new XMLSerializer().serializeToString($("#svg_output")[0]);
+	      download(saved, "download.mei", "text/xml");
+	    }
+
             function load() {
+	      /* Cancel loading if changes are not saved? alert */
+	      selected = [];
+	      extraselected = [];
 	      upload = document.getElementById("fileupload");
 	      if(upload.files.length == 1){
 		reader.addEventListener("load",load_finish);
@@ -99,7 +138,8 @@
 	      data = reader.result;
 	      parser = new DOMParser();
 	      musicxml = parser.parseFromString(data,"text/xml");
-	      svg = vrvToolkit.renderData(data, {});
+	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+		  pageHeight: 10000, breaks: "none"});
 	      $("#svg_output").html(svg);
 	      for (let n of document.getElementsByClassName("note")) {
 		  n.addEventListener('click', function(ev) {toggleSelected(n,ev) } )
@@ -140,6 +180,7 @@
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
 	  <input type="button" id="uploadbutton" value="Save" onclick="save()" >
+	  <input type="button" id="uploadbutton" value="Save SVG" onclick="savesvg()" >
 	</div>
 	
 	<div id="svg_output"></div>

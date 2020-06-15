@@ -17,23 +17,33 @@
 	</script>
     </head>
     <body>
-        <!--//////////////////////////////////////////////-->
-        <!-- The div where we are going to insert the SVG -->
-        <!--//////////////////////////////////////////////-->
 
         <script type="text/javascript">
-
+	    // Clicking selects
             var selected = [];
+	    // Shift-clicking extra selects
             var extraselected = [];
+	    // Load Verovio
             var vrvToolkit = new verovio.toolkit();
+	    // This is our SVG
 	    var svg;
+	    // And the underlying MEI
 	    var mei;
+	    // And the graph node in the MEI
 	    var mei_graph;
+	    // This is the MEI as text (pre-parse)
 	    var data;
+	    // We need a reader
 	    var reader = new FileReader();
+	    // Did we change the MEI somehow?
 	    var changes = false;
-	    var actions = [];
+	    // Our undo stack. TODO: is this being empty the same as
+	    // changes being false?
+	    var undo_actions = [];
 
+	    var redo_actions = []; //TODO, maybe?
+
+	    // Toggle if a thing (for now: note) is selected or not.
             function toggleSelected(item,extra) { 
 	      if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
 		item.setAttribute("style","fill:black");
@@ -50,6 +60,8 @@
 	      }
 	    }
 
+
+            // Draw a line between points p1 and p2
             function line(p1,p2) {
 	      var sibling = document.getElementsByClassName("system")[0];
 	      var parent = sibling.parentNode;
@@ -64,6 +76,12 @@
 	      return newElement;
 	    }
 
+            function note_coords(note) {
+	      return [note.getElementsByTagName("use")[0].x.animVal.value,
+		      note.getElementsByTagName("use")[0].y.animVal.value]
+	    }
+
+            // Draw an edge (TODO: make it much much much better)
             function draw_edge() {
 	      var added = [];
 	      for(var i = 1; i < selected.length; i++) {
@@ -74,6 +92,7 @@
 	      return added;
 	    }
             
+            // Add an edge (or rather a collection of edges) to the MEI graph element
             function add_edge() {
 	      var added = [];
 	      for(var i = 0; i < selected.length; i++) {
@@ -101,9 +120,9 @@
 	      return added;
 	    }
 
-
-            function handleKeypress(ev) {
-	      if (ev.key == "Enter"){
+	    // OK we've selected stuff, let's make the selection into a
+	    // "hyperedge".
+	    function do_edge() {
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
 		changes = true;
@@ -111,11 +130,15 @@
 		added.push(draw_edge()); // Draw the edge
 		added.push(add_edge());  // Add it to the MEI
 		
-		actions.push([added,selected,extraselected]);
+		undo_actions.push([added,selected,extraselected]);
 		selected.forEach(toggleSelected); // De-select
-	      } else if (ev.key == "u") { // UNDO
-		// Get latest action
-		[added,sel,extra] = actions.pop();
+	    }
+
+
+            // Oops, undo whatever we did last.
+	    function do_undo() {
+		// Get latest undo_actions
+		[added,sel,extra] = undo_actions.pop();
 		// Deselect the current selection, if any
 		selected.forEach(toggleSelected);
 		extraselected.forEach(function(x) {toggleSelected(x,true);});
@@ -124,6 +147,15 @@
 		// Select last selection
 		sel.forEach(function(x) {toggleSelected(x);});
 		extra.forEach(function(x) {toggleSelected(x,true);});
+	    }
+
+
+            // We have keyboard commands!
+            function handleKeypress(ev) {
+	      if (ev.key == "Enter"){
+		do_edge();
+	      } else if (ev.key == "u") { // UNDO
+		do_undo();
 	      }else {
 		console.log(ev.key);
 	      }
@@ -151,12 +183,8 @@
 		}
 	    }
 
-            function note_coords(note) {
-	      return [note.getElementsByTagName("use")[0].x.animVal.value,
-		      note.getElementsByTagName("use")[0].y.animVal.value]
-
-	    }
-             
+            // If the MEI already has a graph, we add on to that. TODO:
+	    // Check that the graph is actually our kind of graph
             function add_or_fetch_graph() {
 	      var existing = mei.getElementsByTagName("graph");
 	      if(existing.length) {
@@ -168,19 +196,20 @@
 	      mei.getElementsByTagName("body")[0].appendChild(elem);
 	      return elem;
 	    }
-
-
-
+  
+            // An option to download the MEI with the changes we've made
 	    function save() {
 	      var saved = new XMLSerializer().serializeToString(mei);
 	      download(saved, "download.mei", "text/xml");
 	    }
 
+	    // Download the current SVG, including graph elements
 	    function savesvg() {
 	      var saved = new XMLSerializer().serializeToString($("#svg_output")[0]);
 	      download(saved, "download.mei", "text/xml");
 	    }
 
+            // Load a new MEI
             function load() {
 	      /* Cancel loading if changes are not saved? alert */
 	      selected = [];
@@ -193,8 +222,14 @@
 		return;
 	      }
 	    }
+
+            // TODO: Draw the existing graph
+            function draw_graph() {
+
+	    }
+            
+            // Do all of this when we have the MEI in memory
             function load_finish(e) {
-	      console.log("woo");
 	      data = reader.result;
 	      parser = new DOMParser();
 	      mei = parser.parseFromString(data,"text/xml");
@@ -202,6 +237,7 @@
 	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none"});
 	      $("#svg_output").html(svg);
+	      draw_graph();
 	      for (let n of document.getElementsByClassName("note")) {
 		  n.addEventListener('click', function(ev) {toggleSelected(n,ev.shiftKey) } )
 	      }
@@ -209,40 +245,19 @@
 	    }
 
 
-
-            ///////////////////////////
-            /* Create the vrvToolkit */
-            ///////////////////////////
-
-            ////////////////////////////////////
-            /* Load the file using a HTTP GET */
-            ////////////////////////////////////
-/*            $.ajax({
-                url: "mei/Bach_Herzliebster_Jesu.mei"
-                , dataType: "text"
-                , success: function(data) {
-		    parser = new DOMParser();
-		    mei = parser.parseFromString(data,"text/xml");
-                    svg = vrvToolkit.renderData(data, {});
-                    $("#svg_output").html(svg);
-		    for (let n of document.getElementsByClassName("note")) {
-			n.addEventListener('click', function(ev) {toggleSelected(n,ev) } )
-		    }
-		    document.addEventListener('keypress',function(ev) {handleKeypress(ev);});
-                }
-            });*/
-            
-
-
-
-
         </script>
 	<div id="load_save">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
-	  <input type="button" id="uploadbutton" value="Save" onclick="save()" >
-	  <input type="button" id="uploadbutton" value="Save SVG" onclick="savesvg()" >
+	  <input type="button" id="downloadbutton" value="Save" onclick="save()" >
+	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
+	  <input type="button" id="edgebutton" value="Add edge" onclick="do_edge()" >
+	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()" >
 	</div>
+
+        <!--//////////////////////////////////////////////-->
+        <!-- The div where we are going to insert the SVG -->
+        <!--//////////////////////////////////////////////-->
 	
 	<div id="svg_output"></div>
 

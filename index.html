@@ -104,7 +104,7 @@
 		elem.appendChild(label);
 		label.appendChild(note);
 		// But should have a separate XML ID
-		elem.setAttribute("id","gn-" + selected[i].getAttribute("id"));
+		elem.setAttribute("xml:id","gn-" + selected[i].getAttribute("id"));
 		mei_graph.appendChild(elem);
 		added.push(elem);
 	      }

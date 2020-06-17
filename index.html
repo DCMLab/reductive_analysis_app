@@ -223,8 +223,10 @@
 	      }
 	    }
 
-            // TODO: Draw the existing graph
-            function draw_graph() {
+            function get_by_id(doc,id) {
+	      if (id[0] == "#") { id = id.slice(1); }
+	      return doc.querySelector("[*|id='"+id+"']");
+	    }
 
 	    }
             

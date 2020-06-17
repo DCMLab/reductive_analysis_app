@@ -228,6 +228,42 @@
 	      return doc.querySelector("[*|id='"+id+"']");
 	    }
 
+
+            // Draw the existing graph
+            function draw_graph() {
+	      // There's a multi-stage process to get all the info we
+	      // need... First we get the nodes from the graph element.
+	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
+	      // Next we get the note labels
+	      var note_nodes = nodes_array.map(function(x) {
+		            try{
+			      return [x, 
+			              x.getElementsByTagName("label")[0].getElementsByTagName("note")[0]];
+			    }catch{
+			      return [];
+			    }
+			  });
+	      // And finally we get the IDs of the actual notes in the MEI
+	      // body, which will correspond to the <g>'s in the SVG
+	      var note_ids = note_nodes.map(function(x) {
+		    return [x[0],x[1].getAttribute("sameas")];
+		  });
+	      // Now get the arcs/edges
+	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+	      // And draw them all.
+	      arcs_array.forEach(function(x) {
+		  var n1 = get_by_id(mei,x.getAttribute("from")); 
+		  var n2 = get_by_id(mei,x.getAttribute("to"));
+		  var id1 = note_ids.find(function(x) {
+		        return x[0] == n1;
+		      })[1];
+		  var id2 = note_ids.find(function(x) {
+		        return x[0] == n2;
+		      })[1];
+		  selected = [get_by_id(document,id1),get_by_id(document,id2) ];
+		  draw_edge();
+		  selected = [];
+	      });
 	    }
             
             // Do all of this when we have the MEI in memory

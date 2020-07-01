@@ -230,6 +230,73 @@
 	      return added;
 	    }
 
+            // Draw a hyperedge as a  series of edges (TODO: make it much much much better)
+            function draw_hyperedge() {
+	      var added = [];
+	      var notes = selected.concat(extraselected);
+	      notes.sort(function(a,b) { 
+		  var p1= note_coords(a);
+		  var p2= note_coords(b);
+		  return (p1[0] - p2[0]) ? (p1[0] - p2[0]) : (p1[1] - p2[1]);
+		});
+
+
+	      //for(var i = 1; i < notes.length; i++) {
+		//note1 = note_coords(notes[i-1]);
+		//note2 = note_coords(notes[i]);
+		//added.push(line(note1,note2));
+		added.push(roundedHull(notes.map(note_coords)));
+	      // TODO: Add selectability on edge.
+	      //}
+
+	      return added;
+	    }
+            
+            // Add a "hyperedge" to the MEI graph element. We model this
+	    // with a new node.
+            function add_hyperedge() {
+	      var added = [];
+              // Add new nodes for all notes
+	      for(var i = 0; i < selected.length; i++) {
+		var elem = add_mei_node_for(selected[i]);
+		added.push(elem);
+	      }
+	      for(var i = 0; i < extraselected.length; i++) {
+		var elem = add_mei_node_for(extraselected[i]);
+		added.push(elem);
+	      }
+	      // Add a new node for the hyperedge
+	      var he_elem = mei.createElement("node");
+	      he_elem.setAttribute("type","hyperedge");
+	      // Who knows if this is enough
+	      var he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
+	      he_elem.setAttribute("xml:id",he_id);
+	      mei_graph.appendChild(he_elem);
+	      added.push(he_elem);
+	      for(var i = 0; i < selected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#gn-"+selected[i].getAttribute("id"));
+		elem.setAttribute("type","normal");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      for(var i = 0; i < extraselected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#gn-"+extraselected[i].getAttribute("id"));
+		elem.setAttribute("type","primary");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      return added;
+	    }
+
+
 	    // OK we've selected stuff, let's make the selection into a
 	    // series of edges
 	    function do_edges() {
@@ -245,6 +312,21 @@
 		extraselected.forEach(toggle_selected); // De-select
 	    }
 
+	    // OK we've selected stuff, let's make the selection into a
+	    // "hyperedge".
+	    function do_hyperedge() {
+		if (selected.length == 0 && extraselected == 0) {
+		  return;}
+		changes = true;
+		added = [];
+		added.push(draw_hyperedge()); // Draw the edge
+		added.push(add_hyperedge());  // Add it to the MEI
+		
+		undo_actions.push([added,selected,extraselected]);
+		selected.forEach(mark_secondary); // De-select
+		selected = [];
+		extraselected.forEach(toggle_selected); // De-select
+	    }
 
             // Oops, undo whatever we did last.
 	    function do_undo() {
@@ -342,12 +424,23 @@
 	      return doc.querySelector("[*|id='"+id+"']");
 	    }
 
+            function node_referred_to(id) {
+	      return Array.from(mei.getElementsByTagName("arc"))
+		.filter(function(x) {
+		    return (x.getAttribute("from") == "#"+id || 
+			    x.getAttribute("to") == "#"+id);
+		 }).length > 0;
+	    }
+
+
 
             // Draw the existing graph
             function draw_graph() {
 	      // There's a multi-stage process to get all the info we
 	      // need... First we get the nodes from the graph element.
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
+	      // Get the nodes representing hyperedges
+	      var hyperedges_nodes = nodes_array.filter(function(x) { return x.getAttribute("type") == "hyperedge";})
 	      // Next we get the note labels
 	      var note_nodes = nodes_array.map(function(x) {
 		            try{
@@ -364,20 +457,46 @@
 		  });
 	      // Now get the arcs/edges
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+	      var hyperedges_arcs = [];
 	      // And draw them all.
 	      arcs_array.forEach(function(x) {
 		  var n1 = get_by_id(mei,x.getAttribute("from")); 
 		  var n2 = get_by_id(mei,x.getAttribute("to"));
-		  var id1 = note_ids.find(function(x) {
-		        return x[0] == n1;
-		      })[1];
-		  var id2 = note_ids.find(function(x) {
-		        return x[0] == n2;
-		      })[1];
-		  selected = [get_by_id(document,id1),get_by_id(document,id2) ];
-		  draw_edge();
-		  selected = [];
+		  if (hyperedges_nodes.findIndex(function (x) {return x == n1;}) == -1){
+		    //Regular edge, just draw. TODO: Fix assumption that
+		    //nodes are notes if we reach this.
+		    var id1 = note_ids.find(function(y) {
+			  return y[0] == n1;
+			})[1];
+		    var id2 = note_ids.find(function(y) {
+			  return y[0] == n2;
+			})[1];
+		    selected = [get_by_id(document,id1),get_by_id(document,id2) ];
+		    draw_edges();
+		    selected = [];
+		  }else{
+		    var id2 = note_ids.find(function(y) {
+			  return y[0] == n2;
+			})[1];
+		    hyperedges_arcs.push([n1,id2,x.getAttribute("type")]);
+		  }
 	      });
+	      hyperedges_nodes.forEach(function(x) {
+		  var hyperedge_nodes = hyperedges_arcs.
+		              filter(function(y) {return y[0] == x;}).
+			      map(function(y) {return [y[2],get_by_id(document,y[1])];})
+	          selected = hyperedge_nodes.
+		              filter(function(y) {return y[0] == "normal";}).
+			      map(function (y) { return y[1];});
+	          extraselected = hyperedge_nodes.
+		              filter(function(y) {return y[0] == "primary";}).
+			      map(function (y) { return y[1];});
+		  draw_hyperedge();
+		  selected.forEach(mark_secondary); // De-select
+		  selected = [];
+		  extraselected = [];
+		});
+
 	    }
             
             // Do all of this when we have the MEI in memory

@@ -179,31 +179,43 @@
 		      note.getElementsByTagName("use")[0].y.animVal.value]
 	    }
 
-            // Draw an edge (TODO: make it much much much better)
-            function draw_edge() {
+            // Draw a series of edges (TODO: make it much much much better)
+            function draw_edges() {
 	      var added = [];
 	      for(var i = 1; i < selected.length; i++) {
 		note1 = note_coords(selected[i-1]);
 		note2 = note_coords(selected[i]);
-		added.push(line(note1,note2));
+		//added.push(line(note1,note2));
+		added.push(roundedHull([note1,note2]));
+	      // TODO: Add selectability on edge.
 	      }
 	      return added;
 	    }
-            
-            // Add an edge (or rather a collection of edges) to the MEI graph element
-            function add_edge() {
-	      var added = [];
-	      for(var i = 0; i < selected.length; i++) {
-		var elem = mei.createElement("node");
+
+            function add_mei_node_for(note) {
+	        var id = note.getAttribute("id");
+		var elem = get_by_id(mei,"gn-"+id);
+		if (elem != null) {
+		  return elem;
+		}
+		elem = mei.createElement("node");
 		// This node represent that note
 		var label = mei.createElement("label");
 		var note = mei.createElement("note");
-		note.setAttribute("sameas","#"+selected[i].getAttribute("id"));
+		note.setAttribute("sameas","#"+id);
 		elem.appendChild(label);
 		label.appendChild(note);
 		// But should have a separate XML ID
-		elem.setAttribute("xml:id","gn-" + selected[i].getAttribute("id"));
+		elem.setAttribute("xml:id","gn-" + id);
 		mei_graph.appendChild(elem);
+		return elem;
+	    }
+            
+            // Add a collection of edges to the MEI graph element
+            function add_edges() {
+	      var added = [];
+	      for(var i = 0; i < selected.length; i++) {
+		var elem = add_mei_node_for(selected[i]);
 		added.push(elem);
 	      }
 	      for(var i = 1; i < selected.length; i++) {
@@ -219,17 +231,18 @@
 	    }
 
 	    // OK we've selected stuff, let's make the selection into a
-	    // "hyperedge".
-	    function do_edge() {
+	    // series of edges
+	    function do_edges() {
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
 		changes = true;
 		added = [];
-		added.push(draw_edge()); // Draw the edge
-		added.push(add_edge());  // Add it to the MEI
+		added.push(draw_edges()); // Draw the edge
+		added.push(add_edges());  // Add it to the MEI
 		
 		undo_actions.push([added,selected,extraselected]);
-		selected.forEach(toggleSelected); // De-select
+		selected.forEach(toggle_selected); // De-select
+		extraselected.forEach(toggle_selected); // De-select
 	    }
 
 
@@ -238,20 +251,23 @@
 		// Get latest undo_actions
 		[added,sel,extra] = undo_actions.pop();
 		// Deselect the current selection, if any
-		selected.forEach(toggleSelected);
-		extraselected.forEach(function(x) {toggleSelected(x,true);});
+		selected.forEach(toggle_selected);
+		extraselected.forEach(function(x) {toggle_selected(x,true);});
 		// Remove added elements
-		added.flat().forEach(function(x) {x.parentNode.removeChild(x);});
+		added.flat().forEach(function(x) {
+		    if(!node_referred_to(x.getAttribute("xml:id")))
+		      x.parentNode.removeChild(x);
+		    });
 		// Select last selection
-		sel.forEach(function(x) {toggleSelected(x);});
-		extra.forEach(function(x) {toggleSelected(x,true);});
+		sel.forEach(function(x) {toggle_selected(x);});
+		extra.forEach(function(x) {toggle_selected(x,true);});
 	    }
 
 
             // We have keyboard commands!
             function handleKeypress(ev) {
 	      if (ev.key == "Enter"){
-		do_edge();
+		do_edges();
 	      } else if (ev.key == "u") { // UNDO
 		do_undo();
 	      }else {
@@ -340,7 +356,7 @@
 			    }catch{
 			      return [];
 			    }
-			  });
+			  }).filter(function(x) {return x.length != 0;});
 	      // And finally we get the IDs of the actual notes in the MEI
 	      // body, which will correspond to the <g>'s in the SVG
 	      var note_ids = note_nodes.map(function(x) {
@@ -375,7 +391,7 @@
 	      $("#svg_output").html(svg);
 	      draw_graph();
 	      for (let n of document.getElementsByClassName("note")) {
-		  n.addEventListener('click', function(ev) {toggleSelected(n,ev.shiftKey) } )
+		  n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
 	      }
 	      document.addEventListener('keypress',function(ev) {handleKeypress(ev);});
 	    }
@@ -387,7 +403,8 @@
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
 	  <input type="button" id="downloadbutton" value="Save" onclick="save()" >
 	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
-	  <input type="button" id="edgebutton" value="Add edge" onclick="do_edge()" >
+	  <input type="button" id="edgebutton" value="Add edges" onclick="do_edges()" >
+	  <input type="button" id="hyperedgebutton" value="Add hyperedge" onclick="do_hyperedge()" >
 	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()" >
 	</div>
 

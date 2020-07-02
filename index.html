@@ -41,6 +41,8 @@
 
 	    var redo_actions = []; //TODO, maybe?
 
+	    var reduce_actions = [];
+
 	    // Vector operations, taken from 
 	    // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
 	    var vecScale = function (scale, v) {
@@ -77,6 +79,105 @@
 		  selected.push(item);
 		}
 	      }
+	    }
+            // Get the MEI-graph nodes that are adjacent to a hyperedge
+            function hyperedge_allnodes(he) {
+	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+	      var nodes = [];
+	      arcs_array.forEach(function (a) {
+		    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
+		      nodes.push(get_by_id(mei,a.getAttribute("to")));
+		    }
+		  });
+	      return nodes;
+	    }
+            // Get the MEI-graph nodes that are adjacent and primary to a hyperedge
+            function hyperedge_primaries(he) {
+	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+	      var nodes = [];
+	      arcs_array.forEach(function (a) {
+		if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+		   a.getAttribute("type") == "primary"){
+		  nodes.push(get_by_id(mei,a.getAttribute("to")));
+		}
+		  });
+	      return nodes;
+	    }
+            // Get the MEI-graph nodes that are adjacent and secondary to a hyperedge
+            function hyperedge_secondaries(he) {
+	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+	      var nodes = [];
+	      arcs_array.forEach(function (a) {
+		if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+		   a.getAttribute("type") == "secondary"){
+		  nodes.push(get_by_id(mei,a.getAttribute("to")));
+		}
+		  });
+	      return nodes;
+	    }
+
+            // This reduces away the hyperedges where all the secondaries
+	    // are not primary in any non-reduced hyperedge. TODO: This is
+	    // a very stupid implementation akin to bubble sort. No doubt
+	    // the complexity and performance can be _greatly_ improved.
+            function do_reduce() {
+	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
+	      // Get the nodes representing hyperedges
+	      var hyperedges_nodes = nodes_array.filter(function(x) { return x.getAttribute("type") == "hyperedge";})
+	      var remaining_hyperedges = hyperedges_nodes.filter(function(x) { 
+		return reduce_actions.flat().flat().findIndex(function(y) {return y == x; }) == -1
+	      });
+	      var reduce_action = [];
+	      // For each remaining hyperedge
+	      if(remaining_hyperedges.length == 0){
+		console.log("No reduction possible");
+		return;
+	      }
+
+	      remaining_hyperedges.forEach(function (he) {
+	        var secondaries = hyperedge_secondaries(he); 
+		// If none of this hyperedges secondary nodes are such that
+		if( 0 == secondaries.filter(function(x) { 
+		  // Any other remaining hyperedge
+	 	  return 0 != remaining_hyperedges.filter( function (hf) {
+		    // Has it as a primary
+		    return hyperedge_primaries(hf).findIndex(function(y) {return x == y;}) != -1;
+		  }).length;
+		}).length){
+		  // Then we can safely reduce this hyperedge
+		  reduce_action.push(he);
+		}
+	      });
+	      reduce_actions.push(reduce_action.map(function(he) {
+		var secondaries = hyperedge_secondaries(he);
+		var graphicals = [];
+		graphicals.push(secondaries.map(hide_note));
+		graphicals.push(hide_he(he));
+		return [he,secondaries,graphicals];
+	      }));
+	    }
+
+            function undo_reduce() {
+	      var reduce_layer = reduce_actions.pop();
+	      reduce_layer.forEach(function(action) {
+		var [he,secondaries,graphicals] = action;
+		graphicals.flat().forEach(function(x) { x.style.visibility = "visible";});
+		secondaries.forEach(function(x) { mark_secondary(get_by_id(document,note_get_sameas(x))); });
+	      });
+
+	    }
+
+
+            function hide_note(note) {
+	      var elem = get_by_id(document,note_get_sameas(note));
+	      elem.style.visibility = "hidden";
+	      return elem;
+	    }
+
+            function hide_he(he) {
+	      var elem = get_by_id(document,he.getAttribute("xml:id"));
+	      elem.style.visibility = "hidden";
+	      return elem;
 	    }
 
             function mark_secondary(item) {
@@ -536,6 +637,8 @@
 	  <input type="button" id="edgebutton" value="Add edges" onclick="do_edges()" >
 	  <input type="button" id="hyperedgebutton" value="Add hyperedge" onclick="do_hyperedge()" >
 	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()" >
+	  <input type="button" id="reducebutton" value="Reduce Hyperedges" onclick="do_reduce()" >
+	  <input type="button" id="reducebutton" value="Undo reduction" onclick="undo_reduce()" >
 	</div>
 
         <!--//////////////////////////////////////////////-->

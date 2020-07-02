@@ -89,17 +89,12 @@
 
 		var offsetVector = vecScale (hullPadding, unitNormal (polyPoints[0], polyPoints[1]));
 		var invOffsetVector = vecScale (-1, offsetVector);
-	//	var xoff = [100,0]; //TODO: This is just magic to get
 		// around that note coordinates are not at the centroids
 
 		var p0 = vecSum (polyPoints[0], offsetVector);
 		var p1 = vecSum (polyPoints[1], offsetVector);
 		var p2 = vecSum (polyPoints[1], invOffsetVector);
 		var p3 = vecSum (polyPoints[0], invOffsetVector);
-	//	var p0 = vecSum (p0, xoff);
-	//	var p1 = vecSum (p1, xoff);
-	//	var p2 = vecSum (p2, xoff);
-	//	var p3 = vecSum (p3, xoff);
 
 		return 'M ' + p0
 		    + ' L ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
@@ -231,7 +226,7 @@
 	    }
 
             // Draw a hyperedge as a  series of edges (TODO: make it much much much better)
-            function draw_hyperedge() {
+            function draw_hyperedge(id) {
 	      var added = [];
 	      var notes = selected.concat(extraselected);
 	      notes.sort(function(a,b) { 
@@ -245,7 +240,9 @@
 		//note1 = note_coords(notes[i-1]);
 		//note2 = note_coords(notes[i]);
 		//added.push(line(note1,note2));
-		added.push(roundedHull(notes.map(note_coords)));
+	        var elem = roundedHull(notes.map(note_coords));
+		elem.setAttribute("id",id);
+		added.push(elem);
 	      // TODO: Add selectability on edge.
 	      //}
 
@@ -279,7 +276,7 @@
 		var elem = mei.createElement("arc");
 		elem.setAttribute("from","#"+he_id);
 		elem.setAttribute("to","#gn-"+selected[i].getAttribute("id"));
-		elem.setAttribute("type","normal");
+		elem.setAttribute("type","secondary");
 		mei_graph.appendChild(elem);
 		added.push(elem);
 	      }
@@ -293,7 +290,7 @@
 		mei_graph.appendChild(elem);
 		added.push(elem);
 	      }
-	      return added;
+	      return [he_id,added];
 	    }
 
 
@@ -319,8 +316,9 @@
 		  return;}
 		changes = true;
 		added = [];
-		added.push(draw_hyperedge()); // Draw the edge
-		added.push(add_hyperedge());  // Add it to the MEI
+		var [he_id,mei_elems] = add_hyperedge();
+		added.push(mei_elems);  // Add it to the MEI
+		added.push(draw_hyperedge(he_id)); // Draw the edge
 		
 		undo_actions.push([added,selected,extraselected]);
 		selected.forEach(mark_secondary); // De-select
@@ -421,7 +419,12 @@
 
             function get_by_id(doc,id) {
 	      if (id[0] == "#") { id = id.slice(1); }
-	      return doc.querySelector("[*|id='"+id+"']");
+	      var elem =  doc.querySelector("[*|id='"+id+"']");
+	      if(elem) {
+		return elem;
+	      }else{
+		return Array.from(doc.all).find(function(x) { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
+	      }
 	    }
 
             function node_referred_to(id) {
@@ -431,6 +434,13 @@
 			    x.getAttribute("to") == "#"+id);
 		 }).length > 0;
 	    }
+
+            function note_get_sameas(note) {
+	      return note.getElementsByTagName("label")[0].
+		          getElementsByTagName("note")[0].
+		          getAttribute("sameas");
+	    }
+
 
 
 
@@ -442,19 +452,20 @@
 	      // Get the nodes representing hyperedges
 	      var hyperedges_nodes = nodes_array.filter(function(x) { return x.getAttribute("type") == "hyperedge";})
 	      // Next we get the note labels
-	      var note_nodes = nodes_array.map(function(x) {
+	      var note_ids = nodes_array.map(function(x) {
 		            try{
 			      return [x, 
-			              x.getElementsByTagName("label")[0].getElementsByTagName("note")[0]];
+			              note_get_sameas(x)]
+//			              x.getElementsByTagName("label")[0].getElementsByTagName("note")[0]];
 			    }catch{
 			      return [];
 			    }
 			  }).filter(function(x) {return x.length != 0;});
 	      // And finally we get the IDs of the actual notes in the MEI
 	      // body, which will correspond to the <g>'s in the SVG
-	      var note_ids = note_nodes.map(function(x) {
-		    return [x[0],x[1].getAttribute("sameas")];
-		  });
+	   //   var note_ids = note_nodes.map(function(x) {
+	//	    return [x[0],x[1].getAttribute("sameas")];
+	//	  });
 	      // Now get the arcs/edges
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var hyperedges_arcs = [];
@@ -486,12 +497,12 @@
 		              filter(function(y) {return y[0] == x;}).
 			      map(function(y) {return [y[2],get_by_id(document,y[1])];})
 	          selected = hyperedge_nodes.
-		              filter(function(y) {return y[0] == "normal";}).
+		              filter(function(y) {return y[0] == "secondary";}).
 			      map(function (y) { return y[1];});
 	          extraselected = hyperedge_nodes.
 		              filter(function(y) {return y[0] == "primary";}).
 			      map(function (y) { return y[1];});
-		  draw_hyperedge();
+		  draw_hyperedge(x.getAttribute("xml:id"));
 		  selected.forEach(mark_secondary); // De-select
 		  selected = [];
 		  extraselected = [];

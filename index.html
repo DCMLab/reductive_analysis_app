@@ -43,6 +43,8 @@
 
 	    var reduce_actions = [];
 
+	    var non_notes_hidden = false;
+
 	    // Vector operations, taken from 
 	    // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
 	    var vecScale = function (scale, v) {
@@ -627,9 +629,32 @@
 	      document.addEventListener('keypress',function(ev) {handleKeypress(ev);});
 	    }
 
+            function toggle_equalize() {
+	      var svg_element = document.getElementById("svg_output");
+	      var hidden = "hidden";
+	      if(non_notes_hidden){
+		hidden = "visible";
+		non_notes_hidden = false;
+	      }else{
+		non_notes_hidden = true;
+	      }
+	      Array.from(svg_element.getElementsByClassName("beam")).forEach(function(x)
+		  { x.getElementsByTagName("polygon")[0].style.visibility= hidden; });
+	      Array.from(svg_element.getElementsByClassName("fermata")).forEach(function(x)
+		  { x.style.visibility= hidden; });
+	      Array.from(svg_element.getElementsByClassName("rest")).forEach(function(x)
+		  { x.style.visibility= hidden; });
+	      Array.from(svg_element.getElementsByClassName("stem")).forEach(function(x)
+		  { x.style.visibility= hidden; });
+	      Array.from(svg_element.getElementsByClassName("flag")).forEach(function(x)
+		  { x.style.visibility= hidden; });
+	    }
+
+
+
 
         </script>
-	<div id="load_save">
+	<div id="load_save" style="position:fixed">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
 	  <input type="button" id="downloadbutton" value="Save" onclick="save()" >
@@ -638,7 +663,8 @@
 	  <input type="button" id="hyperedgebutton" value="Add hyperedge" onclick="do_hyperedge()" >
 	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()" >
 	  <input type="button" id="reducebutton" value="Reduce Hyperedges" onclick="do_reduce()" >
-	  <input type="button" id="reducebutton" value="Undo reduction" onclick="undo_reduce()" >
+	  <input type="button" id="unreducebutton" value="Undo reduction" onclick="undo_reduce()" >
+	  <input type="button" id="equalizebutton" value="Toggle stems etc." onclick="toggle_equalize()" >
 	</div>
 
         <!--//////////////////////////////////////////////-->

@@ -639,7 +639,7 @@
 		non_notes_hidden = true;
 	      }
 	      Array.from(svg_element.getElementsByClassName("beam")).forEach(function(x)
-		  { x.getElementsByTagName("polygon")[0].style.visibility= hidden; });
+		  { Array.from(x.children).forEach(function(x) { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
 	      Array.from(svg_element.getElementsByClassName("fermata")).forEach(function(x)
 		  { x.style.visibility= hidden; });
 	      Array.from(svg_element.getElementsByClassName("rest")).forEach(function(x)
@@ -647,6 +647,8 @@
 	      Array.from(svg_element.getElementsByClassName("stem")).forEach(function(x)
 		  { x.style.visibility= hidden; });
 	      Array.from(svg_element.getElementsByClassName("flag")).forEach(function(x)
+		  { x.style.visibility= hidden; });
+	      Array.from(svg_element.getElementsByClassName("tie")).forEach(function(x)
 		  { x.style.visibility= hidden; });
 	    }
 

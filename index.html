@@ -25,12 +25,16 @@
             var vrvToolkit = new verovio.toolkit();
 	    // This is our SVG
 	    var svg;
+	    var orig_svg;
 	    // And the underlying MEI
 	    var mei;
+	    var orig_mei;
 	    // And the graph node in the MEI
 	    var mei_graph;
+	    var orig_mei_graph;
 	    // This is the MEI as text (pre-parse)
 	    var data;
+	    var orig_data;
 	    // We need a reader
 	    var reader = new FileReader();
 	    // Did we change the MEI somehow?
@@ -616,11 +620,15 @@
             // Do all of this when we have the MEI in memory
             function load_finish(e) {
 	      data = reader.result;
+	      orig_data = data;
 	      parser = new DOMParser();
 	      mei = parser.parseFromString(data,"text/xml");
+	      orig_mei = mei;
 	      mei_graph = add_or_fetch_graph();
+	      orig_mei_graph = mei_graph;
 	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none"});
+	      orig_svg = svg;
 	      $("#svg_output").html(svg);
 	      draw_graph();
 	      for (let n of document.getElementsByClassName("note")) {
@@ -655,6 +663,44 @@
 
 
 
+            function rerender(output) {
+	      var mei2 = mei.implementation.createDocument(
+		    mei.namespaceURI, //namespace to use
+		    null,             //name of the root element (or for empty document)
+		    null              //doctype (null for XML)
+		    );
+	      var newNode = mei2.importNode(
+		  mei.documentElement, //node to import
+		  true                 //clone its descendants
+		  );
+	      mei2.appendChild(newNode);
+
+	      Array.from(document.getElementsByClassName("note")).forEach(function(x) {
+		if(x.style.visibility == "hidden"){
+		  //TODO: this is wrong
+		  // 
+		  var y = get_by_id(mei2,x.getAttribute("id"));
+		  y.parentNode.removeChild(y);
+		}
+	      });
+	      var data2 = new XMLSerializer().serializeToString(mei2);
+	      var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
+		  pageHeight: 10000, breaks: "none"});
+	      $("#svg_output").html(svg2);
+	      svg = svg2;
+	      mei = mei2;
+	      data = data2;
+	      mei_graph = add_or_fetch_graph();
+	      for (let n of document.getElementsByClassName("note")) {
+		  n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
+	      }
+
+	    }
+
+            function rerender_temp() {
+	      rerender(document.getElementById("svg_output2"));
+	    }
+
         </script>
 	<div id="load_save" style="position:fixed">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
@@ -667,6 +713,10 @@
 	  <input type="button" id="reducebutton" value="Reduce Hyperedges" onclick="do_reduce()" >
 	  <input type="button" id="unreducebutton" value="Undo reduction" onclick="undo_reduce()" >
 	  <input type="button" id="equalizebutton" value="Toggle stems etc." onclick="toggle_equalize()" >
+
+
+	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender_temp()" >
+
 	</div>
 
         <!--//////////////////////////////////////////////-->

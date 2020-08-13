@@ -452,11 +452,15 @@
 
 
             // We have keyboard commands!
-            function handleKeypress(ev) {
+            function handle_keypress(ev) {
 	      if (ev.key == "Enter"){
 		do_edges();
 	      } else if (ev.key == "u") { // UNDO
 		do_undo();
+	      } else if (ev.key == "+") { // Select same notes in the measure
+		select_samenote();
+	      } else if (ev.key == "h") { // Add a hyperedge
+		do_hyperedge();
 	      }else {
 		console.log(ev.key);
 	      }
@@ -634,7 +638,7 @@
 	      for (let n of document.getElementsByClassName("note")) {
 		  n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
 	      }
-	      document.addEventListener('keypress',function(ev) {handleKeypress(ev);});
+	      document.addEventListener('keypress',function(ev) {handle_keypress(ev);});
 	    }
 
             function toggle_equalize() {

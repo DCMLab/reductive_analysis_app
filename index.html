@@ -296,7 +296,7 @@
 	      return added;
 	    }
 
-            function add_mei_node_for(note) {
+            function add_mei_node_for(mei,mei_graph,note) {
 	        var id = note.getAttribute("id");
 		var elem = get_by_id(mei,"gn-"+id);
 		if (elem != null) {
@@ -316,10 +316,10 @@
 	    }
             
             // Add a collection of edges to the MEI graph element
-            function add_edges() {
+            function add_edges(mei) {
 	      var added = [];
 	      for(var i = 0; i < selected.length; i++) {
-		var elem = add_mei_node_for(selected[i]);
+		var elem = add_mei_node_for(mei,selected[i]);
 		added.push(elem);
 	      }
 	      for(var i = 1; i < selected.length; i++) {
@@ -360,22 +360,26 @@
             
             // Add a "hyperedge" to the MEI graph element. We model this
 	    // with a new node.
-            function add_hyperedge() {
+            function add_hyperedge(mei,mei_graph,he_id_param) {
 	      var added = [];
               // Add new nodes for all notes
 	      for(var i = 0; i < selected.length; i++) {
-		var elem = add_mei_node_for(selected[i]);
+		var elem = add_mei_node_for(mei,mei_graph,selected[i]);
 		added.push(elem);
 	      }
 	      for(var i = 0; i < extraselected.length; i++) {
-		var elem = add_mei_node_for(extraselected[i]);
+		var elem = add_mei_node_for(mei,mei_graph,extraselected[i]);
 		added.push(elem);
 	      }
 	      // Add a new node for the hyperedge
 	      var he_elem = mei.createElement("node");
 	      he_elem.setAttribute("type","hyperedge");
 	      // Who knows if this is enough
-	      var he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
+	      var he_id;
+	      if(typeof he_id_param == 'undefined')
+	        he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
+	      else
+		he_id = he_id_param;
 	      he_elem.setAttribute("xml:id",he_id);
 	      mei_graph.appendChild(he_elem);
 	      added.push(he_elem);
@@ -411,7 +415,9 @@
 		changes = true;
 		added = [];
 		added.push(draw_edges()); // Draw the edge
-		added.push(add_edges());  // Add it to the MEI
+		added.push(add_edges(mei));  // Add it to the MEI
+		if(mei != orig_mei)
+		  added.push(add_edges(orig_mei));
 		
 		undo_actions.push([added,selected,extraselected]);
 		selected.forEach(toggle_selected); // De-select
@@ -425,8 +431,12 @@
 		  return;}
 		changes = true;
 		added = [];
-		var [he_id,mei_elems] = add_hyperedge();
+		var [he_id,mei_elems] = add_hyperedge(mei,mei_graph);
 		added.push(mei_elems);  // Add it to the MEI
+		if(mei != orig_mei){
+		  var [orig_he_id,orig_mei_elems] = add_hyperedge(orig_mei,orig_mei_graph,he_id);
+		  added.push(orig_mei_elems);  // Add it to the MEI
+		}
 		added.push(draw_hyperedge(he_id)); // Draw the edge
 		
 		undo_actions.push([added,selected,extraselected]);
@@ -507,6 +517,10 @@
             // An option to download the MEI with the changes we've made
 	    function save() {
 	      var saved = new XMLSerializer().serializeToString(mei);
+	      download(saved, "download.mei", "text/xml");
+	    }
+	    function save_orig() {
+	      var saved = new XMLSerializer().serializeToString(orig_mei);
 	      download(saved, "download.mei", "text/xml");
 	    }
 
@@ -741,7 +755,8 @@
 	<div id="load_save" style="position:fixed">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
-	  <input type="button" id="downloadbutton" value="Save" onclick="save()" >
+	  <!--input type="button" id="downloadbutton" value="Save" onclick="save()" -->
+	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
 	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
 	  <input type="button" id="edgebutton" value="Add edges" onclick="do_edges()" >
 	  <input type="button" id="hyperedgebutton" value="Add hyperedge" onclick="do_hyperedge()" >

@@ -644,7 +644,6 @@
 	    }
 
             function toggle_equalize() {
-	      var svg_element = document.getElementById("svg_output");
 	      var hidden = "hidden";
 	      if(non_notes_hidden){
 		hidden = "visible";
@@ -652,6 +651,11 @@
 	      }else{
 		non_notes_hidden = true;
 	      }
+	      set_non_note_visibility(hidden);
+	    }
+
+            function set_non_note_visibility(hidden) {
+	      var svg_element = document.getElementById("svg_output");
 	      Array.from(svg_element.getElementsByClassName("beam")).forEach(function(x)
 		  { Array.from(x.children).forEach(function(x) { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
 	      Array.from(svg_element.getElementsByClassName("fermata")).forEach(function(x)
@@ -700,6 +704,8 @@
 	      for (let n of document.getElementsByClassName("note")) {
 		  n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
 	      }
+	      if(non_notes_hidden)
+		set_non_note_visibility("hidden");
 
 	    }
 

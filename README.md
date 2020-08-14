@@ -51,7 +51,7 @@ However, this doesn't look very nice, as we only hide the notes, and not the bea
 
 ![](tutorial6.png?raw=true)
 
-But this still leaves us with an embarrassing amount of unused space. To rerender the MEI with the removed notes, we can click the button marked "Rerender less hidden notes" **but beware**! Up until now, we can undo things to no ill effect, but as soon as we rerender, Undo is not going to work very well past the point of last render (though it it still possible - this is a bug, and will be fixed).
+But this still leaves us with an embarrassing amount of unused space, as well as unused ledger lines. To rerender the MEI with the removed notes, we can click the button marked "Rerender less hidden notes" **but beware**! Up until now, we can undo things to no ill effect, but as soon as we rerender, Undo is not going to work very well past the point of last render (though it it still possible - this is a bug, and will be fixed).
 
 Still, let's go ahead:
 

@@ -473,6 +473,8 @@
 		select_samenote();
 	      } else if (ev.key == "h") { // Add a hyperedge
 		do_hyperedge();
+	      } else if (ev.key == "s") { // Add a hyperedge
+		toggle_equalize();
 	      }else {
 		console.log(ev.key);
 	      }
@@ -764,6 +766,7 @@
 	  <input type="button" id="reducebutton" value="Reduce Hyperedges" onclick="do_reduce()" >
 	  <input type="button" id="unreducebutton" value="Undo reduction" onclick="undo_reduce()" >
 	  <input type="button" id="equalizebutton" value="Toggle stems etc." onclick="toggle_equalize()" >
+	  <input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" >
 
 
 	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender_temp()" >

@@ -167,8 +167,8 @@
 	      var reduce_layer = reduce_actions.pop();
 	      reduce_layer.forEach(function(action) {
 		var [he,secondaries,graphicals] = action;
-		graphicals.flat().forEach(function(x) { x.style.visibility = "visible";});
-		secondaries.forEach(function(x) { mark_secondary(get_by_id(document,note_get_sameas(x))); });
+		graphicals.flat().forEach(function(x) { if(x) x.style.visibility = "visible";});
+		secondaries.forEach(function(x) { if(x) mark_secondary(get_by_id(document,note_get_sameas(x))); });
 	      });
 
 	    }
@@ -176,13 +176,15 @@
 
             function hide_note(note) {
 	      var elem = get_by_id(document,note_get_sameas(note));
-	      elem.style.visibility = "hidden";
+	      if(elem)
+		elem.style.visibility = "hidden";
 	      return elem;
 	    }
 
             function hide_he(he) {
 	      var elem = get_by_id(document,he.getAttribute("xml:id"));
-	      elem.style.visibility = "hidden";
+	      if(elem) 
+		elem.style.visibility = "hidden";
 	      return elem;
 	    }
 

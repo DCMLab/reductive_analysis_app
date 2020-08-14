@@ -2,7 +2,7 @@
 
 This is an app to facilitate analysing scores using a reductive paradigm.
 
-It is currently very much under construction.
+It is currently very much under construction, but can be tested [here](https://dcmlab.github.io/reductive_analysis_app/index.html)
 
 The basics are as follows:
  
@@ -18,3 +18,4 @@ The basics are as follows:
    between hyperedges (e.g. hyperedge A has note x as primary and y as
    secondary, while hyperedge B has them the other way around), this will
    eventually reduce away all hyperedges.
+

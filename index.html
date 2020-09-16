@@ -247,11 +247,22 @@
 		return segments.join(' ');
 	    }
 
+
+	    function getRandomColor() {
+		var letters = '0123456789ABCDEF';
+		var color = '#';
+		for (var i = 0; i < 6; i++) {
+		  color += letters[Math.floor(4+Math.random() * 8)];
+		}
+		return color+'88'; //Semitransparency
+	    }
+
+
             function roundedHull(points) {
 	      var sibling = document.getElementsByClassName("system")[0];
 	      var parent = sibling.parentNode;
 	      var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-	      newElement.setAttribute('fill', '#aca');
+	      newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking
 	      if(points.length == 2) {
 		newElement.setAttribute('d',roundedHull2(points));
 	      } else {

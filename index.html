@@ -230,7 +230,7 @@
 	    }
 
             // Draw a hyperedge as a  series of edges (TODO: make it much much much better)
-            function draw_hyperedge(id) {
+            function draw_hyperedge(id,type) {
 	      var added = [];
 	      var notes = selected.concat(extraselected);
 	      notes.sort(function(a,b) { 
@@ -246,6 +246,10 @@
 		//added.push(line(note1,note2));
 	        var elem = roundedHull(notes.map(note_coords));
 		elem.setAttribute("id",id);
+		elem.setAttribute("class","hyperedge");
+		elem.setAttribute("type",type);
+		if(shades)
+		  toggle_shade(elem);
 		added.push(elem);
 	      // TODO: Add selectability on edge.
 	      //}
@@ -336,7 +340,7 @@
 		  var [orig_he_id,orig_mei_elems] = add_hyperedge(orig_mei,orig_mei_graph,type,he_id);
 		  added.push(orig_mei_elems);  // Add it to the MEI
 		}
-		added.push(draw_hyperedge(he_id)); // Draw the edge
+		added.push(draw_hyperedge(he_id,type)); // Draw the edge
 		
 		undo_actions.push([added,selected,extraselected]);
 		selected.forEach(mark_secondary); // De-select
@@ -550,7 +554,12 @@
 	          extraselected = hyperedge_nodes.
 		              filter(function(y) {return y[0] == "primary";}).
 			      map(function (y) { return y[1];});
-		  draw_hyperedge(x.getAttribute("xml:id"));
+	          var he_labels = x.getElementsByTagName("label");
+		  var type = "";
+		  if(he_labels.length > 0){
+		    type = he_labels[0].getAttribute("type");
+		  }
+		  draw_hyperedge(x.getAttribute("xml:id"),type);
 		  selected.forEach(mark_secondary); // De-select
 		  selected = [];
 		  extraselected = [];

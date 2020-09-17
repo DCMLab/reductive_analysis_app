@@ -347,6 +347,11 @@
             // Oops, undo whatever we did last.
 	    function do_undo() {
 		// Get latest undo_actions
+	        if(undo_actions.length == 0) {
+		  console.log("Nothing to undo");
+		  return;
+		}
+
 		[added,sel,extra] = undo_actions.pop();
 		// Deselect the current selection, if any
 		selected.forEach(toggle_selected);

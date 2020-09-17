@@ -370,11 +370,11 @@
 		do_edges();
 	      } else if (ev.key == "u") { // UNDO
 		do_undo();
+	      } else if (ev.key == "h") { // Add a hyperedge
+		do_hyperedge();
 	      } else if (ev.key == "+") { // Select same notes in the measure
 		select_samenote();
 		do_hyperedge("repeat");
-	      } else if (ev.key == "h") { // Add a hyperedge
-		do_hyperedge();
 	      } else if (ev.key == "p") { // Add a hyperedge
 		do_hyperedge("passing");
 	      } else if (ev.key == "n") { // Add a hyperedge
@@ -383,6 +383,10 @@
 		do_hyperedge("harmonic");
 	      } else if (ev.key == "a") { // Add a hyperedge
 		do_hyperedge("arpeggio");
+	      } else if (ev.key == "u") { // Add a hyperedge
+		do_hyperedge("urlinie");
+	      } else if (ev.key == "b") { // Add a hyperedge
+		do_hyperedge("bassbrechung");
 	      } else if (ev.key == "s") { // Add a hyperedge
 		toggle_equalize();
 	      }else {
@@ -681,12 +685,19 @@
 	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()" >
 	  <input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" >
 	  <input type="button" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
-	  <input type="button" id="hyperedgebutton" value="Add repeat hyperedge" onclick="do_hyperedge('repeat')" >
-	  <input type="button" id="hyperedgebutton" value="Add passing hyperedge" onclick="do_hyperedge('passing')" >
-	  <input type="button" id="hyperedgebutton" value="Add neighbour hyperedge" onclick="do_hyperedge('neighbour')" >
-	  <input type="button" id="hyperedgebutton" value="Add harmonic hyperedge" onclick="do_hyperedge('harmonic')" >
-	  <input type="button" id="hyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
+	  <input type="button" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
+	  <div id="simple_buttons">
+	  <input type="button" id="repeathyperedgebutton" value="Add repeat hyperedge" onclick="do_hyperedge('repeat')" >
+	  <input type="button" id="passinghyperedgebutton" value="Add passing hyperedge" onclick="do_hyperedge('passing')" >
+	  <input type="button" id="neighbourhyperedgebutton" value="Add neighbour hyperedge" onclick="do_hyperedge('neighbour')" >
+	  <input type="button" id="harmonichyperedgebutton" value="Add harmonic hyperedge" onclick="do_hyperedge('harmonic')" >
+	  <input type="button" id="arpeggiohyperedgebutton" value="Add arpeggio hyperedge" onclick="do_hyperedge('arpeggio')" >
+	  </div>
+	  <div id="schenker buttons">
+	  <input type="button" id="urliniehyperedgebutton" value="Add urlinie hyperedge" onclick="do_hyperedge('urlinie')" >
+	  <input type="button" id="bassbrechunghyperedgebutton" value="Add bassbrechung hyperedge" onclick="do_hyperedge('bassbrechung')" >
+	  </div>
 
 	</div>
 

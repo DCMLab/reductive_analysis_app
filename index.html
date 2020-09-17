@@ -52,6 +52,8 @@
 	    
 	    var text_input=false;
 
+	    var shades = false;
+
 
 
 	    // Toggle if a thing (for now: note) is selected or not.
@@ -370,6 +372,21 @@
 		extra.forEach(function(x) {toggle_selected(x,true);});
 	    }
 
+            function toggle_shade(he) {
+	      if(!shades && he.getAttribute("old_fill")){
+		he.setAttribute("fill",he.getAttribute("old_fill"));
+		he.removeAttribute("old_fill");
+	      }else if (shades && type_shades[he.getAttribute("type")]){
+		he.setAttribute("old_fill", he.getAttribute("fill"));
+		he.setAttribute("fill",getRandomShade(type_shades[he.getAttribute("type")]));
+	      }
+
+	    }
+
+            function toggle_shades() {
+	      shades = !shades;
+	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_shade);
+	    }
 
             // We have keyboard commands!
             function handle_keypress(ev) {
@@ -694,6 +711,7 @@
 	  <input type="button" id="reducebutton" value="Reduce Hyperedges" onclick="do_reduce()" >
 	  <input type="button" id="unreducebutton" value="Undo reduction" onclick="undo_reduce()" >
 	  <input type="button" id="equalizebutton" value="Toggle stems etc." onclick="toggle_equalize()" >
+	  <input type="button" id="shadesbutton" value="Toggle type-dependent shades." onclick="toggle_shades()" >
 	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender_temp()" >
 	  <input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" > <br/>
 	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()" >

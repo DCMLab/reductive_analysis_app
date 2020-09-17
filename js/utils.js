@@ -84,6 +84,21 @@ function getRandomColor() {
     return color+'88'; //Semitransparency
 }
 
+function getRandomShade(colour) {
+    var letters = '0123456789ABCDEF';
+    var shade = '#';
+    for (var i = 0; i < 6; i++) {
+      if(
+	  ((colour == 'r' || colour == 'y' || colour == 'm')&& i < 2) ||
+	  ((colour == 'g' || colour == 'y' || colour == 'c')&& (i < 4 && i > 1)) ||
+	  ((colour == 'b' || colour == 'c' || colour == 'm')&& i > 3) 
+	)
+	shade += letters[Math.floor(6+Math.random() * 8)];
+      else 
+	shade += letters[3];
+    }
+    return shade+'88'; //Semitransparency
+}
 
 function roundedHull(points) {
   var sibling = document.getElementsByClassName("system")[0];
@@ -119,3 +134,18 @@ function note_coords(note) {
   return [note.getElementsByTagName("use")[0].x.animVal.value + 100,
           note.getElementsByTagName("use")[0].y.animVal.value]
 }
+
+
+var type_shades = {
+  "repeat" : 'r',
+  "prolongation" : 'r',
+  "passing" : 'g',
+  "neighbour" : 'b',
+  "harmonic" : 'c',
+  "arpeggio" : 'm',
+  "arp" : 'm',
+  "urlinie" : 'y',
+  "bassbrechung" : 'y',
+  "bassbrech" : 'y'
+};
+

@@ -49,6 +49,8 @@
 	    var reduce_actions = [];
 
 	    var non_notes_hidden = false;
+	    
+	    var text_input=false;
 
 
 
@@ -362,6 +364,8 @@
 
             // We have keyboard commands!
             function handle_keypress(ev) {
+	      if(text_input)
+		return;
 	      if (ev.key == "Enter"){
 		do_edges();
 	      } else if (ev.key == "u") { // UNDO
@@ -377,6 +381,8 @@
 		do_hyperedge("neighbour");
 	      } else if (ev.key == "i") { // Add a hyperedge
 		do_hyperedge("harmonic");
+	      } else if (ev.key == "a") { // Add a hyperedge
+		do_hyperedge("arpeggio");
 	      } else if (ev.key == "s") { // Add a hyperedge
 		toggle_equalize();
 	      }else {
@@ -657,6 +663,9 @@
 	      }
 	    }
 
+            function texton() { text_input = true; }
+            function textoff() { text_input = false; }
+
         </script>
 	<div id="load_save" style="position:fixed">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
@@ -677,7 +686,7 @@
 	  <input type="button" id="hyperedgebutton" value="Add neighbour hyperedge" onclick="do_hyperedge('neighbour')" >
 	  <input type="button" id="hyperedgebutton" value="Add harmonic hyperedge" onclick="do_hyperedge('harmonic')" >
 	  <input type="button" id="hyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
-	  <input type="text" id="custom_type">
+	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 
 	</div>
 

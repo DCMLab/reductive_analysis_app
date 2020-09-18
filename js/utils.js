@@ -149,3 +149,12 @@ var type_shades = {
   "bassbrech" : 'y'
 };
 
+var button_shades = {
+"repeathyperedgebutton" : "#AA2222",
+"passinghyperedgebutton": "#22AA22",
+"neighbourhyperedgebutton": "#2222AA",
+"harmonichyperedgebutton": "#22AAAA",
+"arpeggiohyperedgebutton": "#AA22AA",
+"urliniehyperedgebutton": "#AAAA22",
+"bassbrechunghyperedgebutton" : "#AAAA22",
+};

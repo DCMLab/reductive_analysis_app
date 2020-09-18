@@ -393,12 +393,20 @@
 		he.setAttribute("old_fill", he.getAttribute("fill"));
 		he.setAttribute("fill",getRandomShade(type_shades[he.getAttribute("type")]));
 	      }
-
 	    }
+
+            function toggle_button_shade(button) {
+	      if(shades) 
+		button.style.color=button_shades[button.getAttribute("id")];
+	      else
+		button.style.color="";
+	    }
+
 
             function toggle_shades() {
 	      shades = !shades;
 	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_shade);
+	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach(toggle_button_shade);
 	    }
 
             // We have keyboard commands!
@@ -409,6 +417,10 @@
 		do_edges();
 	      } else if (ev.key == "u") { // UNDO
 		do_undo();
+	      } else if (ev.key == "r") { // Reduce hyperedges
+		do_reduce();
+	      } else if (ev.key == "s") { // Show/hide ties etc.
+		toggle_equalize();
 	      } else if (ev.key == "h") { // Add a hyperedge
 		do_hyperedge();
 	      } else if (ev.key == "+") { // Select same notes in the measure
@@ -426,8 +438,6 @@
 		do_hyperedge("urlinie");
 	      } else if (ev.key == "b") { // Add a hyperedge
 		do_hyperedge("bassbrechung");
-	      } else if (ev.key == "s") { // Add a hyperedge
-		toggle_equalize();
 	      }else {
 		console.log(ev.key);
 	      }
@@ -752,15 +762,15 @@
 	  <input type="button" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	  <div id="simple_buttons">
-	  <input type="button" id="repeathyperedgebutton" value="Add repeat hyperedge" onclick="do_hyperedge('repeat')" >
-	  <input type="button" id="passinghyperedgebutton" value="Add passing hyperedge" onclick="do_hyperedge('passing')" >
-	  <input type="button" id="neighbourhyperedgebutton" value="Add neighbour hyperedge" onclick="do_hyperedge('neighbour')" >
-	  <input type="button" id="harmonichyperedgebutton" value="Add harmonic hyperedge" onclick="do_hyperedge('harmonic')" >
-	  <input type="button" id="arpeggiohyperedgebutton" value="Add arpeggio hyperedge" onclick="do_hyperedge('arpeggio')" >
+	  <input type="button" class="hyperedgebutton" id="repeathyperedgebutton" value="Add repeat hyperedge" onclick="do_hyperedge('repeat')" >
+	  <input type="button" class="hyperedgebutton" id="passinghyperedgebutton" value="Add passing hyperedge" onclick="do_hyperedge('passing')" >
+	  <input type="button" class="hyperedgebutton" id="neighbourhyperedgebutton" value="Add neighbour hyperedge" onclick="do_hyperedge('neighbour')" >
+	  <input type="button" class="hyperedgebutton" id="harmonichyperedgebutton" value="Add harmonic hyperedge" onclick="do_hyperedge('harmonic')" >
+	  <input type="button" class="hyperedgebutton" id="arpeggiohyperedgebutton" value="Add arpeggio hyperedge" onclick="do_hyperedge('arpeggio')" >
 	  </div>
 	  <div id="schenker buttons">
-	  <input type="button" id="urliniehyperedgebutton" value="Add urlinie hyperedge" onclick="do_hyperedge('urlinie')" >
-	  <input type="button" id="bassbrechunghyperedgebutton" value="Add bassbrechung hyperedge" onclick="do_hyperedge('bassbrechung')" >
+	  <input type="button" class="hyperedgebutton" id="urliniehyperedgebutton" value="Add urlinie hyperedge" onclick="do_hyperedge('urlinie')" >
+	  <input type="button" class="hyperedgebutton" id="bassbrechunghyperedgebutton" value="Add bassbrechung hyperedge" onclick="do_hyperedge('bassbrechung')" >
 	  </div>
 
 	</div>

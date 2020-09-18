@@ -48,6 +48,8 @@
 
 	    var reduce_actions = [];
 
+	    var rerendered_after_reduce = 0;
+
 	    var non_notes_hidden = false;
 	    
 	    var text_input=false;
@@ -150,6 +152,10 @@
 	    }
 
             function undo_reduce() {
+	      if(reduce_actions.length == rerendered_after_reduce){
+		console.log("Cannot undo reduce past a rerender");
+		return;
+	      }
 	      var reduce_layer = reduce_actions.pop();
 	      reduce_layer.forEach(function(action) {
 		var [he,secondaries,graphicals] = action;
@@ -577,8 +583,9 @@
 		  if(he_labels.length > 0){
 		    type = he_labels[0].getAttribute("type");
 		  }
-		  draw_hyperedge(x.getAttribute("xml:id"),type);
-		  selected.forEach(mark_secondary); // De-select
+		  var added = draw_hyperedge(x.getAttribute("xml:id"),type);
+		  if(added.length > 0)
+		    selected.forEach(mark_secondary); // De-select
 		  selected = [];
 		  extraselected = [];
 		});
@@ -668,6 +675,16 @@
 	      }
 	      if(non_notes_hidden)
 		set_non_note_visibility("hidden");
+	      // Need also to redraw edges and hyperedges
+	      draw_graph();
+
+	      // Can't undo after a rerender.. yet, TODO: Make layers
+	      rerendered_after_reduce=reduce_actions.length;
+	      reduce_actions = [];
+	      // This is one of the ugliest hacks I've made I think
+	      for(var i = 0; i < rerendered_after_reduce; i++)
+		do_reduce();
+	      undo_action = [];
 
 	    }
 

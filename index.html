@@ -718,9 +718,23 @@
 
             function texton() { text_input = true; }
             function textoff() { text_input = false; }
+	    function show_buttons() {
+	      $("#load_save")[0].style.display="";
+	      $("#hidden_buttons")[0].style.display="none";
+	    }
+	    function hide_buttons() {
+	      $("#load_save")[0].style.display="none";
+	      $("#hidden_buttons")[0].style.display="";
+	    }
+
+
 
         </script>
+	<div id="hidden_buttons" style="position:fixed">
+	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
+	</div>
 	<div id="load_save" style="position:fixed">
+	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
 	  <!--input type="button" id="downloadbutton" value="Save" onclick="save()" -->
@@ -750,6 +764,7 @@
 	  </div>
 
 	</div>
+
 
         <!--//////////////////////////////////////////////-->
         <!-- The div where we are going to insert the SVG -->

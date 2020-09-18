@@ -183,6 +183,8 @@
             // Draw a series of edges (TODO: make it much much much better)
             function draw_edges() {
 	      var added = [];
+	      if(selected.findIndex(function(x) { return x == undefined; }) != -1)
+		return [];
 	      for(var i = 1; i < selected.length; i++) {
 		note1 = note_coords(selected[i-1]);
 		note2 = note_coords(selected[i]);
@@ -216,7 +218,7 @@
             function add_edges(mei) {
 	      var added = [];
 	      for(var i = 0; i < selected.length; i++) {
-		var elem = add_mei_node_for(mei,selected[i]);
+		var elem = add_mei_node_for(mei,mei_graph,selected[i]);
 		added.push(elem);
 	      }
 	      for(var i = 1; i < selected.length; i++) {
@@ -235,6 +237,11 @@
             function draw_hyperedge(id,type) {
 	      var added = [];
 	      var notes = selected.concat(extraselected);
+	      if(notes.findIndex(function(x) { return x == undefined; }) != -1) {
+		console.log("Note missing, hyperedge not drawn");
+		return [];
+	      }
+
 	      notes.sort(function(a,b) { 
 		  var p1= note_coords(a);
 		  var p2= note_coords(b);

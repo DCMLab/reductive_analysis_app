@@ -525,16 +525,10 @@
 		            try{
 			      return [x, 
 			              note_get_sameas(x)]
-//			              x.getElementsByTagName("label")[0].getElementsByTagName("note")[0]];
 			    }catch{
 			      return [];
 			    }
 			  }).filter(function(x) {return x.length != 0;});
-	      // And finally we get the IDs of the actual notes in the MEI
-	      // body, which will correspond to the <g>'s in the SVG
-	   //   var note_ids = note_nodes.map(function(x) {
-	//	    return [x[0],x[1].getAttribute("sameas")];
-	//	  });
 	      // Now get the arcs/edges
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var hyperedges_arcs = [];

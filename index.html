@@ -56,6 +56,8 @@
 
 	    var shades = false;
 
+	    var format;
+
 
 
 	    // Toggle if a thing (for now: note) is selected or not.
@@ -605,17 +607,36 @@
             // Do all of this when we have the MEI in memory
             function load_finish(e) {
 	      data = reader.result;
-	      orig_data = data;
 	      parser = new DOMParser();
 	      mei = parser.parseFromString(data,"text/xml");
-	      orig_mei = mei;
-	      mei_graph = add_or_fetch_graph();
-	      orig_mei_graph = mei_graph;
+	      format = "mei";
+	      if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei")
+		// We didn't get a MEI? Try if it's a musicXML
+		format = "musicxml";
 	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
-		  pageHeight: 10000, breaks: "none"});
-	      orig_svg = svg;
+		  pageHeight: 10000, breaks: "none", format: format});
 	      $("#svg_output").html(svg);
+	      if(format == "musicxml"){
+		data = vrvToolkit.getMEI();
+		parser = new DOMParser();
+		mei = parser.parseFromString(data,"text/xml");
+	      }
+
+	      mei_graph = add_or_fetch_graph();
+	      orig_mei = mei;
+	      orig_data = data;
+	      orig_mei_graph = mei_graph;
+	      orig_svg = svg;
+
 	      draw_graph();
+
+	      changes = false;
+	      undo_actions = [];
+	      redo_actions = []; //TODO, maybe?
+	      reduce_actions = [];
+
+	      rerendered_after_reduce = 0;
+
 	      for (let n of document.getElementsByClassName("note")) {
 		  n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
 	      }
@@ -654,7 +675,7 @@
 
             function rerender(output) {
 	      var mei2 = mei.implementation.createDocument(
-		    mei.namespaceURI, //namespace to use
+		    mei.documentElement.namespaceURI, //namespace to use
 		    null,             //name of the root element (or for empty document)
 		    null              //doctype (null for XML)
 		    );

@@ -133,7 +133,7 @@
 	      remaining_hyperedges.forEach(function (he) {
 	        var secondaries = hyperedge_secondaries(he); 
 		// If none of this hyperedges secondary nodes are such that
-		if( 0 == secondaries.filter(function(x) { 
+		if(secondaries.length > 0 && 0 == secondaries.filter(function(x) { 
 		  // Any other remaining hyperedge
 	 	  return 0 != remaining_hyperedges.filter( function (hf) {
 		    // Has it as a primary

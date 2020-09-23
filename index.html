@@ -694,8 +694,10 @@
 		}
 	      });
 	      var data2 = new XMLSerializer().serializeToString(mei2);
+
 	      var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
-		  pageHeight: 10000, breaks: "none"});
+		  pageHeight: 10000, breaks: "none", format: "mei"});
+
 	      $("#svg_output").html(svg2);
 	      svg = svg2;
 	      mei = mei2;

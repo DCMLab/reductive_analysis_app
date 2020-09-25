@@ -271,3 +271,8 @@ select.instance-select {
        filter: url("#glowFilter");
 }
 
+.hyperedge:hover {
+      transform: translate3d(0,0,0);
+       filter: url("#glowFilter");
+}
+

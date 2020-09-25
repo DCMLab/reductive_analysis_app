@@ -93,9 +93,9 @@ function getRandomShade(colour) {
 	  ((colour == 'g' || colour == 'y' || colour == 'c')&& (i < 4 && i > 1)) ||
 	  ((colour == 'b' || colour == 'c' || colour == 'm')&& i > 3) 
 	)
-	shade += letters[Math.floor(6+Math.random() * 8)];
+	shade += letters[14]//Math.floor(6+Math.random() * 8)];
       else 
-	shade += letters[3];
+	shade += letters[5];
     }
     return shade+'88'; //Semitransparency
 }

@@ -767,11 +767,11 @@
 	    }
 
             function zoom_in() {
-	      zoom += 0.1;
+	      zoom = zoom * 1.1;
 	      $("#svg_output")[0].style.transform="scale("+zoom+")";
 	    }
             function zoom_out() {
-	      zoom -= 0.1;
+	      zoom = zoom * 0.90909090909090;
 	      $("#svg_output")[0].style.transform="scale("+zoom+")";
 	    }
 

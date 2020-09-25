@@ -58,6 +58,8 @@
 
 	    var format;
 
+	    var zoom = 1;
+
 
 
 	    // Toggle if a thing (for now: note) is selected or not.
@@ -760,13 +762,23 @@
 	      $("#hidden_buttons")[0].style.display="";
 	    }
 
+            function zoom_in() {
+	      zoom += 0.1;
+	      $("#svg_output")[0].style.transform="scale("+zoom+")";
+	    }
+            function zoom_out() {
+	      zoom -= 0.1;
+	      $("#svg_output")[0].style.transform="scale("+zoom+")";
+	    }
+
+
 
 
         </script>
-	<div id="hidden_buttons" style="position:fixed">
+	<div id="hidden_buttons" style="position:fixed; z-index:2">
 	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
 	</div>
-	<div id="load_save" style="position:fixed">
+	<div id="load_save" style="position:fixed; z-index:2">
 	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
@@ -797,13 +809,17 @@
 	  </div>
 
 	</div>
+	<div id="zoom buttons" style="position:fixed; top:0; right:0; z-index:2">
+	<input type="button" class="zoombutton" value="+" onclick="zoom_in()"><br/>
+	<input type="button" class="zoombutton" value="-" onclick="zoom_out()"><br/>
+	</div>
 
 
         <!--//////////////////////////////////////////////-->
         <!-- The div where we are going to insert the SVG -->
         <!--//////////////////////////////////////////////-->
 	
-	<div id="svg_output"></div>
+	<div style="transform-origin: top left; z-index:-1" id="svg_output"></div>
 
 
 

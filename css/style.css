@@ -1,0 +1,273 @@
+#app {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1044px;
+    padding: 0 10px;
+}
+
+/* General visual stuff */
+
+.file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+
+
+.button-danger {
+    background: #d62728;
+    color: #fff;
+}
+
+.button-checked {
+    background-color: #2ca02c;
+    color: #fff;
+}
+
+.button-primary,
+.button-selected {
+    background-color: #1f77b4;
+    color: #fff;
+}
+
+.placeholder {
+    min-height: 1em;
+}
+
+/* .hide-show { */
+/*     display: inline-block; */
+/*     margin-left: auto; */
+/*     margin-right: 0; */
+/*     /\* width: 100%; *\/ */
+/*     /\* text-align: right; *\/ */
+/* } */
+
+/* annotation component */
+
+@media screen and (min-width: 48em) {
+    .gh-input .load-padder {
+        margin-top: 28px;
+    }
+}
+
+.annotations .instance-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.annotations .instance {
+    padding: 0.5em 0;
+    margin-left: 0.5em;
+}
+
+.annotations .instance .instance-name {
+    padding: 0.5em 0;
+}
+
+.annotations .instance-selected {
+    background-color: #aec7e8;
+}
+
+.annotations .instance-checked {
+    background-color: #98df8a;
+}
+
+.annotations .instance-checked.instance-selected {
+    background-color: #aec7e8;/* #2ca02c; */
+}
+
+.annotations .validation-error {
+    color: #d62728;
+}
+
+select.instance-select {
+    border-radius: 0;
+    border: none;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+.automatic {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.automatic .pure-button-group {
+    /* min-width: 100px; */
+}
+
+.automatic label {
+    padding: 0 .5em;
+    /* min-width: 100px; */
+}
+
+.automatic input {
+    margin-right: .5em;
+    flex-grow: 1;
+}
+
+/* verovio component: note selection and highlight styling */
+
+.verovio-cmp svg {
+    width: 100%;
+    height: auto;
+}
+
+.verovio-cmp.allow-select .note:hover {
+    /* fill: #1f77b4; */
+    transform: translate3d(0,0,0);
+    filter: url("#glowFilter");
+}
+
+/* .verovio-cmp.loading { */
+/*     height: 100vh;   */
+/*     position: relative; */
+    
+/* } */
+
+.loading {
+    position: relative;
+    min-height: 100px;
+    width: 100%;
+}
+
+.loading:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px auto;
+  border-radius: 50%;
+  border: 6px solid #000;
+  border-color: #000 transparent #000 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* colorscheme: category10 from D3 */
+
+.vrv-highlighted-0,
+.vrv-highlighted-1,
+.vrv-highlighted-2,
+.vrv-highlighted-3,
+.vrv-highlighted-4,
+.vrv-highlighted-5,
+.vrv-highlighted-6,
+.vrv-highlighted-7,
+.vrv-highlighted-8,
+.vrv-selected {
+    color: #fff;
+}
+
+.vrv-highlighted-0 {
+    background-color: #ff7f0e;
+    fill: #ff7f0e;
+}
+
+.vrv-highlighted-1 {
+    background-color: #2ca02c;
+    fill: #2ca02c;
+}
+
+.vrv-highlighted-2 {
+    background-color: #d62728;
+    fill: #d62728;
+}
+
+.vrv-highlighted-3 {
+    background-color: #9467bd;
+    fill: #9467bd;
+}
+
+.vrv-highlighted-4 {
+    background-color: #8c564b;
+    fill: #8c564b;
+}
+
+.vrv-highlighted-5 {
+    background-color: #e377c2;
+    fill: #e377c2;
+}
+
+.vrv-highlighted-6 {
+    background-color: #7f7f7f;
+    fill: #7f7f7f;
+}
+
+.vrv-highlighted-7 {
+    background-color: #bcbd22;
+    fill: #bcbd22;
+}
+
+.vrv-highlighted-8 {
+    background-color: #17becf;
+    fill: #17becf;
+}
+
+.vrv-selected {
+    background-color: #1f77b4;
+    fill: #1f77b4;
+}
+
+/* Alternative Color Scheme
+ * colorbrewer 9-class Set1
+ * colorbrewer2.org
+ */
+
+/* .vrv-highlighted-0 { */
+/*     fill: #377eb8; */
+/* } */
+
+/* .vrv-highlighted-1 { */
+/*     fill: #4daf4a; */
+/* } */
+
+/* .vrv-highlighted-2 { */
+/*     fill: #984ea3; */
+/* } */
+
+/* .vrv-highlighted-3 { */
+/*     fill: #ff7f00; */
+/* } */
+
+/* .vrv-highlighted-4 { */
+/*     fill: #ffff33; */
+/* } */
+
+/* .vrv-highlighted-5 { */
+/*     fill: #a65628; */
+/* } */
+
+/* .vrv-highlighted-6 { */
+/*     fill: #f781bf; */
+/* } */
+
+/* .vrv-highlighted-7 { */
+/*     fill: #999999; */
+/* } */
+
+
+/* .vrv-selected { */
+/*     fill: #e41a1c; */
+/* } */
+
+
+.note:hover {
+      transform: translate3d(0,0,0);
+       filter: url("#glowFilter");
+}
+

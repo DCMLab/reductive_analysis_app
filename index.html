@@ -38,6 +38,7 @@
 	    var orig_data;
 	    // We need a reader
 	    var reader = new FileReader();
+	    var filename;
 	    // Did we change the MEI somehow?
 	    var changes = false;
 	    // Our undo stack. TODO: is this being empty the same as
@@ -486,17 +487,17 @@
             // An option to download the MEI with the changes we've made
 	    function save() {
 	      var saved = new XMLSerializer().serializeToString(mei);
-	      download(saved, "download.mei", "text/xml");
+	      download(saved, filename+".mei", "text/xml");
 	    }
 	    function save_orig() {
 	      var saved = new XMLSerializer().serializeToString(orig_mei);
-	      download(saved, "download.mei", "text/xml");
+	      download(saved, filename+".mei", "text/xml");
 	    }
 
 	    // Download the current SVG, including graph elements
 	    function savesvg() {
 	      var saved = new XMLSerializer().serializeToString($("#svg_output")[0]);
-	      download(saved, "download.mei", "text/xml");
+	      download(saved, filename+".svg", "text/xml");
 	    }
 
             // Load a new MEI
@@ -508,6 +509,9 @@
 	      if(upload.files.length == 1){
 		reader.addEventListener("load",load_finish);
 		reader.readAsText(upload.files[0]);
+		filename = upload.files[0].name.split(".").slice(0,-1).join(".");
+		if(filename == "")
+		  filename = upload.files[0].name;
 	      }else{
 		return;
 	      }

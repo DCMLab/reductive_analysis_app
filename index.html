@@ -384,7 +384,7 @@
 		if(mei != orig_mei)
 		  added.push(add_edges(orig_mei));
 		
-		undo_actions.push([added,selected,extraselected]);
+		undo_actions.push(["edges",added,selected,extraselected]);
 		selected.forEach(toggle_selected); // De-select
 		extraselected.forEach(toggle_selected); // De-select
 	    }
@@ -404,7 +404,7 @@
 		}
 		added.push(draw_hyperedge(he_id,type)); // Draw the edge
 		
-		undo_actions.push([added,selected,extraselected]);
+		undo_actions.push(["hyperedge",added,selected,extraselected]);
 		selected.forEach(mark_secondary); // De-select
 		selected = [];
 		extraselected.forEach(toggle_selected); // De-select
@@ -418,7 +418,9 @@
 		  return;
 		}
 
-		[added,sel,extra] = undo_actions.pop();
+		[what,elems,sel,extra] = undo_actions.pop();
+		if(what == "edges" || what == "hyperedge") {
+		var added = elems;
 		// Deselect the current selection, if any
 		selected.forEach(toggle_selected);
 		extraselected.forEach(function(x) {toggle_selected(x,true);});
@@ -430,6 +432,7 @@
 		// Select last selection
 		sel.forEach(function(x) {toggle_selected(x);});
 		extra.forEach(function(x) {toggle_selected(x,true);});
+		} //TODO:else if( what == "delete hyperedge" )
 	    }
 
             function toggle_shade(he) {

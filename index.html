@@ -173,9 +173,12 @@
 		    });
 	      }
 	      var removed = arcs.concat(orig_arcs).concat([elem,mei_he,orig_mei_he]);
-	      console.log(removed);
-	      removed.forEach(function(x) {if(x != undefined){console.log(x); x.parentElement.removeChild(x);}});
-	      return removed;
+	      var action_removed = removed.map(function(x) {if(x != undefined){
+		  var elems = [x,x.parentElement,x.nextSibling]; 
+		  x.parentElement.removeChild(x);
+		  return elems;
+		  }});
+	      return action_removed.reverse();
 	      //TODO: Restore secondary-greyed-out notes. But that whole
 	      //thing needs a refactoring anyway..
 	    }
@@ -468,7 +471,15 @@
 		  // Select last selection
 		  sel.forEach(function(x) {toggle_selected(x);});
 		  extra.forEach(function(x) {toggle_selected(x,true);});
-		} //TODO:else if( what == "delete hyperedge" )
+		}else if( what == "delete hyperedge" ) {
+		  var removed = elems;
+		  // Deselect the current selection, if any
+		  selected.forEach(toggle_selected);
+		  extraselected.forEach(function(x) {toggle_selected(x,true);});
+		  removed.forEach(function(x) {if(x) x[1].insertBefore(x[0],x[2])})
+		  selected = sel;
+		}
+
 	    }
 
             function toggle_shade(he) {

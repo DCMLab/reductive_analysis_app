@@ -192,14 +192,23 @@
 	      selected = [];
 	    }
 
-            // This reduces away the hyperedges where all the secondaries
-	    // are not primary in any non-reduced hyperedge. TODO: This is
-	    // a very stupid implementation akin to bubble sort. No doubt
-	    // the complexity and performance can be _greatly_ improved.
+
             function do_reduce() {
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
 	      // Get the nodes representing hyperedges
 	      var hyperedges_nodes = nodes_array.filter(function(x) { return x.getAttribute("type") == "hyperedge";})
+	      if(selected.length > 0 && selected[0].getAttribute("class") == "hyperedge"){
+		hyperedges_nodes = selected.map((elem) => get_by_id(mei,elem.id));
+		selected.forEach(toggle_selected);
+	      }
+	      do_actual_reduce(hyperedges_nodes);
+	    }
+
+            // This reduces away the hyperedges where all the secondaries
+	    // are not primary in any non-reduced hyperedge. TODO: This is
+	    // a very stupid implementation akin to bubble sort. No doubt
+	    // the complexity and performance can be _greatly_ improved.
+            function do_actual_reduce(hyperedges_nodes) {
 	      var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
 	      var remaining_hyperedges = hyperedges_nodes.filter(function(x) { 
 		return reduce_actions.flat().flat().findIndex(function(y) {return y == x; }) == -1

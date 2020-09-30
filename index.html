@@ -80,7 +80,6 @@
 	    // Toggle if a thing (for now: note) is selected or not.
             function toggle_selected(item,extra) { 
 	      var ci = item.getAttribute("class");
-	      console.log(item);
 	      if(selected.length > 0 || extraselected.length > 0) {
 		var csel = selected.concat(extraselected)[0].getAttribute("class");
 		if(ci != csel)
@@ -101,7 +100,6 @@
 		  }
 		}
 	      } else {
-		console.log("Hyperedge!");
 		//Hyperedge selection
 		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
 		  item.style.fillOpacity = 0.5;
@@ -174,8 +172,6 @@
 			    arc.getAttribute("from") == "#"+elem.id;
 		    });
 	      }
-	      console.log(arcs);
-	      console.log(orig_arcs);
 	      var removed = arcs.concat(orig_arcs).concat([elem,mei_he,orig_mei_he]);
 	      console.log(removed);
 	      removed.forEach(function(x) {if(x != undefined){console.log(x); x.parentElement.removeChild(x);}});

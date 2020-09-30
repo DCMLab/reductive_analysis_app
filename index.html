@@ -519,27 +519,16 @@
 		do_reduce();
 	      } else if (ev.key == "s") { // Show/hide ties etc.
 		toggle_equalize();
-	      } else if (ev.key == "h") { // Add a hyperedge
-		do_hyperedge();
+	      } else if (ev.key == "h") { // Toggle type-dependent shades
+		toggle_shades();
 	      } else if (ev.key == "+") { // Select same notes in the measure
 		select_samenote();
 		do_hyperedge("repeat");
 	      } else if (type_keys[ev.key]) { // Add a hyperedge
 		do_hyperedge(type_keys[ev.key]);
-//	      } else if (ev.key == "n") { // Add a hyperedge
-//		do_hyperedge("neighbour");
-//	      } else if (ev.key == "i") { // Add a hyperedge
-//		do_hyperedge("harmonic");
-//	      } else if (ev.key == "a") { // Add a hyperedge
-//		do_hyperedge("arpeggio");
-//	      } else if (ev.key == "u") { // Add a hyperedge
-//		do_hyperedge("urlinie");
-//	      } else if (ev.key == "b") { // Add a hyperedge
-//		do_hyperedge("bassbrechung");
 	      }else {
-		console.log(ev.key);
+		console.log(ev);
 	      }
-
 	    }
 
 	    // Function to download data to a file
@@ -744,6 +733,8 @@
 		  h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
 		  //h.addEventListener('click', function(ev) {toggle_selected(h,ev.shiftKey) } )
 	      }
+	      if(!shades)
+		toggle_shades();
 	      document.addEventListener('keypress',function(ev) {handle_keypress(ev);});
 	    }
 
@@ -878,39 +869,36 @@
 
 
         </script>
-	<div id="hidden_buttons" style="position:fixed; z-index:2 ; display:none">
+	<div id="hidden_buttons" style="position:fixed; bottom:0; z-index:2 ; display:none">
 	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
 	</div>
-	<div id="load_save" style="position:fixed; z-index:2">
+	<div id="load_save" style="position:fixed; bottom:0; z-index:2">
+	  <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
+	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" >
+	  <input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" >
+	  <input type="button" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
+	  <input type="button" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
+	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
+	  <div id="simple_buttons">
+	  <input type="button" class="hyperedgebutton" id="repeathyperedgebutton" value="Add repeat(+) hyperedge" onclick="do_hyperedge('repeat')" >
+	  <input type="button" class="hyperedgebutton" id="passinghyperedgebutton" value="Add (p)assing hyperedge" onclick="do_hyperedge('passing')" >
+	  <input type="button" class="hyperedgebutton" id="neighbourhyperedgebutton" value="Add (n)eighbour hyperedge" onclick="do_hyperedge('neighbour')" >
+	  <input type="button" class="hyperedgebutton" id="harmonichyperedgebutton" value="Add harmon(i)c hyperedge" onclick="do_hyperedge('harmonic')" >
+	  <input type="button" class="hyperedgebutton" id="arpeggiohyperedgebutton" value="Add (a)rpeggio hyperedge" onclick="do_hyperedge('arpeggio')" >
+	  <input type="button" class="hyperedgebutton" id="urliniehyperedgebutton" value="Add (u)rlinie hyperedge" onclick="do_hyperedge('urlinie')" >
+	  <input type="button" class="hyperedgebutton" id="bassbrechunghyperedgebutton" value="Add (b)assbrechung hyperedge" onclick="do_hyperedge('bassbrechung')" >
+	  </div>
 	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
 	  <!--input type="button" id="downloadbutton" value="Save" onclick="save()" -->
 	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
 	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
-	  <input type="button" id="reducebutton" value="Reduce Hyperedges" onclick="do_reduce()" >
-	  <input type="button" id="unreducebutton" value="Undo reduction" onclick="undo_reduce()" >
-	  <input type="button" id="equalizebutton" value="Toggle stems etc." onclick="toggle_equalize()" >
-	  <input type="button" id="shadesbutton" value="Toggle type-dependent shades." onclick="toggle_shades()" >
+	  <input type="button" id="reducebutton" value="(R)educe Hyperedges" onclick="do_reduce()" >
+	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
+	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
 	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender_temp()" >
-	  <input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" > <br/>
-	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()">
-	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" > <br/>
-	  <input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" >
-	  <input type="button" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
-	  <input type="button" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
-	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
-	  <div id="simple_buttons">
-	  <input type="button" class="hyperedgebutton" id="repeathyperedgebutton" value="Add repeat hyperedge" onclick="do_hyperedge('repeat')" >
-	  <input type="button" class="hyperedgebutton" id="passinghyperedgebutton" value="Add passing hyperedge" onclick="do_hyperedge('passing')" >
-	  <input type="button" class="hyperedgebutton" id="neighbourhyperedgebutton" value="Add neighbour hyperedge" onclick="do_hyperedge('neighbour')" >
-	  <input type="button" class="hyperedgebutton" id="harmonichyperedgebutton" value="Add harmonic hyperedge" onclick="do_hyperedge('harmonic')" >
-	  <input type="button" class="hyperedgebutton" id="arpeggiohyperedgebutton" value="Add arpeggio hyperedge" onclick="do_hyperedge('arpeggio')" >
-	  </div>
-	  <div id="schenker buttons">
-	  <input type="button" class="hyperedgebutton" id="urliniehyperedgebutton" value="Add urlinie hyperedge" onclick="do_hyperedge('urlinie')" >
-	  <input type="button" class="hyperedgebutton" id="bassbrechunghyperedgebutton" value="Add bassbrechung hyperedge" onclick="do_hyperedge('bassbrechung')" >
-	  </div>
+	  <!--input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" --> <br/>
 
 	</div>
 	<div id="zoom buttons" style="position:fixed; top:0; right:0; z-index:2">

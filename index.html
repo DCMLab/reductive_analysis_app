@@ -875,6 +875,13 @@
 	    }
 
 
+            function do_deselect() {
+	      selected.forEach((x) => toggle_selected(x));
+	      extraselected.forEach((x) => toggle_selected(x,true));
+	    }
+
+
+
 
 
         </script>
@@ -883,6 +890,7 @@
 	</div>
 	<div id="load_save" style="position:fixed; bottom:0; z-index:2">
 	  <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
+	  <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
 	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" >
 	  <input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" >
 	  <input type="button" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 

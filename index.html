@@ -154,6 +154,46 @@
 	      return nodes;
 	    }
 
+            function delete_hyperedge(elem) {
+	      //Assume no meta-edges for now, meaning we only have to
+	      //remove the SVG elem, the MEI node, and any involved arcs
+	      var orig_mei_he,mei_he = get_by_id(mei,elem.id);
+	      
+	      var orig_arcs,arcs =
+		Array.from(mei.getElementsByTagName("arc")).filter(function(arc)
+		  {
+		   return arc.getAttribute("to") == "#"+elem.id ||
+		          arc.getAttribute("from") == "#"+elem.id;
+	          });
+	      if(mei != orig_mei){
+		orig_mei_he = get_by_id(mei,selected[0].id);
+		orig_arcs =
+		  Array.from(mei.getElementsByTagName("arc")).filter(function(arc)
+		    {
+		     return arc.getAttribute("to") == "#"+elem.id ||
+			    arc.getAttribute("from") == "#"+elem.id;
+		    });
+	      }
+	      console.log(arcs);
+	      console.log(orig_arcs);
+	      var removed = arcs.concat(orig_arcs).concat([elem,mei_he,orig_mei_he]);
+	      console.log(removed);
+	      removed.forEach(function(x) {if(x != undefined){console.log(x); x.parentElement.removeChild(x);}});
+	      return removed;
+	      //TODO: Restore secondary-greyed-out notes. But that whole
+	      //thing needs a refactoring anyway..
+	    }
+
+	    function delete_hyperedges() {
+	      if(selected.length == 0 || selected[0].getAttribute("class") != "hyperedge"){
+		console.log("No hyperedge selected!");
+		return;
+	      }
+	      var removed = selected.flatMap(delete_hyperedge);
+	      undo_actions.push(["delete hyperedge",removed,selected,[]]);
+	      selected = [];
+	    }
+
             // This reduces away the hyperedges where all the secondaries
 	    // are not primary in any non-reduced hyperedge. TODO: This is
 	    // a very stupid implementation akin to bubble sort. No doubt
@@ -847,7 +887,8 @@
 	  <input type="button" id="shadesbutton" value="Toggle type-dependent shades." onclick="toggle_shades()" >
 	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender_temp()" >
 	  <input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" > <br/>
-	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()" >
+	  <input type="button" id="undobutton" value="Undo" onclick="do_undo()">
+	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" > <br/>
 	  <input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" >
 	  <input type="button" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
 	  <input type="button" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >

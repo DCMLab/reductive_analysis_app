@@ -79,6 +79,14 @@
 
 	    // Toggle if a thing (for now: note) is selected or not.
             function toggle_selected(item,extra) { 
+	      var ci = item.getAttribute("class");
+	      console.log(item);
+	      if(selected.length > 0 || extraselected.length > 0) {
+		var csel = selected.concat(extraselected)[0].getAttribute("class");
+		if(ci != csel)
+		  return;
+	      }
+	      if(ci == "note"){
 	      if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
 		item.setAttribute("style","fill:black");
 		selected = selected.filter(x =>  x !== item);
@@ -92,6 +100,23 @@
 		  selected.push(item);
 		}
 	      }
+	      } else {
+		console.log("Hyperedge!");
+		//Hyperedge selection
+		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
+		  item.style.fillOpacity = 0.5;
+		  selected = selected.filter(x =>  x !== item);
+		  extraselected = extraselected.filter(x =>  x !== item);
+		} else {
+		  item.style.fillOpacity = 0.9;
+		  selected.push(item);
+		  // TODO: change rendering order to put selected edges at
+		  // the "bottom", in order to overcome overlap. Might
+		  // otherwise need Smartness to overcome edges covering
+		  // each other.
+		}
+	      }
+
 	    }
             // Get the MEI-graph nodes that are adjacent to a hyperedge
             function hyperedge_allnodes(he) {
@@ -288,6 +313,8 @@
 		added.push(elem);
 	      // TODO: Add selectability on edge.
 	      //}
+	      //elem.addEventListener('click', function(ev) {toggle_selected(elem,ev.shiftKey) } )
+	      elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
 
 	      return added;
 	    }
@@ -659,7 +686,12 @@
 	      rerendered_after_reduce = 0;
 
 	      for (let n of document.getElementsByClassName("note")) {
-		  n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
+		  //n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
+		  n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
+	      }
+	      for (let h of document.getElementsByClassName("hyperedge")) {
+		  h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
+		  //h.addEventListener('click', function(ev) {toggle_selected(h,ev.shiftKey) } )
 	      }
 	      document.addEventListener('keypress',function(ev) {handle_keypress(ev);});
 	    }

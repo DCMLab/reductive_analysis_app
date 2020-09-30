@@ -87,19 +87,19 @@
 		  return;
 	      }
 	      if(ci == "note"){
-	      if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-		item.setAttribute("style","fill:black");
-		selected = selected.filter(x =>  x !== item);
-		extraselected = extraselected.filter(x =>  x !== item);
-	      } else {
-		if(extra) {
-		  item.setAttribute("style","fill:red");
-		  extraselected.push(item);
-		}else {
-		  item.setAttribute("style","fill:green");
-		  selected.push(item);
+		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
+		  item.setAttribute("style","fill:black");
+		  selected = selected.filter(x =>  x !== item);
+		  extraselected = extraselected.filter(x =>  x !== item);
+		} else {
+		  if(extra) {
+		    item.setAttribute("style","fill:red");
+		    extraselected.push(item);
+		  }else {
+		    item.setAttribute("style","fill:green");
+		    selected.push(item);
+		  }
 		}
-	      }
 	      } else {
 		console.log("Hyperedge!");
 		//Hyperedge selection
@@ -460,18 +460,18 @@
 
 		[what,elems,sel,extra] = undo_actions.pop();
 		if(what == "edges" || what == "hyperedge") {
-		var added = elems;
-		// Deselect the current selection, if any
-		selected.forEach(toggle_selected);
-		extraselected.forEach(function(x) {toggle_selected(x,true);});
-		// Remove added elements
-		added.flat().forEach(function(x) {
-		    if(!node_referred_to(x.getAttribute("xml:id")))
-		      x.parentNode.removeChild(x);
-		    });
-		// Select last selection
-		sel.forEach(function(x) {toggle_selected(x);});
-		extra.forEach(function(x) {toggle_selected(x,true);});
+		  var added = elems;
+		  // Deselect the current selection, if any
+		  selected.forEach(toggle_selected);
+		  extraselected.forEach(function(x) {toggle_selected(x,true);});
+		  // Remove added elements
+		  added.flat().forEach(function(x) {
+		      if(!node_referred_to(x.getAttribute("xml:id")))
+			x.parentNode.removeChild(x);
+		      });
+		  // Select last selection
+		  sel.forEach(function(x) {toggle_selected(x);});
+		  extra.forEach(function(x) {toggle_selected(x,true);});
 		} //TODO:else if( what == "delete hyperedge" )
 	    }
 

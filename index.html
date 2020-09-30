@@ -61,7 +61,6 @@
 
 	    var redo_actions = []; //TODO, maybe?
 
-	    var reduce_actions = [];
 
 	    var rerendered_after_reduce = 0;
 
@@ -201,6 +200,7 @@
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
 	      // Get the nodes representing hyperedges
 	      var hyperedges_nodes = nodes_array.filter(function(x) { return x.getAttribute("type") == "hyperedge";})
+	      var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
 	      var remaining_hyperedges = hyperedges_nodes.filter(function(x) { 
 		return reduce_actions.flat().flat().findIndex(function(y) {return y == x; }) == -1
 	      });
@@ -225,27 +225,16 @@
 		  reduce_action.push(he);
 		}
 	      });
-	      reduce_actions.push(reduce_action.map(function(he) {
+	      undo_actions.push(["reduce", reduce_action.map(function(he) {
 		var secondaries = hyperedge_secondaries(he);
 		var graphicals = [];
 		graphicals.push(secondaries.map(hide_note));
 		graphicals.push(hide_he(he));
 		return [he,secondaries,graphicals];
-	      }));
+	      })]);
 	    }
 
             function undo_reduce() {
-	      if(reduce_actions.length == rerendered_after_reduce){
-		console.log("Cannot undo reduce past a rerender");
-		return;
-	      }
-	      var reduce_layer = reduce_actions.pop();
-	      reduce_layer.forEach(function(action) {
-		var [he,secondaries,graphicals] = action;
-		graphicals.flat().forEach(function(x) { if(x) x.style.visibility = "visible";});
-		secondaries.forEach(function(x) { if(x) mark_secondary(get_by_id(document,note_get_sameas(x))); });
-	      });
-
 	    }
 
 
@@ -456,6 +445,10 @@
 		  console.log("Nothing to undo");
 		  return;
 		}
+		if(undo_actions.length == rerendered_after_action){
+		  console.log("Cannot undo past a rerender");
+		  return;
+		}
 
 		[what,elems,sel,extra] = undo_actions.pop();
 		if(what == "edges" || what == "hyperedge") {
@@ -478,7 +471,15 @@
 		  extraselected.forEach(function(x) {toggle_selected(x,true);});
 		  removed.forEach(function(x) {if(x) x[1].insertBefore(x[0],x[2])})
 		  selected = sel;
+		}else if (what = "reduce") {
+		  var reduce_layer = elems;
+		  reduce_layer.forEach(function(action) {
+		    var [he,secondaries,graphicals] = action;
+		    graphicals.flat().forEach(function(x) { if(x) x.style.visibility = "visible";});
+		    secondaries.forEach(function(x) { if(x) mark_secondary(get_by_id(document,note_get_sameas(x))); });
+		  });
 		}
+
 
 	    }
 
@@ -733,7 +734,7 @@
 	      redo_actions = []; //TODO, maybe?
 	      reduce_actions = [];
 
-	      rerendered_after_reduce = 0;
+	      rerendered_after_action = 0;
 
 	      for (let n of document.getElementsByClassName("note")) {
 		  //n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
@@ -815,10 +816,9 @@
 	      draw_graph();
 
 	      // Can't undo after a rerender.. yet, TODO: Make layers
-	      rerendered_after_reduce=reduce_actions.length;
-	      reduce_actions = [];
+	      rerendered_after_action=undo_actions.length;
 	      // This is one of the ugliest hacks I've made I think
-	      for(var i = 0; i < rerendered_after_reduce; i++)
+	      for(var i = 0; i < undo_action.filter(function(x) { return x[0] == "reduce";}).length; i++)
 		do_reduce();
 	      undo_action = [];
 

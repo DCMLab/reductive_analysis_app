@@ -81,7 +81,7 @@ function getRandomColor() {
     for (var i = 0; i < 6; i++) {
       color += letters[Math.floor(4+Math.random() * 8)];
     }
-    return color+'88'; //Semitransparency
+    return color;
 }
 
 function getRandomShade(colour) {

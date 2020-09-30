@@ -282,6 +282,7 @@
 		elem.setAttribute("id",id);
 		elem.setAttribute("class","hyperedge");
 		elem.setAttribute("type",type);
+		elem.style.fillOpacity = "0.5";
 		if(shades)
 		  toggle_shade(elem);
 		added.push(elem);
@@ -410,7 +411,7 @@
 		he.removeAttribute("old_fill");
 	      }else if (shades && type_shades[he.getAttribute("type")]){
 		he.setAttribute("old_fill", he.getAttribute("fill"));
-		he.setAttribute("fill",type_shades[he.getAttribute("type")]+"aa");
+		he.setAttribute("fill",type_shades[he.getAttribute("type")]);
 	      }
 	    }
 

@@ -742,7 +742,9 @@
 	    }
 
             function rerender_temp() {
-	      rerender(document.getElementById("svg_output2"));
+	      // Create new SVG element, stack the current version on
+	      // it..? No I have no idea how to UI this properly.
+	      rerender();
 	    }
 
 	    function get_measure(elem) {if(elem.tagName == "measure") return elem; else return get_measure(elem.parentElement);}

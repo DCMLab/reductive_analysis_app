@@ -119,7 +119,7 @@
             function hyperedge_allnodes(he) {
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var nodes = [];
-	      arcs_array.forEach(function (a) {
+	      arcs_array.forEach((a) => {
 		    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
 		      nodes.push(get_by_id(mei,a.getAttribute("to")));
 		    }
@@ -130,7 +130,7 @@
             function hyperedge_primaries(he) {
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var nodes = [];
-	      arcs_array.forEach(function (a) {
+	      arcs_array.forEach((a) => {
 		if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
 		   a.getAttribute("type") == "primary"){
 		  nodes.push(get_by_id(mei,a.getAttribute("to")));
@@ -142,7 +142,7 @@
             function hyperedge_secondaries(he) {
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var nodes = [];
-	      arcs_array.forEach(function (a) {
+	      arcs_array.forEach((a) => {
 		if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
 		   a.getAttribute("type") == "secondary"){
 		  nodes.push(get_by_id(mei,a.getAttribute("to")));
@@ -157,7 +157,7 @@
 	      var orig_mei_he,mei_he = get_by_id(mei,elem.id);
 	      
 	      var orig_arcs,arcs =
-		Array.from(mei.getElementsByTagName("arc")).filter(function(arc)
+		Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
 		  {
 		   return arc.getAttribute("to") == "#"+elem.id ||
 		          arc.getAttribute("from") == "#"+elem.id;
@@ -165,14 +165,14 @@
 	      if(mei != orig_mei){
 		orig_mei_he = get_by_id(mei,selected[0].id);
 		orig_arcs =
-		  Array.from(mei.getElementsByTagName("arc")).filter(function(arc)
+		  Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
 		    {
 		     return arc.getAttribute("to") == "#"+elem.id ||
 			    arc.getAttribute("from") == "#"+elem.id;
 		    });
 	      }
 	      var removed = arcs.concat(orig_arcs).concat([elem,mei_he,orig_mei_he]);
-	      var action_removed = removed.map(function(x) {if(x != undefined){
+	      var action_removed = removed.map((x) => {if(x != undefined){
 		  var elems = [x,x.parentElement,x.nextSibling]; 
 		  x.parentElement.removeChild(x);
 		  return elems;
@@ -196,7 +196,7 @@
             function do_reduce() {
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
 	      // Get the nodes representing hyperedges
-	      var hyperedges_nodes = nodes_array.filter(function(x) { return x.getAttribute("type") == "hyperedge";})
+	      var hyperedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "hyperedge";})
 	      if(selected.length > 0 && selected[0].getAttribute("class") == "hyperedge"){
 		hyperedges_nodes = selected.map((elem) => get_by_id(mei,elem.id));
 		selected.forEach(toggle_selected);
@@ -210,8 +210,8 @@
 	    // the complexity and performance can be _greatly_ improved.
             function do_actual_reduce(hyperedges_nodes) {
 	      var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
-	      var remaining_hyperedges = hyperedges_nodes.filter(function(x) { 
-		return reduce_actions.flat().flat().findIndex(function(y) {return y == x; }) == -1
+	      var remaining_hyperedges = hyperedges_nodes.filter((x) => { 
+		return reduce_actions.flat().flat().findIndex((y) => {return y == x; }) == -1
 	      });
 	      var reduce_action = [];
 	      // For each remaining hyperedge
@@ -220,21 +220,21 @@
 		return;
 	      }
 
-	      remaining_hyperedges.forEach(function (he) {
+	      remaining_hyperedges.forEach((he) => {
 	        var secondaries = hyperedge_secondaries(he); 
 		// If none of this hyperedges secondary nodes are such that
-		if(secondaries.length > 0 && 0 == secondaries.filter(function(x) { 
+		if(secondaries.length > 0 && 0 == secondaries.filter((x) => { 
 		  // Any other remaining hyperedge
-	 	  return 0 != remaining_hyperedges.filter( function (hf) {
+	 	  return 0 != remaining_hyperedges.filter((hf) => {
 		    // Has it as a primary
-		    return hyperedge_primaries(hf).findIndex(function(y) {return x == y;}) != -1;
+		    return hyperedge_primaries(hf).findIndex((y) => {return x == y;}) != -1;
 		  }).length;
 		}).length){
 		  // Then we can safely reduce this hyperedge
 		  reduce_action.push(he);
 		}
 	      });
-	      undo_actions.push(["reduce", reduce_action.map(function(he) {
+	      undo_actions.push(["reduce", reduce_action.map((he) => {
 		var secondaries = hyperedge_secondaries(he);
 		var graphicals = [];
 		graphicals.push(secondaries.map(hide_note));
@@ -270,7 +270,7 @@
             // Draw a series of edges (TODO: make it much much much better)
             function draw_edges() {
 	      var added = [];
-	      if(selected.findIndex(function(x) { return x == undefined; }) != -1)
+	      if(selected.findIndex((x) => { return x == undefined; }) != -1)
 		return [];
 	      for(var i = 1; i < selected.length; i++) {
 		note1 = note_coords(selected[i-1]);
@@ -324,12 +324,12 @@
             function draw_hyperedge(id,type) {
 	      var added = [];
 	      var notes = selected.concat(extraselected);
-	      if(notes.findIndex(function(x) { return x == undefined; }) != -1) {
+	      if(notes.findIndex((x) => { return x == undefined; }) != -1) {
 		console.log("Note missing, hyperedge not drawn");
 		return [];
 	      }
 
-	      notes.sort(function(a,b) { 
+	      notes.sort((a,b) => { 
 		  var p1= note_coords(a);
 		  var p2= note_coords(b);
 		  return (p1[0] - p2[0]) ? (p1[0] - p2[0]) : (p1[1] - p2[1]);
@@ -464,28 +464,28 @@
 		  var added = elems;
 		  // Deselect the current selection, if any
 		  selected.forEach(toggle_selected);
-		  extraselected.forEach(function(x) {toggle_selected(x,true);});
+		  extraselected.forEach((x) => {toggle_selected(x,true);});
 		  // Remove added elements
-		  added.flat().forEach(function(x) {
+		  added.flat().forEach((x) => {
 		      if(!node_referred_to(x.getAttribute("xml:id")))
 			x.parentNode.removeChild(x);
 		      });
 		  // Select last selection
-		  sel.forEach(function(x) {toggle_selected(x);});
-		  extra.forEach(function(x) {toggle_selected(x,true);});
+		  sel.forEach((x) => {toggle_selected(x);});
+		  extra.forEach((x) => {toggle_selected(x,true);});
 		}else if( what == "delete hyperedge" ) {
 		  var removed = elems;
 		  // Deselect the current selection, if any
 		  selected.forEach(toggle_selected);
-		  extraselected.forEach(function(x) {toggle_selected(x,true);});
-		  removed.forEach(function(x) {if(x) x[1].insertBefore(x[0],x[2])})
+		  extraselected.forEach((x) => {toggle_selected(x,true);});
+		  removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
 		  selected = sel;
 		}else if (what = "reduce") {
 		  var reduce_layer = elems;
-		  reduce_layer.forEach(function(action) {
+		  reduce_layer.forEach((action) => {
 		    var [he,secondaries,graphicals] = action;
-		    graphicals.flat().forEach(function(x) { if(x) x.style.visibility = "visible";});
-		    secondaries.forEach(function(x) { if(x) mark_secondary(get_by_id(document,note_get_sameas(x))); });
+		    graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
+		    secondaries.forEach((x) => { if(x) mark_secondary(get_by_id(document,note_get_sameas(x))); });
 		  });
 		}
 
@@ -554,7 +554,7 @@
 		    a.download = filename;
 		    document.body.appendChild(a);
 		    a.click();
-		    setTimeout(function() {
+		    setTimeout(() => {
 			document.body.removeChild(a);
 			window.URL.revokeObjectURL(url);  
 		    }, 0); 
@@ -614,13 +614,13 @@
 	      if(elem) {
 		return elem;
 	      }else{
-		return Array.from(doc.all).find(function(x) { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
+		return Array.from(doc.all).find((x) => { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
 	      }
 	    }
 
             function node_referred_to(id) {
 	      return Array.from(mei.getElementsByTagName("arc"))
-		.filter(function(x) {
+		.filter((x) => {
 		    return (x.getAttribute("from") == "#"+id || 
 			    x.getAttribute("to") == "#"+id);
 		 }).length > 0;
@@ -641,52 +641,52 @@
 	      // need... First we get the nodes from the graph element.
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
 	      // Get the nodes representing hyperedges
-	      var hyperedges_nodes = nodes_array.filter(function(x) { return x.getAttribute("type") == "hyperedge";})
+	      var hyperedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "hyperedge";})
 	      // Next we get the note labels
-	      var note_ids = nodes_array.map(function(x) {
+	      var note_ids = nodes_array.map((x) => {
 		            try{
 			      return [x, 
 			              note_get_sameas(x)]
 			    }catch{
 			      return [];
 			    }
-			  }).filter(function(x) {return x.length != 0;});
+			  }).filter((x) => {return x.length != 0;});
 	      // Now get the arcs/edges
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var hyperedges_arcs = [];
 	      // And draw them all.
-	      arcs_array.forEach(function(x) {
+	      arcs_array.forEach((x) => {
 		  var n1 = get_by_id(mei,x.getAttribute("from")); 
 		  var n2 = get_by_id(mei,x.getAttribute("to"));
-		  if (hyperedges_nodes.findIndex(function (x) {return x == n1;}) == -1){
+		  if (hyperedges_nodes.findIndex((x) => {return x == n1;}) == -1){
 		    //Regular edge, just draw. TODO: Fix assumption that
 		    //nodes are notes if we reach this.
-		    var id1 = note_ids.find(function(y) {
+		    var id1 = note_ids.find((y) => {
 			  return y[0] == n1;
 			})[1];
-		    var id2 = note_ids.find(function(y) {
+		    var id2 = note_ids.find((y) => {
 			  return y[0] == n2;
 			})[1];
 		    selected = [get_by_id(document,id1),get_by_id(document,id2) ];
 		    draw_edges();
 		    selected = [];
 		  }else{
-		    var id2 = note_ids.find(function(y) {
+		    var id2 = note_ids.find((y) => {
 			  return y[0] == n2;
 			})[1];
 		    hyperedges_arcs.push([n1,id2,x.getAttribute("type")]);
 		  }
 	      });
-	      hyperedges_nodes.forEach(function(x) {
+	      hyperedges_nodes.forEach((x) => {
 		  var hyperedge_nodes = hyperedges_arcs.
-		              filter(function(y) {return y[0] == x;}).
-			      map(function(y) {return [y[2],get_by_id(document,y[1])];})
+		              filter((y) => {return y[0] == x;}).
+			      map((y) => {return [y[2],get_by_id(document,y[1])];})
 	          selected = hyperedge_nodes.
-		              filter(function(y) {return y[0] == "secondary";}).
-			      map(function (y) { return y[1];});
+		              filter((y) => {return y[0] == "secondary";}).
+			      map((y) => { return y[1];});
 	          extraselected = hyperedge_nodes.
-		              filter(function(y) {return y[0] == "primary";}).
-			      map(function (y) { return y[1];});
+		              filter((y) => {return y[0] == "primary";}).
+			      map((y) => { return y[1];});
 	          var he_labels = x.getElementsByTagName("label");
 		  var type = "";
 		  if(he_labels.length > 0){
@@ -760,17 +760,17 @@
 
             function set_non_note_visibility(hidden) {
 	      var svg_element = document.getElementById("svg_output");
-	      Array.from(svg_element.getElementsByClassName("beam")).forEach(function(x)
-		  { Array.from(x.children).forEach(function(x) { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
-	      Array.from(svg_element.getElementsByClassName("fermata")).forEach(function(x)
+	      Array.from(svg_element.getElementsByClassName("beam")).forEach((x) =>
+		  { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
+	      Array.from(svg_element.getElementsByClassName("fermata")).forEach((x) =>
 		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("rest")).forEach(function(x)
+	      Array.from(svg_element.getElementsByClassName("rest")).forEach((x) =>
 		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("stem")).forEach(function(x)
+	      Array.from(svg_element.getElementsByClassName("stem")).forEach((x) =>
 		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("flag")).forEach(function(x)
+	      Array.from(svg_element.getElementsByClassName("flag")).forEach((x) =>
 		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("tie")).forEach(function(x)
+	      Array.from(svg_element.getElementsByClassName("tie")).forEach((x) =>
 		  { x.style.visibility= hidden; });
 	    }
 
@@ -789,7 +789,7 @@
 		  );
 	      mei2.appendChild(newNode);
 
-	      Array.from(document.getElementsByClassName("note")).forEach(function(x) {
+	      Array.from(document.getElementsByClassName("note")).forEach((x) => {
 		if(x.style.visibility == "hidden"){
 		  //TODO: this is wrong
 		  // 
@@ -818,7 +818,7 @@
 	      // Can't undo after a rerender.. yet, TODO: Make layers
 	      rerendered_after_action=undo_actions.length;
 	      // This is one of the ugliest hacks I've made I think
-	      for(var i = 0; i < undo_action.filter(function(x) { return x[0] == "reduce";}).length; i++)
+	      for(var i = 0; i < undo_action.filter((x) => { return x[0] == "reduce";}).length; i++)
 		do_reduce();
 	      undo_action = [];
 
@@ -843,7 +843,7 @@
 		var note = get_by_id(mei,svg_note.getAttribute("id"));
 		var measure = get_measure(note);
 		var candidates = Array.from(measure.getElementsByTagName("note"));
-		candidates.forEach(function(x) { if(
+		candidates.forEach((x) => { if(
 			      x.getAttribute("oct") == note.getAttribute("oct") &&
 			      x.getAttribute("pname") == note.getAttribute("pname")) {
 		      toggle_selected(get_by_id(document,x.getAttribute("xml:id")));

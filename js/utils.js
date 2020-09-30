@@ -135,26 +135,3 @@ function note_coords(note) {
           note.getElementsByTagName("use")[0].y.animVal.value]
 }
 
-
-var type_shades = {
-  "repeat" : 'r',
-  "prolongation" : 'r',
-  "passing" : 'g',
-  "neighbour" : 'b',
-  "harmonic" : 'c',
-  "arpeggio" : 'm',
-  "arp" : 'm',
-  "urlinie" : 'y',
-  "bassbrechung" : 'y',
-  "bassbrech" : 'y'
-};
-
-var button_shades = {
-"repeathyperedgebutton" : "#AA2222",
-"passinghyperedgebutton": "#22AA22",
-"neighbourhyperedgebutton": "#2222AA",
-"harmonichyperedgebutton": "#22AAAA",
-"arpeggiohyperedgebutton": "#AA22AA",
-"urliniehyperedgebutton": "#AAAA22",
-"bassbrechunghyperedgebutton" : "#AAAA22",
-};

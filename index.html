@@ -410,7 +410,7 @@
 		he.removeAttribute("old_fill");
 	      }else if (shades && type_shades[he.getAttribute("type")]){
 		he.setAttribute("old_fill", he.getAttribute("fill"));
-		he.setAttribute("fill",getRandomShade(type_shades[he.getAttribute("type")]));
+		he.setAttribute("fill",type_shades[he.getAttribute("type")]+"aa");
 	      }
 	    }
 
@@ -445,18 +445,18 @@
 	      } else if (ev.key == "+") { // Select same notes in the measure
 		select_samenote();
 		do_hyperedge("repeat");
-	      } else if (ev.key == "p") { // Add a hyperedge
-		do_hyperedge("passing");
-	      } else if (ev.key == "n") { // Add a hyperedge
-		do_hyperedge("neighbour");
-	      } else if (ev.key == "i") { // Add a hyperedge
-		do_hyperedge("harmonic");
-	      } else if (ev.key == "a") { // Add a hyperedge
-		do_hyperedge("arpeggio");
-	      } else if (ev.key == "u") { // Add a hyperedge
-		do_hyperedge("urlinie");
-	      } else if (ev.key == "b") { // Add a hyperedge
-		do_hyperedge("bassbrechung");
+	      } else if (type_keys[ev.key]) { // Add a hyperedge
+		do_hyperedge(type_keys[ev.key]);
+//	      } else if (ev.key == "n") { // Add a hyperedge
+//		do_hyperedge("neighbour");
+//	      } else if (ev.key == "i") { // Add a hyperedge
+//		do_hyperedge("harmonic");
+//	      } else if (ev.key == "a") { // Add a hyperedge
+//		do_hyperedge("arpeggio");
+//	      } else if (ev.key == "u") { // Add a hyperedge
+//		do_hyperedge("urlinie");
+//	      } else if (ev.key == "b") { // Add a hyperedge
+//		do_hyperedge("bassbrechung");
 	      }else {
 		console.log(ev.key);
 	      }
@@ -793,7 +793,7 @@
 
 
         </script>
-	<div id="hidden_buttons" style="position:fixed; z-index:2">
+	<div id="hidden_buttons" style="position:fixed; z-index:2 ; display:none">
 	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
 	</div>
 	<div id="load_save" style="position:fixed; z-index:2">

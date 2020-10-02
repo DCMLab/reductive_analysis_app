@@ -818,7 +818,7 @@
 	      // Can't undo after a rerender.. yet, TODO: Make layers
 	      rerendered_after_action=undo_actions.length;
 	      // This is one of the ugliest hacks I've made I think
-	      for(var i = 0; i < undo_action.filter((x) => { return x[0] == "reduce";}).length; i++)
+	      for(var i = 0; i < undo_actions.filter((x) => { return x[0] == "reduce";}).length; i++)
 		do_reduce();
 	      undo_action = [];
 

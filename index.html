@@ -797,6 +797,13 @@
 		  y.parentNode.removeChild(y);
 		}
 	      });
+	      Array.from(mei2.getElementsByTagName("chord")).forEach((x) =>
+		{
+		if(x.getElementsByTagName("note").length == 0){
+		  x.parentNode.removeChild(x);
+		}
+		});
+
 	      var data2 = new XMLSerializer().serializeToString(mei2);
 
 	      var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
@@ -818,7 +825,8 @@
 	      // Can't undo after a rerender.. yet, TODO: Make layers
 	      rerendered_after_action=undo_actions.length;
 	      // This is one of the ugliest hacks I've made I think
-	      for(var i = 0; i < undo_actions.filter((x) => { return x[0] == "reduce";}).length; i++)
+	      var nreduces = undo_actions.filter((x) => { return x[0] == "reduce";}).length;
+	      for(var i = 0; i < nreduces; i++)
 		do_reduce();
 	      undo_action = [];
 

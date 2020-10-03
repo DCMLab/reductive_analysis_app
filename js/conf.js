@@ -1,5 +1,5 @@
 var type_keys = {
-  "r": "repeat",
+  "e": "repeat",
   "p": "passing",
   "n": "neighbour",
   "i": "harmonic",
@@ -33,4 +33,16 @@ var button_shades = {
 "bassbrechunghyperedgebutton" : shades_array[5],
 };
 
-
+var hide_classes = [
+  "fermata",
+  "rest",
+  "stem",
+  "flag",
+  "tie",
+  "artic",
+  "slur",
+  "dynam",
+  "tempo",
+  "tupletNum",
+  "dir"
+]

@@ -762,16 +762,10 @@
 	      var svg_element = document.getElementById("svg_output");
 	      Array.from(svg_element.getElementsByClassName("beam")).forEach((x) =>
 		  { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
-	      Array.from(svg_element.getElementsByClassName("fermata")).forEach((x) =>
-		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("rest")).forEach((x) =>
-		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("stem")).forEach((x) =>
-		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("flag")).forEach((x) =>
-		  { x.style.visibility= hidden; });
-	      Array.from(svg_element.getElementsByClassName("tie")).forEach((x) =>
-		  { x.style.visibility= hidden; });
+	      hide_classes.forEach((cl) => {
+		Array.from(svg_element.getElementsByClassName(cl)).forEach((x) =>
+		    { x.style.visibility= hidden; });
+	      })
 	    }
 
 

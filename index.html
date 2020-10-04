@@ -199,9 +199,10 @@
 	      var hyperedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "hyperedge";})
 	      if(selected.length > 0 && selected[0].getAttribute("class") == "hyperedge"){
 		hyperedges_nodes = selected.map((elem) => get_by_id(mei,elem.id));
+		do_actual_reduce(hyperedges_nodes);
 		selected.forEach(toggle_selected);
-	      }
-	      do_actual_reduce(hyperedges_nodes);
+	      }else 
+		do_actual_reduce(hyperedges_nodes);
 	    }
 
             // This reduces away the hyperedges where all the secondaries
@@ -240,7 +241,7 @@
 		graphicals.push(secondaries.map(hide_note));
 		graphicals.push(hide_he(he));
 		return [he,secondaries,graphicals];
-	      })]);
+	      }),selected]);
 	    }
 
             function undo_reduce() {
@@ -819,9 +820,8 @@
 	      // Can't undo after a rerender.. yet, TODO: Make layers
 	      rerendered_after_action=undo_actions.length;
 	      // This is one of the ugliest hacks I've made I think
-	      var nreduces = undo_actions.filter((x) => { return x[0] == "reduce";}).length;
-	      for(var i = 0; i < nreduces; i++)
-		do_reduce();
+	      var reduces = undo_actions.filter((x) => { return x[0] == "reduce";});
+	      reduces.forEach((action) => {selected = action[2]; do_reduce();})
 	      undo_action = [];
 
 	    }

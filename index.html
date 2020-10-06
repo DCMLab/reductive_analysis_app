@@ -751,7 +751,7 @@
 	      }
 	      if(!shades)
 		toggle_shades();
-	      document.addEventListener('keypress',function(ev) {handle_keypress(ev);});
+	      document.onkeypress = function(ev) {handle_keypress(ev);};
 	    }
 
             function toggle_equalize() {

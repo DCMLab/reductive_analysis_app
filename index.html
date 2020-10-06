@@ -194,15 +194,13 @@
 
 
             function do_reduce() {
-	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
 	      // Get the nodes representing hyperedges
-	      var hyperedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "hyperedge";})
 	      if(selected.length > 0 && selected[0].getAttribute("class") == "hyperedge"){
 		hyperedges_nodes = selected.map((elem) => get_by_id(mei,elem.id));
 		do_actual_reduce(hyperedges_nodes);
 		selected.forEach(toggle_selected);
 	      }else 
-		do_actual_reduce(hyperedges_nodes);
+		do_actual_reduce();
 	    }
 
             // This reduces away the hyperedges where all the secondaries
@@ -211,30 +209,38 @@
 	    // the complexity and performance can be _greatly_ improved.
             function do_actual_reduce(hyperedges_nodes) {
 	      var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
-	      var remaining_hyperedges = hyperedges_nodes.filter((x) => { 
+	      var all_hyperedges_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "hyperedge";}) 
+	      var remaining_hyperedges = all_hyperedges_nodes.filter((x) => { 
 		return reduce_actions.flat().flat().findIndex((y) => {return y == x; }) == -1
 	      });
 	      var reduce_action = [];
-	      // For each remaining hyperedge
-	      if(remaining_hyperedges.length == 0){
-		console.log("No reduction possible");
-		return;
+	      if(hyperedges_nodes == undefined) {
+		hyperedges_nodes = remaining_hyperedges;
 	      }
+	      
+	      // For each hyperedge in question
 
-	      remaining_hyperedges.forEach((he) => {
+	      hyperedges_nodes.forEach((he) => {
 	        var secondaries = hyperedge_secondaries(he); 
 		// If none of this hyperedges secondary nodes are such that
 		if(secondaries.length > 0 && 0 == secondaries.filter((x) => { 
 		  // Any other remaining hyperedge
 	 	  return 0 != remaining_hyperedges.filter((hf) => {
 		    // Has it as a primary
-		    return hyperedge_primaries(hf).findIndex((y) => {return x == y;}) != -1;
-		  }).length;
+		    return hyperedge_primaries(hf).includes(x) || // OR
+		  // This hyperedge isn't getting removed
+		  (!hyperedges_nodes.includes(hf) &&
+		   // But still refers to this secondary
+		   hyperedge_allnodes(hf).includes(x));}).length
 		}).length){
 		  // Then we can safely reduce this hyperedge
 		  reduce_action.push(he);
 		}
 	      });
+	      if(reduce_action.length == 0){
+		console.log("No reduction possible");
+		return;
+	      }
 	      undo_actions.push(["reduce", reduce_action.map((he) => {
 		var secondaries = hyperedge_secondaries(he);
 		var graphicals = [];

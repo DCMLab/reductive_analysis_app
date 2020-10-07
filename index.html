@@ -228,9 +228,9 @@
 	 	  return 0 != remaining_hyperedges.filter((hf) => {
 		    // Has it as a primary
 		    return hyperedge_primaries(hf).includes(x) || // OR
-		  // This hyperedge isn't getting removed
+		  // Some hyperedge isn't getting removed
 		  (!hyperedges_nodes.includes(hf) &&
-		   // But still refers to this secondary
+		   // But still refers to this at all
 		   hyperedge_allnodes(hf).includes(x));}).length
 		}).length){
 		  // Then we can safely reduce this hyperedge

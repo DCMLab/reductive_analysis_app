@@ -193,50 +193,62 @@
 	    }
 
 
-            function do_reduce() {
-	      // Get the nodes representing hyperedges
-	      if(selected.length > 0 && selected[0].getAttribute("class") == "hyperedge"){
-		hyperedges_nodes = selected.map((elem) => get_by_id(mei,elem.id));
-		do_actual_reduce(hyperedges_nodes);
-		selected.forEach(toggle_selected);
-	      }else 
-		do_actual_reduce();
-	    }
-
             // This reduces away the hyperedges where all the secondaries
-	    // are not primary in any non-reduced hyperedge. TODO: This is
-	    // a very stupid implementation akin to bubble sort. No doubt
-	    // the complexity and performance can be _greatly_ improved.
-            function do_actual_reduce(hyperedges_nodes) {
+	    // are not primary in any non-reduced hyperedge. TODO: This, 
+            // while better than before, no doubt has room for optimisation
+            function do_reduce() {
+	      // All previous reductions
 	      var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
+	      // All hyperedges in the graph
 	      var all_hyperedges_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "hyperedge";}) 
+	      // Remove the hyperedges that have been removed in previous
+	      // reductions
 	      var remaining_hyperedges = all_hyperedges_nodes.filter((x) => { 
 		return !reduce_actions.flat().flat().includes(x);
 	      });
-	      var reduce_action = [];
-	      if(hyperedges_nodes == undefined) {
+	      var reduce_action, hyperedges_nodes;
+	      // Are we doing a full reduction, or have we selected some
+	      // hyperedges?
+	      if(selected.length > 0 && selected[0].getAttribute("class") == "hyperedge"){
+		hyperedges_nodes = selected.map((elem) => get_by_id(mei,elem.id));
+	      }else {
 		hyperedges_nodes = remaining_hyperedges;
 	      }
-	      
-	      // For each hyperedge in question
+	      // In any case, remember what's selected, and unselect it
+	      var sel = selected;
+	      var extra = extraselected;
+	      sel.concat(extra).forEach(toggle_selected);
+	      // No primary of a remaining hyperedge is removed in this
+	      // reduction
+	      var remaining_nodes = remaining_hyperedges.map(hyperedge_primaries).flat();
+	      // We know that the remaining hyperedges that have not been
+	      // selected for reduction will remain
+	      remaining_hyperedges = remaining_hyperedges.filter((x) => {return !hyperedges_nodes.includes(x);});
+	      // So all of their nodes should be added to the remaining
+	      // nodes, not just the primaries
+	      remaining_nodes = remaining_nodes.concat(remaining_hyperedges.map(hyperedge_secondaries).flat());
 
-	      hyperedges_nodes.forEach((he) => {
-	        var secondaries = hyperedge_secondaries(he); 
-		// If none of this hyperedges secondary nodes are such that
-		if(secondaries.length > 0 && 0 == secondaries.filter((x) => { 
-		  // Any other remaining hyperedge
-	 	  return 0 != remaining_hyperedges.filter((hf) => {
-		    // Has it as a primary
-		    return hyperedge_primaries(hf).includes(x) || // OR
-		  // Some hyperedge isn't getting removed
-		  (!hyperedges_nodes.includes(hf) &&
-		   // But still refers to this at all
-		   hyperedge_allnodes(hf).includes(x));}).length
-		}).length){
-		  // Then we can safely reduce this hyperedge
-		  reduce_action.push(he);
-		}
-	      });
+              do {
+		// We want to find more hyperedges that we know need to stay 
+		var more_remains = hyperedges_nodes.filter((he) => { 
+		    // That is, hyperedges that have, as secondaries, nodes
+		    // we know need to stay
+		    return (hyperedge_secondaries(he).findIndex((x) => {return remaining_nodes.includes(x);}) > -1);
+		  });
+		// Add those hyperedges to the ones that need to stay
+		remaining_hyperedges = remaining_hyperedges.concat(more_remains);
+		// And remove them from those that may be removed
+		hyperedges_nodes = hyperedges_nodes.filter((x) => {return !more_remains.includes(x);})
+		// And update the remaining nodes
+		remaining_nodes = remaining_nodes.concat(more_remains.map(hyperedge_secondaries).flat());
+	      // Until we reach a pass where we don't find any more
+	      // hyperedges that need to stay
+	      }while(more_remains.length > 0)
+	      // Any hyperedges that remain after this loop, we can remove,
+	      // including their secondaries
+
+	      reduce_action = hyperedges_nodes;
+
 	      if(reduce_action.length == 0){
 		console.log("No reduction possible");
 		return;
@@ -247,7 +259,7 @@
 		graphicals.push(secondaries.map(hide_note));
 		graphicals.push(hide_he(he));
 		return [he,secondaries,graphicals];
-	      }),selected]);
+	      }),sel, extra]);
 	    }
 
             function undo_reduce() {
@@ -494,6 +506,8 @@
 		    graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
 		    secondaries.forEach((x) => { if(x) mark_secondary(get_by_id(document,note_get_sameas(x))); });
 		  });
+		  sel.forEach((x) => {toggle_selected(x);});
+		  extra.forEach((x) => {toggle_selected(x,true);});
 		}
 
 

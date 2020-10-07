@@ -211,7 +211,7 @@
 	      var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
 	      var all_hyperedges_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "hyperedge";}) 
 	      var remaining_hyperedges = all_hyperedges_nodes.filter((x) => { 
-		return reduce_actions.flat().flat().findIndex((y) => {return y == x; }) == -1
+		return !reduce_actions.flat().flat().includes(x);
 	      });
 	      var reduce_action = [];
 	      if(hyperedges_nodes == undefined) {
@@ -277,7 +277,7 @@
             // Draw a series of edges (TODO: make it much much much better)
             function draw_edges() {
 	      var added = [];
-	      if(selected.findIndex((x) => { return x == undefined; }) != -1)
+	      if(selected.include(undefined));
 		return [];
 	      for(var i = 1; i < selected.length; i++) {
 		note1 = note_coords(selected[i-1]);
@@ -331,7 +331,7 @@
             function draw_hyperedge(id,type) {
 	      var added = [];
 	      var notes = selected.concat(extraselected);
-	      if(notes.findIndex((x) => { return x == undefined; }) != -1) {
+	      if(notes.includes(undefined)) {
 		console.log("Note missing, hyperedge not drawn");
 		return [];
 	      }
@@ -665,7 +665,7 @@
 	      arcs_array.forEach((x) => {
 		  var n1 = get_by_id(mei,x.getAttribute("from")); 
 		  var n2 = get_by_id(mei,x.getAttribute("to"));
-		  if (hyperedges_nodes.findIndex((x) => {return x == n1;}) == -1){
+		  if (!hyperedges_nodes.includes(n1)){
 		    //Regular edge, just draw. TODO: Fix assumption that
 		    //nodes are notes if we reach this.
 		    var id1 = note_ids.find((y) => {

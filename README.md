@@ -1,4 +1,4 @@
-## Reductive score annotation app
+# Reductive score annotation app
 
 This is an app to facilitate analysing scores using a reductive paradigm.
 
@@ -7,39 +7,59 @@ It is currently very much under construction, but can be tested [here](https://d
 The basics are as follows:
  
  * Clicking selects notes. Shift-click selects them as _primary_
- * With a number of notes selected, you can _add edges_ between them.
- * However, the more interesting things happen when you _add hyperedges_,
-   especially with some primary selections
- * After having created a number of hyperedges, you can _reduce_ the
-   notes that are only secondary to existing hyperedges. In particular,
-   this reduces any _hyperedges_ for which all of its _secondary_ notes are
-   _only secondary_, as well as said notes. Reducing again will then remove
-   the "next layer" of hyperedges. If there are no cyclical dependencies
-   between hyperedges (e.g. hyperedge A has note x as primary and y as
-   secondary, while hyperedge B has them the other way around), this will
-   eventually reduce away all hyperedges.
+ * Linking together the selected notes into a _relation_, alternatively
+   referred to as a _hyperedge_ can be done either without giving the
+   relation a type at all, by clicking one of the preset buttons or their
+   key bindings, or by writing a custom type into the text field and
+   clicking the "Add hyperedge with custom type" button.
+ * Relations with both primary and secondary notes imply a priority among
+   the notes. If we add a number of relations such that no circular
+   priorities are introduced, we have defined a typ of _hierarchy_ among
+   the notes and relations.
+ * After having annotated a number of relations/hyperedges, we can _reduce_
+   the lowest-ranked notes in our hierarchy by clicking the "Reduce
+   Hyperedges" button. We can also select a subset of the existing
+   relations to attempt to reduce. The basic algorithm is this: Each
+   reduced hyperedge also removes its secondary notes, and leaves its
+   primary notes to the next step.  However, any hyperedges that are _not_
+   removed in this step needs to have all of its notes remain. Thus, the
+   removed hyperedges have, as secondaries, only notes that are removed in
+   this step, and the removed notes are only secondaries of removed
+   hyperedges.
 
-# A short example
+## A short example
 
-Let us load a familiar piece into the annotation app: Bach's Prelude in C Major from The Well-tempered Clavier (BWV 846). This is done by selecting the file from your computer through the file selector at the top left. Once chosen, the app should render it directly as in
+Let us load a familiar piece into the annotation app: Bach's Prelude in C
+Major from The Well-tempered Clavier (BWV 846). This is done by selecting
+the file from your computer through the file selector at the bottom left. Once
+chosen, the app should render it directly as in
 
 ![](images/tutorial1.png?raw=true)
 
 This done, we can begin selecting notes by clicking them. We can also select notes as _primary_ by shift-clicking them.
 
-After selecting a number of notes, we can associate them using a hyperedge. For now, these are untyped, and the semantics are simply that the _primary_ notes are somehow more important than the secondary ones.
+After selecting a number of notes, we can associate them using a hyperedge,
+either of some specific type, or untyped. There are a number of predefined
+edge types with dedicated buttons and keybindings, and a textfield for
+entering a custom type.
 
 Let us select the first E in the upper voice as primary, and the rest of the E's in that measure as secondary:
 
 ![](images/tutorial2.png?raw=true)
 
-We can do this either by clicking and shift-clicking the individual notes, or by selecting the first note, and then using the "Select similar notes" button (keyboard shortcut: +)
-
-This done, we can add a hyperedge connecting these notes, with the "Add hyperedge" button (keyboard shortcut: h):
+We can do this either by clicking and shift-clicking the individual notes,
+and then either clicking the button marked "Add repeat(+) hyperedge" or
+using the "+" keyboard shortcut. However, specifically for the situation
+that all the notes of the same pitch in a single bar should be selected and
+related as repeats, it is also possible to just select the primary note of
+the repeat and then hitting "+".
 
 ![](images/tutorial3.png?raw=true)
 
-After having created a number of hyperedges, we can choose to a "Reduce" step, which hides the "lowest" level of edges (i.e. those for which no secondary note is a primary note in some other edge). For example, if we have made similar hyperedges for the other parts in the arpeggio, we can reduce the first bar of the Prelude from this:
+After having created a number of hyperedges, we can choose to a "Reduce"
+step, which hides the "lowest" level of edges, as described above.. For
+example, if we have made similar hyperedges for the other parts in the
+arpeggio, we can reduce the first bar of the Prelude from this:
 
 ![](images/tutorial4.png?raw=true)
 
@@ -47,11 +67,19 @@ To this:
 
 ![](images/tutorial5.png?raw=true)
 
-However, this doesn't look very nice, as we only hide the notes, and not the beams and other things related to notes. We can hide stems and beams and such things with the button "Toggle stems etc." or the keyboard shortcut "s".
+However, this doesn't look very nice, as we only hide the notes, and not
+the beams and other things related to notes. We can hide stems and beams
+and such things with the button "Toggle (s)tems etc." or the keyboard
+shortcut "s".
 
 ![](images/tutorial6.png?raw=true)
 
-But this still leaves us with an embarrassing amount of unused space, as well as unused ledger lines. To rerender the MEI with the removed notes, we can click the button marked "Rerender less hidden notes" **but beware**! Up until now, we can undo things to no ill effect, but as soon as we rerender, Undo is not going to work very well past the point of last render (though it it still possible - this is a bug, and will be fixed).
+But this still leaves us with an embarrassing amount of unused space, as
+well as unused ledger lines. To rerender the MEI with the removed notes, we
+can click the button marked "Rerender less hidden notes" **but beware**! Up
+until now, we can undo things to no ill effect (with the button or the "u"
+key), but as soon as we rerender, undo is not going to work past that
+point. 
 
 Still, let's go ahead:
 
@@ -59,16 +87,53 @@ Still, let's go ahead:
 
 Much better!
 
-Having done a number of reductions, you can end up with something similar to:
+Having done a number of reductions and rerenderings, we can end up with something similar to:
 
 ![](images/tutorial8.png?raw=true)
 
 Which starts to be useful for further analysis.
 
-By clicking the "Save" button, you will get the option to save the original MEI plus the graph as currently envisioned. For example, saving the above state and then loading the resulting file will show this view:
+By clicking the "Save" button, you will get the option to save the original
+MEI plus the graph as currently envisioned. For example, saving the above
+state and then loading the resulting file will show this view:
 
 ![](images/tutorial9.png?raw=true)
 
-Which can then be turned into the previous view by first reducing and then rerendering (and also hiding stems etc.).
+Which can then be turned into the previous view by first reducing and then
+rerendering (and also hiding stems etc.).
 
-More exciting possibilities are open by having overlapping and interacting hyperedges, though this is beyond the scope of this simple example.
+## Hierarchical analysis
+
+More exciting possibilities are open by having overlapping and interacting
+hyperedges, though this is beyond the scope of this simple example. For
+presenting this work as a Late-Breaking Demo at ISMIR2020, the following
+illustrative gifs were produced, showcasing some more advanced ideas:
+
+### Showcase: Schenkerian analysis
+
+![](images/schenker.gif?raw=true)
+
+### Showcase: GTTM Tree
+
+![](images/gttm.gif?raw=true)
+
+
+### Showcase: MOP annotation
+
+![](images/mop.gif?raw=true)
+
+
+## Funding and publications
+
+The present work has been presented at ISMIR 2020 as a Late-Breaking Demo,
+with this [extended abstract](papers/ismir_2020_lbd_extended_abstract.pdf)
+and [poster](papers/ismir_2020_lbd_poster.pdf).
+
+This project has received funding from the European Research Council (ERC)
+under the European Union's Horizon 2020 research and innovation program
+under grant agreement No 760081 – PMSB. We thank Claude Latour
+for supporting this research through the Latour Chair in Digital
+Musicology. Additionally, the members of the Digital and Cognitive
+Musicology Lab (DCML) have contributed valuable insights through
+discussions and user testing.
+

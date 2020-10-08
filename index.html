@@ -512,13 +512,13 @@
 		  console.log("Cannot undo past a rerender");
 		  return;
 		}
+		// Deselect the current selection, if any
+		selected.forEach(toggle_selected);
+		extraselected.forEach((x) => {toggle_selected(x,true);});
 
 		[what,elems,sel,extra] = undo_actions.pop();
 		if(what == "edges" || what == "hyperedge") {
 		  var added = elems;
-		  // Deselect the current selection, if any
-		  selected.forEach(toggle_selected);
-		  extraselected.forEach((x) => {toggle_selected(x,true);});
 		  // Remove added elements
 		  added.flat().forEach((x) => {
 		      if(!node_referred_to(x.getAttribute("xml:id")))
@@ -529,9 +529,6 @@
 		  extra.forEach((x) => {toggle_selected(x,true);});
 		}else if( what == "delete hyperedge" ) {
 		  var removed = elems;
-		  // Deselect the current selection, if any
-		  selected.forEach(toggle_selected);
-		  extraselected.forEach((x) => {toggle_selected(x,true);});
 		  removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
 		  selected = sel;
 		}else if (what = "change hyperedge type") {

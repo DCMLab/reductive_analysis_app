@@ -73,6 +73,11 @@
 	    var format;
 
 	    var zoom = 1;
+	    $(document).ready(function()
+		{
+		  Object.keys(type_conf).forEach(init_type);
+		  toggle_shades();
+		});
 
 
 
@@ -362,7 +367,10 @@
 	        var elem = roundedHull(notes.map(note_coords));
 		elem.setAttribute("id",id);
 		elem.setAttribute("class","hyperedge");
-		elem.setAttribute("type",type);
+		if(type_synonym[type])
+		  elem.setAttribute("type",type_synonym[type]);
+		else
+		  elem.setAttribute("type",type);
 		elem.style.fillOpacity = "0.5";
 		if(shades)
 		  toggle_shade(elem);
@@ -629,31 +637,19 @@
 	      }
 	    }
 
-            function get_by_id(doc,id) {
-	      if (id[0] == "#") { id = id.slice(1); }
-	      var elem =  doc.querySelector("[*|id='"+id+"']");
-	      if(elem) {
-		return elem;
-	      }else{
-		return Array.from(doc.all).find((x) => { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
-	      }
+            function init_type(type) {
+	      var elem = document.createElement("input");
+	      elem.setAttribute("type","button");
+	      elem.setAttribute("class","hyperedgebutton");
+	      elem.setAttribute("id",type + "hyperedgebutton");
+	      elem.setAttribute("value","Add "+type+" hyperedge " + "(" + type_conf[type].key + ")");
+	      elem.onclick = do_hyperedge(type);
+	      $("#relation_buttons")[0].appendChild(elem);
+	      type_shades[type] = shades_array[type_conf[type].colour];
+	      type_keys[type_conf[type].key] = type;
+	      button_shades[type+"hyperedgebutton"] = shades_array[type_conf[type].colour];
+
 	    }
-
-            function node_referred_to(id) {
-	      return Array.from(mei.getElementsByTagName("arc"))
-		.filter((x) => {
-		    return (x.getAttribute("from") == "#"+id || 
-			    x.getAttribute("to") == "#"+id);
-		 }).length > 0;
-	    }
-
-            function note_get_sameas(note) {
-	      return note.getElementsByTagName("label")[0].
-		          getElementsByTagName("note")[0].
-		          getAttribute("sameas");
-	    }
-
-
 
 
             // Draw the existing graph
@@ -914,18 +910,11 @@
 	  <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
 	  <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
 	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" >
-	  <input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" >
+	  <!--input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" -->
 	  <input type="button" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
 	  <input type="button" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
-	  <div id="simple_buttons">
-	  <input type="button" class="hyperedgebutton" id="repeathyperedgebutton" value="Add repeat(+) hyperedge" onclick="do_hyperedge('repeat')" >
-	  <input type="button" class="hyperedgebutton" id="passinghyperedgebutton" value="Add (p)assing hyperedge" onclick="do_hyperedge('passing')" >
-	  <input type="button" class="hyperedgebutton" id="neighbourhyperedgebutton" value="Add (n)eighbour hyperedge" onclick="do_hyperedge('neighbour')" >
-	  <input type="button" class="hyperedgebutton" id="harmonichyperedgebutton" value="Add harmon(i)c hyperedge" onclick="do_hyperedge('harmonic')" >
-	  <input type="button" class="hyperedgebutton" id="arpeggiohyperedgebutton" value="Add (a)rpeggio hyperedge" onclick="do_hyperedge('arpeggio')" >
-	  <input type="button" class="hyperedgebutton" id="urliniehyperedgebutton" value="Add (u)rlinie hyperedge" onclick="do_hyperedge('urlinie')" >
-	  <input type="button" class="hyperedgebutton" id="bassbrechunghyperedgebutton" value="Add (b)assbrechung hyperedge" onclick="do_hyperedge('bassbrechung')" >
+	  <div id="relation_buttons">
 	  </div>
 	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >

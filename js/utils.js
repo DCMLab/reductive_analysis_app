@@ -135,3 +135,27 @@ function note_coords(note) {
           note.getElementsByTagName("use")[0].y.animVal.value]
 }
 
+function get_by_id(doc,id) {
+  if (id[0] == "#") { id = id.slice(1); }
+  var elem =  doc.querySelector("[*|id='"+id+"']");
+  if(elem) {
+    return elem;
+  }else{
+    return Array.from(doc.all).find((x) => { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
+  }
+}
+
+function node_referred_to(id) {
+  return Array.from(mei.getElementsByTagName("arc"))
+    .filter((x) => {
+	return (x.getAttribute("from") == "#"+id || 
+		x.getAttribute("to") == "#"+id);
+     }).length > 0;
+}
+
+function note_get_sameas(note) {
+  return note.getElementsByTagName("label")[0].
+	      getElementsByTagName("note")[0].
+	      getAttribute("sameas");
+}
+

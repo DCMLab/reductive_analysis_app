@@ -113,7 +113,7 @@
 		    selected.push(item);
 		  }
 		}
-	      } else {
+	      } else if(ci == "hyperedge"){
 		//Hyperedge selection
 		if(selected.concat(extraselected).length == 0){
 		  toggle_he_selected(true);
@@ -383,10 +383,7 @@
 	        var elem = roundedHull(notes.map(note_coords));
 		elem.setAttribute("id",id);
 		elem.setAttribute("class","hyperedge");
-		if(type_synonym[type])
-		  elem.setAttribute("type",type_synonym[type]);
-		else
-		  elem.setAttribute("type",type);
+		elem.setAttribute("type",type);
 		elem.style.fillOpacity = "0.5";
 		if(shades)
 		  toggle_shade(elem);
@@ -458,7 +455,7 @@
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
 		changes = true;
-		added = [];
+		var added = [];
 		added.push(draw_edges()); // Draw the edge
 		added.push(add_edges(mei));  // Add it to the MEI
 		if(mei != orig_mei)
@@ -474,12 +471,21 @@
 	    function do_hyperedge(type) {
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
+		changes = true;
 		if(selected[0].getAttribute("class") == "hyperedge"){
-		  //TODO: change type
-
+		  var types = [];
+		  selected.concat(extraselected).forEach((he) => {
+		      //TODO: move type_synonym application so that this
+		      //is the right type == the one from the MEI
+		      types.push([he.getAttribute("type"),type]);
+		      he.setAttribute("type",type);
+		      var mei_he = get_by_id(mei,he.id);
+		      mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
+		      toggle_shade(he);
+		  });
+		  undo_actions.push(["change hyperedge type",types.reverse(),selected,extraselected]);
 		}else if(selected[0].getAttribute("class") == "note"){
-		  changes = true;
-		  added = [];
+		  var added = [];
 		  var [he_id,mei_elems] = add_hyperedge(mei,mei_graph,type);
 		  added.push(mei_elems);  // Add it to the MEI
 		  if(mei != orig_mei){
@@ -528,6 +534,19 @@
 		  extraselected.forEach((x) => {toggle_selected(x,true);});
 		  removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
 		  selected = sel;
+		}else if (what = "change hyperedge type") {
+		  var types = elems;
+		  sel.concat(extra).forEach((he) => {
+		      //TODO: move type_synonym application so that this
+		      //is the right type == the one from the MEI
+		      var [from,to] = types.pop();
+		      he.setAttribute("type",from);
+		      var mei_he = get_by_id(mei,he.id);
+		      mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
+		      toggle_shade(he);
+		  });
+		  sel.forEach((x) => {toggle_selected(x);});
+		  extra.forEach((x) => {toggle_selected(x,true);});
 		}else if (what = "reduce") {
 		  var reduce_layer = elems;
 		  reduce_layer.forEach((action) => {
@@ -549,6 +568,9 @@
 	      }else if (shades && type_shades[he.getAttribute("type")]){
 		he.setAttribute("old_fill", he.getAttribute("fill"));
 		he.setAttribute("fill",type_shades[he.getAttribute("type")]);
+	      }else if (shades && type_synonym[he.getAttribute("type")]){
+		he.setAttribute("old_fill", he.getAttribute("fill"));
+		he.setAttribute("fill",type_shades[type_synonym[he.getAttribute("type")]]);
 	      }
 	    }
 
@@ -664,12 +686,11 @@
 	      elem.setAttribute("class","hyperedgebutton");
 	      elem.setAttribute("id",type + "hyperedgebutton");
 	      elem.setAttribute("value","Add "+type+" hyperedge " + "(" + type_conf[type].key + ")");
-	      elem.onclick = do_hyperedge(type);
+	      elem.onclick = () => {do_hyperedge(type);};
 	      $("#relation_buttons")[0].appendChild(elem);
 	      type_shades[type] = shades_array[type_conf[type].colour];
 	      type_keys[type_conf[type].key] = type;
 	      button_shades[type+"hyperedgebutton"] = shades_array[type_conf[type].colour];
-
 	    }
 
 

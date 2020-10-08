@@ -478,21 +478,21 @@
 		  //TODO: change type
 
 		}else if(selected[0].getAttribute("class") == "note"){
-		changes = true;
-		added = [];
-		var [he_id,mei_elems] = add_hyperedge(mei,mei_graph,type);
-		added.push(mei_elems);  // Add it to the MEI
-		if(mei != orig_mei){
-		  var [orig_he_id,orig_mei_elems] = add_hyperedge(orig_mei,orig_mei_graph,type,he_id);
-		  added.push(orig_mei_elems);  // Add it to the MEI
+		  changes = true;
+		  added = [];
+		  var [he_id,mei_elems] = add_hyperedge(mei,mei_graph,type);
+		  added.push(mei_elems);  // Add it to the MEI
+		  if(mei != orig_mei){
+		    var [orig_he_id,orig_mei_elems] = add_hyperedge(orig_mei,orig_mei_graph,type,he_id);
+		    added.push(orig_mei_elems);  // Add it to the MEI
+		  }
+		  added.push(draw_hyperedge(he_id,type)); // Draw the edge
+		  
+		  undo_actions.push(["hyperedge",added,selected,extraselected]);
+		  selected.forEach(mark_secondary); // De-select
+		  selected = [];
+		  extraselected.forEach(toggle_selected); // De-select
 		}
-		added.push(draw_hyperedge(he_id,type)); // Draw the edge
-		
-		undo_actions.push(["hyperedge",added,selected,extraselected]);
-		}
-		selected.forEach(mark_secondary); // De-select
-		selected = [];
-		extraselected.forEach(toggle_selected); // De-select
 	    }
 
             // Oops, undo whatever we did last.

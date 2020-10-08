@@ -79,6 +79,16 @@
 		  toggle_shades();
 		});
 
+            function toggle_he_selected(selecting) {
+	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach((button) => {
+		    var val = button.getAttribute("value");
+		    if(selecting)
+		      button.setAttribute("value",val.replace("Add","Set to"));
+		    else
+		      button.setAttribute("value",val.replace("Set to","Add"));
+              });
+	    }
+
 
 
 	    // Toggle if a thing (for now: note) is selected or not.
@@ -105,6 +115,9 @@
 		}
 	      } else {
 		//Hyperedge selection
+		if(selected.concat(extraselected).length == 0){
+		  toggle_he_selected(true);
+		}
 		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
 		  item.style.fillOpacity = 0.5;
 		  selected = selected.filter(x =>  x !== item);
@@ -116,6 +129,9 @@
 		  // the "bottom", in order to overcome overlap. Might
 		  // otherwise need Smartness to overcome edges covering
 		  // each other.
+		}
+		if(selected.concat(extraselected).length == 0){
+		  toggle_he_selected(false);
 		}
 	      }
 
@@ -458,6 +474,10 @@
 	    function do_hyperedge(type) {
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
+		if(selected[0].getAttribute("class") == "hyperedge"){
+		  //TODO: change type
+
+		}else if(selected[0].getAttribute("class") == "note"){
 		changes = true;
 		added = [];
 		var [he_id,mei_elems] = add_hyperedge(mei,mei_graph,type);
@@ -469,6 +489,7 @@
 		added.push(draw_hyperedge(he_id,type)); // Draw the edge
 		
 		undo_actions.push(["hyperedge",added,selected,extraselected]);
+		}
 		selected.forEach(mark_secondary); // De-select
 		selected = [];
 		extraselected.forEach(toggle_selected); // De-select
@@ -911,8 +932,8 @@
 	  <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
 	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" >
 	  <!--input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" -->
-	  <input type="button" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
-	  <input type="button" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
+	  <input type="button" class="hyperedgebutton" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
+	  <input type="button" class="hyperedgebutton" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	  <div id="relation_buttons">
 	  </div>

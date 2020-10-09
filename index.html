@@ -73,11 +73,25 @@
 	    var format;
 
 	    var zoom = 1;
+
 	    $(document).ready(function()
 		{
 		  Object.keys(type_conf).forEach(init_type);
 		  toggle_shades();
 		});
+
+            function init_type(type) {
+	      var elem = document.createElement("input");
+	      elem.setAttribute("type","button");
+	      elem.setAttribute("class","hyperedgebutton");
+	      elem.setAttribute("id",type + "hyperedgebutton");
+	      elem.setAttribute("value","Add "+type+" hyperedge " + "(" + type_conf[type].key + ")");
+	      elem.onclick = () => {do_hyperedge(type);};
+	      $("#relation_buttons")[0].appendChild(elem);
+	      type_shades[type] = shades_array[type_conf[type].colour];
+	      type_keys[type_conf[type].key] = type;
+	      button_shades[type+"hyperedgebutton"] = shades_array[type_conf[type].colour];
+	    }
 
             function toggle_he_selected(selecting) {
 	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach((button) => {
@@ -89,9 +103,7 @@
               });
 	    }
 
-
-
-	    // Toggle if a thing (for now: note) is selected or not.
+	    // Toggle if a thing (for now: note or hyperedge) is selected or not.
             function toggle_selected(item,extra) { 
 	      var ci = item.getAttribute("class");
 	      if(selected.length > 0 || extraselected.length > 0) {
@@ -135,41 +147,6 @@
 		}
 	      }
 
-	    }
-            // Get the MEI-graph nodes that are adjacent to a hyperedge
-            function hyperedge_allnodes(he) {
-	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-	      var nodes = [];
-	      arcs_array.forEach((a) => {
-		    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
-		      nodes.push(get_by_id(mei,a.getAttribute("to")));
-		    }
-		  });
-	      return nodes;
-	    }
-            // Get the MEI-graph nodes that are adjacent and primary to a hyperedge
-            function hyperedge_primaries(he) {
-	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-	      var nodes = [];
-	      arcs_array.forEach((a) => {
-		if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
-		   a.getAttribute("type") == "primary"){
-		  nodes.push(get_by_id(mei,a.getAttribute("to")));
-		}
-		  });
-	      return nodes;
-	    }
-            // Get the MEI-graph nodes that are adjacent and secondary to a hyperedge
-            function hyperedge_secondaries(he) {
-	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-	      var nodes = [];
-	      arcs_array.forEach((a) => {
-		if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
-		   a.getAttribute("type") == "secondary"){
-		  nodes.push(get_by_id(mei,a.getAttribute("to")));
-		}
-		  });
-	      return nodes;
 	    }
 
             function delete_hyperedge(elem) {
@@ -283,28 +260,6 @@
 	      }),sel, extra]);
 	    }
 
-            function undo_reduce() {
-	    }
-
-
-            function hide_note(note) {
-	      var elem = get_by_id(document,note_get_sameas(note));
-	      if(elem)
-		elem.style.visibility = "hidden";
-	      return elem;
-	    }
-
-            function hide_he(he) {
-	      var elem = get_by_id(document,he.getAttribute("xml:id"));
-	      if(elem) 
-		elem.style.visibility = "hidden";
-	      return elem;
-	    }
-
-            function mark_secondary(item) {
-		item.setAttribute("style","fill:grey");
-	    }
-
 
 
             // Draw a series of edges (TODO: make it much much much better)
@@ -322,25 +277,6 @@
 	      return added;
 	    }
 
-            function add_mei_node_for(mei,mei_graph,note) {
-	        var id = note.getAttribute("id");
-		var elem = get_by_id(mei,"gn-"+id);
-		if (elem != null) {
-		  return elem;
-		}
-		elem = mei.createElement("node");
-		// This node represent that note
-		var label = mei.createElement("label");
-		var note = mei.createElement("note");
-		note.setAttribute("sameas","#"+id);
-		elem.appendChild(label);
-		label.appendChild(note);
-		// But should have a separate XML ID
-		elem.setAttribute("xml:id","gn-" + id);
-		mei_graph.appendChild(elem);
-		return elem;
-	    }
-            
             // Add a collection of edges to the MEI graph element
             function add_edges(mei) {
 	      var added = [];
@@ -376,28 +312,21 @@
 		});
 
 
-	      //for(var i = 1; i < notes.length; i++) {
-		//note1 = note_coords(notes[i-1]);
-		//note2 = note_coords(notes[i]);
-		//added.push(line(note1,note2));
-	        var elem = roundedHull(notes.map(note_coords));
-		elem.setAttribute("id",id);
-		elem.setAttribute("class","hyperedge");
-		elem.setAttribute("type",type);
-		elem.style.fillOpacity = "0.5";
-		elem.onwheel = (e) => {
-		  var elem1 = e.target;
-		  var paren = elem1.parentElement;
-		  paren.removeChild(elem1);
-		  paren.insertBefore(elem1,paren.children[0]);
-		  return false;
-		};
-		if(shades)
-		  toggle_shade(elem);
-		added.push(elem);
-	      // TODO: Add selectability on edge.
-	      //}
-	      //elem.addEventListener('click', function(ev) {toggle_selected(elem,ev.shiftKey) } )
+	      var elem = roundedHull(notes.map(note_coords));
+	      elem.setAttribute("id",id);
+	      elem.setAttribute("class","hyperedge");
+	      elem.setAttribute("type",type);
+	      elem.style.fillOpacity = "0.5";
+	      elem.onwheel = (e) => {
+		var elem1 = e.target;
+		var paren = elem1.parentElement;
+		paren.removeChild(elem1);
+		paren.insertBefore(elem1,paren.children[0]);
+		return false;
+	      };
+	      if(shades)
+		toggle_shade(elem);
+	      added.push(elem);
 	      elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
 
 	      return added;
@@ -682,19 +611,6 @@
 	      }else{
 		return;
 	      }
-	    }
-
-            function init_type(type) {
-	      var elem = document.createElement("input");
-	      elem.setAttribute("type","button");
-	      elem.setAttribute("class","hyperedgebutton");
-	      elem.setAttribute("id",type + "hyperedgebutton");
-	      elem.setAttribute("value","Add "+type+" hyperedge " + "(" + type_conf[type].key + ")");
-	      elem.onclick = () => {do_hyperedge(type);};
-	      $("#relation_buttons")[0].appendChild(elem);
-	      type_shades[type] = shades_array[type_conf[type].colour];
-	      type_keys[type_conf[type].key] = type;
-	      button_shades[type+"hyperedgebutton"] = shades_array[type_conf[type].colour];
 	    }
 
 

@@ -422,3 +422,78 @@ function to_text(elems) {
 
 
 
+
+// Get the MEI-graph nodes that are adjacent to a hyperedge
+function hyperedge_allnodes(he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+        if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
+          nodes.push(get_by_id(mei,a.getAttribute("to")));
+        }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and primary to a hyperedge
+function hyperedge_primaries(he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "primary"){
+      nodes.push(get_by_id(mei,a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and secondary to a hyperedge
+function hyperedge_secondaries(he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "secondary"){
+      nodes.push(get_by_id(mei,a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+
+function add_mei_node_for(mei,mei_graph,note) {
+    var id = note.getAttribute("id");
+    var elem = get_by_id(mei,"gn-"+id);
+    if (elem != null) {
+      return elem;
+    }
+    elem = mei.createElement("node");
+    // This node represent that note
+    var label = mei.createElement("label");
+    var note = mei.createElement("note");
+    note.setAttribute("sameas","#"+id);
+    elem.appendChild(label);
+    label.appendChild(note);
+    // But should have a separate XML ID
+    elem.setAttribute("xml:id","gn-" + id);
+    mei_graph.appendChild(elem);
+    return elem;
+}
+            
+
+function hide_note(note) {
+  var elem = get_by_id(document,note_get_sameas(note));
+  if(elem)
+    elem.style.visibility = "hidden";
+  return elem;
+}
+
+function hide_he(he) {
+  var elem = get_by_id(document,he.getAttribute("xml:id"));
+  if(elem) 
+    elem.style.visibility = "hidden";
+  return elem;
+}
+
+function mark_secondary(item) {
+    item.setAttribute("style","fill:grey");
+    item.
+}

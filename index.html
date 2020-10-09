@@ -310,7 +310,7 @@
             // Draw a series of edges (TODO: make it much much much better)
             function draw_edges() {
 	      var added = [];
-	      if(selected.include(undefined));
+	      if(selected.includes(undefined));
 		return [];
 	      for(var i = 1; i < selected.length; i++) {
 		note1 = note_coords(selected[i-1]);
@@ -472,7 +472,7 @@
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
 		changes = true;
-		if(selected[0].getAttribute("class") == "hyperedge"){
+		if(selected.concat(extraselected)[0].getAttribute("class") == "hyperedge"){
 		  var types = [];
 		  selected.concat(extraselected).forEach((he) => {
 		      //TODO: move type_synonym application so that this
@@ -484,7 +484,7 @@
 		      toggle_shade(he);
 		  });
 		  undo_actions.push(["change hyperedge type",types.reverse(),selected,extraselected]);
-		}else if(selected[0].getAttribute("class") == "note"){
+		}else if(selected.concat(extraselected)[0].getAttribute("class") == "note"){
 		  var added = [];
 		  var [he_id,mei_elems] = add_hyperedge(mei,mei_graph,type);
 		  added.push(mei_elems);  // Add it to the MEI
@@ -667,7 +667,7 @@
 	      extraselected = [];
 	      upload = document.getElementById("fileupload");
 	      if(upload.files.length == 1){
-		reader.addEventListener("load",load_finish);
+		reader.onload = load_finish;
 		reader.readAsText(upload.files[0]);
 		filename = upload.files[0].name.split(".").slice(0,-1).join(".");
 		if(filename == "")
@@ -865,7 +865,7 @@
 	      data = data2;
 	      mei_graph = add_or_fetch_graph();
 	      for (let n of document.getElementsByClassName("note")) {
-		  n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
+		  n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
 	      }
 	      if(non_notes_hidden)
 		set_non_note_visibility("hidden");

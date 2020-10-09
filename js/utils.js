@@ -494,5 +494,37 @@ function hide_he(he) {
 }
 
 function mark_secondary(item) {
-    item.setAttribute("style","fill:grey");
+    var current = item.style.fillOpacity;
+    if(!current)
+      current = 1;
+    item.style.fillOpacity = current * 0.5;
+}
+
+function unmark_secondary(item) {
+    var current = item.style.fillOpacity;
+    item.style.fillOpacity = current * 2;
+}
+
+function get_measure(elem) {if(elem.tagName == "measure") return elem; else return get_measure(elem.parentElement);}
+
+function select_samenote() {
+  if((selected.length == 1 || extraselected.length == 1)
+   && !(selected.length == 1 &&  extraselected.length == 1)){
+    var svg_note;
+    if(selected.length == 1)
+      svg_note = selected[0];
+    else
+      svg_note = extraselected[0];
+    var note = get_by_id(mei,svg_note.getAttribute("id"));
+    var measure = get_measure(note);
+    var candidates = Array.from(measure.getElementsByTagName("note"));
+    candidates.forEach((x) => { if(
+    	      x.getAttribute("oct") == note.getAttribute("oct") &&
+    	      x.getAttribute("pname") == note.getAttribute("pname")) {
+          toggle_selected(get_by_id(document,x.getAttribute("xml:id")));
+        }
+        });
+    //This is an ugly hack
+    toggle_selected(svg_note,true);
+  }
 }

@@ -244,6 +244,58 @@
 	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach(toggle_button_shade);
 	    }
 
+            // Toggle showing things other than notes in the score
+            function toggle_equalize() {
+	      var hidden = "hidden";
+	      if(non_notes_hidden){
+		hidden = "visible";
+		non_notes_hidden = false;
+	      }else{
+		non_notes_hidden = true;
+	      }
+	      set_non_note_visibility(hidden);
+	    }
+
+            function set_non_note_visibility(hidden) {
+	      var svg_element = document.getElementById("svg_output");
+	      Array.from(svg_element.getElementsByClassName("beam")).forEach((x) =>
+		  { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
+	      hide_classes.forEach((cl) => {
+		Array.from(svg_element.getElementsByClassName(cl)).forEach((x) =>
+		    { x.style.visibility= hidden; });
+	      })
+	    }
+
+
+            // Toggle the current hyperedge having a type-dependent shade
+	    // or not
+            function toggle_shade(he) {
+	      if(!shades && he.getAttribute("old_fill")){
+		he.setAttribute("fill",he.getAttribute("old_fill"));
+		he.removeAttribute("old_fill");
+	      }else if (shades && type_shades[he.getAttribute("type")]){
+		he.setAttribute("old_fill", he.getAttribute("fill"));
+		he.setAttribute("fill",type_shades[he.getAttribute("type")]);
+	      }else if (shades && type_synonym[he.getAttribute("type")]){
+		he.setAttribute("old_fill", he.getAttribute("fill"));
+		he.setAttribute("fill",type_shades[type_synonym[he.getAttribute("type")]]);
+	      }
+	    }
+
+            function toggle_button_shade(button) {
+	      if(shades) 
+		button.style.color=button_shades[button.getAttribute("id")];
+	      else
+		button.style.color="";
+	    }
+
+            // Toggle type-dependent shades for hyperedges and buttons
+            function toggle_shades() {
+	      shades = !shades;
+	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_shade);
+	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach(toggle_button_shade);
+	    }
+
             function delete_hyperedge(elem) {
 	      //Assume no meta-edges for now, meaning we only have to
 	      //remove the SVG elem, the MEI node, and any involved arcs

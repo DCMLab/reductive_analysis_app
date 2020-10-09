@@ -215,6 +215,7 @@
 	      //Assume no meta-edges for now, meaning we only have to
 	      //remove the SVG elem, the MEI node, and any involved arcs
 	      var orig_mei_he,mei_he = get_by_id(mei,elem.id);
+	      unmark_secondaries(mei_he);
 	      
 	      var orig_arcs,arcs =
 		Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
@@ -237,9 +238,8 @@
 		  x.parentElement.removeChild(x);
 		  return elems;
 		  }});
+
 	      return action_removed.reverse();
-	      //TODO: Restore secondary-greyed-out notes. But that whole
-	      //thing needs a refactoring anyway..
 	    }
 
 	    function delete_hyperedges() {
@@ -493,9 +493,8 @@
 		  added.push(draw_hyperedge(he_id,type)); // Draw the edge
 		  
 		  undo_actions.push(["hyperedge",added,selected,extraselected]);
-		  selected.forEach(mark_secondary); // De-select
-		  selected = [];
-		  extraselected.forEach(toggle_selected); // De-select
+		  mark_secondaries(get_by_id(mei,he_id));
+		  selected.concat(extraselected).forEach(toggle_selected); // De-select
 		}
 	    }
 
@@ -517,6 +516,11 @@
 		[what,elems,sel,extra] = undo_actions.pop();
 		if(what == "edges" || what == "hyperedge") {
 		  var added = elems;
+		  if(what == "hyperedge")
+		    added.flat().forEach((x) => { 
+	              if(mei.contains(x) && x.getAttribute("type") == "hyperedge")
+			unmark_secondaries(x);
+		      });
 		  // Remove added elements
 		  added.flat().forEach((x) => {
 		      if(!node_referred_to(x.getAttribute("xml:id")))
@@ -529,6 +533,7 @@
 		  var removed = elems;
 		  removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
 		  selected = sel;
+		  selected.forEach(mark_secondaries);
 		}else if (what == "change hyperedge type") {
 		  var types = elems;
 		  sel.concat(extra).forEach((he) => {
@@ -547,7 +552,6 @@
 		  reduce_layer.forEach((action) => {
 		    var [he,secondaries,graphicals] = action;
 		    graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
-		    secondaries.forEach((x) => { if(x) mark_secondary(get_by_id(document,note_get_sameas(x))); });
 		  });
 		  sel.forEach((x) => {toggle_selected(x);});
 		  extra.forEach((x) => {toggle_selected(x,true);});
@@ -708,8 +712,7 @@
 		    type = he_labels[0].getAttribute("type");
 		  }
 		  var added = draw_hyperedge(x.getAttribute("xml:id"),type);
-		  if(added.length > 0)
-		    selected.forEach(mark_secondary); // De-select
+		  mark_secondaries(x);
 		  selected = [];
 		  extraselected = [];
 		});

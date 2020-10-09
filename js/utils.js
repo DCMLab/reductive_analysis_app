@@ -159,3 +159,28 @@ function note_get_sameas(note) {
 	      getAttribute("sameas");
 }
 
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+
+function note_get_accid(note) {
+  if(document.contains(note))
+    note = get_by_id(mei,note.id);
+  if(note.hasAttribute("accid.ges"))
+      return note.getAttribute("accid.ges");
+  if(note.hasAttribute("accid"))
+      return note.getAttribute("accid");
+  if(note.children.length == 0)
+      return "";
+  var accids = note.getElementsByTagName("accid");
+  if(accids.length == 0)
+    return "";
+  var accid = accids[0]; //We don't care if there's more than one.
+  if(accid.hasAttribute("accid.ges"))
+      return accid.getAttribute("accid.ges");
+  if(accid.hasAttribute("accid"))
+      return accid.getAttribute("accid");
+  return "";
+}
+
+

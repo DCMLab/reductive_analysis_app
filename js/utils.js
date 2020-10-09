@@ -264,5 +264,4 @@ function hide_he(he) {
 
 function mark_secondary(item) {
     item.setAttribute("style","fill:grey");
-    item.
 }

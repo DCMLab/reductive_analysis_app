@@ -32,6 +32,7 @@
 	</svg>
 
         <script type="text/javascript">
+	    // GLOBALS
 	    // Clicking selects
             var selected = [];
 	    // Shift-clicking extra selects
@@ -74,12 +75,14 @@
 
 	    var zoom = 1;
 
+	    // Once things are loaded, do configuration stuff
 	    $(document).ready(function()
 		{
 		  Object.keys(type_conf).forEach(init_type);
 		  toggle_shades();
 		});
 
+            // Configured types need a button and a color each
             function init_type(type) {
 	      var elem = document.createElement("input");
 	      elem.setAttribute("type","button");
@@ -93,6 +96,7 @@
 	      button_shades[type+"hyperedgebutton"] = shades_array[type_conf[type].colour];
 	    }
 
+            // If we're selecting hyperedges, we may want to change them.
             function toggle_he_selected(selecting) {
 	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach((button) => {
 		    var val = button.getAttribute("value");
@@ -108,26 +112,30 @@
 	      var ci = item.getAttribute("class");
 	      if(selected.length > 0 || extraselected.length > 0) {
 		var csel = selected.concat(extraselected)[0].getAttribute("class");
+		// Select only things of the same type for now - editing
+		// hyperedges to add things means deleting and re-adding
 		if(ci != csel)
 		  return;
 	      }
 	      if(ci == "note"){
+		// We're selecting notes.
 		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-		  item.setAttribute("style","fill:black");
+		  item.style.fill = "black";
 		  selected = selected.filter(x =>  x !== item);
 		  extraselected = extraselected.filter(x =>  x !== item);
 		} else {
 		  if(extra) {
-		    item.setAttribute("style","fill:red");
+		    item.style.fill="red";
 		    extraselected.push(item);
 		  }else {
-		    item.setAttribute("style","fill:green");
+		    item.style.fill ="green";
 		    selected.push(item);
 		  }
 		}
 	      } else if(ci == "hyperedge"){
 		//Hyperedge selection
 		if(selected.concat(extraselected).length == 0){
+		  // We're beginning to select hyperedges
 		  toggle_he_selected(true);
 		}
 		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
@@ -140,13 +148,67 @@
 		  // TODO: change rendering order to put selected edges at
 		  // the "bottom", in order to overcome overlap. Might
 		  // otherwise need Smartness to overcome edges covering
-		  // each other.
+		  // each other. FIXED: I made it possible to scroll
+		  // through edges
 		}
 		if(selected.concat(extraselected).length == 0){
+		  // We're finished selecting hyperedges
 		  toggle_he_selected(false);
 		}
 	      }
 
+	    }
+
+            // Toggle showing things other than notes in the score
+            function toggle_equalize() {
+	      var hidden = "hidden";
+	      if(non_notes_hidden){
+		hidden = "visible";
+		non_notes_hidden = false;
+	      }else{
+		non_notes_hidden = true;
+	      }
+	      set_non_note_visibility(hidden);
+	    }
+
+            function set_non_note_visibility(hidden) {
+	      var svg_element = document.getElementById("svg_output");
+	      Array.from(svg_element.getElementsByClassName("beam")).forEach((x) =>
+		  { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
+	      hide_classes.forEach((cl) => {
+		Array.from(svg_element.getElementsByClassName(cl)).forEach((x) =>
+		    { x.style.visibility= hidden; });
+	      })
+	    }
+
+
+            // Toggle the current hyperedge having a type-dependent shade
+	    // or not
+            function toggle_shade(he) {
+	      if(!shades && he.getAttribute("old_fill")){
+		he.setAttribute("fill",he.getAttribute("old_fill"));
+		he.removeAttribute("old_fill");
+	      }else if (shades && type_shades[he.getAttribute("type")]){
+		he.setAttribute("old_fill", he.getAttribute("fill"));
+		he.setAttribute("fill",type_shades[he.getAttribute("type")]);
+	      }else if (shades && type_synonym[he.getAttribute("type")]){
+		he.setAttribute("old_fill", he.getAttribute("fill"));
+		he.setAttribute("fill",type_shades[type_synonym[he.getAttribute("type")]]);
+	      }
+	    }
+
+            function toggle_button_shade(button) {
+	      if(shades) 
+		button.style.color=button_shades[button.getAttribute("id")];
+	      else
+		button.style.color="";
+	    }
+
+            // Toggle type-dependent shades for hyperedges and buttons
+            function toggle_shades() {
+	      shades = !shades;
+	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_shade);
+	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach(toggle_button_shade);
 	    }
 
             function delete_hyperedge(elem) {
@@ -494,32 +556,6 @@
 
 	    }
 
-            function toggle_shade(he) {
-	      if(!shades && he.getAttribute("old_fill")){
-		he.setAttribute("fill",he.getAttribute("old_fill"));
-		he.removeAttribute("old_fill");
-	      }else if (shades && type_shades[he.getAttribute("type")]){
-		he.setAttribute("old_fill", he.getAttribute("fill"));
-		he.setAttribute("fill",type_shades[he.getAttribute("type")]);
-	      }else if (shades && type_synonym[he.getAttribute("type")]){
-		he.setAttribute("old_fill", he.getAttribute("fill"));
-		he.setAttribute("fill",type_shades[type_synonym[he.getAttribute("type")]]);
-	      }
-	    }
-
-            function toggle_button_shade(button) {
-	      if(shades) 
-		button.style.color=button_shades[button.getAttribute("id")];
-	      else
-		button.style.color="";
-	    }
-
-
-            function toggle_shades() {
-	      shades = !shades;
-	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_shade);
-	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach(toggle_button_shade);
-	    }
 
             // We have keyboard commands!
             function handle_keypress(ev) {
@@ -726,28 +762,6 @@
 	      document.onkeypress = function(ev) {handle_keypress(ev);};
 	    }
 
-            function toggle_equalize() {
-	      var hidden = "hidden";
-	      if(non_notes_hidden){
-		hidden = "visible";
-		non_notes_hidden = false;
-	      }else{
-		non_notes_hidden = true;
-	      }
-	      set_non_note_visibility(hidden);
-	    }
-
-            function set_non_note_visibility(hidden) {
-	      var svg_element = document.getElementById("svg_output");
-	      Array.from(svg_element.getElementsByClassName("beam")).forEach((x) =>
-		  { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
-	      hide_classes.forEach((cl) => {
-		Array.from(svg_element.getElementsByClassName(cl)).forEach((x) =>
-		    { x.style.visibility= hidden; });
-	      })
-	    }
-
-
 
 
             function rerender(output) {
@@ -808,30 +822,6 @@
 	      // Create new SVG element, stack the current version on
 	      // it..? No I have no idea how to UI this properly.
 	      rerender();
-	    }
-
-	    function get_measure(elem) {if(elem.tagName == "measure") return elem; else return get_measure(elem.parentElement);}
-
-            function select_samenote() {
-	      if((selected.length == 1 || extraselected.length == 1)
-	       && !(selected.length == 1 &&  extraselected.length == 1)){
-		var svg_note;
-		if(selected.length == 1)
-		  svg_note = selected[0];
-		else
-		  svg_note = extraselected[0];
-		var note = get_by_id(mei,svg_note.getAttribute("id"));
-		var measure = get_measure(note);
-		var candidates = Array.from(measure.getElementsByTagName("note"));
-		candidates.forEach((x) => { if(
-			      x.getAttribute("oct") == note.getAttribute("oct") &&
-			      x.getAttribute("pname") == note.getAttribute("pname")) {
-		      toggle_selected(get_by_id(document,x.getAttribute("xml:id")));
-		    }
-		    });
-		//This is an ugly hack
-		toggle_selected(svg_note,true);
-	      }
 	    }
 
             function texton() { text_input = true; }

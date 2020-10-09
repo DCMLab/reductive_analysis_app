@@ -15,6 +15,7 @@
         <script src="js/d3.min.js" type="text/javascript" ></script>
 	<script src="js/utils.js" type="text/javascript"></script>
 	<script src="js/conf.js" type="text/javascript"></script>
+	<script src="js/kirlin.js" type="text/javascript"></script>
 	<link type="text/css" rel="stylesheet" href="css/style.css" >
     </head>
     <body>
@@ -78,6 +79,8 @@
 		  Object.keys(type_conf).forEach(init_type);
 		  toggle_shades();
 		});
+
+
 
             function toggle_he_selected(selecting) {
 	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach((button) => {
@@ -676,6 +679,16 @@
 		return;
 	      }
 	    }
+            function load_analysis() {
+	      /* Cancel loading if changes are not saved? alert */
+	      var analysis_upload = document.getElementById("analysisupload");
+	      if(analysisupload.files.length == 1){
+		reader.onload =add_kirlin_analysis;
+		reader.readAsText(analysisupload.files[0]);
+	      }else{
+		return;
+	      }
+	    }
 
             function init_type(type) {
 	      var elem = document.createElement("input");
@@ -910,6 +923,7 @@
 		toggle_selected(svg_note,true);
 	      }
 	    }
+            
 
             function texton() { text_input = true; }
             function textoff() { text_input = false; }
@@ -965,6 +979,7 @@
 	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
 	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender_temp()" >
+	  <input type="file" id="analysisupload" value="Load Kirlin-style analysis" onchange="load_analysis()" >
 	  <!--input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" --> <br/>
 
 	</div>

@@ -274,6 +274,26 @@ function unmark_secondary(item) {
     item.style.fillOpacity = current * 2;
 }
 
+function mark_secondaries(he) {
+    if(!mei.contains(he))
+      he = get_by_id(mei,he.id);
+    var secondaries = hyperedge_secondaries(he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(document,note_get_sameas(n));
+	mark_secondary(svg_note);
+    });
+}
+
+function unmark_secondaries(he) {
+    if(!mei.contains(he))
+      he = get_by_id(mei,he.id);
+    var secondaries = hyperedge_secondaries(he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(document,note_get_sameas(n));
+	unmark_secondary(svg_note);
+    });
+}
+
 function get_measure(elem) {if(elem.tagName == "measure") return elem; else return get_measure(elem.parentElement);}
 
 function select_samenote() {

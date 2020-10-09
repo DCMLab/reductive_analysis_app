@@ -529,7 +529,7 @@
 		  var removed = elems;
 		  removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
 		  selected = sel;
-		}else if (what = "change hyperedge type") {
+		}else if (what == "change hyperedge type") {
 		  var types = elems;
 		  sel.concat(extra).forEach((he) => {
 		      //TODO: move type_synonym application so that this
@@ -542,7 +542,7 @@
 		  });
 		  sel.forEach((x) => {toggle_selected(x);});
 		  extra.forEach((x) => {toggle_selected(x,true);});
-		}else if (what = "reduce") {
+		}else if (what == "reduce") {
 		  var reduce_layer = elems;
 		  reduce_layer.forEach((action) => {
 		    var [he,secondaries,graphicals] = action;

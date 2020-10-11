@@ -130,11 +130,13 @@ function line(p1,p2) {
   return newElement;
 }
 
+// Note coordinates are off center by a bit
 function note_coords(note) {
   return [note.getElementsByTagName("use")[0].x.animVal.value + 100,
           note.getElementsByTagName("use")[0].y.animVal.value]
 }
 
+// From id string to element
 function get_by_id(doc,id) {
   if (id[0] == "#") { id = id.slice(1); }
   var elem =  doc.querySelector("[*|id='"+id+"']");
@@ -145,6 +147,7 @@ function get_by_id(doc,id) {
   }
 }
 
+// From graph node to list of all arcs that refer to it
 function node_referred_to(id) {
   return Array.from(mei.getElementsByTagName("arc"))
     .filter((x) => {
@@ -153,16 +156,19 @@ function node_referred_to(id) {
      }).length > 0;
 }
 
+// From MEI graph node to its referred note.
 function note_get_sameas(note) {
   return note.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
 	      getAttribute("sameas");
 }
 
+// Always-positive modulo
 function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
+// What's the accidentals for this note?
 function note_get_accid(note) {
   if(document.contains(note))
     note = get_by_id(mei,note.id);
@@ -183,6 +189,7 @@ function note_get_accid(note) {
   return "";
 }
 
+// From any hyperedge element to list of MEI note elements
 function hyperedge_get_notes(he) {
   if(document.contains(he))
     he = get_by_id(mei,he.id);
@@ -228,6 +235,7 @@ function hyperedge_secondaries(he) {
   return nodes;
 }
 
+// Set up new graph node for a note
 function add_mei_node_for(mei,mei_graph,note) {
     var id = note.getAttribute("id");
     var elem = get_by_id(mei,"gn-"+id);
@@ -247,7 +255,7 @@ function add_mei_node_for(mei,mei_graph,note) {
     return elem;
 }
             
-
+// Find graphical element and hide it
 function hide_note(note) {
   var elem = get_by_id(document,note_get_sameas(note));
   if(elem)
@@ -255,6 +263,7 @@ function hide_note(note) {
   return elem;
 }
 
+// Find graphical element and hide it
 function hide_he(he) {
   var elem = get_by_id(document,he.getAttribute("xml:id"));
   if(elem) 
@@ -262,6 +271,7 @@ function hide_he(he) {
   return elem;
 }
 
+// Secondaries are greyed out
 function mark_secondary(item) {
     var current = item.style.fillOpacity;
     if(!current)
@@ -269,11 +279,13 @@ function mark_secondary(item) {
     item.style.fillOpacity = current * 0.5;
 }
 
+// No longer a secondary - bring it back
 function unmark_secondary(item) {
     var current = item.style.fillOpacity;
     item.style.fillOpacity = current * 2;
 }
 
+// For a certain hyperedge, find its secondaries and mark them
 function mark_secondaries(he) {
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
@@ -284,6 +296,7 @@ function mark_secondaries(he) {
     });
 }
 
+// For a certain hyperedge, find its secondaries and unmark them
 function unmark_secondaries(he) {
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
@@ -294,8 +307,12 @@ function unmark_secondaries(he) {
     });
 }
 
+//Find the measure this MEI score element occurs in
 function get_measure(elem) {if(elem.tagName == "measure") return elem; else return get_measure(elem.parentElement);}
 
+// If we have a single note selected, find all other notes of the same
+// pitch in this measure, and select them as secondary, and the previously
+// selected one as primary
 function select_samenote() {
   if((selected.length == 1 || extraselected.length == 1)
    && !(selected.length == 1 &&  extraselected.length == 1)){

@@ -359,6 +359,30 @@ function select_samenote() {
 }
 
 
+function getBoundingBoxTop (elem) {
+    // use the native SVG interface to get the bounding box
+    var bbox = elem.getBBox();
+    // return the center of the bounding box
+    return bbox.y + bbox.height;
+}
+
+function getBoundingBoxCenter (elem) {
+    // use the native SVG interface to get the bounding box
+    var bbox = elem.getBBox();
+    // return the center of the bounding box
+    return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
+}
+
+function getBoundingBoxOffCenter (elem) {
+    // use the native SVG interface to get the bounding box
+    var bbox = elem.getBBox();
+    // return the center of the bounding box
+    if(bbox.height > 500){
+      return [bbox.x + bbox.width/2, bbox.y +200];
+    }
+    return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
+}
+
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
 

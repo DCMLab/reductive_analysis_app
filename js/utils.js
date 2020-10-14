@@ -383,6 +383,21 @@ function getBoundingBoxOffCenter (elem) {
     return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
 }
 
+function get_metaedge_target(elem) {
+  if(elem.getAttribute("class") == "metaedge"){
+    var circ= elem.getElementsByTagName("circle")[0];
+    return [circ.cx.baseVal.value,circ.cy.baseVal.value];
+  }else if (elem.getAttribute("class") == "hyperedge") {
+    return getBoundingBoxCenter(elem);
+  }else{
+    console.log("wtf");
+    console.log(elem);
+    return [0,0];
+  }
+
+}
+
+
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
 

@@ -152,7 +152,7 @@
 		    selected.push(item);
 		  }
 		}
-	      } else if(ci == "hyperedge"){
+	      } else if(ci == "hyperedge" || ci == "metaedge"){
 		//Hyperedge selection
 		if(selected.concat(extraselected).length == 0){
 		  // We're beginning to select hyperedges
@@ -160,6 +160,7 @@
 		}
 		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
 		  item.style.fillOpacity = 0.5;
+		  item.style.strokeOpacity = 0.1;
 		  selected = selected.filter(x =>  x !== item);
 		  extraselected = extraselected.filter(x =>  x !== item);
 		  item.style.transform = "";
@@ -532,6 +533,120 @@
 		}
 	    }
 
+            function draw_metaedge(id,type) {
+	      var added = [];
+	      var targets =selected.concat(extraselected); 
+	      var coords = targets.map(get_metaedge_target);
+	      var x = average(coords.map((e) => e[0]));
+	      // Above
+	      var y =
+		targets.concat([document.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
+
+//	      coords.push([x,y]);
+	      var g_elem = g();
+//	      var elem = roundedHull(coords);
+	      g_elem.setAttribute("id",id);
+	      g_elem.setAttribute("class","metaedge");
+	      g_elem.setAttribute("type",type);
+	      g_elem.style.fillOpacity = "0.5";
+	      g_elem.style.strokeOpacity = "0.1";
+	      g_elem.onwheel = (e) => {
+		var elem1 = e.target;
+		var paren = elem1.parentElement;
+		paren.removeChild(elem1);
+		paren.insertBefore(elem1,paren.children[0]);
+		return false;
+	      };
+	      coords.forEach((crds) => { var line_elem = line([x,y],crds);
+		  g_elem.appendChild(line_elem);});
+	      g_elem.appendChild(circle([x,y],200));
+	      if(shades)
+		toggle_shade(g_elem);
+	      add_to_svg_bg(g_elem);
+	      added.push(g_elem);
+	      g_elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
+	      g_elem.onmouseover = function (ev) {
+
+		targets.forEach((item) => {
+		    if(item.style.filter == ""){
+		      item.style.transform = "translate3d(0,0,0)";
+		      item.style.filter = "url(\"#glowFilter\")";
+		      }});
+	      }
+	      g_elem.onmouseout = function (ev) {
+		targets.forEach((item) => {
+		    if(item.style.filter == "url(\"#glowFilter\")") {
+		      item.style.transform = "";
+		      item.style.filter = "";
+		    }});
+	      }
+	      return added;
+	      
+
+	    }
+
+            function add_metaedge(type,he_id_param) {
+	      // Add a new node for the hyperedge
+	      var added = [];
+	      var he_elem = mei.createElement("node");
+	      he_elem.setAttribute("type","metaedge");
+	      var he_label = mei.createElement("label");
+	      if(typeof type != 'undefined')
+		he_label.setAttribute("type",type)
+	      he_elem.appendChild(he_label);
+	      // Who knows if this is enough
+	      var he_id;
+	      if(typeof he_id_param == 'undefined')
+	        he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
+	      else
+		he_id = he_id_param;
+	      he_elem.setAttribute("xml:id",he_id);
+	      mei_graph.appendChild(he_elem);
+	      added.push(he_elem);
+	      for(var i = 0; i < selected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#"+selected[i].id);
+		elem.setAttribute("type","secondary");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      for(var i = 0; i < extraselected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#"+extraselected[i].id);
+		elem.setAttribute("type","primary");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      return [he_id,added];
+	    }
+
+            function do_metaedge(type) {
+		if (selected.length == 0 && extraselected == 0) {
+		  return;}
+		var ci =selected.concat(extraselected)[0].getAttribute("class"); 
+		if(!(ci == "hyperedge" || ci == "metaedge")){
+		  return; }
+		changes = true;
+		var added = [];
+		var [he_id,mei_elems] = add_metaedge(type);
+		added.push(mei_elems);  // Add it to the MEI
+		if(mei != orig_mei){
+		  var [orig_he_id,orig_mei_elems] = add_metaedge(orig_mei,orig_mei_graph,type,he_id);
+		  added.push(orig_mei_elems);  // Add it to the MEI
+		}
+		added.push(draw_metaedge(he_id,type)); // Draw the edge
+		
+		undo_actions.push(["metaedge",added,selected,extraselected]);
+		selected.concat(extraselected).forEach(toggle_selected); // De-select
+	    }
+
+
             // Oops, undo whatever we did last.
 	    function do_undo() {
 		// Get latest undo_actions
@@ -695,6 +810,8 @@
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
 	      // Get the nodes representing hyperedges
 	      var hyperedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "hyperedge";})
+	      // Get the nodes representing metaedges
+	      var metaedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metaedge";})
 	      // Next we get the note labels
 	      var note_ids = nodes_array.map((x) => {
 		            try{
@@ -707,11 +824,12 @@
 	      // Now get the arcs/edges
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var hyperedges_arcs = [];
+	      var metaedges_arcs = [];
 	      // And draw them all.
 	      arcs_array.forEach((x) => {
 		  var n1 = get_by_id(mei,x.getAttribute("from")); 
 		  var n2 = get_by_id(mei,x.getAttribute("to"));
-		  if (!hyperedges_nodes.includes(n1)){
+		  if (!hyperedges_nodes.includes(n1) && !metaedges_nodes.includes(n1)){
 		    //Regular edge, just draw. TODO: Fix assumption that
 		    //nodes are notes if we reach this.
 		    var id1 = note_ids.find((y) => {
@@ -723,12 +841,15 @@
 		    selected = [get_by_id(document,id1),get_by_id(document,id2) ];
 		    draw_edges();
 		    selected = [];
-		  }else{
+		  }else if (!metaedges_nodes.includes(n1)){
 		    var id2 = note_ids.find((y) => {
 			  return y[0] == n2;
 			})[1];
 		    hyperedges_arcs.push([n1,id2,x.getAttribute("type")]);
+		  }else {
+		    metaedges_arcs.push([n1,n2.getAttribute("xml:id"),x.getAttribute("type")]);
 		  }
+
 	      });
 	      hyperedges_nodes.forEach((x) => {
 		  var hyperedge_nodes = hyperedges_arcs.
@@ -750,6 +871,27 @@
 		  selected = [];
 		  extraselected = [];
 		});
+
+	      metaedges_nodes.forEach((x) => {
+		  var metaedge_nodes = metaedges_arcs.
+		              filter((y) => {return y[0] == x;}).
+			      map((y) => {return [y[2],get_by_id(document,y[1])];})
+	          selected = metaedge_nodes.
+		              filter((y) => {return y[0] == "secondary";}).
+			      map((y) => { return y[1];});
+	          extraselected = metaedge_nodes.
+		              filter((y) => {return y[0] == "primary";}).
+			      map((y) => { return y[1];});
+	          var me_labels = x.getElementsByTagName("label");
+		  var type = "";
+		  if(me_labels.length > 0){
+		    type = me_labels[0].getAttribute("type");
+		  }
+		  var added = draw_metaedge(x.getAttribute("xml:id"),type);
+		  selected = [];
+		  extraselected = [];
+		});
+
 
 	    }
             

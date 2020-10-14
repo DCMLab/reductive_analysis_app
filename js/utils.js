@@ -76,8 +76,6 @@ var roundedHullN = function (polyPoints) {
 
 
 function roundedHull(points) {
-  var sibling = document.getElementsByClassName("system")[0];
-  var parent = sibling.parentNode;
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking
   if(points.length == 2) {
@@ -85,7 +83,6 @@ function roundedHull(points) {
   } else {
     newElement.setAttribute('d',roundedHullN(d3.polygonHull(points)));
   }
-  parent.insertBefore(newElement,sibling);
   return newElement;
 }
 
@@ -117,8 +114,6 @@ function getRandomShade(colour) {
 
 // Draw a line between points p1 and p2
 function line(p1,p2) {
-  var sibling = document.getElementsByClassName("system")[0];
-  var parent = sibling.parentNode;
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'line');
   newElement.setAttribute("x1",p1[0]);
   newElement.setAttribute("y1",p1[1]);
@@ -126,7 +121,35 @@ function line(p1,p2) {
   newElement.setAttribute("y2",p2[1]);
   newElement.style.stroke = "#000";
   newElement.style.strokeWidth = "15px"; 
+  return newElement;
+}
+
+// Draw a circle at point p with radius rad
+function circle(p,rad) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+  newElement.setAttribute("cx",p[0]);
+  newElement.setAttribute("cy",p[1]);
+  newElement.setAttribute("r",rad);
+  newElement.style.stroke = "#000";
+  newElement.style.strokeWidth = "15px"; 
+  return newElement;
+}
+
+function add_to_svg_bg(newElement) {
+  var sibling = document.getElementsByClassName("system")[0];
+  var parent = sibling.parentNode;
+  parent.insertBefore(newElement,sibling);
+}
+
+function add_to_svg_fg(newElement) {
+  var sibling = document.getElementsByClassName("system")[0];
+  var parent = sibling.parentNode;
   parent.appendChild(newElement);
+}
+
+
+function g() {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
   return newElement;
 }
 

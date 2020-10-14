@@ -357,3 +357,29 @@ function select_samenote() {
     toggle_selected(svg_note,true);
   }
 }
+
+
+function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
+
+
+function to_text(elems) {
+  if(elems.length == 0)
+    return "";
+  if(elems[0].getAttribute("class") == "note"){
+    return "notes("+elems.map((elem) => {
+      var mei_elem = get_by_id(mei,elem.id);
+      var accid = note_get_accid(mei_elem);
+      accid= accid.replaceAll("s","#")
+      accid= accid.replaceAll("f","b")
+      accid= accid.replaceAll("n","")
+      return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
+    }).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "hyperedge"){
+    return "hyperedges("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "metaedge"){
+    return "metaedges("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }
+}
+
+
+

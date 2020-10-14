@@ -807,6 +807,8 @@
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
 	      // Get the nodes representing hyperedges
 	      var hyperedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "hyperedge";})
+	      // Get the nodes representing metaedges
+	      var metaedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metaedge";})
 	      // Next we get the note labels
 	      var note_ids = nodes_array.map((x) => {
 		            try{
@@ -819,11 +821,12 @@
 	      // Now get the arcs/edges
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
 	      var hyperedges_arcs = [];
+	      var metaedges_arcs = [];
 	      // And draw them all.
 	      arcs_array.forEach((x) => {
 		  var n1 = get_by_id(mei,x.getAttribute("from")); 
 		  var n2 = get_by_id(mei,x.getAttribute("to"));
-		  if (!hyperedges_nodes.includes(n1)){
+		  if (!hyperedges_nodes.includes(n1) && !metaedges_nodes.includes(n1)){
 		    //Regular edge, just draw. TODO: Fix assumption that
 		    //nodes are notes if we reach this.
 		    var id1 = note_ids.find((y) => {
@@ -835,12 +838,15 @@
 		    selected = [get_by_id(document,id1),get_by_id(document,id2) ];
 		    draw_edges();
 		    selected = [];
-		  }else{
+		  }else if (!metaedges_nodes.includes(n1)){
 		    var id2 = note_ids.find((y) => {
 			  return y[0] == n2;
 			})[1];
 		    hyperedges_arcs.push([n1,id2,x.getAttribute("type")]);
+		  }else {
+		    metaedges_arcs.push([n1,n2.getAttribute("xml:id"),x.getAttribute("type")]);
 		  }
+
 	      });
 	      hyperedges_nodes.forEach((x) => {
 		  var hyperedge_nodes = hyperedges_arcs.
@@ -862,6 +868,27 @@
 		  selected = [];
 		  extraselected = [];
 		});
+
+	      metaedges_nodes.forEach((x) => {
+		  var metaedge_nodes = metaedges_arcs.
+		              filter((y) => {return y[0] == x;}).
+			      map((y) => {return [y[2],get_by_id(document,y[1])];})
+	          selected = metaedge_nodes.
+		              filter((y) => {return y[0] == "secondary";}).
+			      map((y) => { return y[1];});
+	          extraselected = metaedge_nodes.
+		              filter((y) => {return y[0] == "primary";}).
+			      map((y) => { return y[1];});
+	          var me_labels = x.getElementsByTagName("label");
+		  var type = "";
+		  if(me_labels.length > 0){
+		    type = me_labels[0].getAttribute("type");
+		  }
+		  var added = draw_metaedge(x.getAttribute("xml:id"),type);
+		  selected = [];
+		  extraselected = [];
+		});
+
 
 	    }
             

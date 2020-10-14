@@ -185,6 +185,9 @@
 		  toggle_he_selected(false);
 		}
 	      }
+	      var primaries = extraselected.map(to_text).join("; ");
+	      var secondaries = selected.map(to_text).join("; ");
+	      $("#selected_things").html("Primaries: "+primaries+"<br/>Secondaries: "+secondaries);  
 
 	    }
 
@@ -1031,6 +1034,8 @@
 
 
         </script>
+	<div id="selected_things" style="position:fixed; fill-opacity: 0.5;
+	stroke-opacity: 0.5">Primaries:<br/>Secondaries:</div>
 	<div id="hidden_buttons" style="position:fixed; bottom:0; z-index:2 ; display:none">
 	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
 	</div>

@@ -401,3 +401,20 @@ function get_metaedge_target(elem) {
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
 
+function to_text(elem) {
+  var mei_elem = get_by_id(mei,elem.id);
+  if(elem.getAttribute("class") == "note"){
+    var accid = note_get_accid(mei_elem);
+    accid.replaceAll("s","#")
+    accid.replaceAll("f","b")
+    accid.replaceAll("n","")
+    return "note("+mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct")+")";
+  }else if(elem.getAttribute("class") == "hyperedge"){
+    return "hyperedge("+elem.getAttribute("type")+")";
+  }else if(elem.getAttribute("class") == "metaedge"){
+    return "metaedge("+elem.getAttribute("type")+")";
+  }
+}
+
+
+

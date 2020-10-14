@@ -536,7 +536,8 @@
 	      var coords = targets.map(get_metaedge_target);
 	      var x = average(coords.map((e) => e[0]));
 	      // Above
-	      var y = targets.concat([document.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort()[0] - 500;
+	      var y =
+		targets.concat([document.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
 
 //	      coords.push([x,y]);
 	      var g_elem = g();
@@ -564,15 +565,17 @@
 	      g_elem.onmouseover = function (ev) {
 
 		targets.forEach((item) => {
+		    if(item.style.filter == ""){
 		      item.style.transform = "translate3d(0,0,0)";
 		      item.style.filter = "url(\"#glowFilter\")";
-		    });
+		      }});
 	      }
 	      g_elem.onmouseout = function (ev) {
 		targets.forEach((item) => {
+		    if(item.style.filter == "url(\"#glowFilter\")") {
 		      item.style.transform = "";
 		      item.style.filter = "";
-		    });
+		    }});
 	      }
 	      return added;
 	      

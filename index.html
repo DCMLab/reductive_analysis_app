@@ -29,6 +29,26 @@
 	      <feMergeNode in="SourceGraphic"/>
 	    </feMerge>
 	  </filter>
+	  <filter id="selectFilter">
+	    <feFlood result="flood" flood-color="#00ff00"/>
+	    <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask"/>
+	    <feMorphology in="mask" operator="dilate" radius="2" result="thickened"/>
+	    <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur"/>
+	    <feMerge>
+	      <feMergeNode in="coloredBlur"/>
+	      <feMergeNode in="SourceGraphic"/>
+	    </feMerge>
+	  </filter>
+	  <filter id="extraFilter">
+	    <feFlood result="flood" flood-color="#ff0000"/>
+	    <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask"/>
+	    <feMorphology in="mask" operator="dilate" radius="2" result="thickened"/>
+	    <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur"/>
+	    <feMerge>
+	      <feMergeNode in="coloredBlur"/>
+	      <feMergeNode in="SourceGraphic"/>
+	    </feMerge>
+	  </filter>
 	</svg>
 
         <script type="text/javascript">
@@ -142,14 +162,22 @@
 		  item.style.fillOpacity = 0.5;
 		  selected = selected.filter(x =>  x !== item);
 		  extraselected = extraselected.filter(x =>  x !== item);
+		  item.style.transform = "";
+		  item.style.filter = "";
 		} else {
-		  item.style.fillOpacity = 0.9;
-		  selected.push(item);
-		  // TODO: change rendering order to put selected edges at
-		  // the "bottom", in order to overcome overlap. Might
-		  // otherwise need Smartness to overcome edges covering
-		  // each other. FIXED: I made it possible to scroll
-		  // through edges
+		  if(extra){
+		    item.style.fillOpacity = 0.9;
+		    item.style.strokeOpacity = 0.8;
+		    extraselected.push(item);
+		    item.style.transform = "translate3d(0,0,0)";
+		    item.style.filter = "url(\"#extraFilter\")";
+		  }else{
+		    item.style.fillOpacity = 0.9;
+		    item.style.strokeOpacity = 0.8;
+		    selected.push(item);
+		    item.style.transform = "translate3d(0,0,0)";
+		    item.style.filter = "url(\"#selectFilter\")";
+		  }
 		}
 		if(selected.concat(extraselected).length == 0){
 		  // We're finished selecting hyperedges

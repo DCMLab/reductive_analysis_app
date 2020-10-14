@@ -462,7 +462,7 @@
 		// arcs/edges
 		var elem = mei.createElement("arc");
 		elem.setAttribute("from","#"+he_id);
-		elem.setAttribute("to","#gn-"+selected[i].getAttribute("id"));
+		elem.setAttribute("to","#gn-"+selected[i].id);
 		elem.setAttribute("type","secondary");
 		mei_graph.appendChild(elem);
 		added.push(elem);
@@ -472,7 +472,7 @@
 		// arcs/edges
 		var elem = mei.createElement("arc");
 		elem.setAttribute("from","#"+he_id);
-		elem.setAttribute("to","#gn-"+extraselected[i].getAttribute("id"));
+		elem.setAttribute("to","#gn-"+extraselected[i].id);
 		elem.setAttribute("type","primary");
 		mei_graph.appendChild(elem);
 		added.push(elem);

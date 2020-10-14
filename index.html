@@ -185,8 +185,8 @@
 		  toggle_he_selected(false);
 		}
 	      }
-	      var primaries = extraselected.map(to_text).join("; ");
-	      var secondaries = selected.map(to_text).join("; ");
+	      var primaries = to_text(extraselected);
+	      var secondaries = to_text(selected);
 	      $("#selected_things").html("Primaries: "+primaries+"<br/>Secondaries: "+secondaries);  
 
 	    }

@@ -867,7 +867,8 @@
 		    type = he_labels[0].getAttribute("type");
 		  }
 		  var added = draw_hyperedge(x.getAttribute("xml:id"),type);
-		  mark_secondaries(x);
+		  if(added.length != 0)
+		    mark_secondaries(x);
 		  selected = [];
 		  extraselected = [];
 		});

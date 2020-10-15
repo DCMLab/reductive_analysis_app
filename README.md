@@ -109,6 +109,8 @@ hyperedges, though this is beyond the scope of this simple example. For
 presenting this work as a Late-Breaking Demo at ISMIR2020, the following
 illustrative gifs were produced, showcasing some more advanced ideas:
 
+**Update**: In the GIFs below, reference is made to needing to delete edges in order to see relations "behind" them. This is no longer required: instead, by scrolling with the scroll wheel (up or down), the currently highlighted edge is sent to the "bottom" of the stack, showing the edges that were "hidden".
+
 ### Showcase: Schenkerian analysis
 
 ![](images/schenker.gif?raw=true)
@@ -116,6 +118,7 @@ illustrative gifs were produced, showcasing some more advanced ideas:
 ### Showcase: GTTM Tree
 
 ![](images/gttm.gif?raw=true)
+
 
 
 ### Showcase: MOP annotation

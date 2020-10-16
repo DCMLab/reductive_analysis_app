@@ -972,7 +972,7 @@
 
 
 
-            function rerender(output) {
+            function rerender_mei(replace_with_rests = false) {
 	      var mei2 = mei.implementation.createDocument(
 		    mei.documentElement.namespaceURI, //namespace to use
 		    null,             //name of the root element (or for empty document)
@@ -989,16 +989,55 @@
 		  //TODO: this is wrong
 		  // 
 		  var y = get_by_id(mei2,x.getAttribute("id"));
-		  y.parentNode.removeChild(y);
+		  var paren = y.parentNode;
+		  // TODO: deal properly with tremolos
+		  // TODO
+		  if(replace_with_rests && !["chord","bTrem","fTrem"].includes(paren.tagName)) {
+		    // Add a rest
+		    var rest = mei2.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
+		    rest.setAttribute("xml:id","rest-"+y.getAttribute("xml:id"));
+		    rest.setAttribute("dur",y.getAttribute("dur"));
+		    rest.setAttribute("n",y.getAttribute("n"));
+		    rest.setAttribute("dots",y.getAttribute("dots"));
+		    rest.setAttribute("when",y.getAttribute("when"));
+		    rest.setAttribute("layer",y.getAttribute("layer"));
+		    rest.setAttribute("staff",y.getAttribute("staff"));
+		    rest.setAttribute("tstamp.ges",y.getAttribute("tstamp.ges"));
+		    rest.setAttribute("tstamp.real",y.getAttribute("tstamp.real"));
+		    rest.setAttribute("tstamp",y.getAttribute("tstamp"));
+		    rest.setAttribute("loc",y.getAttribute("loc"));
+		    rest.setAttribute("dur.ges",y.getAttribute("dur.ges"));
+		    rest.setAttribute("dots.ges",y.getAttribute("dots.ges"));
+		    rest.setAttribute("dur.metrical",y.getAttribute("dur.ges"));
+		    rest.setAttribute("dur.ppq",y.getAttribute("dur.ppq"));
+		    rest.setAttribute("dur.real",y.getAttribute("dur.real"));
+		    rest.setAttribute("dur.recip",y.getAttribute("dur.recip"));
+		    rest.setAttribute("beam",y.getAttribute("beam"));
+		    rest.setAttribute("fermata",y.getAttribute("fermata"));
+		    rest.setAttribute("tuplet",y.getAttribute("tuplet"));
+		    //That's all I can think of. There's probably a better
+		    //way to do this..
+		    paren.insertBefore(rest,y);
+		  }
+		  paren.removeChild(y);
 		}
 	      });
 	      Array.from(mei2.getElementsByTagName("chord")).forEach((x) =>
 		{
+		var paren = x.parentNode;
 		if(x.getElementsByTagName("note").length == 0){
 		  x.parentNode.removeChild(x);
 		}
 		});
 
+	      return mei2;
+
+	    }
+
+            function rerender() {
+	      // Create new SVG element, stack the current version on
+	      // it..? No I have no idea how to UI this properly.
+	      var mei2 = rerender_mei();
 	      var data2 = new XMLSerializer().serializeToString(mei2);
 
 	      var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
@@ -1023,13 +1062,6 @@
 	      var reduces = undo_actions.filter((x) => { return x[0] == "reduce";});
 	      reduces.forEach((action) => {selected = action[2]; do_reduce();})
 	      undo_action = [];
-
-	    }
-
-            function rerender_temp() {
-	      // Create new SVG element, stack the current version on
-	      // it..? No I have no idea how to UI this properly.
-	      rerender();
 	    }
 
             function texton() { text_input = true; }
@@ -1087,7 +1119,7 @@
 	  <input type="button" id="reducebutton" value="(R)educe Hyperedges" onclick="do_reduce()" >
 	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender_temp()" >
+	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender()" >
 	  <!--input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" --> <br/>
 
 	</div>

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="https://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="https://music-encoding.org/schema/4.0.0/mei-all.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="4.0.0">
+   <meiHead>
+      <fileDesc>
+         <titleStmt>
+            <title/>
+         </titleStmt>
+         <pubStmt>
+            <respStmt>
+               <persName xml:id="persname-L56" analog="humdrum:EED" role="editor">Craig Stuart Sapp</persName>
+            </respStmt>
+         </pubStmt>
+      </fileDesc>
+      <encodingDesc>
+         <appInfo>
+            <application isodate="2020-09-25T15:51:14" version="3.0.0-dev-069b8f8">
+               <name>Verovio</name>
+               <p>Transcoded from Humdrum</p>
+            </application>
+         </appInfo>
+         <projectDesc>
+            <p>Version: 2009/05/22</p>
+         </projectDesc>
+      </encodingDesc>
+      <workList>
+         <work>
+            <identifier analog="humdrum:SCT">BWV 248/5</identifier>
+            <title xml:id="title-L3" analog="humdrum:OTL" type="main" xml:lang="de">O Haupt voll Blut und Wunden</title>
+            <composer analog="humdrum:COM" xml:id="person-L1">Bach, Johann Sebastian</composer>
+         </work>
+      </workList>
+      <extMeta>
+         <frames xmlns="http://www.humdrum.org/ns/humxml">
+            <metaFrame n="0" token="!!!COM: Bach, Johann Sebastian" xml:id="L1">
+               <frameInfo>
+                  <startTime float="0"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>COM</referenceKey>
+                  <referenceValue>Bach, Johann Sebastian</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="1" token="!!!CDT: 1685/02/21/-1750/07/28/" xml:id="L2">
+               <frameInfo>
+                  <startTime float="0"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>CDT</referenceKey>
+                  <referenceValue>1685/02/21/-1750/07/28/</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="2" token="!!!OTL@@DE: O Haupt voll Blut und Wunden" xml:id="L3">
+               <frameInfo>
+                  <startTime float="0"/>
+                  <frameType>reference</frameType>
+                  <referenceKey language="DE" primary="true">OTL</referenceKey>
+                  <referenceValue>O Haupt voll Blut und Wunden</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="3" token="!!!SCT: BWV 248/5" xml:id="L4">
+               <frameInfo>
+                  <startTime float="0"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>SCT</referenceKey>
+                  <referenceValue>BWV 248/5</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="4" token="!!!PC#: 345" xml:id="L5">
+               <frameInfo>
+                  <startTime float="0"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>PC#</referenceKey>
+                  <referenceValue>345</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="5" token="!!!AGN: chorale" xml:id="L6">
+               <frameInfo>
+                  <startTime float="0"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>AGN</referenceKey>
+                  <referenceValue>chorale</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="48" token="!!!hum2abc: -Q ''" xml:id="L49">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>hum2abc</referenceKey>
+                  <referenceValue>-Q ''</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="49" token="!!!title: @{PC#}. @{OTL@@DE}" xml:id="L50">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>title</referenceKey>
+                  <referenceValue>@{PC#}. @{OTL@@DE}</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="50" token="!!!YOR1: 371 vierstimmige Choralges&amp;auml;nge von Johann Sebastian Bach," xml:id="L51">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>YOR1</referenceKey>
+                  <referenceValue>371 vierstimmige Choralges&amp;auml;nge von Johann Sebastian Bach,</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="51" token="!!!YOR2: 4th ed. by Alfred D&amp;ouml;rffel (Leipzig: Breitkopf und H&amp;auml;rtel," xml:id="L52">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>YOR2</referenceKey>
+                  <referenceValue>4th ed. by Alfred D&amp;ouml;rffel (Leipzig: Breitkopf und H&amp;auml;rtel,</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="52" token="!!!YOR2: c.1875). 178 pp. Plate &quot;V.A.10&quot;.  reprint: J.S. Bach, 371 Four-Part " xml:id="L53">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>YOR2</referenceKey>
+                  <referenceValue>c.1875). 178 pp. Plate "V.A.10".  reprint: J.S. Bach, 371 Four-Part</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="53" token="!!!YOR4: Chorales (New York: Associated Music Publishers, Inc., c.1940)." xml:id="L54">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>YOR4</referenceKey>
+                  <referenceValue>Chorales (New York: Associated Music Publishers, Inc., c.1940).</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="54" token="!!!SMS: B&amp;H, 4th ed, Alfred D&amp;ouml;rffel, c.1875, plate V.A.10" xml:id="L55">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>SMS</referenceKey>
+                  <referenceValue>B&amp;H, 4th ed, Alfred D&amp;ouml;rffel, c.1875, plate V.A.10</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="55" token="!!!EED:  Craig Stuart Sapp" xml:id="L56">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>EED</referenceKey>
+                  <referenceValue>Craig Stuart Sapp</referenceValue>
+               </frameInfo>
+            </metaFrame>
+            <metaFrame n="56" token="!!!EEV:  2009/05/22" xml:id="L57">
+               <frameInfo>
+                  <startTime float="16"/>
+                  <frameType>reference</frameType>
+                  <referenceKey>EEV</referenceKey>
+                  <referenceValue>2009/05/22</referenceValue>
+               </frameInfo>
+            </metaFrame>
+         </frames>
+      </extMeta>
+   </meiHead>
+   <music>
+      <body>
+         <mdiv xml:id="mdiv-0000001070748535">
+            <score xml:id="score-0000001506239140">
+               <scoreDef xml:id="scoredef-0000000931966337" midi.bpm="100">
+                  <staffGrp xml:id="staffgrp-0000000912868622" symbol="bracket">
+                     <staffDef xml:id="staffdef-0000000295215032" n="1" lines="5">
+                        <clef xml:id="clef-L11F4" shape="G" line="2"/>
+                        <keySig xml:id="keysig-L12F4" pname="a" mode="minor" sig="0"/>
+                        <meterSig xml:id="metersig-L14F4" count="4" sym="common" unit="4"/>
+                     </staffDef>
+                     <staffDef xml:id="staffdef-0000001987240235" n="2" lines="5">
+                        <clef xml:id="clef-L11F3" shape="G" line="2"/>
+                        <keySig xml:id="keysig-L12F3" pname="a" mode="minor" sig="0"/>
+                        <meterSig xml:id="metersig-L14F3" count="4" sym="common" unit="4"/>
+                     </staffDef>
+                     <staffDef xml:id="staffdef-0000001850744039" n="3" lines="5">
+                        <clef xml:id="clef-L11F2" shape="G" line="2" dis="8" dis.place="below"/>
+                        <keySig xml:id="keysig-L12F2" pname="a" mode="minor" sig="0"/>
+                        <meterSig xml:id="metersig-L14F2" count="4" sym="common" unit="4"/>
+                     </staffDef>
+                     <staffDef xml:id="staffdef-0000001001573550" n="4" lines="5">
+                        <clef xml:id="clef-L11F1" shape="F" line="4"/>
+                        <keySig xml:id="keysig-L12F1" pname="a" mode="minor" sig="0"/>
+                        <meterSig xml:id="metersig-L14F1" count="4" sym="common" unit="4"/>
+                     </staffDef>
+                  </staffGrp>
+                  <pgHead xml:id="pghead-0000001803738751">
+                     <rend xml:id="rend-0000000219108525" halign="center" valign="middle">
+                        <rend xml:id="rend-0000000260869823" fontsize="large">O Haupt voll Blut und Wunden</rend>
+                        <lb xml:id="lb-0000000933557629"/> 
+<lb xml:id="lb-0000000720989267"/> </rend>
+                     <rend xml:id="rend-0000001184860223" halign="right" valign="bottom" fontsize="small">Johann Sebastian Bach</rend>
+                     <rend xml:id="rend-0000000366088656" halign="right" valign="bottom" fontsize="small">1685–1750</rend>
+                  </pgHead>
+               </scoreDef>
+               <section xml:id="section-L7F1">
+                  <expansion plist="#label-A #label-A #label-B" xml:id="expansion-L8F1"/>
+                  <expansion plist="#label-A #label-B" xml:id="expansion-L9F1" type="norep"/>
+                  <section xml:id="label-A">
+                     <measure xml:id="measure-L1">
+                        <staff xml:id="staff-0000000288102539" n="1">
+                           <layer xml:id="layer-L7F4N1" n="1">
+                              <note xml:id="note-L17F4" dur="4" oct="4" pname="e" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-0000000386521316" n="2">
+                           <layer xml:id="layer-L7F3N1" n="1">
+                              <beam xml:id="beam-L17F3-L18F3">
+                                 <note xml:id="note-L17F3" dur="8" oct="4" pname="e" accid.ges="n"/>
+                                 <note xml:id="note-L18F3" dur="8" oct="4" pname="d" accid.ges="n"/>
+                              </beam>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-0000001589914724" n="3">
+                           <layer xml:id="layer-L7F2N1" n="1">
+                              <note xml:id="note-L17F2" dur="4" oct="3" pname="g" accid="s"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-0000002040719399" n="4">
+                           <layer xml:id="layer-L7F1N1" n="1">
+                              <note xml:id="note-L17F1" dur="4" oct="3" pname="e" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                     </measure>
+                     <measure xml:id="measure-L19" n="1">
+                        <staff xml:id="staff-L19F4N1" n="1">
+                           <layer xml:id="layer-L19F4N1" n="1">
+                              <note xml:id="note-L20F4" dur="4" oct="4" pname="a" accid.ges="n"/>
+                              <note xml:id="note-L22F4" dur="4" oct="4" pname="g" accid.ges="n"/>
+                              <note xml:id="note-L24F4" dur="4" oct="4" pname="f" accid.ges="n"/>
+                              <note xml:id="note-L26F4" dur="4" oct="4" pname="e" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L19F3N1" n="2">
+                           <layer xml:id="layer-L19F3N1" n="1">
+                              <beam xml:id="beam-L20F3-L21F3">
+                                 <note xml:id="note-L20F3" dur="8" oct="4" pname="c" accid.ges="n"/>
+                                 <note xml:id="note-L21F3" dur="8" oct="4" pname="d" accid.ges="n"/>
+                              </beam>
+                              <beam xml:id="beam-L22F3-L23F3">
+                                 <note xml:id="note-L22F3" dur="8" oct="4" pname="d" accid.ges="n"/>
+                                 <note xml:id="note-L23F3" dur="8" oct="4" pname="e" accid.ges="n"/>
+                              </beam>
+                              <beam xml:id="beam-L24F3-L25F3">
+                                 <note xml:id="note-L24F3" dur="8" oct="4" pname="e" accid.ges="n"/>
+                                 <note xml:id="note-L25F3" dur="8" oct="4" pname="d" accid.ges="n"/>
+                              </beam>
+                              <beam xml:id="beam-L26F3-L27F3">
+                                 <note xml:id="note-L26F3" dur="8" oct="4" pname="d" accid.ges="n"/>
+                                 <note xml:id="note-L27F3" dur="8" oct="4" pname="c" accid.ges="n"/>
+                              </beam>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L19F2N1" n="3">
+                           <layer xml:id="layer-L19F2N1" n="1">
+                              <note xml:id="note-L20F2" dur="4" oct="3" pname="a" accid.ges="n"/>
+                              <note xml:id="note-L22F2" dur="4" oct="3" pname="b" accid.ges="n"/>
+                              <beam xml:id="beam-L24F2-L25F2">
+                                 <note xml:id="note-L24F2" dur="8" oct="4" pname="c" accid.ges="n"/>
+                                 <note xml:id="note-L25F2" dur="8" oct="4" pname="d" accid.ges="n"/>
+                              </beam>
+                              <note xml:id="note-L26F2" dur="4" oct="3" pname="g" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L19F1N1" n="4">
+                           <layer xml:id="layer-L19F1N1" n="1">
+                              <note xml:id="note-L20F1" dur="4" oct="3" pname="f" accid.ges="n"/>
+                              <note xml:id="note-L22F1" dur="4" oct="3" pname="g">
+                                 <accid xml:id="accid-L22F1" accid="n" func="caution"/>
+                              </note>
+                              <beam xml:id="beam-L24F1-L25F1">
+                                 <note xml:id="note-L24F1" dur="8" oct="3" pname="a" accid.ges="n"/>
+                                 <note xml:id="note-L25F1" dur="8" oct="3" pname="b" accid.ges="n"/>
+                              </beam>
+                              <note xml:id="note-L26F1" dur="4" oct="4" pname="c" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                     </measure>
+                     <measure xml:id="measure-L28" n="2">
+                        <staff xml:id="staff-L28F4N1" n="1">
+                           <layer xml:id="layer-L28F4N1" n="1">
+                              <note xml:id="note-L29F4" dur="2" oct="4" pname="d" accid.ges="n"/>
+                              <note xml:id="note-L33F4" dur="4" oct="4" pname="e" accid.ges="n"/>
+                              <note xml:id="note-L34F4" dur="4" oct="4" pname="b" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L28F3N1" n="2">
+                           <layer xml:id="layer-L28F3N1" n="1">
+                              <note xml:id="note-L29F3" dur="4" oct="4" pname="c" accid.ges="n"/>
+                              <beam xml:id="beam-L31F3-L32F3">
+                                 <note xml:id="note-L31F3" dur="8" oct="3" pname="b" accid.ges="n"/>
+                                 <note xml:id="note-L32F3" dur="8" oct="3" pname="a" accid.ges="n"/>
+                              </beam>
+                              <note xml:id="note-L33F3" dur="4" oct="3" pname="b" accid.ges="n"/>
+                              <note xml:id="note-L34F3" dur="4" oct="4" pname="e" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L28F2N1" n="3">
+                           <layer xml:id="layer-L28F2N1" n="1">
+                              <beam xml:id="beam-L29F2-L30F2">
+                                 <note xml:id="note-L29F2" dur="8" oct="3" pname="a" accid.ges="n"/>
+                                 <note xml:id="note-L30F2" dur="8" oct="3" pname="g" accid="s"/>
+                              </beam>
+                              <note xml:id="note-L31F2" dur="4" oct="3" pname="a" accid.ges="n"/>
+                              <note xml:id="note-L33F2" dur="4" oct="3" pname="g" accid.ges="s"/>
+                              <note xml:id="note-L34F2" dur="4" oct="3" pname="g" accid.ges="s"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L28F1N1" n="4">
+                           <layer xml:id="layer-L28F1N1" n="1">
+                              <note xml:id="note-L29F1" dur="2" oct="3" pname="f" accid.ges="n"/>
+                              <note xml:id="note-L33F1" dur="4" oct="3" pname="e" accid.ges="n"/>
+                              <note xml:id="note-L34F1" dur="4" oct="3" pname="e" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <fermata xml:id="fermata-L33F4" staff="1" startid="#note-L33F4" place="above"/>
+                        <slur xml:id="slur-L29F3-L32F3" staff="2" startid="#note-L29F3" endid="#note-L32F3"/>
+                        <fermata xml:id="fermata-L33F3" staff="2" startid="#note-L33F3" place="above"/>
+                        <slur xml:id="slur-L29F2-L31F2" staff="3" startid="#note-L29F2" endid="#note-L31F2"/>
+                        <fermata xml:id="fermata-L33F2" staff="3" startid="#note-L33F2" place="above"/>
+                        <fermata xml:id="fermata-L33F1" staff="4" startid="#note-L33F1" place="above"/>
+                     </measure>
+                     <measure xml:id="measure-L35" n="3">
+                        <staff xml:id="staff-L35F4N1" n="1">
+                           <layer xml:id="layer-L35F4N1" n="1">
+                              <note xml:id="note-L36F4" dur="4" oct="5" pname="c" accid.ges="n"/>
+                              <note xml:id="note-L38F4" dur="4" oct="5" pname="c" accid.ges="n"/>
+                              <beam xml:id="beam-L40F4-L42F4">
+                                 <note xml:id="note-L40F4" dur="8" oct="4" pname="b" accid.ges="n"/>
+                                 <note xml:id="note-L41F4" dur="16" oct="5" pname="c" accid.ges="n"/>
+                                 <note xml:id="note-L42F4" dur="16" oct="5" pname="d" accid.ges="n"/>
+                              </beam>
+                              <note xml:id="note-L43F4" dur="4" oct="4" pname="b" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L35F3N1" n="2">
+                           <layer xml:id="layer-L35F3N1" n="1">
+                              <note xml:id="note-L36F3" dur="4" oct="4" pname="e" accid.ges="n"/>
+                              <note xml:id="note-L38F3" dur="4" oct="4" pname="a" accid.ges="n"/>
+                              <note xml:id="note-L40F3" dur="4" oct="4" pname="a" accid.ges="n"/>
+                              <note xml:id="note-L43F3" dur="4" oct="4" pname="g" accid="s"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L35F2N1" n="3">
+                           <layer xml:id="layer-L35F2N1" n="1">
+                              <beam xml:id="beam-L36F2-L37F2">
+                                 <note xml:id="note-L36F2" dur="8" oct="3" pname="a" accid.ges="n"/>
+                                 <note xml:id="note-L37F2" dur="8" oct="3" pname="b" accid.ges="n"/>
+                              </beam>
+                              <note xml:id="note-L38F2" dur="4" oct="4" pname="c" accid.ges="n"/>
+                              <note xml:id="note-L40F2" dur="4" oct="4" pname="f" accid.ges="n"/>
+                              <beam xml:id="beam-L43F2-L44F2">
+                                 <note xml:id="note-L43F2" dur="8" oct="4" pname="e" accid.ges="n"/>
+                                 <note xml:id="note-L44F2" dur="8" oct="4" pname="d" accid.ges="n"/>
+                              </beam>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L35F1N1" n="4">
+                           <layer xml:id="layer-L35F1N1" n="1">
+                              <beam xml:id="beam-L36F1-L37F1">
+                                 <note xml:id="note-L36F1" dur="8" oct="3" pname="a" accid.ges="n"/>
+                                 <note xml:id="note-L37F1" dur="8" oct="3" pname="g">
+                                    <accid xml:id="accid-L37F1" accid="n" func="caution"/>
+                                 </note>
+                              </beam>
+                              <beam xml:id="beam-L38F1-L39F1">
+                                 <note xml:id="note-L38F1" dur="8" oct="3" pname="f" accid.ges="n"/>
+                                 <note xml:id="note-L39F1" dur="8" oct="3" pname="e" accid.ges="n"/>
+                              </beam>
+                              <beam xml:id="beam-L40F1-L41F1">
+                                 <note xml:id="note-L40F1" dur="8" oct="3" pname="d" accid.ges="n"/>
+                                 <note xml:id="note-L41F1" dur="8" oct="2" pname="b" accid.ges="n"/>
+                              </beam>
+                              <note xml:id="note-L43F1" dur="4" oct="3" pname="e" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <slur xml:id="slur-L40F4-L42F4" staff="1" startid="#note-L40F4" endid="#note-L42F4"/>
+                     </measure>
+                     <measure xml:id="measure-L45" right="dbl" n="4">
+                        <staff xml:id="staff-L45F4N1" n="1">
+                           <layer xml:id="layer-L45F4N1" n="1">
+                              <note xml:id="note-L46F4" dots="1" dur="2" oct="4" pname="a" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L45F3N1" n="2">
+                           <layer xml:id="layer-L45F3N1" n="1">
+                              <note xml:id="note-L46F3" dots="1" dur="2" oct="4" pname="e" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L45F2N1" n="3">
+                           <layer xml:id="layer-L45F2N1" n="1">
+                              <note xml:id="note-L46F2" dots="1" dur="2" oct="4" pname="c" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <staff xml:id="staff-L45F1N1" n="4">
+                           <layer xml:id="layer-L45F1N1" n="1">
+                              <note xml:id="note-L46F1" dots="1" dur="2" oct="2" pname="a" accid.ges="n"/>
+                           </layer>
+                        </staff>
+                        <fermata xml:id="fermata-L46F4" staff="1" startid="#note-L46F4" place="above"/>
+                        <fermata xml:id="fermata-L46F3" staff="2" startid="#note-L46F3" place="above"/>
+                        <fermata xml:id="fermata-L46F2" staff="3" startid="#note-L46F2" place="above"/>
+                        <fermata xml:id="fermata-L46F1" staff="4" startid="#note-L46F1" place="above"/>
+                     </measure>
+                  </section>
+               </section>
+            </score>
+         </mdiv>
+      <graph xmlns="" type="directed"><node xml:id="gn-note-L17F4"><label><note sameas="#note-L17F4"/></label></node><node xml:id="gn-note-L17F3"><label><note sameas="#note-L17F3"/></label></node><node xml:id="gn-note-L17F2"><label><note sameas="#note-L17F2"/></label></node><node xml:id="gn-note-L17F1"><label><note sameas="#note-L17F1"/></label></node><node type="hyperedge" xml:id="he-4bbc3"><label type="harmonic"/></node><arc from="#he-4bbc3" to="#gn-note-L17F4" type="primary"/><arc from="#he-4bbc3" to="#gn-note-L17F3" type="primary"/><arc from="#he-4bbc3" to="#gn-note-L17F2" type="primary"/><arc from="#he-4bbc3" to="#gn-note-L17F1" type="primary"/><node xml:id="gn-note-L20F1"><label><note sameas="#note-L20F1"/></label></node><node xml:id="gn-note-L20F2"><label><note sameas="#note-L20F2"/></label></node><node xml:id="gn-note-L20F3"><label><note sameas="#note-L20F3"/></label></node><node xml:id="gn-note-L20F4"><label><note sameas="#note-L20F4"/></label></node><node type="hyperedge" xml:id="he-8386d"><label type="harmonic"/></node><node type="hyperedge" xml:id="he-15f0e"><label type="harmonic"/></node><node xml:id="gn-note-L22F1"><label><note sameas="#note-L22F1"/></label></node><node xml:id="gn-note-L18F3"><label><note sameas="#note-L18F3"/></label></node><node type="hyperedge" xml:id="he-2c9a8"><label type="passing"/></node><node type="hyperedge" xml:id="he-dc850"><label type="passing"/></node><node type="hyperedge" xml:id="he-5eef4"><label type="harmonic"/></node><arc from="#he-5eef4" to="#gn-note-L20F1" type="primary"/><arc from="#he-5eef4" to="#gn-note-L20F2" type="primary"/><arc from="#he-5eef4" to="#gn-note-L20F3" type="primary"/><arc from="#he-5eef4" to="#gn-note-L20F4" type="primary"/><node type="hyperedge" xml:id="he-6fd84"><label type="passing"/></node><arc from="#he-6fd84" to="#gn-note-L18F3" type="secondary"/><arc from="#he-6fd84" to="#gn-note-L17F3" type="primary"/><arc from="#he-6fd84" to="#gn-note-L20F3" type="primary"/><node xml:id="gn-note-L22F4"><label><note sameas="#note-L22F4"/></label></node><node xml:id="gn-note-L21F3"><label><note sameas="#note-L21F3"/></label></node><node type="hyperedge" xml:id="he-90274"><label type="harmonic"/></node><node type="hyperedge" xml:id="he-a083"><label type="harmonic"/></node><arc from="#he-a083" to="#gn-note-L20F4" type="primary"/><arc from="#he-a083" to="#gn-note-L21F3" type="primary"/><arc from="#he-a083" to="#gn-note-L20F2" type="primary"/><arc from="#he-a083" to="#gn-note-L20F1" type="primary"/><node xml:id="gn-note-L22F3"><label><note sameas="#note-L22F3"/></label></node><node xml:id="gn-note-L23F3"><label><note sameas="#note-L23F3"/></label></node><node type="hyperedge" xml:id="he-eb952"><label type="suspension"/></node><arc from="#he-eb952" to="#gn-note-L22F3" type="secondary"/><arc from="#he-eb952" to="#gn-note-L21F3" type="primary"/><arc from="#he-eb952" to="#gn-note-L23F3" type="primary"/><node xml:id="gn-note-L22F2"><label><note sameas="#note-L22F2"/></label></node><node type="hyperedge" xml:id="he-e0742"><label type="harmonic"/></node><arc from="#he-e0742" to="#gn-note-L22F4" type="primary"/><arc from="#he-e0742" to="#gn-note-L23F3" type="primary"/><arc from="#he-e0742" to="#gn-note-L22F2" type="primary"/><arc from="#he-e0742" to="#gn-note-L22F1" type="primary"/><node xml:id="gn-note-L24F4"><label><note sameas="#note-L24F4"/></label></node><node xml:id="gn-note-L24F2"><label><note sameas="#note-L24F2"/></label></node><node xml:id="gn-note-L24F1"><label><note sameas="#note-L24F1"/></label></node><node xml:id="gn-note-L25F3"><label><note sameas="#note-L25F3"/></label></node><node type="hyperedge" xml:id="he-a16e9"><label type="harmonic"/></node><arc from="#he-a16e9" to="#gn-note-L24F4" type="primary"/><arc from="#he-a16e9" to="#gn-note-L24F2" type="primary"/><arc from="#he-a16e9" to="#gn-note-L24F1" type="primary"/><arc from="#he-a16e9" to="#gn-note-L25F3" type="primary"/><node xml:id="gn-note-L24F3"><label><note sameas="#note-L24F3"/></label></node><node type="hyperedge" xml:id="he-4a4bb"><label type="suspension"/></node><arc from="#he-4a4bb" to="#gn-note-L24F3" type="secondary"/><arc from="#he-4a4bb" to="#gn-note-L23F3" type="primary"/><arc from="#he-4a4bb" to="#gn-note-L25F3" type="primary"/><node xml:id="gn-note-L25F2"><label><note sameas="#note-L25F2"/></label></node><node xml:id="gn-note-L25F1"><label><note sameas="#note-L25F1"/></label></node><node type="hyperedge" xml:id="he-1b151"><label type="harmonic"/></node><arc from="#he-1b151" to="#gn-note-L24F4" type="primary"/><arc from="#he-1b151" to="#gn-note-L25F3" type="primary"/><arc from="#he-1b151" to="#gn-note-L25F2" type="primary"/><arc from="#he-1b151" to="#gn-note-L25F1" type="primary"/><node xml:id="gn-note-L26F4"><label><note sameas="#note-L26F4"/></label></node><node xml:id="gn-note-L26F2"><label><note sameas="#note-L26F2"/></label></node><node xml:id="gn-note-L26F1"><label><note sameas="#note-L26F1"/></label></node><node xml:id="gn-note-L27F3"><label><note sameas="#note-L27F3"/></label></node><node type="hyperedge" xml:id="he-d60e4"><label type="harmonic"/></node><arc from="#he-d60e4" to="#gn-note-L26F4" type="primary"/><arc from="#he-d60e4" to="#gn-note-L26F2" type="primary"/><arc from="#he-d60e4" to="#gn-note-L26F1" type="primary"/><arc from="#he-d60e4" to="#gn-note-L27F3" type="primary"/><node type="hyperedge" xml:id="he-b3d05"><label type="passing"/></node><arc from="#he-b3d05" to="#gn-note-L25F1" type="secondary"/><arc from="#he-b3d05" to="#gn-note-L24F1" type="primary"/><arc from="#he-b3d05" to="#gn-note-L26F1" type="primary"/><node xml:id="gn-note-L26F3"><label><note sameas="#note-L26F3"/></label></node><node type="hyperedge" xml:id="he-fe056"><label type="suspension"/></node><arc from="#he-fe056" to="#gn-note-L26F3" type="secondary"/><arc from="#he-fe056" to="#gn-note-L25F3" type="primary"/><arc from="#he-fe056" to="#gn-note-L27F3" type="primary"/><node xml:id="gn-note-L29F4"><label><note sameas="#note-L29F4"/></label></node><node xml:id="gn-note-L29F3"><label><note sameas="#note-L29F3"/></label></node><node xml:id="gn-note-L29F2"><label><note sameas="#note-L29F2"/></label></node><node xml:id="gn-note-L29F1"><label><note sameas="#note-L29F1"/></label></node><node xml:id="gn-note-L32F3"><label><note sameas="#note-L32F3"/></label></node><node xml:id="gn-note-L31F2"><label><note sameas="#note-L31F2"/></label></node><node type="hyperedge" xml:id="he-d55f5"><label type="harmonic"/></node><arc from="#he-d55f5" to="#gn-note-L29F4" type="primary"/><arc from="#he-d55f5" to="#gn-note-L29F3" type="primary"/><arc from="#he-d55f5" to="#gn-note-L29F2" type="primary"/><arc from="#he-d55f5" to="#gn-note-L29F1" type="primary"/><arc from="#he-d55f5" to="#gn-note-L32F3" type="primary"/><arc from="#he-d55f5" to="#gn-note-L31F2" type="primary"/><node xml:id="gn-note-L31F3"><label><note sameas="#note-L31F3"/></label></node><node type="hyperedge" xml:id="he-60ebd"><label type="passing"/></node><arc from="#he-60ebd" to="#gn-note-L31F3" type="secondary"/><arc from="#he-60ebd" to="#gn-note-L29F3" type="primary"/><arc from="#he-60ebd" to="#gn-note-L32F3" type="primary"/><node xml:id="gn-note-L30F2"><label><note sameas="#note-L30F2"/></label></node><node type="hyperedge" xml:id="he-14a23"><label type="neighbour"/></node><arc from="#he-14a23" to="#gn-note-L30F2" type="secondary"/><arc from="#he-14a23" to="#gn-note-L29F2" type="primary"/><arc from="#he-14a23" to="#gn-note-L31F2" type="primary"/><node xml:id="gn-note-L33F4"><label><note sameas="#note-L33F4"/></label></node><node xml:id="gn-note-L33F3"><label><note sameas="#note-L33F3"/></label></node><node xml:id="gn-note-L33F2"><label><note sameas="#note-L33F2"/></label></node><node xml:id="gn-note-L33F1"><label><note sameas="#note-L33F1"/></label></node><node type="hyperedge" xml:id="he-a8695"><label type="harmonic"/></node><arc from="#he-a8695" to="#gn-note-L33F4" type="primary"/><arc from="#he-a8695" to="#gn-note-L33F3" type="primary"/><arc from="#he-a8695" to="#gn-note-L33F2" type="primary"/><arc from="#he-a8695" to="#gn-note-L33F1" type="primary"/><node xml:id="gn-note-L34F4"><label><note sameas="#note-L34F4"/></label></node><node xml:id="gn-note-L34F3"><label><note sameas="#note-L34F3"/></label></node><node xml:id="gn-note-L34F2"><label><note sameas="#note-L34F2"/></label></node><node xml:id="gn-note-L34F1"><label><note sameas="#note-L34F1"/></label></node><node type="hyperedge" xml:id="he-fb844"><label type="harmonic"/></node><arc from="#he-fb844" to="#gn-note-L34F4" type="primary"/><arc from="#he-fb844" to="#gn-note-L34F3" type="primary"/><arc from="#he-fb844" to="#gn-note-L34F2" type="primary"/><arc from="#he-fb844" to="#gn-note-L34F1" type="primary"/><node xml:id="gn-note-L36F4"><label><note sameas="#note-L36F4"/></label></node><node xml:id="gn-note-L36F3"><label><note sameas="#note-L36F3"/></label></node><node xml:id="gn-note-L36F2"><label><note sameas="#note-L36F2"/></label></node><node xml:id="gn-note-L36F1"><label><note sameas="#note-L36F1"/></label></node><node type="hyperedge" xml:id="he-fe375"><label type="harmonic"/></node><arc from="#he-fe375" to="#gn-note-L36F4" type="primary"/><arc from="#he-fe375" to="#gn-note-L36F3" type="primary"/><arc from="#he-fe375" to="#gn-note-L36F2" type="primary"/><arc from="#he-fe375" to="#gn-note-L36F1" type="primary"/><node xml:id="gn-note-L38F4"><label><note sameas="#note-L38F4"/></label></node><node xml:id="gn-note-L38F3"><label><note sameas="#note-L38F3"/></label></node><node xml:id="gn-note-L38F2"><label><note sameas="#note-L38F2"/></label></node><node xml:id="gn-note-L38F1"><label><note sameas="#note-L38F1"/></label></node><node type="hyperedge" xml:id="he-e26f2"><label type="harmonic"/></node><arc from="#he-e26f2" to="#gn-note-L38F4" type="primary"/><arc from="#he-e26f2" to="#gn-note-L38F3" type="primary"/><arc from="#he-e26f2" to="#gn-note-L38F2" type="primary"/><arc from="#he-e26f2" to="#gn-note-L38F1" type="primary"/><node xml:id="gn-note-L40F4"><label><note sameas="#note-L40F4"/></label></node><node xml:id="gn-note-L40F1"><label><note sameas="#note-L40F1"/></label></node><node xml:id="gn-note-L40F2"><label><note sameas="#note-L40F2"/></label></node><node xml:id="gn-note-L40F3"><label><note sameas="#note-L40F3"/></label></node><node xml:id="gn-note-L41F1"><label><note sameas="#note-L41F1"/></label></node><node xml:id="gn-note-L42F4"><label><note sameas="#note-L42F4"/></label></node><node type="hyperedge" xml:id="he-57a38"><label type="harmonic"/></node><arc from="#he-57a38" to="#gn-note-L40F4" type="primary"/><arc from="#he-57a38" to="#gn-note-L40F1" type="primary"/><arc from="#he-57a38" to="#gn-note-L40F2" type="primary"/><arc from="#he-57a38" to="#gn-note-L40F3" type="primary"/><arc from="#he-57a38" to="#gn-note-L41F1" type="primary"/><arc from="#he-57a38" to="#gn-note-L42F4" type="primary"/><node xml:id="gn-note-L43F4"><label><note sameas="#note-L43F4"/></label></node><node xml:id="gn-note-L43F3"><label><note sameas="#note-L43F3"/></label></node><node xml:id="gn-note-L43F2"><label><note sameas="#note-L43F2"/></label></node><node xml:id="gn-note-L43F1"><label><note sameas="#note-L43F1"/></label></node><node xml:id="gn-note-L44F2"><label><note sameas="#note-L44F2"/></label></node><node type="hyperedge" xml:id="he-6136e"><label type="harmonic"/></node><arc from="#he-6136e" to="#gn-note-L43F4" type="primary"/><arc from="#he-6136e" to="#gn-note-L43F3" type="primary"/><arc from="#he-6136e" to="#gn-note-L43F2" type="primary"/><arc from="#he-6136e" to="#gn-note-L43F1" type="primary"/><arc from="#he-6136e" to="#gn-note-L44F2" type="primary"/><node xml:id="gn-note-L46F4"><label><note sameas="#note-L46F4"/></label></node><node xml:id="gn-note-L46F3"><label><note sameas="#note-L46F3"/></label></node><node xml:id="gn-note-L46F2"><label><note sameas="#note-L46F2"/></label></node><node xml:id="gn-note-L46F1"><label><note sameas="#note-L46F1"/></label></node><node type="hyperedge" xml:id="he-37662"><label type="harmonic"/></node><arc from="#he-37662" to="#gn-note-L46F4" type="primary"/><arc from="#he-37662" to="#gn-note-L46F3" type="primary"/><arc from="#he-37662" to="#gn-note-L46F2" type="primary"/><arc from="#he-37662" to="#gn-note-L46F1" type="primary"/><node xml:id="gn-note-L37F2"><label><note sameas="#note-L37F2"/></label></node><node type="hyperedge" xml:id="he-dbc45"><label type="passing"/></node><arc from="#he-dbc45" to="#gn-note-L37F2" type="secondary"/><arc from="#he-dbc45" to="#gn-note-L36F2" type="primary"/><arc from="#he-dbc45" to="#gn-note-L38F2" type="primary"/><node xml:id="gn-note-L37F1"><label><note sameas="#note-L37F1"/></label></node><node type="hyperedge" xml:id="he-9d3ae"><label type="passing"/></node><arc from="#he-9d3ae" to="#gn-note-L37F1" type="secondary"/><arc from="#he-9d3ae" to="#gn-note-L36F1" type="primary"/><arc from="#he-9d3ae" to="#gn-note-L38F1" type="primary"/><node xml:id="gn-note-L39F1"><label><note sameas="#note-L39F1"/></label></node><node type="hyperedge" xml:id="he-9cd6e"><label type="passing"/></node><arc from="#he-9cd6e" to="#gn-note-L39F1" type="secondary"/><arc from="#he-9cd6e" to="#gn-note-L38F1" type="primary"/><arc from="#he-9cd6e" to="#gn-note-L40F1" type="primary"/><node type="hyperedge" xml:id="he-1f4b4"><label type="passing"/></node><arc from="#he-1f4b4" to="#gn-note-L44F2" type="secondary"/><arc from="#he-1f4b4" to="#gn-note-L43F2" type="primary"/><arc from="#he-1f4b4" to="#gn-note-L46F2" type="primary"/></graph></body>
+   </music>
+</mei>

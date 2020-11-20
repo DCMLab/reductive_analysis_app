@@ -102,6 +102,7 @@
 	    $(document).ready(function()
 		{
 		  Object.keys(type_conf).forEach(init_type);
+		  Object.keys(meta_conf).forEach(meta_type);
 		  toggle_shades();
 		  $("#player").midiPlayer({ color: "grey", width: 250 });
 
@@ -121,6 +122,20 @@
 	      button_shades[type+"hyperedgebutton"] = shades_array[type_conf[type].colour];
 	    }
 
+            // Configured meta types need a button and a color each
+            function meta_type(type) {
+	      var elem = document.createElement("input");
+	      elem.setAttribute("type","button");
+	      elem.setAttribute("class","metaedgebutton");
+	      elem.setAttribute("id",type + "metaedgebutton");
+	      elem.setAttribute("value","Add "+type+" metaedge " + "(" + meta_conf[type].key + ")");
+	      elem.onclick = () => {do_metaedge(type);};
+	      $("#meta_buttons")[0].appendChild(elem);
+	      meta_shades[type] = shades_array[meta_conf[type].colour];
+	      meta_keys[meta_conf[type].key] = type;
+	      button_shades[type+"metaedgebutton"] = shades_array[meta_conf[type].colour];
+	    }
+
             // If we're selecting hyperedges, we may want to change them.
             function toggle_he_selected(selecting) {
 	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach((button) => {
@@ -130,6 +145,10 @@
 		    else
 		      button.setAttribute("value",val.replace("Set to","Add"));
               });
+	      if(selecting)
+		document.getElementById("meta_buttons").style.display="";
+	      else
+		document.getElementById("meta_buttons").style.display="none";
 	    }
 
 	    // Toggle if a thing (for now: note or hyperedge) is selected or not.
@@ -228,6 +247,9 @@
 	      }else if (shades && type_shades[he.getAttribute("type")]){
 		he.setAttribute("old_fill", he.getAttribute("fill"));
 		he.setAttribute("fill",type_shades[he.getAttribute("type")]);
+	      }else if (shades && meta_shades[he.getAttribute("type")]){
+		he.setAttribute("old_fill", he.getAttribute("fill"));
+		he.setAttribute("fill",meta_shades[he.getAttribute("type")]);
 	      }else if (shades && type_synonym[he.getAttribute("type")]){
 		he.setAttribute("old_fill", he.getAttribute("fill"));
 		he.setAttribute("fill",type_shades[type_synonym[he.getAttribute("type")]]);
@@ -245,7 +267,9 @@
             function toggle_shades() {
 	      shades = !shades;
 	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_shade);
+	      Array.from(document.getElementsByClassName("metaedge")).forEach(toggle_shade);
 	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach(toggle_button_shade);
+	      Array.from(document.getElementsByClassName("metaedgebutton")).forEach(toggle_button_shade);
 	    }
 
             function delete_hyperedge(elem) {
@@ -696,7 +720,7 @@
 		extraselected.forEach((x) => {toggle_selected(x,true);});
 
 		[what,elems,sel,extra] = undo_actions.pop();
-		if(what == "edges" || what == "hyperedge") {
+		if(what == "edges" || what == "hyperedge" || what == "metaedge") {
 		  var added = elems;
 		  if(what == "hyperedge")
 		    added.flat().forEach((x) => { 
@@ -1122,6 +1146,8 @@
 	</div>
 	<div id="load_save" style="position:fixed; bottom:0; z-index:2">
 	  <div id="player"></div>
+	  <div id="meta_buttons" style="display:none">
+	  </div>
 	  <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
 	  <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
 	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" >

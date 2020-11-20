@@ -4,7 +4,18 @@ var type_keys = {};
 
 var type_shades = {};
 
+var meta_keys = {};
+
+var meta_shades = {};
+
 var button_shades = {};
+
+var meta_conf = {
+"context"      :{key: "c", colour: 0},
+"layer"     :{key: "l", colour: 6},
+"phrase"   :{key: "r", colour: 2}, 
+"section"    :{key: "t", colour: 3}, 
+}
 
 var type_conf = {
 "repeat"      :{key: "e", colour: 0},

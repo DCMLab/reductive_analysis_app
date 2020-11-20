@@ -786,6 +786,8 @@
 		do_hyperedge("repeat");
 	      } else if (type_keys[ev.key]) { // Add a hyperedge
 		do_hyperedge(type_keys[ev.key]);
+	      } else if (meta_keys[ev.key]) { // Add a hyperedge
+		do_metaedge(meta_keys[ev.key]);
 	      }else {
 		console.log(ev);
 	      }

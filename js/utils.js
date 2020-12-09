@@ -212,6 +212,14 @@ function note_get_accid(note) {
   return "";
 }
 
+// Get the timestamp for a note
+function get_time(note) {
+  if(document.contains(note))
+    note = get_by_id(mei,note.id);
+  return vrvToolkit.getTimeForElement(note.getAttribute("xml:id"));
+}
+
+
 // From any hyperedge element to list of MEI note elements
 function hyperedge_get_notes(he) {
   if(document.contains(he))
@@ -220,6 +228,16 @@ function hyperedge_get_notes(he) {
   var notes = note_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
   return notes;
 
+}
+// From any hyperedge element to list of MEI note elements
+function hyperedge_get_notes_separated(he) {
+  if(document.contains(he))
+    he = get_by_id(mei,he.id);
+  var prim_nodes = hyperedge_primaries(he);
+  var prims = prim_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
+  var sec_nodes = hyperedge_secondaries(he);
+  var secs = sec_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
+  return [prims,secs];
 }
 
 // Get the MEI-graph nodes that are adjacent to a hyperedge

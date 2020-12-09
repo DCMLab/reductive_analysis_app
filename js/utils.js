@@ -153,6 +153,33 @@ function g() {
   return newElement;
 }
 
+function find_measure(elem) {
+  if(elem.tagName == "measure")
+    return elem;
+  else
+    return find_measure(elem.parentNode);
+}
+
+
+function add_slur(mei_doc,note1,note2,newid = "") {
+  var default_id = note1.getAttribute("xml:id") + "_to_" +
+                   note2.getAttribute("xml:id") + "_slur";
+  if((newid == "" && get_by_id(mei,default_id)) || 
+     (newid != "" && get_by_id(mei,newid)     ))
+    return false;
+  var newElement = document.createElementNS("http://www.music-encoding.org/ns/mei", 'slur');
+  var parent = find_measure(note1);
+  newElement.setAttribute("startid",note1.getAttribute("xml:id"))
+  newElement.setAttribute("endid",  note2.getAttribute("xml:id"))
+  if(newid == "")
+    newElement.setAttribute("xml:id",default_id);
+  else
+    newElement.setAttribute("xml:id",newid);
+  parent.appendChild(newElement);
+  return newElement;
+}
+
+
 // Note coordinates are off center by a bit
 function note_coords(note) {
   return [note.getElementsByTagName("use")[0].x.animVal.value + 100,

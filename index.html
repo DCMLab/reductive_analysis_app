@@ -97,6 +97,8 @@
 
 	    var shades = false;
 
+	    var slurs = false;
+
 	    var format;
 
 	    var zoom = 1;
@@ -229,6 +231,54 @@
 	      }
 	      set_non_note_visibility(hidden);
 	    }
+
+            function toggle_slurs() {
+	      slurs = !slurs;
+	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_slur);
+	    }
+
+            function get_slur(edge) {
+	      return document.getElementById(edge.id + "_slur");
+	    }
+
+            function toggle_slur(edge) {
+	      var slur = get_slur(edge);
+	      if(!slur)
+		return;
+	      if(slurs){
+		edge.style.display="none";
+		slur.style.display="";
+	      }else{
+		edge.style.display="";
+		slur.style.display="none";
+	      }
+	    }
+
+            function can_be_slur(edge) {
+	      [primaries,secondaries] = hyperedge_get_notes_separated(edge);
+	      if(primaries.length == 2){
+	        var [pt0,pt1] = primaries.map(get_time);
+		return secondaries.map(x => 
+		    {var t = get_time(x); return t > pt0 && t < pt1})
+		  .reduce((a,b) => a && b, true);
+	      }else
+		return false;
+	    }
+
+            function add_slurs() {
+	      Array.from(document.getElementsByClassName("hyperedge")).forEach(he => {
+		    if(can_be_slur(he)){
+		      [primaries,secondaries] = hyperedge_get_notes_separated(he);
+		      add_slur(mei,primaries[0],primaries[1],he.id+"_slur");
+		    }
+		  });
+              // Check for slurrable relations, and add them to the MEI
+	      // Rerender
+	      // Possibly go through the undo_actions and add the slurs to
+	      // the relevant actions (i.e. when the relation is
+	      // introduced)
+	    }
+
 
             function set_non_note_visibility(hidden) {
 	      var svg_element = document.getElementById("svg_output");

@@ -1120,10 +1120,16 @@
 
 	    }
 
-            function rerender() {
+            function rerender(reducing) {
 	      // Create new SVG element, stack the current version on
 	      // it..? No I have no idea how to UI this properly.
-	      var mei2 = rerender_mei();
+	      var mei2;
+	      if(reducing){
+		mei2 = rerender_mei();
+	      }else{
+		add_slurs();
+		mei2 = mei;
+	      }
 	      var data2 = new XMLSerializer().serializeToString(mei2);
 
 	      var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
@@ -1141,6 +1147,7 @@
 		set_non_note_visibility("hidden");
 	      // Need also to redraw edges and hyperedges
 	      draw_graph();
+	      add_slurs(mei2);
 
 	      // Can't undo after a rerender.. yet, TODO: Make layers
 	      rerendered_after_action=undo_actions.length;
@@ -1225,7 +1232,9 @@
 	  <input type="button" id="reducebutton" value="(R)educe Hyperedges" onclick="do_reduce()" >
 	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender()" >
+	  <input type="button" id="shadesbutton" value="Toggle type s(l)urs if rendered." onclick="toggle_slurs()" >
+	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender(true)" >
+	  <input type="button" id="rerenderbutton" value="Rerender with slurs" onclick="rerender(false)" >
 	  <!--input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" --> <br/>
 
 	</div>

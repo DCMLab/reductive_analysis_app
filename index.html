@@ -71,6 +71,9 @@
 	    // And the graph node in the MEI
 	    var mei_graph;
 	    var orig_mei_graph;
+	    // And the MIDI
+	    var midi;
+	    var orig_midi;
 	    // This is the MEI as text (pre-parse)
 	    var data;
 	    var orig_data;
@@ -974,10 +977,12 @@
 	      }
 
 	      mei_graph = add_or_fetch_graph();
+	      midi = vrvToolkit.renderToMIDI();
 	      orig_mei = mei;
 	      orig_data = data;
 	      orig_mei_graph = mei_graph;
 	      orig_svg = svg;
+	      orig_midi = midi;
 
 	      draw_graph();
 
@@ -1122,7 +1127,7 @@
 	    }
 
             function play_midi() {
-	      $("#player").midiPlayer.play("data:audio/midi;base64,"+vrvToolkit.renderToMIDI());
+	      $("#player").midiPlayer.play("data:audio/midi;base64,"+orig_midi);
 	    }
 
            function play_midi_reduction() {

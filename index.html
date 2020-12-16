@@ -1155,6 +1155,10 @@
 	      var reduces = undo_actions.filter((x) => { return x[0] == "reduce";});
 	      reduces.forEach((action) => {selected = action[2]; do_reduce();})
 	      undo_action = [];
+	      if(!reducing){
+		toggle_slurs();
+		toggle_slurs();
+	      }
 	    }
 
             function texton() { text_input = true; }

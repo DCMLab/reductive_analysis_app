@@ -762,9 +762,7 @@
             <note sameas="#note-L21F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-8a95b">
-          <label type="harmonic"/>
-        </node>
+        
         <node xml:id="gn-note-L23F4">
           <label>
             <note sameas="#note-L23F4"/>
@@ -780,9 +778,7 @@
             <note sameas="#note-L23F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-99c61">
-          <label type="harmonic"/>
-        </node>
+        
         <node xml:id="gn-note-L24F4">
           <label>
             <note sameas="#note-L24F4"/>
@@ -803,9 +799,7 @@
             <note sameas="#note-L24F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-6d93a">
-          <label type="harmonic"/>
-        </node>
+        
         <node xml:id="gn-note-L25F4">
           <label>
             <note sameas="#note-L25F4"/>
@@ -826,33 +820,25 @@
             <note sameas="#note-L26F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-5a28b">
-          <label type="harmonic"/>
-        </node>
+        
         <node xml:id="gn-note-L25F3">
           <label>
             <note sameas="#note-L25F3"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-c87c2">
-          <label type="neighbour"/>
-        </node>
+        
         <node xml:id="gn-note-L25F2">
           <label>
             <note sameas="#note-L25F2"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-78872">
-          <label type="neighbour"/>
-        </node>
+        
         <node xml:id="gn-note-L25F1">
           <label>
             <note sameas="#note-L25F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-711c4">
-          <label type="neighbour"/>
-        </node>
+        
         <node xml:id="gn-note-L27F4">
           <label>
             <note sameas="#note-L27F4"/>
@@ -873,17 +859,13 @@
             <note sameas="#note-L27F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-9ad9e">
-          <label type="harmonic"/>
-        </node>
+        
         <node xml:id="gn-note-L27F3">
           <label>
             <note sameas="#note-L27F3"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-f9f99">
-          <label type="neighbour"/>
-        </node>
+        
         <node xml:id="gn-note-L30F4">
           <label>
             <note sameas="#note-L30F4"/>
@@ -904,9 +886,7 @@
             <note sameas="#note-L30F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-5f51e">
-          <label type="harmonic"/>
-        </node>
+        
         <node xml:id="gn-note-L31F3">
           <label>
             <note sameas="#note-L31F3"/>
@@ -922,9 +902,7 @@
             <note sameas="#note-L31F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-2c6de">
-          <label type="harmonic"/>
-        </node>
+        
         <node xml:id="gn-note-L32F4">
           <label>
             <note sameas="#note-L32F4"/>
@@ -950,12 +928,8 @@
             <note sameas="#note-L32F1"/>
           </label>
         </node>
-        <node type="hyperedge" xml:id="he-8707">
-          <label type="harmonic"/>
-        </node>
-        <node type="hyperedge" xml:id="he-26cea">
-          <label type="child"/>
-        </node>
+        
+        
         <node type="hyperedge" xml:id="he-1abf8">
           <label type="gttm-child"/>
         </node>

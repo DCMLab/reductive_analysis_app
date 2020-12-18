@@ -231,11 +231,10 @@
 	    }
 
             function set_non_note_visibility(hidden) {
-	      var svg_element = document.getElementById("svg_output");
-	      Array.from(svg_element.getElementsByClassName("beam")).forEach((x) =>
+	      Array.from(document.getElementsByClassName("beam")).forEach((x) =>
 		  { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
 	      hide_classes.forEach((cl) => {
-		Array.from(svg_element.getElementsByClassName(cl)).forEach((x) =>
+		Array.from(document.getElementsByClassName(cl)).forEach((x) =>
 		    { x.style.visibility= hidden; });
 	      })
 	    }

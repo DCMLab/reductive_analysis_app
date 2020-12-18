@@ -56,27 +56,28 @@
 
         <script type="text/javascript">
 	    // GLOBALS
+	    // Load Verovio
+            var vrvToolkit = new verovio.toolkit();
+	    var orig_svg;
+	    var orig_mei;
+	    var orig_mei_graph;
+	    var orig_midi;
+	    var orig_data;
 	    // Clicking selects
             var selected = [];
 	    // Shift-clicking extra selects
             var extraselected = [];
-	    // Load Verovio
-            var vrvToolkit = new verovio.toolkit();
 	    // This is our SVG
 	    var svg;
-	    var orig_svg;
+	    var svg_elem;
 	    // And the underlying MEI
 	    var mei;
-	    var orig_mei;
 	    // And the graph node in the MEI
 	    var mei_graph;
-	    var orig_mei_graph;
 	    // And the MIDI
 	    var midi;
-	    var orig_midi;
 	    // This is the MEI as text (pre-parse)
 	    var data;
-	    var orig_data;
 	    // We need a reader
 	    var reader = new FileReader();
 	    var filename;

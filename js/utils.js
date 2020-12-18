@@ -442,6 +442,24 @@ function get_metaedge_target(elem) {
 
 }
 
+function is_empty_hyperedge(elem) {
+  return hyperedge_get_notes(elem).length == 0;
+}
+
+function is_note_node(elem) {
+  notes = elem.getElementsByTagName("note");
+  return elem.tagName ="node" && notes.length == 1 && notes[0].getAttribute("sameas");
+}
+
+
+function remove_empty_hyperedges(graph) {
+  Array.from(graph.getElementsByTagName("node")).forEach((elem) => {
+      if(!is_note_node(elem) && is_empty_hyperedge(elem)){
+        elem.parentNode.removeChild(elem);
+      }
+  });
+}
+
 
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 

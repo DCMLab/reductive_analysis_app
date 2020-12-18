@@ -18,7 +18,7 @@ The basics are as follows:
    the notes and relations.
  * After having annotated a number of relations/relations, we can _reduce_
    the lowest-ranked notes in our hierarchy by clicking the "Reduce
-   Hyperedges" button. We can also select a subset of the existing
+   Relations" button. We can also select a subset of the existing
    relations to attempt to reduce. The basic algorithm is this: Each
    reduced relation also removes its secondary notes, and leaves its
    primary notes to the next step.  However, any relations that are _not_

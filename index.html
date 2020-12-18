@@ -180,7 +180,7 @@
 		  }
 		}
 	      } else if(ci == "relation" || ci == "metarelation"){
-		//Hyperedge selection
+		//Relation selection
 		if(selected.concat(extraselected).length == 0){
 		  // We're beginning to select relations
 		  toggle_he_selected(true);
@@ -1175,7 +1175,7 @@
 	  <!--input type="button" id="downloadbutton" value="Save" onclick="save()" -->
 	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
 	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
-	  <input type="button" id="reducebutton" value="(R)educe Hyperedges" onclick="do_reduce()" >
+	  <input type="button" id="reducebutton" value="(R)educe Relations" onclick="do_reduce()" >
 	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
 	  <input type="button" id="rerenderbutton" value="Rerender less hidden notes" onclick="rerender()" >

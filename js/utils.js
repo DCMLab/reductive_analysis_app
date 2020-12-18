@@ -456,5 +456,15 @@ function to_text(elems) {
   }
 }
 
+function fix_synonyms(mei) {
+  Array.from(mei.getElementsByTagName("node")).forEach((elem) => {
+    if(elem.getAttribute("type") == "hyperedge")
+      elem.setAttribute("type","relation");
+    if(elem.getAttribute("type") == "metaedge")
+      elem.setAttribute("type","metarelation");
+  });
+  return mei;
+}
+
 
 

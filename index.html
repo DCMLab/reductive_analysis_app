@@ -967,6 +967,9 @@
 	      if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei")
 		// We didn't get a MEI? Try if it's a musicXML
 		format = "musicxml";
+	      else
+		mei = fix_synonyms(mei);
+
 	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none", format: format});
 	      $("#svg_output").html(svg);

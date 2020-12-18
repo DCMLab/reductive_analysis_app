@@ -13,9 +13,10 @@ def get_relation_type(node):
 # Fetch the relevant info for a graph node - either its type or the note it
 # represents (both MEI element and the parsed info from Music21)
 def node_get_info(id_dict,m21_parse,node):
-  if(node.attrib.get('type') == 'relation'): #TODO sub for "relation" maybe
+#TODO: deprecate edge vocabulary
+  if(node.attrib.get('type') == 'relation' or node.attrib.get('type') == 'hyperedge'): 
     return (node,{'relation' : True, 'type': get_relation_type(node)})
-  if(node.attrib.get('type') == 'metarelation'): #TODO sub for "metarelation" maybe
+  if(node.attrib.get('type') == 'metarelation' or node.attrib.get('type') == 'metaedge'): 
     return (node,{'metarelation' : True, 'type': get_relation_type(node)})
   else: 
     sameas_id = node[0][0].attrib['sameas'].strip("#")

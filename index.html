@@ -972,7 +972,9 @@
 
 	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none", format: format});
-	      $("#svg_output").html(svg);
+	      $("#svg_outputs").html('<div id="svg_output0"></div>')
+	      $("#svg_output0").html(svg);
+	      svg_elem = document.getElementById("svg_output0");
 	      if(format == "musicxml"){
 		data = vrvToolkit.getMEI();
 		parser = new DOMParser();
@@ -1023,7 +1025,7 @@
 		  );
 	      mei2.appendChild(newNode);
 
-	      Array.from(document.getElementsByClassName("note")).forEach((x) => {
+	      Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
 		if(x.style.visibility == "hidden"){
 		  //TODO: this is wrong
 		  // 
@@ -1076,16 +1078,25 @@
             function rerender() {
 	      // Create new SVG element, stack the current version on
 	      // it..? No I have no idea how to UI this properly.
+	      var output_parent = document.getElementById("svg_outputs");
+	      var new_svg_elem = document.createElement("div");
+	      var old_svg_elem = svg_elem;
+	      new_svg_elem.setAttribute("id","svg_output" + output_parent.children.length);
+	      output_parent.prepend(new_svg_elem);
+
 	      var mei2 = rerender_mei();
 	      var data2 = new XMLSerializer().serializeToString(mei2);
 
 	      var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none", format: "mei"});
 
-	      $("#svg_output").html(svg2);
+	      prefix_ids(old_svg_elem,"old"+(output_parent.children.length-2));
+	      
+	      $(new_svg_elem).html(svg2);
 	      svg = svg2;
 	      mei = mei2;
 	      data = data2;
+	      svg_elem = new_svg_elem;
 	      mei_graph = add_or_fetch_graph();
 	      for (let n of document.getElementsByClassName("note")) {
 		  n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
@@ -1116,11 +1127,11 @@
 
             function zoom_in() {
 	      zoom = zoom * 1.1;
-	      $("#svg_output")[0].style.transform="scale("+zoom+")";
+	      $("#svg_outputs")[0].style.transform="scale("+zoom+")";
 	    }
             function zoom_out() {
 	      zoom = zoom * 0.90909090909090;
-	      $("#svg_output")[0].style.transform="scale("+zoom+")";
+	      $("#svg_outputs")[0].style.transform="scale("+zoom+")";
 	    }
 
 
@@ -1192,7 +1203,9 @@
         <!-- The div where we are going to insert the SVG -->
         <!--//////////////////////////////////////////////-->
 	
-	<div style="transform-origin: top left; z-index:-1" id="svg_output"></div>
+	<div style="transform-origin: top left; z-index:-1" id="svg_outputs">
+	<div id="svg_output0"></div>
+	</div>
 
 
 

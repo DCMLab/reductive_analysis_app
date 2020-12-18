@@ -466,5 +466,12 @@ function fix_synonyms(mei) {
   return mei;
 }
 
+function prefix_ids(elem,prefix) {
+  if(elem.id != ""){
+    elem.setAttribute("oldid", elem.id);
+    elem.id = prefix+elem.id;
+  }
+  Array.from(elem.children).forEach((e) => prefix_ids(e,prefix));
+}
 
 

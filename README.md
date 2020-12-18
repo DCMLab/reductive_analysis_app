@@ -27,6 +27,8 @@ The basics are as follows:
    this step, and the removed notes are only secondaries of removed
    relations.
 
+*Note that the below illustrations all come from a previous version referring to "hyperedges". In the present version these have all been replaced by "relations".*
+
 ## A short example
 
 Let us load a familiar piece into the annotation app: Bach's Prelude in C

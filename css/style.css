@@ -271,11 +271,11 @@ select.instance-select {
        filter: url("#glowFilter");
 }
 
-.metaedge:hover {
+.metarelation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
-.hyperedge:hover {
+.relation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }

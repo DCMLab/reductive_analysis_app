@@ -220,28 +220,28 @@ function get_time(note) {
 }
 
 
-// From any hyperedge element to list of MEI note elements
-function hyperedge_get_notes(he) {
+// From any relation element to list of MEI note elements
+function relation_get_notes(he) {
   if(document.contains(he))
     he = get_by_id(mei,he.id);
-  var note_nodes = hyperedge_allnodes(he);
+  var note_nodes = relation_allnodes(he);
   var notes = note_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
   return notes;
 
 }
-// From any hyperedge element to list of MEI note elements
-function hyperedge_get_notes_separated(he) {
+// From any relation element to list of MEI note elements
+function relation_get_notes_separated(he) {
   if(document.contains(he))
     he = get_by_id(mei,he.id);
-  var prim_nodes = hyperedge_primaries(he);
+  var prim_nodes = relation_primaries(he);
   var prims = prim_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
-  var sec_nodes = hyperedge_secondaries(he);
+  var sec_nodes = relation_secondaries(he);
   var secs = sec_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
   return [prims,secs];
 }
 
-// Get the MEI-graph nodes that are adjacent to a hyperedge
-function hyperedge_allnodes(he) {
+// Get the MEI-graph nodes that are adjacent to a relation
+function relation_allnodes(he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -251,8 +251,8 @@ function hyperedge_allnodes(he) {
       });
   return nodes;
 }
-// Get the MEI-graph nodes that are adjacent and primary to a hyperedge
-function hyperedge_primaries(he) {
+// Get the MEI-graph nodes that are adjacent and primary to a relation
+function relation_primaries(he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -263,8 +263,8 @@ function hyperedge_primaries(he) {
       });
   return nodes;
 }
-// Get the MEI-graph nodes that are adjacent and secondary to a hyperedge
-function hyperedge_secondaries(he) {
+// Get the MEI-graph nodes that are adjacent and secondary to a relation
+function relation_secondaries(he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -326,22 +326,22 @@ function unmark_secondary(item) {
     item.style.fillOpacity = current * 2;
 }
 
-// For a certain hyperedge, find its secondaries and mark them
+// For a certain relation, find its secondaries and mark them
 function mark_secondaries(he) {
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
-    var secondaries = hyperedge_secondaries(he);
+    var secondaries = relation_secondaries(he);
     secondaries.forEach((n) => {
 	var svg_note = get_by_id(document,note_get_sameas(n));
 	mark_secondary(svg_note);
     });
 }
 
-// For a certain hyperedge, find its secondaries and unmark them
+// For a certain relation, find its secondaries and unmark them
 function unmark_secondaries(he) {
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
-    var secondaries = hyperedge_secondaries(he);
+    var secondaries = relation_secondaries(he);
     secondaries.forEach((n) => {
 	var svg_note = get_by_id(document,note_get_sameas(n));
 	unmark_secondary(svg_note);
@@ -401,11 +401,11 @@ function getBoundingBoxOffCenter (elem) {
     return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
 }
 
-function get_metaedge_target(elem) {
-  if(elem.getAttribute("class") == "metaedge"){
+function get_metarelation_target(elem) {
+  if(elem.getAttribute("class") == "metarelation"){
     var circ= elem.getElementsByTagName("circle")[0];
     return [circ.cx.baseVal.value,circ.cy.baseVal.value];
-  }else if (elem.getAttribute("class") == "hyperedge") {
+  }else if (elem.getAttribute("class") == "relation") {
     return getBoundingBoxCenter(elem);
   }else{
     console.log("wtf");
@@ -415,8 +415,8 @@ function get_metaedge_target(elem) {
 
 }
 
-function is_empty_hyperedge(elem) {
-  return hyperedge_get_notes(elem).length == 0;
+function is_empty_relation(elem) {
+  return relation_get_notes(elem).length == 0;
 }
 
 function is_note_node(elem) {
@@ -425,9 +425,9 @@ function is_note_node(elem) {
 }
 
 
-function remove_empty_hyperedges(graph) {
+function remove_empty_relations(graph) {
   Array.from(graph.getElementsByTagName("node")).forEach((elem) => {
-      if(!is_note_node(elem) && is_empty_hyperedge(elem)){
+      if(!is_note_node(elem) && is_empty_relation(elem)){
         elem.parentNode.removeChild(elem);
       }
   });
@@ -449,10 +449,10 @@ function to_text(elems) {
       accid= accid.replaceAll("n","")
       return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
     }).join("; ")+")";
-  }else if(elems[0].getAttribute("class") == "hyperedge"){
-    return "hyperedges("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
-  }else if(elems[0].getAttribute("class") == "metaedge"){
-    return "metaedges("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "relation"){
+    return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "metarelation"){
+    return "metarelations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
   }
 }
 

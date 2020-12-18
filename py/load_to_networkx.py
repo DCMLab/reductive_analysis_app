@@ -13,10 +13,10 @@ def get_relation_type(node):
 # Fetch the relevant info for a graph node - either its type or the note it
 # represents (both MEI element and the parsed info from Music21)
 def node_get_info(id_dict,m21_parse,node):
-  if(node.attrib.get('type') == 'hyperedge'): #TODO sub for "relation" maybe
-    return (node,{'hyperedge' : True, 'type': get_relation_type(node)})
-  if(node.attrib.get('type') == 'metaedge'): #TODO sub for "metarelation" maybe
-    return (node,{'metaedge' : True, 'type': get_relation_type(node)})
+  if(node.attrib.get('type') == 'relation'): #TODO sub for "relation" maybe
+    return (node,{'relation' : True, 'type': get_relation_type(node)})
+  if(node.attrib.get('type') == 'metarelation'): #TODO sub for "metarelation" maybe
+    return (node,{'metarelation' : True, 'type': get_relation_type(node)})
   else: 
     sameas_id = node[0][0].attrib['sameas'].strip("#")
     return (node,{'note_elem': id_dict[sameas_id], 'note_m21': m21_parse.flat.getElementById(sameas_id)})

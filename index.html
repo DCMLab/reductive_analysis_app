@@ -117,33 +117,33 @@
             function init_type(type) {
 	      var elem = document.createElement("input");
 	      elem.setAttribute("type","button");
-	      elem.setAttribute("class","hyperedgebutton");
-	      elem.setAttribute("id",type + "hyperedgebutton");
-	      elem.setAttribute("value","Add "+type+" hyperedge " + "(" + type_conf[type].key + ")");
-	      elem.onclick = () => {do_hyperedge(type);};
+	      elem.setAttribute("class","relationbutton");
+	      elem.setAttribute("id",type + "relationbutton");
+	      elem.setAttribute("value","Add "+type+" relation " + "(" + type_conf[type].key + ")");
+	      elem.onclick = () => {do_relation(type);};
 	      $("#relation_buttons")[0].appendChild(elem);
 	      type_shades[type] = shades_array[type_conf[type].colour];
 	      type_keys[type_conf[type].key] = type;
-	      button_shades[type+"hyperedgebutton"] = shades_array[type_conf[type].colour];
+	      button_shades[type+"relationbutton"] = shades_array[type_conf[type].colour];
 	    }
 
             // Configured meta types need a button and a color each
             function meta_type(type) {
 	      var elem = document.createElement("input");
 	      elem.setAttribute("type","button");
-	      elem.setAttribute("class","metaedgebutton");
-	      elem.setAttribute("id",type + "metaedgebutton");
-	      elem.setAttribute("value","Add "+type+" metaedge " + "(" + meta_conf[type].key + ")");
-	      elem.onclick = () => {do_metaedge(type);};
+	      elem.setAttribute("class","metarelationbutton");
+	      elem.setAttribute("id",type + "metarelationbutton");
+	      elem.setAttribute("value","Add "+type+" metarelation " + "(" + meta_conf[type].key + ")");
+	      elem.onclick = () => {do_metarelation(type);};
 	      $("#meta_buttons")[0].appendChild(elem);
 	      meta_shades[type] = shades_array[meta_conf[type].colour];
 	      meta_keys[meta_conf[type].key] = type;
-	      button_shades[type+"metaedgebutton"] = shades_array[meta_conf[type].colour];
+	      button_shades[type+"metarelationbutton"] = shades_array[meta_conf[type].colour];
 	    }
 
-            // If we're selecting hyperedges, we may want to change them.
+            // If we're selecting relations, we may want to change them.
             function toggle_he_selected(selecting) {
-	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach((button) => {
+	      Array.from(document.getElementsByClassName("relationbutton")).forEach((button) => {
 		    var val = button.getAttribute("value");
 		    if(selecting)
 		      button.setAttribute("value",val.replace("Add","Set to"));
@@ -156,13 +156,13 @@
 		document.getElementById("meta_buttons").style.display="none";
 	    }
 
-	    // Toggle if a thing (for now: note or hyperedge) is selected or not.
+	    // Toggle if a thing (for now: note or relation) is selected or not.
             function toggle_selected(item,extra) { 
 	      var ci = item.getAttribute("class");
 	      if(selected.length > 0 || extraselected.length > 0) {
 		var csel = selected.concat(extraselected)[0].getAttribute("class");
 		// Select only things of the same type for now - editing
-		// hyperedges to add things means deleting and re-adding
+		// relations to add things means deleting and re-adding
 		if(ci != csel)
 		  return;
 	      }
@@ -181,10 +181,10 @@
 		    selected.push(item);
 		  }
 		}
-	      } else if(ci == "hyperedge" || ci == "metaedge"){
+	      } else if(ci == "relation" || ci == "metarelation"){
 		//Hyperedge selection
 		if(selected.concat(extraselected).length == 0){
-		  // We're beginning to select hyperedges
+		  // We're beginning to select relations
 		  toggle_he_selected(true);
 		}
 		if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
@@ -210,7 +210,7 @@
 		  }
 		}
 		if(selected.concat(extraselected).length == 0){
-		  // We're finished selecting hyperedges
+		  // We're finished selecting relations
 		  toggle_he_selected(false);
 		}
 	      }
@@ -291,7 +291,7 @@
 	    }
 
 
-            // Toggle the current hyperedge having a type-dependent shade
+            // Toggle the current relation having a type-dependent shade
 	    // or not
             function toggle_shade(he) {
 	      if(!shades && he.getAttribute("old_fill")){
@@ -316,16 +316,16 @@
 		button.style.color="";
 	    }
 
-            // Toggle type-dependent shades for hyperedges and buttons
+            // Toggle type-dependent shades for relations and buttons
             function toggle_shades() {
 	      shades = !shades;
-	      Array.from(document.getElementsByClassName("hyperedge")).forEach(toggle_shade);
-	      Array.from(document.getElementsByClassName("metaedge")).forEach(toggle_shade);
-	      Array.from(document.getElementsByClassName("hyperedgebutton")).forEach(toggle_button_shade);
-	      Array.from(document.getElementsByClassName("metaedgebutton")).forEach(toggle_button_shade);
+	      Array.from(document.getElementsByClassName("relation")).forEach(toggle_shade);
+	      Array.from(document.getElementsByClassName("metarelation")).forEach(toggle_shade);
+	      Array.from(document.getElementsByClassName("relationbutton")).forEach(toggle_button_shade);
+	      Array.from(document.getElementsByClassName("metarelationbutton")).forEach(toggle_button_shade);
 	    }
 
-            function delete_hyperedge(elem) {
+            function delete_relation(elem) {
 	      //Assume no meta-edges for now, meaning we only have to
 	      //remove the SVG elem, the MEI node, and any involved arcs
 	      var orig_mei_he,mei_he = get_by_id(mei,elem.id);
@@ -356,79 +356,79 @@
 	      return action_removed.reverse();
 	    }
 
-	    function delete_hyperedges() {
-	      if(selected.length == 0 || selected[0].getAttribute("class") != "hyperedge"){
-		console.log("No hyperedge selected!");
+	    function delete_relations() {
+	      if(selected.length == 0 || selected[0].getAttribute("class") != "relation"){
+		console.log("No relation selected!");
 		return;
 	      }
-	      var removed = selected.flatMap(delete_hyperedge);
-	      undo_actions.push(["delete hyperedge",removed,selected,[]]);
+	      var removed = selected.flatMap(delete_relation);
+	      undo_actions.push(["delete relation",removed,selected,[]]);
 	      selected = [];
 	    }
 
 
-            // This reduces away the hyperedges where all the secondaries
-	    // are not primary in any non-reduced hyperedge. TODO: This, 
+            // This reduces away the relations where all the secondaries
+	    // are not primary in any non-reduced relation. TODO: This, 
             // while better than before, no doubt has room for optimisation
             function do_reduce() {
 	      // All previous reductions
 	      var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
-	      // All hyperedges in the graph
-	      var all_hyperedges_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "hyperedge";}) 
-	      // Remove the hyperedges that have been removed in previous
+	      // All relations in the graph
+	      var all_relations_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "relation";}) 
+	      // Remove the relations that have been removed in previous
 	      // reductions
-	      var remaining_hyperedges = all_hyperedges_nodes.filter((x) => { 
+	      var remaining_relations = all_relations_nodes.filter((x) => { 
 		return !reduce_actions.flat().flat().includes(x);
 	      });
-	      var reduce_action, hyperedges_nodes;
+	      var reduce_action, relations_nodes;
 	      // Are we doing a full reduction, or have we selected some
-	      // hyperedges?
-	      if(selected.length > 0 && selected[0].getAttribute("class") == "hyperedge"){
-		hyperedges_nodes = selected.map((elem) => get_by_id(mei,elem.id));
+	      // relations?
+	      if(selected.length > 0 && selected[0].getAttribute("class") == "relation"){
+		relations_nodes = selected.map((elem) => get_by_id(mei,elem.id));
 	      }else {
-		hyperedges_nodes = remaining_hyperedges;
+		relations_nodes = remaining_relations;
 	      }
 	      // In any case, remember what's selected, and unselect it
 	      var sel = selected;
 	      var extra = extraselected;
 	      sel.concat(extra).forEach(toggle_selected);
-	      // No primary of a remaining hyperedge is removed in this
+	      // No primary of a remaining relation is removed in this
 	      // reduction
-	      var remaining_nodes = remaining_hyperedges.map(hyperedge_primaries).flat();
-	      // We know that the remaining hyperedges that have not been
+	      var remaining_nodes = remaining_relations.map(relation_primaries).flat();
+	      // We know that the remaining relations that have not been
 	      // selected for reduction will remain
-	      remaining_hyperedges = remaining_hyperedges.filter((x) => {return !hyperedges_nodes.includes(x);});
+	      remaining_relations = remaining_relations.filter((x) => {return !relations_nodes.includes(x);});
 	      // So all of their nodes should be added to the remaining
 	      // nodes, not just the primaries
-	      remaining_nodes = remaining_nodes.concat(remaining_hyperedges.map(hyperedge_secondaries).flat());
+	      remaining_nodes = remaining_nodes.concat(remaining_relations.map(relation_secondaries).flat());
 
               do {
-		// We want to find more hyperedges that we know need to stay 
-		var more_remains = hyperedges_nodes.filter((he) => { 
-		    // That is, hyperedges that have, as secondaries, nodes
+		// We want to find more relations that we know need to stay 
+		var more_remains = relations_nodes.filter((he) => { 
+		    // That is, relations that have, as secondaries, nodes
 		    // we know need to stay
-		    return (hyperedge_secondaries(he).findIndex((x) => {return remaining_nodes.includes(x);}) > -1);
+		    return (relation_secondaries(he).findIndex((x) => {return remaining_nodes.includes(x);}) > -1);
 		  });
-		// Add those hyperedges to the ones that need to stay
-		remaining_hyperedges = remaining_hyperedges.concat(more_remains);
+		// Add those relations to the ones that need to stay
+		remaining_relations = remaining_relations.concat(more_remains);
 		// And remove them from those that may be removed
-		hyperedges_nodes = hyperedges_nodes.filter((x) => {return !more_remains.includes(x);})
+		relations_nodes = relations_nodes.filter((x) => {return !more_remains.includes(x);})
 		// And update the remaining nodes
-		remaining_nodes = remaining_nodes.concat(more_remains.map(hyperedge_secondaries).flat());
+		remaining_nodes = remaining_nodes.concat(more_remains.map(relation_secondaries).flat());
 	      // Until we reach a pass where we don't find any more
-	      // hyperedges that need to stay
+	      // relations that need to stay
 	      }while(more_remains.length > 0)
-	      // Any hyperedges that remain after this loop, we can remove,
+	      // Any relations that remain after this loop, we can remove,
 	      // including their secondaries
 
-	      reduce_action = hyperedges_nodes;
+	      reduce_action = relations_nodes;
 
 	      if(reduce_action.length == 0){
 		console.log("No reduction possible");
 		return;
 	      }
 	      undo_actions.push(["reduce", reduce_action.map((he) => {
-		var secondaries = hyperedge_secondaries(he);
+		var secondaries = relation_secondaries(he);
 		var graphicals = [];
 		graphicals.push(secondaries.map(hide_note));
 		graphicals.push(hide_he(he));
@@ -474,12 +474,12 @@
 	      return added;
 	    }
 
-            // Draw a hyperedge as a  series of edges (TODO: make it much much much better)
-            function draw_hyperedge(id,type) {
+            // Draw a relation as a  series of edges (TODO: make it much much much better)
+            function draw_relation(id,type) {
 	      var added = [];
 	      var notes = selected.concat(extraselected);
 	      if(notes.includes(undefined)) {
-		console.log("Note missing, hyperedge not drawn");
+		console.log("Note missing, relation not drawn");
 		return [];
 	      }
 	      var secondaries = selected;
@@ -494,7 +494,7 @@
 
 	      var elem = roundedHull(notes.map(note_coords));
 	      elem.setAttribute("id",id);
-	      elem.setAttribute("class","hyperedge");
+	      elem.setAttribute("class","relation");
 	      elem.setAttribute("type",type);
 	      elem.style.fillOpacity = "0.5";
 	      elem.onwheel = (e) => {
@@ -539,9 +539,9 @@
 	      return added;
 	    }
             
-            // Add a "hyperedge" to the MEI graph element. We model this
+            // Add a "relation" to the MEI graph element. We model this
 	    // with a new node.
-            function add_hyperedge(mei,mei_graph,type,he_id_param) {
+            function add_relation(mei,mei_graph,type,he_id_param) {
 	      var added = [];
               // Add new nodes for all notes
 	      for(var i = 0; i < selected.length; i++) {
@@ -552,9 +552,9 @@
 		var elem = add_mei_node_for(mei,mei_graph,extraselected[i]);
 		added.push(elem);
 	      }
-	      // Add a new node for the hyperedge
+	      // Add a new node for the relation
 	      var he_elem = mei.createElement("node");
-	      he_elem.setAttribute("type","hyperedge");
+	      he_elem.setAttribute("type","relation");
 	      var he_label = mei.createElement("label");
 	      if(typeof type != 'undefined')
 		he_label.setAttribute("type",type)
@@ -610,12 +610,12 @@
 	    }
 
 	    // OK we've selected stuff, let's make the selection into a
-	    // "hyperedge".
-	    function do_hyperedge(type) {
+	    // "relation".
+	    function do_relation(type) {
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
 		changes = true;
-		if(selected.concat(extraselected)[0].getAttribute("class") == "hyperedge"){
+		if(selected.concat(extraselected)[0].getAttribute("class") == "relation"){
 		  var types = [];
 		  selected.concat(extraselected).forEach((he) => {
 		      //TODO: move type_synonym application so that this
@@ -626,27 +626,27 @@
 		      mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
 		      toggle_shade(he);
 		  });
-		  undo_actions.push(["change hyperedge type",types.reverse(),selected,extraselected]);
+		  undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
 		}else if(selected.concat(extraselected)[0].getAttribute("class") == "note"){
 		  var added = [];
-		  var [he_id,mei_elems] = add_hyperedge(mei,mei_graph,type);
+		  var [he_id,mei_elems] = add_relation(mei,mei_graph,type);
 		  added.push(mei_elems);  // Add it to the MEI
 		  if(mei != orig_mei){
-		    var [orig_he_id,orig_mei_elems] = add_hyperedge(orig_mei,orig_mei_graph,type,he_id);
+		    var [orig_he_id,orig_mei_elems] = add_relation(orig_mei,orig_mei_graph,type,he_id);
 		    added.push(orig_mei_elems);  // Add it to the MEI
 		  }
-		  added.push(draw_hyperedge(he_id,type)); // Draw the edge
+		  added.push(draw_relation(he_id,type)); // Draw the edge
 		  
-		  undo_actions.push(["hyperedge",added,selected,extraselected]);
+		  undo_actions.push(["relation",added,selected,extraselected]);
 		  mark_secondaries(get_by_id(mei,he_id));
 		  selected.concat(extraselected).forEach(toggle_selected); // De-select
 		}
 	    }
 
-            function draw_metaedge(id,type) {
+            function draw_metarelation(id,type) {
 	      var added = [];
 	      var targets =selected.concat(extraselected); 
-	      var coords = targets.map(get_metaedge_target);
+	      var coords = targets.map(get_metarelation_target);
 	      var x = average(coords.map((e) => e[0]));
 	      // Above
 	      var y =
@@ -656,7 +656,7 @@
 	      var g_elem = g();
 //	      var elem = roundedHull(coords);
 	      g_elem.setAttribute("id",id);
-	      g_elem.setAttribute("class","metaedge");
+	      g_elem.setAttribute("class","metarelation");
 	      g_elem.setAttribute("type",type);
 	      g_elem.style.fillOpacity = "0.5";
 	      g_elem.style.strokeOpacity = "0.1";
@@ -695,11 +695,11 @@
 
 	    }
 
-            function add_metaedge(type,he_id_param) {
-	      // Add a new node for the hyperedge
+            function add_metarelation(type,he_id_param) {
+	      // Add a new node for the relation
 	      var added = [];
 	      var he_elem = mei.createElement("node");
-	      he_elem.setAttribute("type","metaedge");
+	      he_elem.setAttribute("type","metarelation");
 	      var he_label = mei.createElement("label");
 	      if(typeof type != 'undefined')
 		he_label.setAttribute("type",type)
@@ -736,23 +736,23 @@
 	      return [he_id,added.reverse()];
 	    }
 
-            function do_metaedge(type) {
+            function do_metarelation(type) {
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
 		var ci =selected.concat(extraselected)[0].getAttribute("class"); 
-		if(!(ci == "hyperedge" || ci == "metaedge")){
+		if(!(ci == "relation" || ci == "metarelation")){
 		  return; }
 		changes = true;
 		var added = [];
-		var [he_id,mei_elems] = add_metaedge(type);
+		var [he_id,mei_elems] = add_metarelation(type);
 		added.push(mei_elems);  // Add it to the MEI
 		if(mei != orig_mei){
-		  var [orig_he_id,orig_mei_elems] = add_metaedge(orig_mei,orig_mei_graph,type,he_id);
+		  var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
 		  added.push(orig_mei_elems);  // Add it to the MEI
 		}
-		added.push(draw_metaedge(he_id,type)); // Draw the edge
+		added.push(draw_metarelation(he_id,type)); // Draw the edge
 		
-		undo_actions.push(["metaedge",added,selected,extraselected]);
+		undo_actions.push(["metarelation",added,selected,extraselected]);
 		selected.concat(extraselected).forEach(toggle_selected); // De-select
 	    }
 
@@ -773,11 +773,11 @@
 		extraselected.forEach((x) => {toggle_selected(x,true);});
 
 		[what,elems,sel,extra] = undo_actions.pop();
-		if(what == "edges" || what == "hyperedge" || what == "metaedge") {
+		if(what == "edges" || what == "relation" || what == "metarelation") {
 		  var added = elems;
-		  if(what == "hyperedge")
+		  if(what == "relation")
 		    added.flat().forEach((x) => { 
-	              if(mei.contains(x) && x.getAttribute("type") == "hyperedge")
+	              if(mei.contains(x) && x.getAttribute("type") == "relation")
 			unmark_secondaries(x);
 		      });
 		  // Remove added elements
@@ -788,12 +788,12 @@
 		  // Select last selection
 		  sel.forEach((x) => {toggle_selected(x);});
 		  extra.forEach((x) => {toggle_selected(x,true);});
-		}else if( what == "delete hyperedge" ) {
+		}else if( what == "delete relation" ) {
 		  var removed = elems;
 		  removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
 		  selected = sel;
 		  selected.forEach(mark_secondaries);
-		}else if (what == "change hyperedge type") {
+		}else if (what == "change relation type") {
 		  var types = elems;
 		  sel.concat(extra).forEach((he) => {
 		      //TODO: move type_synonym application so that this
@@ -828,7 +828,7 @@
 		do_edges();
 	      } else if (ev.key == "u") { // UNDO
 		do_undo();
-	      } else if (ev.key == "r") { // Reduce hyperedges
+	      } else if (ev.key == "r") { // Reduce relations
 		do_reduce();
 	      } else if (ev.key == "s") { // Show/hide ties etc.
 		toggle_equalize();
@@ -836,11 +836,11 @@
 		toggle_shades();
 	      } else if (ev.key == "+") { // Select same notes in the measure
 		select_samenote();
-		do_hyperedge("repeat");
-	      } else if (type_keys[ev.key]) { // Add a hyperedge
-		do_hyperedge(type_keys[ev.key]);
-	      } else if (meta_keys[ev.key]) { // Add a hyperedge
-		do_metaedge(meta_keys[ev.key]);
+		do_relation("repeat");
+	      } else if (type_keys[ev.key]) { // Add a relation
+		do_relation(type_keys[ev.key]);
+	      } else if (meta_keys[ev.key]) { // Add a relation
+		do_metarelation(meta_keys[ev.key]);
 	      }else {
 		console.log(ev);
 	      }
@@ -920,10 +920,10 @@
 	      // There's a multi-stage process to get all the info we
 	      // need... First we get the nodes from the graph element.
 	      var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
-	      // Get the nodes representing hyperedges
-	      var hyperedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "hyperedge";})
-	      // Get the nodes representing metaedges
-	      var metaedges_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metaedge";})
+	      // Get the nodes representing relations
+	      var relations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "relation";})
+	      // Get the nodes representing metarelations
+	      var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
 	      // Next we get the note labels
 	      var note_ids = nodes_array.map((x) => {
 		            try{
@@ -935,13 +935,13 @@
 			  }).filter((x) => {return x.length != 0;});
 	      // Now get the arcs/edges
 	      var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-	      var hyperedges_arcs = [];
-	      var metaedges_arcs = [];
+	      var relations_arcs = [];
+	      var metarelations_arcs = [];
 	      // And draw them all.
 	      arcs_array.forEach((x) => {
 		  var n1 = get_by_id(mei,x.getAttribute("from")); 
 		  var n2 = get_by_id(mei,x.getAttribute("to"));
-		  if (!hyperedges_nodes.includes(n1) && !metaedges_nodes.includes(n1)){
+		  if (!relations_nodes.includes(n1) && !metarelations_nodes.includes(n1)){
 		    //Regular edge, just draw. TODO: Fix assumption that
 		    //nodes are notes if we reach this.
 		    var id1 = note_ids.find((y) => {
@@ -953,24 +953,24 @@
 		    selected = [get_by_id(document,id1),get_by_id(document,id2) ];
 		    draw_edges();
 		    selected = [];
-		  }else if (!metaedges_nodes.includes(n1)){
+		  }else if (!metarelations_nodes.includes(n1)){
 		    var id2 = note_ids.find((y) => {
 			  return y[0] == n2;
 			})[1];
-		    hyperedges_arcs.push([n1,id2,x.getAttribute("type")]);
+		    relations_arcs.push([n1,id2,x.getAttribute("type")]);
 		  }else {
-		    metaedges_arcs.push([n1,n2.getAttribute("xml:id"),x.getAttribute("type")]);
+		    metarelations_arcs.push([n1,n2.getAttribute("xml:id"),x.getAttribute("type")]);
 		  }
 
 	      });
-	      hyperedges_nodes.forEach((x) => {
-		  var hyperedge_nodes = hyperedges_arcs.
+	      relations_nodes.forEach((x) => {
+		  var relation_nodes = relations_arcs.
 		              filter((y) => {return y[0] == x;}).
 			      map((y) => {return [y[2],get_by_id(document,y[1])];})
-	          selected = hyperedge_nodes.
+	          selected = relation_nodes.
 		              filter((y) => {return y[0] == "secondary";}).
 			      map((y) => { return y[1];});
-	          extraselected = hyperedge_nodes.
+	          extraselected = relation_nodes.
 		              filter((y) => {return y[0] == "primary";}).
 			      map((y) => { return y[1];});
 	          var he_labels = x.getElementsByTagName("label");
@@ -978,21 +978,21 @@
 		  if(he_labels.length > 0){
 		    type = he_labels[0].getAttribute("type");
 		  }
-		  var added = draw_hyperedge(x.getAttribute("xml:id"),type);
+		  var added = draw_relation(x.getAttribute("xml:id"),type);
 		  if(added.length != 0)
 		    mark_secondaries(x);
 		  selected = [];
 		  extraselected = [];
 		});
 
-	      metaedges_nodes.forEach((x) => {
-		  var metaedge_nodes = metaedges_arcs.
+	      metarelations_nodes.forEach((x) => {
+		  var metarelation_nodes = metarelations_arcs.
 		              filter((y) => {return y[0] == x;}).
 			      map((y) => {return [y[2],get_by_id(document,y[1])];})
-	          selected = metaedge_nodes.
+	          selected = metarelation_nodes.
 		              filter((y) => {return y[0] == "secondary";}).
 			      map((y) => { return y[1];});
-	          extraselected = metaedge_nodes.
+	          extraselected = metarelation_nodes.
 		              filter((y) => {return y[0] == "primary";}).
 			      map((y) => { return y[1];});
 	          var me_labels = x.getElementsByTagName("label");
@@ -1000,7 +1000,7 @@
 		  if(me_labels.length > 0){
 		    type = me_labels[0].getAttribute("type");
 		  }
-		  var added = draw_metaedge(x.getAttribute("xml:id"),type);
+		  var added = draw_metarelation(x.getAttribute("xml:id"),type);
 		  selected = [];
 		  extraselected = [];
 		});
@@ -1017,6 +1017,9 @@
 	      if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei")
 		// We didn't get a MEI? Try if it's a musicXML
 		format = "musicxml";
+	      else
+		mei = fix_synonyms(mei);
+
 	      svg = vrvToolkit.renderData(data, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none", format: format});
 	      $("#svg_output").html(svg);
@@ -1047,7 +1050,7 @@
 		  //n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
 		  n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
 	      }
-	      for (let h of document.getElementsByClassName("hyperedge")) {
+	      for (let h of document.getElementsByClassName("relation")) {
 		  h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
 		  //h.addEventListener('click', function(ev) {toggle_selected(h,ev.shiftKey) } )
 	      }
@@ -1145,7 +1148,7 @@
 	      }
 	      if(non_notes_hidden)
 		set_non_note_visibility("hidden");
-	      // Need also to redraw edges and hyperedges
+	      // Need also to redraw edges and relations
 	      draw_graph();
 	      add_slurs(mei2);
 
@@ -1218,10 +1221,10 @@
 	  </div>
 	  <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
 	  <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
-	  <input type="button" id="deletebutton" value="Delete hyperedges" onclick="delete_hyperedges()" >
+	  <input type="button" id="deletebutton" value="Delete relations" onclick="delete_relations()" >
 	  <!--input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" -->
-	  <input type="button" class="hyperedgebutton" id="hyperedgebutton" value="Add untyped hyperedge" onclick="do_hyperedge()" > 
-	  <input type="button" class="hyperedgebutton" id="customhyperedgebutton" value="Add hyperedge with custom type:" onclick="do_hyperedge($('#custom_type')[0].value)" >
+	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation()" > 
+	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
 	  <input type="button" id="midireducebutton" value="Play reduction" onclick="play_midi_reduction()" >

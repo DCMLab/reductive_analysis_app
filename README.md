@@ -8,24 +8,24 @@ The basics are as follows:
  
  * Clicking selects notes. Shift-click selects them as _primary_
  * Linking together the selected notes into a _relation_, alternatively
-   referred to as a _hyperedge_ can be done either without giving the
+   referred to as a _relation_ can be done either without giving the
    relation a type at all, by clicking one of the preset buttons or their
    key bindings, or by writing a custom type into the text field and
-   clicking the "Add hyperedge with custom type" button.
+   clicking the "Add relation with custom type" button.
  * Relations with both primary and secondary notes imply a priority among
    the notes. If we add a number of relations such that no circular
    priorities are introduced, we have defined a typ of _hierarchy_ among
    the notes and relations.
- * After having annotated a number of relations/hyperedges, we can _reduce_
+ * After having annotated a number of relations/relations, we can _reduce_
    the lowest-ranked notes in our hierarchy by clicking the "Reduce
    Hyperedges" button. We can also select a subset of the existing
    relations to attempt to reduce. The basic algorithm is this: Each
-   reduced hyperedge also removes its secondary notes, and leaves its
-   primary notes to the next step.  However, any hyperedges that are _not_
+   reduced relation also removes its secondary notes, and leaves its
+   primary notes to the next step.  However, any relations that are _not_
    removed in this step needs to have all of its notes remain. Thus, the
-   removed hyperedges have, as secondaries, only notes that are removed in
+   removed relations have, as secondaries, only notes that are removed in
    this step, and the removed notes are only secondaries of removed
-   hyperedges.
+   relations.
 
 ## A short example
 
@@ -38,7 +38,7 @@ chosen, the app should render it directly as in
 
 This done, we can begin selecting notes by clicking them. We can also select notes as _primary_ by shift-clicking them.
 
-After selecting a number of notes, we can associate them using a hyperedge,
+After selecting a number of notes, we can associate them using a relation,
 either of some specific type, or untyped. There are a number of predefined
 edge types with dedicated buttons and keybindings, and a textfield for
 entering a custom type.
@@ -48,7 +48,7 @@ Let us select the first E in the upper voice as primary, and the rest of the E's
 ![](images/tutorial2.png?raw=true)
 
 We can do this either by clicking and shift-clicking the individual notes,
-and then either clicking the button marked "Add repeat(+) hyperedge" or
+and then either clicking the button marked "Add repeat(+) relation" or
 using the "+" keyboard shortcut. However, specifically for the situation
 that all the notes of the same pitch in a single bar should be selected and
 related as repeats, it is also possible to just select the primary note of
@@ -56,9 +56,9 @@ the repeat and then hitting "+".
 
 ![](images/tutorial3.png?raw=true)
 
-After having created a number of hyperedges, we can choose to a "Reduce"
+After having created a number of relations, we can choose to a "Reduce"
 step, which hides the "lowest" level of edges, as described above.. For
-example, if we have made similar hyperedges for the other parts in the
+example, if we have made similar relations for the other parts in the
 arpeggio, we can reduce the first bar of the Prelude from this:
 
 ![](images/tutorial4.png?raw=true)
@@ -105,7 +105,7 @@ rerendering (and also hiding stems etc.).
 ## Hierarchical analysis
 
 More exciting possibilities are open by having overlapping and interacting
-hyperedges, though this is beyond the scope of this simple example. For
+relations, though this is beyond the scope of this simple example. For
 presenting this work as a Late-Breaking Demo at ISMIR2020, the following
 illustrative gifs were produced, showcasing some more advanced ideas:
 

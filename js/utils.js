@@ -135,11 +135,23 @@ function circle(p,rad) {
   return newElement;
 }
 
+function add_to_svg_bg_arg(svg_elem,newElement) {
+  var sibling = svg_elem.getElementsByClassName("system")[0];
+  var parent = sibling.parentNode;
+  parent.insertBefore(newElement,sibling);
+}
+
 function add_to_svg_bg(newElement) {
   var sibling = document.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
   console.debug("Using global: document to get 'system' element");
   parent.insertBefore(newElement,sibling);
+}
+
+function add_to_svg_fg_arg(svg_elem,newElement) {
+  var sibling = svg_elem.getElementsByClassName("system")[0];
+  var parent = sibling.parentNode;
+  parent.appendChild(newElement);
 }
 
 function add_to_svg_fg(newElement) {
@@ -261,6 +273,30 @@ function relation_allnodes(he) {
   return nodes;
 }
 // Get the MEI-graph nodes that are adjacent and primary to a relation
+function relation_primaries_arg(mei_graph,he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "primary"){
+      nodes.push(get_by_id(mei_graph,a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and secondary to a relation
+function relation_secondaries_arg(mei_graph,he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "secondary"){
+      nodes.push(get_by_id(mei_graph,a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and primary to a relation
 function relation_primaries(he) {
   console.debug("Using globals: mei, mei_graph to find graph connections");
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
@@ -286,6 +322,16 @@ function relation_secondaries(he) {
       });
   return nodes;
 }
+
+function relation_type(he) {
+  //TODO: Sanity checks
+  if(he.children.length == 0) {
+    return "";
+  }else{
+    return he.children[0].getAttribute("type");
+  }
+}
+
 
 // Set up new graph node for a note
 function add_mei_node_for(mei,mei_graph,note) {
@@ -393,6 +439,11 @@ function select_samenote() {
   }
 }
 
+function svg_find_note(svg_elem, id_prefix, e) {
+  // TODO: Sanity checks
+  var id = id_prefix + e.getAttribute("xml:id");
+  return svg_elem.getRootNode().getElementById(id);
+}
 
 function getBoundingBoxTop (elem) {
     // use the native SVG interface to get the bounding box

@@ -89,7 +89,7 @@
 
 	    var redo_actions = []; //TODO, maybe?
 
-	    var view_contexts = [{}]
+	    var draw_contexts = [];
 
 	    var rerendered_after_reduce = 0;
 
@@ -1019,6 +1019,10 @@
 	      orig_mei_graph = mei_graph;
 	      orig_svg = svg;
 	      orig_midi = midi;
+
+	      draw_contexts = [{"mei" : mei,
+	                        "svg_elem" : svg_elem,
+	                        "id_prefix" : ""}];
 
 	      draw_graph();
 

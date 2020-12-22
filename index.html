@@ -691,7 +691,7 @@
 		}
 	    }
 
-            function draw_metarelation_arg(g_elem, mei_graph, draw_context) {
+            function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
 	      var added = [];
 	      var mei = draw_context.mei;
 	      var svg_elem = draw_context.svg_elem;
@@ -895,16 +895,21 @@
 		  return; }
 		changes = true;
 		var added = [];
-		var [he_id,mei_elems] = add_metarelation(type);
-		added.push(mei_elems);  // Add it to the MEI
-		if(mei != orig_mei){
-		  var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
-		  added.push(orig_mei_elems);  // Add it to the MEI
-		}
 		if(arg){
-		  added.push(draw_metarelation_arg(get_by_id(mei,he_id), mei_graph, draw_contexts[0])); // Draw the edge
-		}else
+		  var primaries = extraselected.map((e) => get_by_id(orig_mei_graph, e.id));
+		  var secondaries = selected.map((e) => get_by_id(orig_mei_graph, e.id));
+                  var [he_id,mei_elems] = add_metarelation_arg(draw_contexts[0], orig_mei_graph, primaries, secondaries, type);
+		  added.push(mei_elems);
+		  added.push(draw_metarelation_arg(draw_contexts[0], orig_mei_graph, get_by_id(orig_mei,he_id))); // Draw the edge
+		}else{
+		  var [he_id,mei_elems] = add_metarelation(mei,mei_graph,type);
+		  added.push(mei_elems);  // Add it to the MEI
+		  if(mei != orig_mei){
+		    var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
+		    added.push(orig_mei_elems);  // Add it to the MEI
+		  }
 		  added.push(draw_metarelation(he_id,type)); // Draw the edge
+		}
 		
 		undo_actions.push(["metarelation",added,selected,extraselected]);
 		selected.concat(extraselected).forEach(toggle_selected); // De-select

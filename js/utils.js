@@ -465,7 +465,7 @@ function select_samenote() {
   }
 }
 
-function svg_find_note(svg_elem, id_prefix, e) {
+function svg_find_from_mei_elem(svg_elem, id_prefix, e) {
   // TODO: Sanity checks
   var id = id_prefix + e.getAttribute("xml:id");
   return svg_elem.getRootNode().getElementById(id);

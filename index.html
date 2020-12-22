@@ -516,9 +516,9 @@
 	      var svg_elem = draw_context.svg_elem;
 	      var id_prefix = draw_context.id_prefix;
 	      var primaries = relation_primaries_arg(mei_graph,g_elem).map(
-		  (e) => svg_find_note(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
+		  (e) => svg_find_from_mei_elem(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
 	      var secondaries = relation_secondaries_arg(mei_graph,g_elem).map(
-		  (e) => svg_find_note(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
+		  (e) => svg_find_from_mei_elem(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
 	      var notes = primaries.concat(secondaries)
 	      notes.sort((a,b) => { 
 		  var p1= note_coords(a);

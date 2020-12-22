@@ -181,7 +181,7 @@ function note_coords(note) {
 
 function get_by_oldid_elem(doc,elem) {return get_by_id(doc, elem.getAttribute("oldid"));}
 
-function get_by_id_oldid(doc,id){
+function get_by_oldid(doc,id){
   if (id[0] == "#") { id = id.slice(1); }
   var elem =  doc.querySelector("[*|oldid='"+id+"']");
   if(elem) {

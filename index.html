@@ -840,7 +840,7 @@
 	      return [he_id,added.reverse()];
 	    }
 
-            function do_metarelation(type) {
+            function do_metarelation(type, arg ) {
 		console.debug("Using globals: orig_mei, orig_mei_graph, selected, extraselected");
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
@@ -855,7 +855,10 @@
 		  var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
 		  added.push(orig_mei_elems);  // Add it to the MEI
 		}
-		added.push(draw_metarelation(he_id,type)); // Draw the edge
+		if(arg){
+		  added.push(draw_metarelation_arg(get_by_id(mei,he_id), mei_graph, draw_contexts[0])); // Draw the edge
+		}else
+		  added.push(draw_metarelation(he_id,type)); // Draw the edge
 		
 		undo_actions.push(["metarelation",added,selected,extraselected]);
 		selected.concat(extraselected).forEach(toggle_selected); // De-select

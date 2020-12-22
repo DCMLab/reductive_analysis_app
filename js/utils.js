@@ -162,6 +162,11 @@ function add_to_svg_fg(newElement) {
 }
 
 
+function g_arg(svg_elem) {
+  var newElement = svg_elem.getRootNode().createElementNS("http://www.w3.org/2000/svg", 'g');
+  return newElement;
+}
+
 function g() {
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
   console.debug("Using global: document to create new element");
@@ -183,6 +188,15 @@ function get_by_id(doc,id) {
   }else{
     return Array.from(doc.all).find((x) => { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
   }
+}
+
+// From graph node to list of all arcs that refer to it
+function arcs_where_node_referred_to_arg(mei_graph,id) {
+  return Array.from(mei_graph.getElementsByTagName("arc"))
+    .filter((x) => {
+	return (x.getAttribute("from") == "#"+id || 
+		x.getAttribute("to") == "#"+id);
+     }).length > 0;
 }
 
 // From graph node to list of all arcs that refer to it
@@ -258,6 +272,18 @@ function relation_get_notes_separated(he) {
   var sec_nodes = relation_secondaries(he);
   var secs = sec_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
   return [prims,secs];
+}
+
+// Get the MEI-graph nodes that are adjacent to a relation
+function relation_allnodes_arg(mei_graph,he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+        if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
+          nodes.push(get_by_id(mei_graph,a.getAttribute("to")));
+        }
+      });
+  return nodes;
 }
 
 // Get the MEI-graph nodes that are adjacent to a relation

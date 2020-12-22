@@ -372,6 +372,26 @@ function relation_type(he) {
   }
 }
 
+// Set up new graph node for a note
+function add_mei_node_for_arg(mei_graph,note) {
+    //TODO: Check if there is an oldid, and use that if available
+    var id = note.getAttribute("id");
+    var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
+    if (elem != null) {
+      return elem;
+    }
+    elem = mei_graph.getRootNode().createElement("node");
+    // This node represent that note
+    var label = mei_graph.getRootNode().createElement("label");
+    var note = mei_graph.getRootNode().createElement("note");
+    note.setAttribute("sameas","#"+id);
+    elem.appendChild(label);
+    label.appendChild(note);
+    // But should have a separate XML ID
+    elem.setAttribute("xml:id","gn-" + id);
+    mei_graph.appendChild(elem);
+    return elem;
+}
 
 // Set up new graph node for a note
 function add_mei_node_for(mei,mei_graph,note) {

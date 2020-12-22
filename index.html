@@ -583,7 +583,7 @@
             
             // Add a "relation" to the MEI graph element. We model this
 	    // with a new node.
-            function add_relation_arg(draw_context, mei_graph, primaries, secondaries, type, he_id_param) {
+            function add_relation_arg(mei_graph, primaries, secondaries, type, he_id_param) {
 	      var added = [];
 	      // Add a new node for the relation
 	      var he_elem = mei_graph.getRootNode().createElement("node");
@@ -703,6 +703,7 @@
 		if (selected.length == 0 && extraselected == 0) {
 		  return;}
 		changes = true;
+		var he_id, mei_elems;
 		if(selected.concat(extraselected)[0].getAttribute("class") == "relation"){
 		  var types = [];
 		  selected.concat(extraselected).forEach((he) => {
@@ -722,22 +723,26 @@
 		    var primaries = extraselected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
 		    var secondaries = selected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
 		    added.push(primaries.concat(secondaries));
-		    var [he_id,mei_elems] = add_relation_arg(draw_contexts[0],orig_mei_graph,primaries, secondaries, type);
+		    [he_id,mei_elems] = add_relation_arg(orig_mei_graph,primaries, secondaries, type);
 		    added.push(mei_elems);
 		    console.log(get_by_id(orig_mei, he_id));
-		    added.push(draw_relation_arg(draw_contexts[0],orig_mei_graph,get_by_id(orig_mei, he_id))); // Draw the edge
+		    for(var i = 0; i < draw_contexts.length; i++) {
+		      added.push(draw_relation_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(), he_id))); // Draw the edge
+		      mark_secondaries_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(),he_id));
+		    }
+		    undo_actions.push(["relation",added,selected,extraselected]);
 		  }else{
-		    var [he_id,mei_elems] = add_relation(mei,mei_graph,type);
+		    [he_id,mei_elems] = add_relation(mei,mei_graph,type);
 		    added.push(mei_elems);  // Add it to the MEI
 		    if(mei != orig_mei){
 		      var [orig_he_id,orig_mei_elems] = add_relation(orig_mei,orig_mei_graph,type,he_id);
 		      added.push(orig_mei_elems);  // Add it to the MEI
 		    }
 		    added.push(draw_relation(he_id,type)); // Draw the edge
+		    undo_actions.push(["relation",added,selected,extraselected]);
+		    mark_secondaries(get_by_id(mei,he_id));
 		  }
 		  
-		  undo_actions.push(["relation",added,selected,extraselected]);
-		  mark_secondaries(get_by_id(mei,he_id));
 		  selected.concat(extraselected).forEach(toggle_selected); // De-select
 		}
 	    }
@@ -850,7 +855,7 @@
 
 	    }
 
-            function add_metarelation_arg(draw_context, mei_graph, primaries, secondaries, type,he_id_param) {
+            function add_metarelation_arg(mei_graph, primaries, secondaries, type,he_id_param) {
 	      // Add a new node for the relation
 	      //TODO: we use the id attribute of the selected
 	      //primaries/secondaries. This is correct now, but needs
@@ -946,12 +951,14 @@
 		  return; }
 		changes = true;
 		var added = [];
+		var he_id,mei_elems;
 		if(arg){
 		  var primaries = extraselected.map((e) => get_by_id(orig_mei_graph.getRootNode(), e.id));
 		  var secondaries = selected.map((e) => get_by_id(orig_mei_graph.getRootNode(), e.id));
-                  var [he_id,mei_elems] = add_metarelation_arg(draw_contexts[0], orig_mei_graph, primaries, secondaries, type);
+                  var [he_id,mei_elems] = add_metarelation_arg(orig_mei_graph, primaries, secondaries, type);
 		  added.push(mei_elems);
-		  added.push(draw_metarelation_arg(draw_contexts[0], orig_mei_graph, get_by_id(orig_mei_graph.getRootNode(),he_id))); // Draw the edge
+		  for(var i = 0; i< draw_contexts.length; i++)
+		    added.push(draw_metarelation_arg(draw_contexts[i], orig_mei_graph, get_by_id(orig_mei_graph.getRootNode(),he_id))); // Draw the edge
 		}else{
 		  var [he_id,mei_elems] = add_metarelation(mei,mei_graph,type);
 		  added.push(mei_elems);  // Add it to the MEI
@@ -988,8 +995,12 @@
 		  var added = elems;
 		  if(what == "relation")
 		    added.flat().forEach((x) => { 
-	              if(mei.contains(x) && x.getAttribute("type") == "relation")
-			unmark_secondaries(x);
+		      if(arg){
+			if(orig_mei_graph.contains(x) && x.getAttribute("type") == "relation")
+			  for(var i = 0; i < draw_contexts.length; i++) 
+			    unmark_secondaries_arg(draw_contexts[i],orig_mei_graph,x)
+		      }else if(mei.contains(x) && x.getAttribute("type") == "relation")
+			  unmark_secondaries(x);
 		      });
 		  // Remove added elements
 		  added.flat().forEach((x) => {
@@ -1364,9 +1375,15 @@
 	      var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
 		  pageHeight: 10000, breaks: "none", format: "mei"});
 
-	      prefix_ids(old_svg_elem,"old"+(output_parent.children.length-2));
+	      draw_contexts[0].id_prefix = "old"+(output_parent.children.length-2);
+	      prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
 	      
 	      $(new_svg_elem).html(svg2);
+	      var new_draw_context = {"mei": mei2, "svg_elem" : new_svg_elem,
+		"id_prefix" : ""};
+	      draw_contexts.reverse();
+	      draw_contexts.push(new_draw_context);
+	      draw_contexts.reverse();
 	      svg = svg2;
 	      mei = mei2;
 	      data = data2;

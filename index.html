@@ -510,7 +510,7 @@
 	      return added;
 	    }
 
-            function draw_relation_arg(g_elem, mei_graph, draw_context) {
+            function draw_relation_arg(draw_context, mei_graph, g_elem) {
 	      var added = [];
 	      var mei = draw_context.mei;
 	      var svg_elem = draw_context.svg_elem;
@@ -582,6 +582,7 @@
             // Add a "relation" to the MEI graph element. We model this
 	    // with a new node.
             function add_relation(mei,mei_graph,type,he_id_param) {
+	      console.debug("Using globals: selected, extraselected");
 	      var added = [];
               // Add new nodes for all notes
 	      for(var i = 0; i < selected.length; i++) {
@@ -680,7 +681,7 @@
 
 		  if(arg){
 		    console.log(get_by_id(mei, he_id));
-		    added.push(draw_relation_arg(get_by_id(mei, he_id),mei_graph, draw_contexts[0])); // Draw the edge
+		    added.push(draw_relation_arg(draw_contexts[0],orig_mei_graph,get_by_id(orig_mei, he_id))); // Draw the edge
 		  }else
 		    added.push(draw_relation(he_id,type)); // Draw the edge
 		  

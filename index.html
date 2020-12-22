@@ -221,8 +221,15 @@
 		  toggle_he_selected(false);
 		}
 	      }
-	      var primaries = to_text(extraselected);
-	      var secondaries = to_text(selected);
+ 
+	      var primaries, secondaries;
+	      if(arg){
+		primaries = to_text_arg(draw_contexts,orig_mei_graph,extraselected);
+		secondaries = to_text_arg(draw_contexts,orig_mei_graph,selected);
+	      }else{
+		primaries = to_text(extraselected);
+		secondaries = to_text(selected);
+	      }
 	      $("#selected_things").html("Primaries: "+primaries+"<br/>Secondaries: "+secondaries);  
 
 	    }

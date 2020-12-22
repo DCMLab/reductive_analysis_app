@@ -597,6 +597,28 @@ function remove_empty_relations(graph) {
 
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
+function to_text_arg(draw_contexts,mei_graph,elems) {
+  //TODO: Detect and warn for selections spanning several drawing contexts
+  if(elems.length == 0)
+    return "";
+  if(elems[0].getAttribute("class") == "note"){
+    return "notes("+elems.map((elem) => {
+      var id = elem.id;
+      if(elem.getAttribute("oldid"))
+        id = elem.getAttribute("oldid");
+      var mei_elem = get_by_id(mei,id);
+      var accid = note_get_accid(mei_elem);
+      accid= accid.replaceAll("s","#")
+      accid= accid.replaceAll("f","b")
+      accid= accid.replaceAll("n","")
+      return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
+    }).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "relation"){
+    return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "metarelation"){
+    return "metarelations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }
+}
 
 function to_text(elems) {
   if(elems.length == 0)

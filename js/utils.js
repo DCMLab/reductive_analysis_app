@@ -179,6 +179,20 @@ function note_coords(note) {
           note.getElementsByTagName("use")[0].y.animVal.value]
 }
 
+function get_by_oldid_elem(doc,elem) {return get_by_id(doc, elem.getAttribute("oldid"));}
+
+function get_by_id_oldid(doc,id){
+  if (id[0] == "#") { id = id.slice(1); }
+  var elem =  doc.querySelector("[*|oldid='"+id+"']");
+  if(elem) {
+    return elem;
+  }else{
+    return Array.from(doc.all).find((x) => { return x.getAttribute("oldid") == id });
+  }
+}
+
+
+
 // From id string to element
 function get_by_id(doc,id) {
   if (id[0] == "#") { id = id.slice(1); }

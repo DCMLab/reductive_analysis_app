@@ -867,7 +867,7 @@
 	      for(var i = 0; i < primaries.length; i++) {
 		// So that we can refer to the node (not the note) ID in
 		// arcs/edges
-		var elem = mei.createElement("arc");
+		var elem = mei_graph.getRootNode().createElement("arc");
 		elem.setAttribute("from","#"+he_id);
 		elem.setAttribute("to","#"+primaries[i].getAttribute("xml:id"));
 		elem.setAttribute("type","primary");
@@ -877,7 +877,7 @@
 	      for(var i = 0; i < secondaries.length; i++) {
 		// So that we can refer to the node (not the note) ID in
 		// arcs/edges
-		var elem = mei.createElement("arc");
+		var elem = mei_graph.getRootNode().createElement("arc");
 		elem.setAttribute("from","#"+he_id);
 		elem.setAttribute("to","#"+secondaries[i].getAttribute("xml:id"));
 		elem.setAttribute("type","secondary");

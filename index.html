@@ -945,11 +945,11 @@
 		changes = true;
 		var added = [];
 		if(arg){
-		  var primaries = extraselected.map((e) => get_by_id(orig_mei_graph, e.id));
-		  var secondaries = selected.map((e) => get_by_id(orig_mei_graph, e.id));
+		  var primaries = extraselected.map((e) => get_by_id(orig_mei_graph.getRootNode(), e.id));
+		  var secondaries = selected.map((e) => get_by_id(orig_mei_graph.getRootNode(), e.id));
                   var [he_id,mei_elems] = add_metarelation_arg(draw_contexts[0], orig_mei_graph, primaries, secondaries, type);
 		  added.push(mei_elems);
-		  added.push(draw_metarelation_arg(draw_contexts[0], orig_mei_graph, get_by_id(orig_mei,he_id))); // Draw the edge
+		  added.push(draw_metarelation_arg(draw_contexts[0], orig_mei_graph, get_by_id(orig_mei_graph.getRootNode(),he_id))); // Draw the edge
 		}else{
 		  var [he_id,mei_elems] = add_metarelation(mei,mei_graph,type);
 		  added.push(mei_elems);  // Add it to the MEI

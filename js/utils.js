@@ -294,7 +294,7 @@ function relation_allnodes_arg(mei_graph,he) {
   var nodes = [];
   arcs_array.forEach((a) => {
         if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
-          nodes.push(get_by_id(mei_graph,a.getAttribute("to")));
+          nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
         }
       });
   return nodes;

@@ -103,6 +103,8 @@
 
 	    var zoom = 1;
 
+	    var arg = false;
+
 	    // Once things are loaded, do configuration stuff
 	    $(document).ready(function()
 		{
@@ -121,7 +123,7 @@
 	      elem.setAttribute("class","relationbutton");
 	      elem.setAttribute("id",type + "relationbutton");
 	      elem.setAttribute("value","Add "+type+" relation " + "(" + type_conf[type].key + ")");
-	      elem.onclick = () => {do_relation(type);};
+	      elem.onclick = () => {do_relation(type,arg);};
 	      $("#relation_buttons")[0].appendChild(elem);
 	      type_shades[type] = shades_array[type_conf[type].colour];
 	      type_keys[type_conf[type].key] = type;
@@ -136,7 +138,7 @@
 	      elem.setAttribute("class","metarelationbutton");
 	      elem.setAttribute("id",type + "metarelationbutton");
 	      elem.setAttribute("value","Add "+type+" metarelation " + "(" + meta_conf[type].key + ")");
-	      elem.onclick = () => {do_metarelation(type);};
+	      elem.onclick = () => {do_metarelation(type,arg);};
 	      $("#meta_buttons")[0].appendChild(elem);
 	      meta_shades[type] = shades_array[meta_conf[type].colour];
 	      meta_keys[meta_conf[type].key] = type;
@@ -1046,11 +1048,11 @@
 		toggle_shades();
 	      } else if (ev.key == "+") { // Select same notes in the measure
 		select_samenote();
-		do_relation("repeat");
+		do_relation("repeat",arg);
 	      } else if (type_keys[ev.key]) { // Add a relation
-		do_relation(type_keys[ev.key]);
+		do_relation(type_keys[ev.key],arg);
 	      } else if (meta_keys[ev.key]) { // Add a relation
-		do_metarelation(meta_keys[ev.key]);
+		do_metarelation(meta_keys[ev.key],arg);
 	      }else {
 		console.log(ev);
 	      }
@@ -1445,8 +1447,8 @@
 	  <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
 	  <input type="button" id="deletebutton" value="Delete relations" onclick="delete_relations()" >
 	  <!--input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" -->
-	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation()" > 
-	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value)" >
+	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("",arg)" > 
+	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value, arg)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
 	  <input type="button" id="midireducebutton" value="Play reduction" onclick="play_midi_reduction()" >

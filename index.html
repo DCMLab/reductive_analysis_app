@@ -715,18 +715,24 @@
 		  undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
 		}else if(selected.concat(extraselected)[0].getAttribute("class") == "note"){
 		  var added = [];
-		  var [he_id,mei_elems] = add_relation(mei,mei_graph,type);
-		  added.push(mei_elems);  // Add it to the MEI
-		  if(mei != orig_mei){
-		    var [orig_he_id,orig_mei_elems] = add_relation(orig_mei,orig_mei_graph,type,he_id);
-		    added.push(orig_mei_elems);  // Add it to the MEI
-		  }
-
 		  if(arg){
-		    console.log(get_by_id(mei, he_id));
+		    // Add new nodes for all notes
+		    var primaries = extraselected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
+		    var secondaries = selected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
+		    added.push(primaries.concat(secondaries));
+		    var [he_id,mei_elems] = add_relation_arg(draw_contexts[0],orig_mei_graph,primaries, secondaries, type);
+		    added.push(mei_elems);
+		    console.log(get_by_id(orig_mei, he_id));
 		    added.push(draw_relation_arg(draw_contexts[0],orig_mei_graph,get_by_id(orig_mei, he_id))); // Draw the edge
-		  }else
+		  }else{
+		    var [he_id,mei_elems] = add_relation(mei,mei_graph,type);
+		    added.push(mei_elems);  // Add it to the MEI
+		    if(mei != orig_mei){
+		      var [orig_he_id,orig_mei_elems] = add_relation(orig_mei,orig_mei_graph,type,he_id);
+		      added.push(orig_mei_elems);  // Add it to the MEI
+		    }
 		    added.push(draw_relation(he_id,type)); // Draw the edge
+		  }
 		  
 		  undo_actions.push(["relation",added,selected,extraselected]);
 		  mark_secondaries(get_by_id(mei,he_id));

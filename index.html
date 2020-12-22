@@ -645,7 +645,7 @@
 
 	    }
 
-            function add_metarelation(type,he_id_param) {
+            function add_metarelation(mei,mei_graph,type,he_id_param) {
 	      // Add a new node for the relation
 	      var added = [];
 	      var he_elem = mei.createElement("node");
@@ -694,7 +694,7 @@
 		  return; }
 		changes = true;
 		var added = [];
-		var [he_id,mei_elems] = add_metarelation(type);
+		var [he_id,mei_elems] = add_metarelation(mei, mei_graph,type);
 		added.push(mei_elems);  // Add it to the MEI
 		if(mei != orig_mei){
 		  var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);

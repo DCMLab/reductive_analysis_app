@@ -224,6 +224,13 @@ function node_referred_to(id) {
 }
 
 // From MEI graph node to its referred note.
+function note_get_sameas_arg(prefix,note) {
+  return note.getElementsByTagName("label")[0].
+	      getElementsByTagName("note")[0].
+	      getAttribute("sameas").replace("#","#"+prefix);
+}
+
+// From MEI graph node to its referred note.
 function note_get_sameas(note) {
   return note.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
@@ -447,6 +454,19 @@ function unmark_secondary(item) {
 }
 
 // For a certain relation, find its secondaries and mark them
+function mark_secondaries_arg(draw_context,mei_graph,he) {
+    var mei = draw_context.mei;
+    var svg_elem = draw_context.svg_elem;
+    if(he.tagName != "node")
+      he = get_by_id(mei_graph.getRootNode(),he.id);
+    var secondaries = relation_secondaries_arg(mei_graph,he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,n));
+	mark_secondary(svg_note);
+    });
+}
+
+// For a certain relation, find its secondaries and mark them
 function mark_secondaries(he) {
     console.debug("Using globals: document, mei to find elems");
     if(!mei.contains(he))
@@ -455,6 +475,19 @@ function mark_secondaries(he) {
     secondaries.forEach((n) => {
 	var svg_note = get_by_id(document,note_get_sameas(n));
 	mark_secondary(svg_note);
+    });
+}
+
+// For a certain relation, find its secondaries and unmark them
+function unmark_secondaries_arg(draw_context,mei_graph,he) {
+    var mei = draw_context.mei;
+    var svg_elem = draw_context.svg_elem;
+    if(he.tagName != "node")
+      he = get_by_id(mei_graph.getRootNode(),he.id);
+    var secondaries = relation_secondaries_arg(mei_graph,he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_arg(draw_context.id_prefix, n));
+	unmark_secondary(svg_note);
     });
 }
 

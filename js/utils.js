@@ -319,7 +319,7 @@ function relation_primaries_arg(mei_graph,he) {
   arcs_array.forEach((a) => {
     if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
        a.getAttribute("type") == "primary"){
-      nodes.push(get_by_id(mei_graph,a.getAttribute("to")));
+      nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
     }
       });
   return nodes;
@@ -331,7 +331,7 @@ function relation_secondaries_arg(mei_graph,he) {
   arcs_array.forEach((a) => {
     if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
        a.getAttribute("type") == "secondary"){
-      nodes.push(get_by_id(mei_graph,a.getAttribute("to")));
+      nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
     }
       });
   return nodes;

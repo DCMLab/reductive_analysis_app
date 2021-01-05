@@ -548,75 +548,6 @@
 	      return added;
 	    }
 
-            // Draw a relation as a  series of edges (TODO: make it much much much better)
-            // New version below as draw_relation_arg. It will draw based on
-	    // an already MEI-encoded relation rather than this ad-hoc
-	    // stuff.
-            function draw_relation(id,type) {
-	      console.debug("Using globals: selected, extraselected, mei, mei_graph, shades");
-	      var added = [];
-	      var notes = selected.concat(extraselected);
-	      if(notes.includes(undefined)) {
-		console.log("Note missing, relation not drawn");
-		return [];
-	      }
-	      var secondaries = selected;
-	      var primaries = extraselected;
-
-	      notes.sort((a,b) => { 
-		  var p1= note_coords(a);
-		  var p2= note_coords(b);
-		  return (p1[0] - p2[0]) ? (p1[0] - p2[0]) : (p1[1] - p2[1]);
-		});
-
-
-	      var elem = roundedHull(notes.map(note_coords));
-	      elem.setAttribute("id",id);
-	      elem.setAttribute("class","relation");
-	      elem.setAttribute("type",type);
-	      elem.style.fillOpacity = "0.5";
-	      elem.onwheel = (e) => {
-		var elem1 = e.target;
-		var paren = elem1.parentElement;
-		paren.removeChild(elem1);
-		paren.insertBefore(elem1,paren.children[0]);
-		elem.onmouseout();
-		return false;
-	      };
-	      if(shades)
-		toggle_shade(elem);
-	      add_to_svg_bg(elem);
-	      added.push(elem);
-	      elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
-	      elem.onmouseover = function (ev) {
-
-		primaries.forEach((item) => {
-		    if(item.style.filter == ""){
-		      item.style.transform = "translate3d(0,0,0)";
-		      item.style.filter = "url(\"#extraFilter\")";
-		      }});
-		secondaries.forEach((item) => {
-		    if(item.style.filter == ""){
-		      item.style.transform = "translate3d(0,0,0)";
-		      item.style.filter = "url(\"#selectFilter\")";
-		      }});
-	      }
-	      elem.onmouseout = function (ev) {
-		primaries.forEach((item) => {
-		    if(item.style.filter == "url(\"#extraFilter\")") {
-		      item.style.transform = "";
-		      item.style.filter = "";
-		    }});
-		secondaries.forEach((item) => {
-		    if(item.style.filter == "url(\"#selectFilter\")") {
-		      item.style.transform = "";
-		      item.style.filter = "";
-		    }});
-	      }
-
-	      return added;
-	    }
-
             function draw_relation_arg(draw_context, mei_graph, g_elem) {
 	      var added = [];
 	      var mei = draw_context.mei;
@@ -723,59 +654,6 @@
 		elem.setAttribute("from","#"+he_id);
 		elem.setAttribute("to","#"+secondaries[i].getAttribute("xml:id"));
 		elem.setAttribute("type","secondary");
-		mei_graph.appendChild(elem);
-		added.push(elem);
-	      }
-	      return [he_id,added.reverse()];
-	    }
-            
-            // Add a "relation" to the MEI graph element. We model this
-	    // with a new node.
-            function add_relation(mei,mei_graph,type,he_id_param) {
-	      console.debug("Using globals: selected, extraselected");
-	      var added = [];
-              // Add new nodes for all notes
-	      for(var i = 0; i < selected.length; i++) {
-		var elem = add_mei_node_for(mei,mei_graph,selected[i]);
-		added.push(elem);
-	      }
-	      for(var i = 0; i < extraselected.length; i++) {
-		var elem = add_mei_node_for(mei,mei_graph,extraselected[i]);
-		added.push(elem);
-	      }
-	      // Add a new node for the relation
-	      var he_elem = mei.createElement("node");
-	      he_elem.setAttribute("type","relation");
-	      var he_label = mei.createElement("label");
-	      if(typeof type != 'undefined')
-		he_label.setAttribute("type",type)
-	      he_elem.appendChild(he_label);
-	      // Who knows if this is enough
-	      var he_id;
-	      if(typeof he_id_param == 'undefined')
-	        he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
-	      else
-		he_id = he_id_param;
-	      he_elem.setAttribute("xml:id",he_id);
-	      mei_graph.appendChild(he_elem);
-	      added.push(he_elem);
-	      for(var i = 0; i < selected.length; i++) {
-		// So that we can refer to the node (not the note) ID in
-		// arcs/edges
-		var elem = mei.createElement("arc");
-		elem.setAttribute("from","#"+he_id);
-		elem.setAttribute("to","#gn-"+selected[i].id);
-		elem.setAttribute("type","secondary");
-		mei_graph.appendChild(elem);
-		added.push(elem);
-	      }
-	      for(var i = 0; i < extraselected.length; i++) {
-		// So that we can refer to the node (not the note) ID in
-		// arcs/edges
-		var elem = mei.createElement("arc");
-		elem.setAttribute("from","#"+he_id);
-		elem.setAttribute("to","#gn-"+extraselected[i].id);
-		elem.setAttribute("type","primary");
 		mei_graph.appendChild(elem);
 		added.push(elem);
 	      }
@@ -907,58 +785,6 @@
 	      return added;
 	    }
 
-            function draw_metarelation(id,type) {
-	      console.debug("Using globals: selected, extraselected, document, shades");
-	      var added = [];
-	      var targets =selected.concat(extraselected); 
-	      var coords = targets.map(get_metarelation_target);
-	      var x = average(coords.map((e) => e[0]));
-	      // Above
-	      var y =
-		targets.concat([document.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
-
-//	      coords.push([x,y]);
-	      var g_elem = g();
-//	      var elem = roundedHull(coords);
-	      g_elem.setAttribute("id",id);
-	      g_elem.setAttribute("class","metarelation");
-	      g_elem.setAttribute("type",type);
-	      g_elem.style.fillOpacity = "0.5";
-	      g_elem.style.strokeOpacity = "0.1";
-	      g_elem.onwheel = (e) => {
-		var elem1 = e.target;
-		var paren = elem1.parentElement;
-		paren.removeChild(elem1);
-		paren.insertBefore(elem1,paren.children[0]);
-		return false;
-	      };
-	      coords.forEach((crds) => { var line_elem = line([x,y],crds);
-		  g_elem.appendChild(line_elem);});
-	      g_elem.appendChild(circle([x,y],200));
-	      if(shades)
-		toggle_shade(g_elem);
-	      add_to_svg_bg(g_elem);
-	      added.push(g_elem);
-	      g_elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
-	      g_elem.onmouseover = function (ev) {
-
-		targets.forEach((item) => {
-		    if(item.style.filter == ""){
-		      item.style.transform = "translate3d(0,0,0)";
-		      item.style.filter = "url(\"#glowFilter\")";
-		      }});
-	      }
-	      g_elem.onmouseout = function (ev) {
-		targets.forEach((item) => {
-		    if(item.style.filter == "url(\"#glowFilter\")") {
-		      item.style.transform = "";
-		      item.style.filter = "";
-		    }});
-	      }
-	      return added;
-	      
-
-	    }
 
             function add_metarelation_arg(mei_graph, primaries, secondaries, type,he_id_param) {
 	      // Add a new node for the relation
@@ -999,48 +825,6 @@
 		elem.setAttribute("from","#"+he_id);
 		elem.setAttribute("to","#"+secondaries[i].getAttribute("xml:id"));
 		elem.setAttribute("type","secondary");
-		mei_graph.appendChild(elem);
-		added.push(elem);
-	      }
-	      return [he_id,added.reverse()];
-	    }
-
-            function add_metarelation(mei,mei_graph,type,he_id_param) {
-	      console.debug("Using globals: mei, mei_graph, selected, extraselected");
-	      // Add a new node for the relation
-	      var added = [];
-	      var he_elem = mei.createElement("node");
-	      he_elem.setAttribute("type","metarelation");
-	      var he_label = mei.createElement("label");
-	      if(typeof type != 'undefined')
-		he_label.setAttribute("type",type)
-	      he_elem.appendChild(he_label);
-	      // Who knows if this is enough
-	      var he_id;
-	      if(typeof he_id_param == 'undefined')
-	        he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
-	      else
-		he_id = he_id_param;
-	      he_elem.setAttribute("xml:id",he_id);
-	      mei_graph.appendChild(he_elem);
-	      added.push(he_elem);
-	      for(var i = 0; i < selected.length; i++) {
-		// So that we can refer to the node (not the note) ID in
-		// arcs/edges
-		var elem = mei.createElement("arc");
-		elem.setAttribute("from","#"+he_id);
-		elem.setAttribute("to","#"+selected[i].id);
-		elem.setAttribute("type","secondary");
-		mei_graph.appendChild(elem);
-		added.push(elem);
-	      }
-	      for(var i = 0; i < extraselected.length; i++) {
-		// So that we can refer to the node (not the note) ID in
-		// arcs/edges
-		var elem = mei.createElement("arc");
-		elem.setAttribute("from","#"+he_id);
-		elem.setAttribute("to","#"+extraselected[i].id);
-		elem.setAttribute("type","primary");
 		mei_graph.appendChild(elem);
 		added.push(elem);
 	      }
@@ -1559,7 +1343,224 @@
 
 
 
+            // Draw a relation as a  series of edges (TODO: make it much much much better)
+            // New version below as draw_relation_arg. It will draw based on
+	    // an already MEI-encoded relation rather than this ad-hoc
+	    // stuff.
+            function draw_relation(id,type) {
+	      console.debug("Using globals: selected, extraselected, mei, mei_graph, shades");
+	      var added = [];
+	      var notes = selected.concat(extraselected);
+	      if(notes.includes(undefined)) {
+		console.log("Note missing, relation not drawn");
+		return [];
+	      }
+	      var secondaries = selected;
+	      var primaries = extraselected;
 
+	      notes.sort((a,b) => { 
+		  var p1= note_coords(a);
+		  var p2= note_coords(b);
+		  return (p1[0] - p2[0]) ? (p1[0] - p2[0]) : (p1[1] - p2[1]);
+		});
+
+
+	      var elem = roundedHull(notes.map(note_coords));
+	      elem.setAttribute("id",id);
+	      elem.setAttribute("class","relation");
+	      elem.setAttribute("type",type);
+	      elem.style.fillOpacity = "0.5";
+	      elem.onwheel = (e) => {
+		var elem1 = e.target;
+		var paren = elem1.parentElement;
+		paren.removeChild(elem1);
+		paren.insertBefore(elem1,paren.children[0]);
+		elem.onmouseout();
+		return false;
+	      };
+	      if(shades)
+		toggle_shade(elem);
+	      add_to_svg_bg(elem);
+	      added.push(elem);
+	      elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
+	      elem.onmouseover = function (ev) {
+
+		primaries.forEach((item) => {
+		    if(item.style.filter == ""){
+		      item.style.transform = "translate3d(0,0,0)";
+		      item.style.filter = "url(\"#extraFilter\")";
+		      }});
+		secondaries.forEach((item) => {
+		    if(item.style.filter == ""){
+		      item.style.transform = "translate3d(0,0,0)";
+		      item.style.filter = "url(\"#selectFilter\")";
+		      }});
+	      }
+	      elem.onmouseout = function (ev) {
+		primaries.forEach((item) => {
+		    if(item.style.filter == "url(\"#extraFilter\")") {
+		      item.style.transform = "";
+		      item.style.filter = "";
+		    }});
+		secondaries.forEach((item) => {
+		    if(item.style.filter == "url(\"#selectFilter\")") {
+		      item.style.transform = "";
+		      item.style.filter = "";
+		    }});
+	      }
+
+	      return added;
+	    }
+
+            
+            // Add a "relation" to the MEI graph element. We model this
+	    // with a new node.
+            function add_relation(mei,mei_graph,type,he_id_param) {
+	      console.debug("Using globals: selected, extraselected");
+	      var added = [];
+              // Add new nodes for all notes
+	      for(var i = 0; i < selected.length; i++) {
+		var elem = add_mei_node_for(mei,mei_graph,selected[i]);
+		added.push(elem);
+	      }
+	      for(var i = 0; i < extraselected.length; i++) {
+		var elem = add_mei_node_for(mei,mei_graph,extraselected[i]);
+		added.push(elem);
+	      }
+	      // Add a new node for the relation
+	      var he_elem = mei.createElement("node");
+	      he_elem.setAttribute("type","relation");
+	      var he_label = mei.createElement("label");
+	      if(typeof type != 'undefined')
+		he_label.setAttribute("type",type)
+	      he_elem.appendChild(he_label);
+	      // Who knows if this is enough
+	      var he_id;
+	      if(typeof he_id_param == 'undefined')
+	        he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
+	      else
+		he_id = he_id_param;
+	      he_elem.setAttribute("xml:id",he_id);
+	      mei_graph.appendChild(he_elem);
+	      added.push(he_elem);
+	      for(var i = 0; i < selected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#gn-"+selected[i].id);
+		elem.setAttribute("type","secondary");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      for(var i = 0; i < extraselected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#gn-"+extraselected[i].id);
+		elem.setAttribute("type","primary");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      return [he_id,added.reverse()];
+	    }
+
+            function draw_metarelation(id,type) {
+	      console.debug("Using globals: selected, extraselected, document, shades");
+	      var added = [];
+	      var targets =selected.concat(extraselected); 
+	      var coords = targets.map(get_metarelation_target);
+	      var x = average(coords.map((e) => e[0]));
+	      // Above
+	      var y =
+		targets.concat([document.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
+
+//	      coords.push([x,y]);
+	      var g_elem = g();
+//	      var elem = roundedHull(coords);
+	      g_elem.setAttribute("id",id);
+	      g_elem.setAttribute("class","metarelation");
+	      g_elem.setAttribute("type",type);
+	      g_elem.style.fillOpacity = "0.5";
+	      g_elem.style.strokeOpacity = "0.1";
+	      g_elem.onwheel = (e) => {
+		var elem1 = e.target;
+		var paren = elem1.parentElement;
+		paren.removeChild(elem1);
+		paren.insertBefore(elem1,paren.children[0]);
+		return false;
+	      };
+	      coords.forEach((crds) => { var line_elem = line([x,y],crds);
+		  g_elem.appendChild(line_elem);});
+	      g_elem.appendChild(circle([x,y],200));
+	      if(shades)
+		toggle_shade(g_elem);
+	      add_to_svg_bg(g_elem);
+	      added.push(g_elem);
+	      g_elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
+	      g_elem.onmouseover = function (ev) {
+
+		targets.forEach((item) => {
+		    if(item.style.filter == ""){
+		      item.style.transform = "translate3d(0,0,0)";
+		      item.style.filter = "url(\"#glowFilter\")";
+		      }});
+	      }
+	      g_elem.onmouseout = function (ev) {
+		targets.forEach((item) => {
+		    if(item.style.filter == "url(\"#glowFilter\")") {
+		      item.style.transform = "";
+		      item.style.filter = "";
+		    }});
+	      }
+	      return added;
+	      
+
+	    }
+
+
+            function add_metarelation(mei,mei_graph,type,he_id_param) {
+	      console.debug("Using globals: mei, mei_graph, selected, extraselected");
+	      // Add a new node for the relation
+	      var added = [];
+	      var he_elem = mei.createElement("node");
+	      he_elem.setAttribute("type","metarelation");
+	      var he_label = mei.createElement("label");
+	      if(typeof type != 'undefined')
+		he_label.setAttribute("type",type)
+	      he_elem.appendChild(he_label);
+	      // Who knows if this is enough
+	      var he_id;
+	      if(typeof he_id_param == 'undefined')
+	        he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
+	      else
+		he_id = he_id_param;
+	      he_elem.setAttribute("xml:id",he_id);
+	      mei_graph.appendChild(he_elem);
+	      added.push(he_elem);
+	      for(var i = 0; i < selected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#"+selected[i].id);
+		elem.setAttribute("type","secondary");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      for(var i = 0; i < extraselected.length; i++) {
+		// So that we can refer to the node (not the note) ID in
+		// arcs/edges
+		var elem = mei.createElement("arc");
+		elem.setAttribute("from","#"+he_id);
+		elem.setAttribute("to","#"+extraselected[i].id);
+		elem.setAttribute("type","primary");
+		mei_graph.appendChild(elem);
+		added.push(elem);
+	      }
+	      return [he_id,added.reverse()];
+	    }
         </script>
 	<div id="selected_things" style="position:fixed; fill-opacity: 0.5;
 	stroke-opacity: 0.5">Primaries:<br/>Secondaries:</div>

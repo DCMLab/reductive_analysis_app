@@ -191,8 +191,6 @@ function get_by_oldid(doc,id){
   }
 }
 
-
-
 // From id string to element
 function get_by_id(doc,id) {
   if (id[0] == "#") { id = id.slice(1); }
@@ -419,6 +417,22 @@ function add_mei_node_for(mei,mei_graph,note) {
     elem.setAttribute("xml:id","gn-" + id);
     mei_graph.appendChild(elem);
     return elem;
+}
+            
+// Find graphical element and hide it
+function hide_note_arg(draw_context,note) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,note));
+  if(elem)
+    elem.style.visibility = "hidden";
+  return elem;
+}
+
+// Find graphical element and hide it
+function hide_he_arg(draw_context,he) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
+  if(elem) 
+    elem.style.visibility = "hidden";
+  return elem;
 }
             
 // Find graphical element and hide it

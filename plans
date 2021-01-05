@@ -80,7 +80,7 @@ Can notes be added in any layer or just the latest? (Only the latest for now)
 
 OK, so this is the plan:
 
-1. Each "layer" has an id_prefix, an SVG elem, it's own view of the MEI.
+1. Each "view" has an id_prefix, an SVG elem, it's own view of the MEI.
 2. a drawing context which is the above
 3. draw_* takes an element from the MEI and and a drawing context and adds
 the requisite element to the SVG if all notes are present, visible if all
@@ -99,6 +99,29 @@ Steps:
      "drawing context" containing svg element, potential prefix, etc.
 
 
+
+
+UI ideas:
+
+Highlight (copies of) entities in all views on hover.
+
+Highlight the currently active view(s)
+
+Separate options for "layers" and "views". Add ability to expand/collapse
+views from layers. Layers exist in the MEI, views do not.
+
+Code ideas:
+
+Separate global actions from local actions. 
+  Global actions are for example:
+    * Adding/deleting relations
+    * Adding views
+  Local/view actions are for example:
+    * Reductions
+    * Merging staves?
+  (future)Actions local to a layer are for example:
+    * Adding implied tones
+    * Shifting notes and tones 
 
 
 

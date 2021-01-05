@@ -89,6 +89,13 @@
 
 	    var redo_actions = []; //TODO, maybe?
 
+            // Each draw context contains information relevant to drawing
+            // into one of the SVG renders. In particular, we store
+            //  * The <div> element containing the SVG
+            //  * The MEI rendered, parsed into a DOM object
+            //  * The prefix used for the element IDs in the SVG (compared
+            //    to the MEI)
+            // The first element is the latest, shown at the top. 
 	    var draw_contexts = [];
 
 	    var rerendered_after_reduce = 0;

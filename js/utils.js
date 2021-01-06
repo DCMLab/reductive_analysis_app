@@ -181,11 +181,12 @@ function note_coords(note) {
 
 function get_by_oldid_elem(doc,elem) {return get_by_id(doc, id_or_oldid(elem));}
 
+// Gets all elements from the doc with the oldid
 function get_by_oldid(doc,id){
   if (id[0] == "#") { id = id.slice(1); }
-  var elem =  doc.querySelector("[*|oldid='"+id+"']");
-  if(elem) {
-    return elem;
+  var elems = doc.querySelectorAll("[*|oldid='"+id+"']");
+  if(elems) {
+    return Array.from(elems);
   }else{
     return Array.from(doc.all).find((x) => { return x.getAttribute("oldid") == id });
   }

@@ -691,15 +691,29 @@
 		var he_id, mei_elems;
 		if(selected.concat(extraselected)[0].getAttribute("class") == "relation"){
 		  var types = [];
-		  selected.concat(extraselected).forEach((he) => {
-		      //TODO: move type_synonym application so that this
-		      //is the right type == the one from the MEI
-		      types.push([he.getAttribute("type"),type]);
-		      he.setAttribute("type",type);
-		      var mei_he = get_by_id(mei,he.id);
-		      mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
-		      toggle_shade(he);
-		  });
+		  if(arg){
+		    selected.concat(extraselected).forEach((he) => {
+			//TODO: move type_synonym application so that this
+			//is the right type == the one from the MEI
+			types.push([he.getAttribute("type"),type]);
+			var id = id_or_oldid(he);
+			var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
+			hes.forEach((he) => he.setAttribute("type",type));
+			var mei_he = get_by_id(orig_mei,id);
+			mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
+			hes.forEach(toggle_shade);
+		    });
+		  }else{
+		    selected.concat(extraselected).forEach((he) => {
+			//TODO: move type_synonym application so that this
+			//is the right type == the one from the MEI
+			types.push([he.getAttribute("type"),type]);
+			he.setAttribute("type",type);
+			var mei_he = get_by_id(mei,id_or_oldid(he));
+			mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
+			toggle_shade(he);
+		    });
+		  }
 		  update_text();
 		  undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
 		}else if(selected.concat(extraselected)[0].getAttribute("class") == "note"){
@@ -913,13 +927,25 @@
 		}else if (what == "change relation type") {
 		  var types = elems;
 		  sel.concat(extra).forEach((he) => {
-		      //TODO: move type_synonym application so that this
-		      //is the right type == the one from the MEI
-		      var [from,to] = types.pop();
-		      he.setAttribute("type",from);
-		      var mei_he = get_by_id(mei,he.id);
-		      mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
-		      toggle_shade(he);
+		      if(arg){
+			//TODO: move type_synonym application so that this
+			//is the right type == the one from the MEI
+			var [from,to] = types.pop();
+			var id = id_or_oldid(he);
+			var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
+			hes.forEach((he) => he.setAttribute("type",from));
+			var mei_he = get_by_id(orig_mei,id);
+			mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
+			hes.forEach(toggle_shade);
+	              }else{
+			//TODO: move type_synonym application so that this
+			//is the right type == the one from the MEI
+			var [from,to] = types.pop();
+			he.setAttribute("type",from);
+			var mei_he = get_by_id(mei,id_or_oldid(he));
+			mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
+			toggle_shade(he);
+		      }
 		  });
 		  sel.forEach((x) => {toggle_selected(x);});
 		  extra.forEach((x) => {toggle_selected(x,true);});

@@ -202,6 +202,15 @@ function get_by_id(doc,id) {
   }
 }
 
+// Simple utility to get oldid if available.
+function id_or_oldid(elem){
+  if(elem.hasAttribute("oldid"))
+    return elem.getAttribute("oldid");
+  else
+    return elem.id;
+}
+
+
 // From graph node to list of all arcs that refer to it
 function arcs_where_node_referred_to_arg(mei_graph,id) {
   return Array.from(mei_graph.getElementsByTagName("arc"))

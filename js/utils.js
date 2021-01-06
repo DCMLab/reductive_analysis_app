@@ -179,7 +179,7 @@ function note_coords(note) {
           note.getElementsByTagName("use")[0].y.animVal.value]
 }
 
-function get_by_oldid_elem(doc,elem) {return get_by_id(doc, elem.getAttribute("oldid"));}
+function get_by_oldid_elem(doc,elem) {return get_by_id(doc, id_or_oldid(elem));}
 
 function get_by_oldid(doc,id){
   if (id[0] == "#") { id = id.slice(1); }
@@ -388,8 +388,7 @@ function relation_type(he) {
 
 // Set up new graph node for a note
 function add_mei_node_for_arg(mei_graph,note) {
-    //TODO: Check if there is an oldid, and use that if available
-    var id = note.getAttribute("id");
+    var id = id_or_oldid(note);
     var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
     if (elem != null) {
       return elem;
@@ -626,9 +625,7 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
     return "";
   if(elems[0].getAttribute("class") == "note"){
     return "notes("+elems.map((elem) => {
-      var id = elem.id;
-      if(elem.getAttribute("oldid"))
-        id = elem.getAttribute("oldid");
+      var id = id_or_oldid(elem);
       var mei_elem = get_by_id(mei,id);
       var accid = note_get_accid(mei_elem);
       accid= accid.replaceAll("s","#")

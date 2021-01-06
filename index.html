@@ -228,7 +228,12 @@
 		  toggle_he_selected(false);
 		}
 	      }
- 
+
+	      update_text();
+	    }
+
+
+            function update_text(){
 	      var primaries, secondaries;
 	      if(arg){
 		primaries = to_text_arg(draw_contexts,orig_mei_graph,extraselected);
@@ -698,6 +703,7 @@
 		      mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
 		      toggle_shade(he);
 		  });
+		  update_text();
 		  undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
 		}else if(selected.concat(extraselected)[0].getAttribute("class") == "note"){
 		  var added = [];

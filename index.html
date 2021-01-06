@@ -400,11 +400,8 @@
 	    // (optional) selected hyperedges from this context.
             function do_reduce_arg(draw_context, mei_graph, selection){
 	      var target_relations = selection.map(
-		    (ge) => {if(ge.hasAttribute("oldid"))
-			       return get_by_id(mei_graph.getRootNode(), ge.getAttribute("oldid"))
-			     else
-			       return get_by_id(mei_graph.getRootNode(), ge.id)
-			     });
+		    (ge) => get_by_id(mei_graph.getRootNode(), id_or_oldid(ge))
+		  );
 
 	      var all_relations_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "relation";});
 
@@ -848,8 +845,11 @@
 		var added = [];
 		var he_id,mei_elems;
 		if(arg){
-		  var primaries = extraselected.map((e) => get_by_id(orig_mei_graph.getRootNode(), e.id));
-		  var secondaries = selected.map((e) => get_by_id(orig_mei_graph.getRootNode(), e.id));
+
+		  var primaries = extraselected.map((e) =>
+		      get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
+		  var secondaries = selected.map((e) =>
+		      get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
                   var [he_id,mei_elems] = add_metarelation_arg(orig_mei_graph, primaries, secondaries, type);
 		  added.push(mei_elems);
 		  for(var i = 0; i< draw_contexts.length; i++)

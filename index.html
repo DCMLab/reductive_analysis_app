@@ -783,7 +783,7 @@
 		toggle_shade(elem);
 	      add_to_svg_bg_arg(svg_elem,elem);
 	      added.push(elem);
-	      elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
+	      elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
 	      elem.onmouseover = function (ev) {
 
 		targets.forEach((item) => {

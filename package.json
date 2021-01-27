@@ -1,0 +1,25 @@
+{
+  "name": "reductive_analysis_app",
+  "version": "0.2.0",
+  "description": "This is an app to facilitate analysing scores using a reductive paradigm.",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest --testRunner='jest-circus/runner' --detectOpenHandles"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DCMLab/reductive_analysis_app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DCMLab/reductive_analysis_app/issues"
+  },
+  "homepage": "https://github.com/DCMLab/reductive_analysis_app#readme",
+  "devDependencies": {
+    "@testing-library/dom": "^7.29.4",
+    "@testing-library/jest-dom": "^5.11.9",
+    "jest": "^26.6.3",
+    "jest-circus": "^26.6.3"
+  }
+}

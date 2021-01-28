@@ -23,8 +23,17 @@ describe('load DOM', () => {
       dom.window.addEventListener("load", resolve) 
   })
 
-  // Here is a dummy test to confirm that the testing framework is in place.
-  it('is always happy', function() {
-    expect(true).toBeTruthy();
+  })
+
+  // Allow Jest hooks more than the default 5000ms to complete, or Jest might crash.
+  jest.setTimeout(3 * 60 * 1000)
+
+  // Run a trivial test to confirm that the testing framework is in place.
+  it('displays the Primaries and Secondaries labels in the layout', function() {
+    expect(
+      dom.window.document.getElementById('selected_things').innerHTML
+      .match(/Primaries:.*<br>Secondaries:.*/g)
+    ).toBeTruthy();
   });
+
 });

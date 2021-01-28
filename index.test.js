@@ -21,7 +21,7 @@ describe('load DOM', () => {
       // See for instance https://github.com/facebook/jest/issues/1256
       // Long story short, `beforeAll` does not handle asynch steps well(!)
       dom.window.addEventListener("load", resolve) 
-  })
+    })
 
   })
 

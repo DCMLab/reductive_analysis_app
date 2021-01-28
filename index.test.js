@@ -5,18 +5,18 @@ const JSDOM = require('jsdom').JSDOM
 const fs = require('fs')
 const path = require('path')
 
-let container
+let dom
 
 describe('index.html', () => {
   beforeAll(() => {
-    // The web app uses html-embeded <scripts> therefore
+    // The web app uses html-embeded <scripts> therefore invoking
     // `beforeEach()` is necessary in order to initialize the test runner.
     return JSDOM.fromFile("index.html", {
       runScripts: 'dangerously',   // load inline <scripts>
       resources: "usable"   // load external resources
     })
-    .then(dom => {
-      container = dom.window.document.body
+    .then(d => {
+      dom = d
     });
   })
 

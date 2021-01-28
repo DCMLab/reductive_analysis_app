@@ -1,9 +1,4 @@
-const fireEvent = require('@testing-library/dom').fireEvent
-const getByText = require('@testing-library/dom').getByText
-require('@testing-library/jest-dom/extend-expect')
 const JSDOM = require('jsdom').JSDOM
-const fs = require('fs')
-const path = require('path')
 
 let dom
 

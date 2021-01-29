@@ -1,6 +1,9 @@
-const JSDOM = require('jsdom').JSDOM
+const { JSDOM } = require('jsdom')
 
+let document
 let dom
+let window
+let $
 
 describe('load DOM', () => {
 
@@ -24,6 +27,11 @@ describe('load DOM', () => {
       dom.window.addEventListener("load", resolve) 
     })
 
+    // Helpers for quering the DOM in tests.
+    window = dom.window
+    document = window.document
+    $ = window.$
+
   })
 
   // Allow Jest hooks longer than 5000ms to complete, or Jest might crash.
@@ -32,7 +40,7 @@ describe('load DOM', () => {
   // Run a trivial test to confirm that the testing framework is in place.
   it('displays the Primaries and Secondaries labels in the layout', function() {
     expect(
-      dom.window.document.getElementById('selected_things').innerHTML
+      $('#selected_things').html()
       .match(/Primaries:.*<br>Secondaries:.*/g)
     ).toBeTruthy();
   });

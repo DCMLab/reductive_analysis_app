@@ -4,7 +4,7 @@
   "description": "This is an app to facilitate analysing scores using a reductive paradigm.",
   "main": "index.html",
   "scripts": {
-    "test": "jest --detectOpenHandles"
+    "test": "jest --clearCache && jest --detectOpenHandles --debug --runInBand"
   },
   "repository": {
     "type": "git",

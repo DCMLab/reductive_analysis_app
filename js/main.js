@@ -952,6 +952,7 @@ function load_finish(e) {
   if(!shades)
     toggle_shades();
   document.onkeypress = function(ev) {handle_keypress(ev);};
+  return true;
 }
 
 

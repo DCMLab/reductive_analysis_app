@@ -917,6 +917,10 @@ function load_finish(e) {
 
   svg = vrvToolkit.renderData(data, {pageWidth: 20000,
       pageHeight: 10000, breaks: "none", format: format});
+  if (!svg) {
+    console.log ('Verovio could not generate SVG.');
+    return false;
+  }
   $("#svg_output").html(svg);
   if(format == "musicxml"){
     data = vrvToolkit.getMEI();

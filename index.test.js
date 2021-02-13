@@ -1,11 +1,16 @@
 const { JSDOM } = require('jsdom')
+var fs = require('fs')
+const fastXmlParser = require('fast-xml-parser')
 
 let document
 let dom
 let window
 let $
 
-describe('load DOM', () => {
+let mei
+let meiPlainText
+
+describe('reductive_analysis_test_suite', () => {
 
   beforeAll(async () => {
 
@@ -25,25 +30,64 @@ describe('load DOM', () => {
       // See for instance https://github.com/facebook/jest/issues/1256
       // Long story short, `beforeAll` does not handle async calls as well
       // as it is supposed to be.
+
+      // Load a sample MEI (mock the Open File button).
+      let meiFilePath = './mei/bach_prelude.mei';
+
+      meiPlainText = fs.readFileSync(meiFilePath, 'utf8');
+      console.log('Loaded sample MEI file.');
+
+      parser = new DOMParser();
+      mei = parser.parseFromString(meiPlainText, 'text/xml');
+
       dom.window.addEventListener("load", resolve) 
     })
 
-    // Create helpers for quering the DOM in tests.
+    // Create (read-only) helpers for quering the DOM in tests.
     window = dom.window
     document = window.document
     $ = window.$
+
+    // Inject the MEI into the app (effectively "mocking" the Open button).
+    dom.window.data = meiPlainText;
+    dom.window.selected = [];
+    dom.window.extraselected = [];
+    dom.window.filename = 'MEI_SAMPLE_FILE';
+    dom.window.load_finish();
 
   })
 
   // Allow Jest hooks longer than 5000ms to complete, or Jest might crash.
   jest.setTimeout(3 * 60 * 1000)
 
-  // Run a trivial test to confirm that the testing framework is in place.
-  it('displays the Primaries and Secondaries labels in the layout', function() {
+  it('should run a rudimentary test on static HTML to confirm Jest works', async function(done) {
     expect(
       $('#selected_things').html()
       .match(/Primaries:.*<br>Secondaries:.*/g)
     ).toBeTruthy();
+    done();
   });
+
+  it('should check that the sample MEI is a valid XML file', async function(done) {
+    expect(
+      fastXmlParser.validate(meiPlainText)
+    ).toBeTruthy();
+    done();
+  })
+
+  it('should parse the MEI plaintext producing an XML tree with a `meiHead`', async function(done) {
+    expect(
+      mei.querySelector('meiHead')
+    ).toBeTruthy();
+    done();
+  })
+
+  it("should confirm that the MEI tree is rendered as a convincing SVG", async function(done) {
+    expect(
+      $('#svg_output svg path').length
+    ).toBeGreaterThan(2);
+    console.log('Number of <path> notes in SVG: ', $('#svg_output svg path').length)
+    done();
+  })
 
 });

@@ -797,7 +797,10 @@ function load() {
   extraselected = [];
   upload = document.getElementById("fileupload");
   if(upload.files.length == 1){
-    reader.onload = load_finish;
+    reader.onload = function (e) {
+      data = reader.result;
+      load_finish();
+    }
     reader.readAsText(upload.files[0]);
     filename = upload.files[0].name.split(".").slice(0,-1).join(".");
     if(filename == "")
@@ -903,7 +906,6 @@ function draw_graph() {
 
 // Do all of this when we have the MEI in memory
 function load_finish(e) {
-  data = reader.result;
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
   format = "mei";

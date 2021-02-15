@@ -4,8 +4,7 @@
   "description": "This is an app to facilitate analysing scores using a reductive paradigm.",
   "main": "index.html",
   "scripts": {
-    "start": "lite-server",
-    "test": "jest --clearCache && jest --detectOpenHandles --debug --runInBand"
+    "start": "lite-server"
   },
   "repository": {
     "type": "git",
@@ -22,7 +21,11 @@
     "@testing-library/jest-dom": "^5.11.9",
     "fast-xml-parser": "^3.18.0",
     "jest": "^26.6.3",
-    "jest-circus": "^26.6.3",
-    "lite-server": "^2.6.1"
+    "jest-puppeteer": "^4.4.0",
+    "lite-server": "^2.6.1",
+    "puppeteer": "^7.1.0"
+  },
+  "dependencies": {
+    "expect-puppeteer": "^4.4.0"
   }
 }

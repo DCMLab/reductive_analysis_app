@@ -48,17 +48,23 @@ describe('reductive_analysis_test_suite', () => {
     document = window.document
     $ = window.$
 
-    // Inject the MEI into the app (effectively "mocking" the Open button).
-    dom.window.data = meiPlainText;
-    dom.window.selected = [];
-    dom.window.extraselected = [];
-    dom.window.filename = 'MEI_SAMPLE_FILE';
-    dom.window.load_finish();
-
   })
 
   // Allow Jest hooks longer than 5000ms to complete, or Jest might crash.
   jest.setTimeout(3 * 60 * 1000)
+
+  it('should not crash during graph generation', async function(done) {
+      dom.window.data = meiPlainText;
+      dom.window.selected = [];
+      dom.window.extraselected = [];
+      dom.window.filename = 'MEI_SAMPLE_FILE';
+
+    expect(
+      // Inject the MEI into the app (effectively "mocking" the Open button).
+      dom.window.load_finish()
+    ).toBeTruthy();
+    done();
+  })
 
   it('should run a rudimentary test on static HTML to confirm Jest works', async function(done) {
     expect(
@@ -82,7 +88,7 @@ describe('reductive_analysis_test_suite', () => {
     done();
   })
 
-  it("should confirm that the MEI tree is rendered as a convincing SVG", async function(done) {
+  it('should confirm that the MEI tree is rendered as a convincing SVG', async function(done) {
     expect(
       $('#svg_output svg path').length
     ).toBeGreaterThan(2);

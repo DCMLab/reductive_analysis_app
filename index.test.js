@@ -1,5 +1,8 @@
 require('expect-puppeteer');
+const path = require('path');
+
 jest.setTimeout(10000); // 20 second timeout for promise resolution.
+
 
 describe('reductive_analysis_test_suite', () => {
 
@@ -19,7 +22,12 @@ describe('reductive_analysis_test_suite', () => {
   });
 
   it('should load the example MEI', async function() {
-      // Use puppeteer to load the MEI into the input with id "fileupload"
+    await expect(page).toUploadFile(
+      'input[type=file]',
+      path.join(__dirname, 'mei', 'bach_prelude.mei'),
+    );
+  });
+
   });
 
 });

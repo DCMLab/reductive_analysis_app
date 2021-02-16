@@ -2,5 +2,6 @@
   "port": 8000,
   "ui": {
     "port": 8001
-  }
+  },
+  "open": false
 }

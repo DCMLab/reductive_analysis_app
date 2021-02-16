@@ -1,3 +1,6 @@
+process.env.HEADLESS = false
+process.env.SLOWMO = true
+
 module.exports = {
   server: {
     command: './node_modules/.bin/lite-server',

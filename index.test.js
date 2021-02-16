@@ -1,4 +1,5 @@
 require('expect-puppeteer');
+jest.setTimeout(10000); // 20 second timeout for promise resolution.
 
 describe('reductive_analysis_test_suite', () => {
 

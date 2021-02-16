@@ -8,7 +8,8 @@ describe('reductive_analysis_test_suite', () => {
   });
 
   it('should run a rudimentary test on static HTML to confirm Jest works', async function() {
-    await expect(page.title()).resolves.toMatch(/DCML.*/s, {timeout: 30000})
+    await expect(page.title()).resolves.toMatch(/DCML.*/s, {timeout: 30000});
+    await expect(page).toMatch(/Primaries.*Secondaries/s, {timeout: 30000});
   });
 
   it('should have loaded the config.js and set up appropriate buttons', async function() {

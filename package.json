@@ -4,7 +4,8 @@
   "description": "This is an app to facilitate analysing scores using a reductive paradigm.",
   "main": "index.html",
   "scripts": {
-    "start": "lite-server"
+    "start": "lite-server",
+    "test" : "jest"
   },
   "repository": {
     "type": "git",

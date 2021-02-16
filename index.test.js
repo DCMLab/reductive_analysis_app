@@ -28,6 +28,8 @@ describe('reductive_analysis_test_suite', () => {
     );
   });
 
+  it('should produce a minimally convincing SVG', async function() {
+    await expect(page).toMatchElement('path');
   });
 
 });

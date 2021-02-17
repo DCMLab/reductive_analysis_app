@@ -44,6 +44,16 @@ var format;
 
 var zoom = 1;
 
+// Prevent unsaved data loss by warning user before browser unload events (reload, close).
+// Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
+window.addEventListener("beforeunload", function (e) {
+  var confirmationMessage = "Leave app? You may lose unsaved changes.";
+
+  e.preventDefault();
+  e.returnValue = confirmationMessage;
+  return confirmationMessage;   // Some browsers don't follow the standard and require this.
+});
+
 // Once things are loaded, do configuration stuff
 $(document).ready(function()
     {

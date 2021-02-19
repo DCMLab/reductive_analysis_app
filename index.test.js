@@ -89,7 +89,7 @@ describe('reductive_analysis_test_suite', () => {
   it('should load the example MEI', async function() {
     await expect(page).toUploadFile(
       'input[type=file]',
-      path.join(__dirname, 'mei', 'bach_prelude.mei')
+      path.join(__dirname, 'test_scores', 'mozart13.xml')
     );
   });
 

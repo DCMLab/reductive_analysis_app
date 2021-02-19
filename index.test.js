@@ -94,7 +94,7 @@ describe('reductive_analysis_test_suite', () => {
   });
 
   it('should produce a directed <graph> within <mei>', async function () {
-    return await expect(page.evaluate(`$(window.mei).find('graph').attr('type')`)).resolves
+    await expect(page.evaluate(`$(window.mei).find('graph').attr('type')`)).resolves
       .toMatch(/^directed$/);
   });
 

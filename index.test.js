@@ -100,6 +100,22 @@ describe('reductive_analysis_test_suite', () => {
 
   it('should produce a minimally convincing SVG', async function() {
     await expect(page).toMatchElement('path', {timeout: 30000});
+  it(`should produce a convincing <mei> object (using Jest snapshots)`, async function() {
+
+    expect.addSnapshotSerializer(snapshotSerializer);
+
+    var mei_to_str = await page.evaluate(`$(window.mei).children()[0].outerHTML`);
+
+    // Prevent false positives by stripping out conversion timestamps (in case of XML->MEI).
+    mei_to_str = mei_to_str.replace(/isodate="\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d"/gm, '');
+
+    // Prevent false positives by stripping out converter-generated random IDs (in case of XML->MEI).
+    mei_to_str = mei_to_str.replace(/xml:id="\w+-\d+"/gm, '');
+
+    expect(mei_to_str).toMatchSnapshot();
+  });
+
+
   });
 
 });

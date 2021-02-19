@@ -3,10 +3,16 @@ const path = require('path');
 
 jest.setTimeout(10000); // 20 second timeout for promise resolution.
 
+var globals = {};
 
 describe('reductive_analysis_test_suite', () => {
 
-  beforeAll(async () => { await page.goto("http://localhost:8000");
+  beforeAll(async () => {
+    await page.goto("http://localhost:8000");
+
+    // Import relevant webapp globals into the testing environment.
+    globals.type_conf = await page.evaluate('type_conf');
+    globals.meta_conf = await page.evaluate('meta_conf');
       console.log("DOM fully loaded and parsed?");
   });
 

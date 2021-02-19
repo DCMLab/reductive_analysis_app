@@ -92,8 +92,8 @@
 
 	</div>
 	<div id="zoom buttons" style="position:fixed; top:0; right:0; z-index:2">
-	<input type="button" class="zoombutton" value="+" onclick="zoom_in()"><br/>
-	<input type="button" class="zoombutton" value="-" onclick="zoom_out()"><br/>
+	<input type="button" id="zoominbutton" class="zoombutton" value="+" onclick="zoom_in()"><br/>
+	<input type="button" id="zoomoutbutton" class="zoombutton" value="-" onclick="zoom_out()"><br/>
 	</div>
 
 
@@ -102,8 +102,5 @@
         <!--//////////////////////////////////////////////-->
 	
 	<div style="transform-origin: top left; z-index:-1" id="svg_output"></div>
-
-
-
     </body>
 </html>

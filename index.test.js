@@ -15,10 +15,9 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page).toMatch(/Primaries.*Secondaries/s, {timeout: 30000});
   });
 
-  it('should have loaded the config.js and set up appropriate buttons', async function() {
-      // Check that e.g. the repeat button exists (with id
-      // "repeatrelationbutton"), is a button of the right class
-      // (relationbutton), and has the right colour
+  it('should parse conf.js without throwing an exception', async function() {
+    await expect(page.evaluate('CONFIG_OK')).resolves.toBeTrue();
+  });
   });
 
   it('should load the example MEI', async function() {

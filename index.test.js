@@ -6,7 +6,7 @@ const path = require('path');
 jest.setTimeout(10000); // 20 second timeout for promise resolution.
 
 var globals = {};
-const verbose = true;
+const verbose = false;
 
 describe('reductive_analysis_test_suite', () => {
 
@@ -129,4 +129,12 @@ describe('reductive_analysis_test_suite', () => {
     expect(svg_to_str).toMatchSnapshot();
   });
 
+  it('should ensure that (the very last) note IDs of the MEI and the SVG match', async function () {
+
+    // There is probably a better way to test this.
+    var mei_id = await page.evaluate(`$(window.mei).find('note').last().attr('xml:id')`);
+    var svg_id = await page.evaluate(`$($('svg')[1]).find('g.note').last().attr('id')`);
+
+    expect(mei_id).toMatch(svg_id);
+  })
 });

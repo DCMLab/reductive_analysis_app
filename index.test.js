@@ -1,4 +1,6 @@
 require('expect-puppeteer');
+const snapshotSerializer = require('jest-serializer-xml');
+
 const path = require('path');
 
 jest.setTimeout(10000); // 20 second timeout for promise resolution.
@@ -98,8 +100,6 @@ describe('reductive_analysis_test_suite', () => {
       .toMatch(/^directed$/);
   });
 
-  it('should produce a minimally convincing SVG', async function() {
-    await expect(page).toMatchElement('path', {timeout: 30000});
   it(`should produce a convincing <mei> object (using Jest snapshots)`, async function() {
 
     expect.addSnapshotSerializer(snapshotSerializer);
@@ -116,6 +116,16 @@ describe('reductive_analysis_test_suite', () => {
   });
 
 
+  it('should produce a convincing SVG (using Jest snapshots)', async function() {
+
+    expect.addSnapshotSerializer(snapshotSerializer);
+
+    var svg_to_str = await page.evaluate(`$('svg')[1].outerHTML`);
+
+    // Prevent false positives by stripping out Verovio-generated random IDs.
+    svg_to_str = svg_to_str.replace(/id="\w+-\d+"/gm, '');
+
+    expect(svg_to_str).toMatchSnapshot();
   });
 
 });

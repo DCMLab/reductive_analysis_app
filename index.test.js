@@ -122,8 +122,9 @@ describe('reductive_analysis_test_suite', () => {
 
     var svg_to_str = await page.evaluate(`$('svg')[1].outerHTML`);
 
-    // Prevent false positives by stripping out Verovio-generated random IDs.
+    // Prevent false positives by stripping out Verovio-generated random attributes.
     svg_to_str = svg_to_str.replace(/id="\w+-\d+"/gm, '');
+    svg_to_str = svg_to_str.replace(/section-\d+/gm, '');
 
     expect(svg_to_str).toMatchSnapshot();
   });

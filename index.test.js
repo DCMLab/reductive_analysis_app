@@ -86,16 +86,20 @@ describe('reductive_analysis_test_suite', () => {
     button_test('zoomoutbutton', {'class': 'zoombutton'});
   });
 
-
   it('should load the example MEI', async function() {
     await expect(page).toUploadFile(
       'input[type=file]',
-      path.join(__dirname, 'mei', 'bach_prelude.mei'),
+      path.join(__dirname, 'mei', 'bach_prelude.mei')
     );
   });
 
+  it('should produce a <graph> within <mei>', async function () {
+    return await expect(page.evaluate(`$(window.mei).find('graph')[0]`)).resolves
+      .toBeTruthy();
+  });
+
   it('should produce a minimally convincing SVG', async function() {
-    await expect(page).toMatchElement('path');
+    await expect(page).toMatchElement('path', {timeout: 30000});
   });
 
 });

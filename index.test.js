@@ -93,9 +93,9 @@ describe('reductive_analysis_test_suite', () => {
     );
   });
 
-  it('should produce a <graph> within <mei>', async function () {
-    return await expect(page.evaluate(`$(window.mei).find('graph')[0]`)).resolves
-      .toBeTruthy();
+  it('should produce a directed <graph> within <mei>', async function () {
+    return await expect(page.evaluate(`$(window.mei).find('graph').attr('type')`)).resolves
+      .toMatch(/^directed$/);
   });
 
   it('should produce a minimally convincing SVG', async function() {

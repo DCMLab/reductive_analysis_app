@@ -36,7 +36,7 @@ describe('reductive_analysis_test_suite', () => {
           + (conditions ? ` and attributes ${JSON.stringify(conditions)}` : ''));
       }
 
-      // Expect the elment to exist
+      // Expect the element to exist
       await expect(page)
         .toMatchElement(`#${buttonId}`);
 
@@ -44,7 +44,7 @@ describe('reductive_analysis_test_suite', () => {
       await expect(page.evaluate(`$('#${buttonId}').prop('tagName').toLowerCase()`)).resolves
         .toMatch('input'); // is an <input> element
 
-      // ... of type `input`
+      // ... of type `button`
       await expect(page.evaluate(`$('#${buttonId}').attr('type')`)).resolves
         .toMatch('button');
 

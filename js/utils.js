@@ -199,7 +199,7 @@ function get_by_id(doc,id) {
   if(elem) {
     return elem;
   }else{
-    return Array.from(doc.all).find((x) => { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
+    return Array.from(doc.getElementsByTagName("*")).find((x) => { return x.getAttribute("id") == id || x.getAttribute("xml:id") == id; });
   }
 }
 

@@ -681,7 +681,10 @@ function load() {
   extraselected = [];
   upload = document.getElementById("fileupload");
   if(upload.files.length == 1){
-    reader.onload = load_finish;
+    reader.onload = function (e) {
+      data = reader.result;
+      load_finish();
+    }
     reader.readAsText(upload.files[0]);
     filename = upload.files[0].name.split(".").slice(0,-1).join(".");
     if(filename == "")
@@ -789,7 +792,6 @@ function draw_graph() {
 // Do all of this when we have the MEI in memory
 function load_finish(e) {
   console.debug("Using globals data, parser, mei, format, svg, svg_elem, jquery document, document, mei_graph, midi, orig_*, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
-  data = reader.result;
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
   format = "mei";
@@ -801,6 +803,10 @@ function load_finish(e) {
 
   svg = vrvToolkit.renderData(data, {pageWidth: 20000,
       pageHeight: 10000, breaks: "none", format: format});
+  if (!svg) {
+    console.log ('Verovio could not generate SVG.');
+    return false;
+  }
   $("#svg_outputs").html('<div id="svg_output0"></div>')
   $("#svg_output0").html(svg);
   svg_elem = document.getElementById("svg_output0");
@@ -842,6 +848,7 @@ function load_finish(e) {
   if(!shades)
     toggle_shades();
   document.onkeypress = function(ev) {handle_keypress(ev);};
+  return true;
 }
 
 
@@ -994,3 +1001,4 @@ function play_midi_reduction() {
 
 }
 
+console.log("Main webapp library is loaded");

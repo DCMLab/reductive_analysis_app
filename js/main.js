@@ -722,7 +722,9 @@ function load_finish(e) {
 
   svg = vrvToolkit.renderData(data, {pageWidth: 20000,
       pageHeight: 10000, breaks: "none", format: format});
-  $("#svg_output").html(svg);
+  $("#svg_outputs").html('<div id="svg_output0"></div>')
+  $("#svg_output0").html(svg);
+  svg_elem = document.getElementById("svg_output0");
   if(format == "musicxml"){
     data = vrvToolkit.getMEI();
     parser = new DOMParser();
@@ -778,7 +780,7 @@ function rerender_mei(replace_with_rests = false) {
       );
   mei2.appendChild(newNode);
 
-  Array.from(document.getElementsByClassName("note")).forEach((x) => {
+  Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
     if(x.style.visibility == "hidden"){
       //TODO: this is wrong
       // 
@@ -832,16 +834,31 @@ function rerender() {
   console.debug("Using globals document, svg_elem, jquery document, svg, mei, data, mei_graph, non_notes_hidden, rerendered_after_action, undo_actions")
   // Create new SVG element, stack the current version on
   // it..? No I have no idea how to UI this properly.
+  var output_parent = document.getElementById("svg_outputs");
+  var new_svg_elem = document.createElement("div");
+  var old_svg_elem = svg_elem;
+  new_svg_elem.setAttribute("id","svg_output" + output_parent.children.length);
+  output_parent.prepend(new_svg_elem);
+
   var mei2 = rerender_mei();
   var data2 = new XMLSerializer().serializeToString(mei2);
 
   var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
       pageHeight: 10000, breaks: "none", format: "mei"});
 
-  $("#svg_output").html(svg2);
+  draw_contexts[0].id_prefix = "old"+(output_parent.children.length-2);
+  prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
+  
+  $(new_svg_elem).html(svg2);
+  var new_draw_context = {"mei": mei2, "svg_elem" : new_svg_elem,
+    "id_prefix" : ""};
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
   svg = svg2;
   mei = mei2;
   data = data2;
+  svg_elem = new_svg_elem;
   mei_graph = add_or_fetch_graph();
   for (let n of document.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
@@ -872,11 +889,11 @@ function hide_buttons() {
 
 function zoom_in() {
   zoom = zoom * 1.1;
-  $("#svg_output")[0].style.transform="scale("+zoom+")";
+  $("#svg_outputs")[0].style.transform="scale("+zoom+")";
 }
 function zoom_out() {
   zoom = zoom * 0.90909090909090;
-  $("#svg_output")[0].style.transform="scale("+zoom+")";
+  $("#svg_outputs")[0].style.transform="scale("+zoom+")";
 }
 
 

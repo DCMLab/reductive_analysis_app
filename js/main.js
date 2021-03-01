@@ -83,7 +83,7 @@ function init_type(type) {
   elem.setAttribute("class","relationbutton");
   elem.setAttribute("id",type + "relationbutton");
   elem.setAttribute("value","Add "+type+" relation " + "(" + type_conf[type].key + ")");
-  elem.onclick = () => {do_relation(type);};
+  elem.onclick = () => {do_relation(type,arg);};
   $("#relation_buttons")[0].appendChild(elem);
   type_shades[type] = shades_array[type_conf[type].colour];
   type_keys[type_conf[type].key] = type;
@@ -98,7 +98,7 @@ function meta_type(type) {
   elem.setAttribute("class","metarelationbutton");
   elem.setAttribute("id",type + "metarelationbutton");
   elem.setAttribute("value","Add "+type+" metarelation " + "(" + meta_conf[type].key + ")");
-  elem.onclick = () => {do_metarelation(type);};
+  elem.onclick = () => {do_metarelation(type,arg);};
   $("#meta_buttons")[0].appendChild(elem);
   meta_shades[type] = shades_array[meta_conf[type].colour];
   meta_keys[meta_conf[type].key] = type;
@@ -305,10 +305,22 @@ function delete_relations() {
 }
 
 
+
 // This reduces away the relations where all the secondaries
 // are not primary in any non-reduced relation. TODO: This, 
 // while better than before, no doubt has room for optimisation
 function do_reduce() {
+  // Remember what's selected, and unselect it
+  var sel = selected;
+  var extra = extraselected;
+  sel.concat(extra).forEach(toggle_selected);
+  if(arg){
+    console.debug("Using globals: undo_actions, draw_contexts, mei_graph, selected,  extraselected.");
+    var undo = do_reduce_arg(draw_contexts[0], mei_graph, sel.concat(extra));
+    undo_actions.push(["reduce",undo,sel,extra]);
+    return;
+  }
+  console.debug("Using globals: undo_actions, mei, mei_graph, selected,  extraselected.");
   // All previous reductions
   var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
   // All relations in the graph
@@ -321,15 +333,11 @@ function do_reduce() {
   var reduce_action, relations_nodes;
   // Are we doing a full reduction, or have we selected some
   // relations?
-  if(selected.length > 0 && selected[0].getAttribute("class") == "relation"){
-    relations_nodes = selected.map((elem) => get_by_id(mei,elem.id));
+  if(sel.length > 0 && sel[0].getAttribute("class") == "relation"){
+    relations_nodes = sel.concat(extra).map((elem) => get_by_id(mei,elem.id));
   }else {
     relations_nodes = remaining_relations;
   }
-  // In any case, remember what's selected, and unselect it
-  var sel = selected;
-  var extra = extraselected;
-  sel.concat(extra).forEach(toggle_selected);
   // No primary of a remaining relation is removed in this
   // reduction
   var remaining_nodes = remaining_relations.map(relation_primaries).flat();
@@ -374,6 +382,11 @@ function do_reduce() {
   }),sel, extra]);
 }
 
+
+
+
+
+
 // OK we've selected stuff, let's make the selection into a
 // series of edges
 function do_edges() {
@@ -394,40 +407,73 @@ function do_edges() {
 
 // OK we've selected stuff, let's make the selection into a
 // "relation".
-function do_relation(type) {
+function do_relation(type,arg) {
+    console.debug("Using globals: selected, extraselected, mei, orig_mei, undo_actions");
     if (selected.length == 0 && extraselected == 0) {
       return;}
     changes = true;
+    var he_id, mei_elems;
     if(selected.concat(extraselected)[0].getAttribute("class") == "relation"){
       var types = [];
-      selected.concat(extraselected).forEach((he) => {
-          //TODO: move type_synonym application so that this
-          //is the right type == the one from the MEI
-          types.push([he.getAttribute("type"),type]);
-          he.setAttribute("type",type);
-          var mei_he = get_by_id(mei,he.id);
-          mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
-          toggle_shade(he);
-      });
+      if(arg){
+        selected.concat(extraselected).forEach((he) => {
+        //TODO: move type_synonym application so that this
+        //is the right type == the one from the MEI
+        types.push([he.getAttribute("type"),type]);
+        var id = id_or_oldid(he);
+        var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
+        hes.forEach((he) => he.setAttribute("type",type));
+        var mei_he = get_by_id(orig_mei,id);
+        mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
+        hes.forEach(toggle_shade);
+        });
+      }else{
+        selected.concat(extraselected).forEach((he) => {
+        //TODO: move type_synonym application so that this
+        //is the right type == the one from the MEI
+        types.push([he.getAttribute("type"),type]);
+        he.setAttribute("type",type);
+        var mei_he = get_by_id(mei,id_or_oldid(he));
+        mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
+        toggle_shade(he);
+        });
+      }
+      update_text();
       undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
     }else if(selected.concat(extraselected)[0].getAttribute("class") == "note"){
       var added = [];
-      var [he_id,mei_elems] = add_relation(mei,mei_graph,type);
-      added.push(mei_elems);  // Add it to the MEI
-      if(mei != orig_mei){
-        var [orig_he_id,orig_mei_elems] = add_relation(orig_mei,orig_mei_graph,type,he_id);
-        added.push(orig_mei_elems);  // Add it to the MEI
+      if(arg){
+        // Add new nodes for all notes
+        var primaries = extraselected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
+        var secondaries = selected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
+        added.push(primaries.concat(secondaries));
+        [he_id,mei_elems] = add_relation_arg(orig_mei_graph,primaries, secondaries, type);
+        added.push(mei_elems);
+        console.log(get_by_id(orig_mei, he_id));
+        for(var i = 0; i < draw_contexts.length; i++) {
+          added.push(draw_relation_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(), he_id))); // Draw the edge
+          mark_secondaries_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(),he_id));
+        }
+        undo_actions.push(["relation",added,selected,extraselected]);
+      }else{
+        [he_id,mei_elems] = add_relation(mei,mei_graph,type);
+        added.push(mei_elems);  // Add it to the MEI
+        if(mei != orig_mei){
+          var [orig_he_id,orig_mei_elems] = add_relation(orig_mei,orig_mei_graph,type,he_id);
+          added.push(orig_mei_elems);  // Add it to the MEI
+        }
+        added.push(draw_relation(he_id,type)); // Draw the edge
+        undo_actions.push(["relation",added,selected,extraselected]);
+        mark_secondaries(get_by_id(mei,he_id));
       }
-      added.push(draw_relation(he_id,type)); // Draw the edge
       
-      undo_actions.push(["relation",added,selected,extraselected]);
-      mark_secondaries(get_by_id(mei,he_id));
       selected.concat(extraselected).forEach(toggle_selected); // De-select
     }
 }
 
 
-function do_metarelation(type) {
+function do_metarelation(type, arg ) {
+    console.debug("Using globals: orig_mei, orig_mei_graph, selected, extraselected");
     if (selected.length == 0 && extraselected == 0) {
       return;}
     var ci =selected.concat(extraselected)[0].getAttribute("class"); 
@@ -435,18 +481,30 @@ function do_metarelation(type) {
       return; }
     changes = true;
     var added = [];
-    var [he_id,mei_elems] = add_metarelation(mei, mei_graph,type);
-    added.push(mei_elems);  // Add it to the MEI
-    if(mei != orig_mei){
-      var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
-      added.push(orig_mei_elems);  // Add it to the MEI
+    var he_id,mei_elems;
+    if(arg){
+
+      var primaries = extraselected.map((e) =>
+          get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
+      var secondaries = selected.map((e) =>
+          get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
+      var [he_id,mei_elems] = add_metarelation_arg(orig_mei_graph, primaries, secondaries, type);
+      added.push(mei_elems);
+      for(var i = 0; i< draw_contexts.length; i++)
+        added.push(draw_metarelation_arg(draw_contexts[i], orig_mei_graph, get_by_id(orig_mei_graph.getRootNode(),he_id))); // Draw the edge
+    }else{
+      var [he_id,mei_elems] = add_metarelation(mei,mei_graph,type);
+      added.push(mei_elems);  // Add it to the MEI
+      if(mei != orig_mei){
+        var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
+        added.push(orig_mei_elems);  // Add it to the MEI
+      }
+      added.push(draw_metarelation(he_id,type)); // Draw the edge
     }
-    added.push(draw_metarelation(he_id,type)); // Draw the edge
     
     undo_actions.push(["metarelation",added,selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select
 }
-
 
 // Oops, undo whatever we did last.
 function do_undo() {
@@ -469,8 +527,12 @@ function do_undo() {
       var added = elems;
       if(what == "relation")
         added.flat().forEach((x) => { 
-          if(mei.contains(x) && x.getAttribute("type") == "relation")
-            unmark_secondaries(x);
+          if(arg){
+        if(orig_mei_graph.contains(x) && x.getAttribute("type") == "relation")
+          for(var i = 0; i < draw_contexts.length; i++) 
+            unmark_secondaries_arg(draw_contexts[i],orig_mei_graph,x)
+          }else if(mei.contains(x) && x.getAttribute("type") == "relation")
+          unmark_secondaries(x);
           });
       // Remove added elements
       added.flat().forEach((x) => {
@@ -488,22 +550,39 @@ function do_undo() {
     }else if (what == "change relation type") {
       var types = elems;
       sel.concat(extra).forEach((he) => {
-          //TODO: move type_synonym application so that this
-          //is the right type == the one from the MEI
-          var [from,to] = types.pop();
-          he.setAttribute("type",from);
-          var mei_he = get_by_id(mei,he.id);
-          mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
-          toggle_shade(he);
+          if(arg){
+        //TODO: move type_synonym application so that this
+        //is the right type == the one from the MEI
+        var [from,to] = types.pop();
+        var id = id_or_oldid(he);
+        var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
+        hes.forEach((he) => he.setAttribute("type",from));
+        var mei_he = get_by_id(orig_mei,id);
+        mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
+        hes.forEach(toggle_shade);
+          }else{
+        //TODO: move type_synonym application so that this
+        //is the right type == the one from the MEI
+        var [from,to] = types.pop();
+        he.setAttribute("type",from);
+        var mei_he = get_by_id(mei,id_or_oldid(he));
+        mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
+        toggle_shade(he);
+          }
       });
       sel.forEach((x) => {toggle_selected(x);});
       extra.forEach((x) => {toggle_selected(x,true);});
     }else if (what == "reduce") {
-      var reduce_layer = elems;
-      reduce_layer.forEach((action) => {
-        var [he,secondaries,graphicals] = action;
+      if(arg){
+        var [relations,notes,graphicals] = elems;
         graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
-      });
+      } else{
+        var reduce_layer = elems;
+        reduce_layer.forEach((action) => {
+          var [he,secondaries,graphicals] = action;
+          graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
+        });
+      }
       sel.forEach((x) => {toggle_selected(x);});
       extra.forEach((x) => {toggle_selected(x,true);});
     }
@@ -529,11 +608,11 @@ function handle_keypress(ev) {
     toggle_shades();
   } else if (ev.key == "+") { // Select same notes in the measure
     select_samenote();
-    do_relation("repeat");
+    do_relation("repeat",arg);
   } else if (type_keys[ev.key]) { // Add a relation
-    do_relation(type_keys[ev.key]);
+    do_relation(type_keys[ev.key],arg);
   } else if (meta_keys[ev.key]) { // Add a relation
-    do_metarelation(meta_keys[ev.key]);
+    do_metarelation(meta_keys[ev.key],arg);
   }else {
     console.log(ev);
   }
@@ -872,8 +951,8 @@ function rerender() {
   rerendered_after_action=undo_actions.length;
   // This is one of the ugliest hacks I've made I think
   var reduces = undo_actions.filter((x) => { return x[0] == "reduce";});
+  undo_actions = [];
   reduces.forEach((action) => {selected = action[2]; do_reduce();})
-  undo_action = [];
 }
 
 function texton() { text_input = true; }
@@ -914,3 +993,4 @@ function play_midi_reduction() {
   vrvToolkit.loadData(data);
 
 }
+

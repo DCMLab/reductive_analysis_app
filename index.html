@@ -72,8 +72,8 @@
 	  <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
 	  <input type="button" id="deletebutton" value="Delete relations" onclick="delete_relations()" >
 	  <!--input type="button" id="edgebutton" value="Add untyped edges" onclick="do_edges()" -->
-	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation()" > 
-	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value)" >
+	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("",arg)" > 
+	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value, arg)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
 	  <input type="button" id="midireducebutton" value="Play reduction" onclick="play_midi_reduction()" >

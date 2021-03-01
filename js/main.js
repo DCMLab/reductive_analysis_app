@@ -1,25 +1,26 @@
 // GLOBALS
+// Load Verovio
+var vrvToolkit = new verovio.toolkit();
+var orig_svg;
+var orig_mei;
+var orig_mei_graph;
+var orig_midi;
+var orig_data;
 // Clicking selects
 var selected = [];
 // Shift-clicking extra selects
 var extraselected = [];
-// Load Verovio
-var vrvToolkit = new verovio.toolkit();
 // This is our SVG
 var svg;
-var orig_svg;
+var svg_elem;
 // And the underlying MEI
 var mei;
-var orig_mei;
 // And the graph node in the MEI
 var mei_graph;
-var orig_mei_graph;
 // And the MIDI
 var midi;
-var orig_midi;
 // This is the MEI as text (pre-parse)
 var data;
-var orig_data;
 // We need a reader
 var reader = new FileReader();
 var filename;
@@ -31,6 +32,14 @@ var undo_actions = [];
 
 var redo_actions = []; //TODO, maybe?
 
+// Each draw context contains information relevant to drawing
+// into one of the SVG renders. In particular, we store
+//  * The <div> element containing the SVG
+//  * The MEI rendered, parsed into a DOM object
+//  * The prefix used for the element IDs in the SVG (compared
+//    to the MEI)
+// The first element is the latest, shown at the top. 
+var draw_contexts = [];
 
 var rerendered_after_reduce = 0;
 
@@ -43,6 +52,8 @@ var shades = false;
 var format;
 
 var zoom = 1;
+
+var arg = false;
 
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
@@ -170,8 +181,20 @@ function toggle_selected(item,extra) {
       toggle_he_selected(false);
     }
   }
-  var primaries = to_text(extraselected);
-  var secondaries = to_text(selected);
+
+  update_text();
+}
+
+
+function update_text(){
+  var primaries, secondaries;
+  if(arg){
+    primaries = to_text_arg(draw_contexts,orig_mei_graph,extraselected);
+    secondaries = to_text_arg(draw_contexts,orig_mei_graph,selected);
+  }else{
+    primaries = to_text(extraselected);
+    secondaries = to_text(selected);
+  }
   $("#selected_things").html("Primaries: "+primaries+"<br/>Secondaries: "+secondaries);  
 
 }
@@ -713,6 +736,10 @@ function load_finish(e) {
   orig_mei_graph = mei_graph;
   orig_svg = svg;
   orig_midi = midi;
+
+  draw_contexts = [{"mei" : mei,
+                    "svg_elem" : svg_elem,
+                    "id_prefix" : ""}];
 
   draw_graph();
 

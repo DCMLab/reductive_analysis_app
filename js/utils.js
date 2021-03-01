@@ -138,11 +138,13 @@ function circle(p,rad) {
 function add_to_svg_bg(newElement) {
   var sibling = document.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
+  console.debug("Using global: document to get 'system' element");
   parent.insertBefore(newElement,sibling);
 }
 
 function add_to_svg_fg(newElement) {
   var sibling = document.getElementsByClassName("system")[0];
+  console.debug("Using global: document to get 'system' element");
   var parent = sibling.parentNode;
   parent.appendChild(newElement);
 }
@@ -150,6 +152,7 @@ function add_to_svg_fg(newElement) {
 
 function g() {
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+  console.debug("Using global: document to create new element");
   return newElement;
 }
 
@@ -172,6 +175,7 @@ function get_by_id(doc,id) {
 
 // From graph node to list of all arcs that refer to it
 function node_referred_to(id) {
+  console.debug("Using global: mei to find element");
   return Array.from(mei.getElementsByTagName("arc"))
     .filter((x) => {
 	return (x.getAttribute("from") == "#"+id || 
@@ -193,6 +197,7 @@ function mod(n, m) {
 
 // What's the accidentals for this note?
 function note_get_accid(note) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(note))
     note = get_by_id(mei,note.id);
   if(note.hasAttribute("accid.ges"))
@@ -214,6 +219,7 @@ function note_get_accid(note) {
 
 // Get the timestamp for a note
 function get_time(note) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(note))
     note = get_by_id(mei,note.id);
   return vrvToolkit.getTimeForElement(note.getAttribute("xml:id"));
@@ -222,6 +228,7 @@ function get_time(note) {
 
 // From any relation element to list of MEI note elements
 function relation_get_notes(he) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(he))
     he = get_by_id(mei,he.id);
   var note_nodes = relation_allnodes(he);
@@ -231,6 +238,7 @@ function relation_get_notes(he) {
 }
 // From any relation element to list of MEI note elements
 function relation_get_notes_separated(he) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(he))
     he = get_by_id(mei,he.id);
   var prim_nodes = relation_primaries(he);
@@ -242,6 +250,7 @@ function relation_get_notes_separated(he) {
 
 // Get the MEI-graph nodes that are adjacent to a relation
 function relation_allnodes(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -253,6 +262,7 @@ function relation_allnodes(he) {
 }
 // Get the MEI-graph nodes that are adjacent and primary to a relation
 function relation_primaries(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -265,6 +275,7 @@ function relation_primaries(he) {
 }
 // Get the MEI-graph nodes that are adjacent and secondary to a relation
 function relation_secondaries(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -278,6 +289,7 @@ function relation_secondaries(he) {
 
 // Set up new graph node for a note
 function add_mei_node_for(mei,mei_graph,note) {
+    console.debug("Using globals: mei, mei_graph to create and place elem");
     var id = note.getAttribute("id");
     var elem = get_by_id(mei,"gn-"+id);
     if (elem != null) {
@@ -298,6 +310,7 @@ function add_mei_node_for(mei,mei_graph,note) {
             
 // Find graphical element and hide it
 function hide_note(note) {
+  console.debug("Using globals: document to find elem");
   var elem = get_by_id(document,note_get_sameas(note));
   if(elem)
     elem.style.visibility = "hidden";
@@ -306,6 +319,7 @@ function hide_note(note) {
 
 // Find graphical element and hide it
 function hide_he(he) {
+  console.debug("Using globals: document to find elem");
   var elem = get_by_id(document,he.getAttribute("xml:id"));
   if(elem) 
     elem.style.visibility = "hidden";
@@ -328,6 +342,7 @@ function unmark_secondary(item) {
 
 // For a certain relation, find its secondaries and mark them
 function mark_secondaries(he) {
+    console.debug("Using globals: document, mei to find elems");
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
     var secondaries = relation_secondaries(he);
@@ -339,6 +354,7 @@ function mark_secondaries(he) {
 
 // For a certain relation, find its secondaries and unmark them
 function unmark_secondaries(he) {
+    console.debug("Using globals: document, mei to find elems");
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
     var secondaries = relation_secondaries(he);
@@ -355,6 +371,7 @@ function get_measure(elem) {if(elem.tagName == "measure") return elem; else retu
 // pitch in this measure, and select them as secondary, and the previously
 // selected one as primary
 function select_samenote() {
+  console.debug("Using globals: document, mei to find elems");
   if((selected.length == 1 || extraselected.length == 1)
    && !(selected.length == 1 &&  extraselected.length == 1)){
     var svg_note;

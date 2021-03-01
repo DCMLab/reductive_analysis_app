@@ -1,7 +1,8 @@
 // Draw a series of edges (TODO: make it much much much better)
 function draw_edges() {
+  console.debug("Using globals: selected");
   var added = [];
-  if(selected.includes(undefined));
+  if(selected.includes(undefined))
     return [];
   for(var i = 1; i < selected.length; i++) {
     note1 = note_coords(selected[i-1]);
@@ -16,7 +17,11 @@ function draw_edges() {
 }
 
 // Draw a relation as a  series of edges (TODO: make it much much much better)
+// New version below as draw_relation_arg. It will draw based on
+// an already MEI-encoded relation rather than this ad-hoc
+// stuff.
 function draw_relation(id,type) {
+  console.debug("Using globals: selected, extraselected, mei, mei_graph, shades");
   var added = [];
   var notes = selected.concat(extraselected);
   if(notes.includes(undefined)) {
@@ -81,6 +86,7 @@ function draw_relation(id,type) {
 }
 
 function draw_metarelation(id,type) {
+  console.debug("Using globals: selected, extraselected, document, shades");
   var added = [];
   var targets =selected.concat(extraselected); 
   var coords = targets.map(get_metarelation_target);

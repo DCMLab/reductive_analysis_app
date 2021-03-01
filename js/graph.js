@@ -1,5 +1,6 @@
 // Add a collection of edges to the MEI graph element
 function add_edges(mei) {
+  console.debug("Using globals: selected, mei, mei_graph");
   var added = [];
   for(var i = 0; i < selected.length; i++) {
     var elem = add_mei_node_for(mei,mei_graph,selected[i]);
@@ -20,6 +21,7 @@ function add_edges(mei) {
 // Add a "relation" to the MEI graph element. We model this
 // with a new node.
 function add_relation(mei,mei_graph,type,he_id_param) {
+  console.debug("Using globals: selected, extraselected");
   var added = [];
   // Add new nodes for all notes
   for(var i = 0; i < selected.length; i++) {
@@ -70,6 +72,7 @@ function add_relation(mei,mei_graph,type,he_id_param) {
 }
 
 function add_metarelation(mei,mei_graph,type,he_id_param) {
+  console.debug("Using globals: mei, mei_graph, selected, extraselected");
   // Add a new node for the relation
   var added = [];
   var he_elem = mei.createElement("node");

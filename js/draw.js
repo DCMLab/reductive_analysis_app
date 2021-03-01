@@ -137,3 +137,126 @@ function draw_metarelation(id,type) {
   
 
 }
+
+function draw_relation_arg(draw_context, mei_graph, g_elem) {
+  var added = [];
+  var mei = draw_context.mei;
+  var svg_elem = draw_context.svg_elem;
+  var id_prefix = draw_context.id_prefix;
+  var primaries = relation_primaries_arg(mei_graph,g_elem).map(
+      (e) => svg_find_from_mei_elem(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
+  var secondaries = relation_secondaries_arg(mei_graph,g_elem).map(
+      (e) => svg_find_from_mei_elem(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
+  var notes = primaries.concat(secondaries)
+  notes.sort((a,b) => { 
+      var p1= note_coords(a);
+      var p2= note_coords(b);
+      return (p1[0] - p2[0]) ? (p1[0] - p2[0]) : (p1[1] - p2[1]);
+    });
+  var id = id_prefix + g_elem.getAttribute("xml:id");
+  var type = relation_type(g_elem);
+
+  var elem = roundedHull(notes.map(note_coords));
+  elem.setAttribute("id",id);
+  elem.setAttribute("class","relation");
+  elem.setAttribute("type",type);
+  elem.style.fillOpacity = "0.5";
+  elem.onwheel = (e) => {
+    var elem1 = e.target;
+    var paren = elem1.parentElement;
+    paren.removeChild(elem1);
+    paren.insertBefore(elem1,paren.children[0]);
+    elem.onmouseout();
+    return false;
+  };
+  if(shades)
+    toggle_shade(elem);
+  add_to_svg_bg_arg(svg_elem,elem);
+  added.push(elem);
+  elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
+  elem.onmouseover = function (ev) {
+
+    primaries.forEach((item) => {
+        if(item.style.filter == ""){
+          item.style.transform = "translate3d(0,0,0)";
+          item.style.filter = "url(\"#extraFilter\")";
+          }});
+    secondaries.forEach((item) => {
+        if(item.style.filter == ""){
+          item.style.transform = "translate3d(0,0,0)";
+          item.style.filter = "url(\"#selectFilter\")";
+          }});
+  }
+  elem.onmouseout = function (ev) {
+    primaries.forEach((item) => {
+        if(item.style.filter == "url(\"#extraFilter\")") {
+          item.style.transform = "";
+          item.style.filter = "";
+        }});
+    secondaries.forEach((item) => {
+        if(item.style.filter == "url(\"#selectFilter\")") {
+          item.style.transform = "";
+          item.style.filter = "";
+        }});
+  }
+  //TODO: Set up more onhover stuff for The Same Relation
+  //Elsewhere - but perhaps that's a separate thing?
+
+  return added;
+
+}
+
+function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
+  var added = [];
+  var mei = draw_context.mei;
+  var svg_elem = draw_context.svg_elem;
+  var id_prefix = draw_context.id_prefix;
+  var id = id_prefix + g_elem.getAttribute("xml:id");
+  var type = relation_type(g_elem);
+  var targets = relation_allnodes_arg(mei_graph, g_elem).map(
+      (e) => svg_find_from_mei_elem(svg_elem, id_prefix, e));
+  var coords = targets.map(get_metarelation_target);
+  var x = average(coords.map((e) => e[0]));
+  // Above
+  var y = targets.concat([svg_elem.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
+
+  coords.push([x,y]);
+  var elem = g_arg(svg_elem);
+  var elem = roundedHull(coords);
+  elem.setAttribute("id",id);
+  elem.setAttribute("class","metarelation");
+  elem.setAttribute("type",type);
+  elem.style.fillOpacity = "0.5";
+  elem.style.strokeOpacity = "0.1";
+  elem.onwheel = (e) => {
+    var elem1 = e.target;
+    var paren = elem1.parentElement;
+    paren.removeChild(elem1);
+    paren.insertBefore(elem1,paren.children[0]);
+    return false;
+  };
+  coords.forEach((crds) => { var line_elem = line([x,y],crds);
+      elem.appendChild(line_elem);});
+  elem.appendChild(circle([x,y],200));
+  if(shades)
+    toggle_shade(elem);
+  add_to_svg_bg_arg(svg_elem,elem);
+  added.push(elem);
+  elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
+  elem.onmouseover = function (ev) {
+
+    targets.forEach((item) => {
+        if(item.style.filter == ""){
+          item.style.transform = "translate3d(0,0,0)";
+          item.style.filter = "url(\"#glowFilter\")";
+          }});
+  }
+  elem.onmouseout = function (ev) {
+    targets.forEach((item) => {
+        if(item.style.filter == "url(\"#glowFilter\")") {
+          item.style.transform = "";
+          item.style.filter = "";
+        }});
+  }
+  return added;
+}

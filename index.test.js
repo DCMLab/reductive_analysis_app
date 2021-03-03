@@ -7,6 +7,11 @@ jest.setTimeout(10000); // 20 second timeout for promise resolution.
 
 var globals = {};
 const verbose = false;
+const verbose = true;
+
+function log(s) {
+  verbose ? console.log(s) : true;
+}
 
 describe('reductive_analysis_test_suite', () => {
 
@@ -33,10 +38,8 @@ describe('reductive_analysis_test_suite', () => {
     // Helper function to test a single button
     // with a compulsory element id and any other attribute-value pairs.
     button_test = async (buttonId, conditions) => {
-      if (verbose) {
-        console.log(`testing button with element ID #${buttonId}`
+      log(`testing button with element ID #${buttonId}`
           + (conditions ? ` and attributes ${JSON.stringify(conditions)}` : ''));
-      }
 
       // Expect the element to exist
       await expect(page)

@@ -140,4 +140,27 @@ describe('reductive_analysis_test_suite', () => {
 
     expect(mei_id).toMatch(svg_id);
   })
+
+  it('should select a note, ensuring that it is added to the appropriate array and styled accordingly', async function () {
+
+    // Simulate click on the first note.
+    var svg_first_note_id = await page.evaluate(`$($('svg')[1]).find('g.note').first().attr('id')`);
+    var svg_first_note_selector = `#${svg_first_note_id}`;
+    var svg_first_notehead_selector = `#${svg_first_note_id} .notehead`;
+    log(`First SVG note element: ${svg_first_note_selector}`);
+
+    await expect(page).toMatchElement(`${svg_first_notehead_selector}`);
+
+    await expect(page).toClick(svg_first_notehead_selector, {delay: 200, clickCount: 2, timeout: 30000});
+    await page.waitFor(3000);
+    // Confirm that the selected note has been styled accordingly.
+    // (I *think* that Jest-Puppeteer does not provide a way of polling global variables for async changes,
+    // so polling for DOM changes instead seems essential to prevent async problems.)
+    await expect(page).toMatchElement(svg_first_note_selector + `[style*="fill: green;"]`);
+
+    // Confirm that the selected note has been added to the `selected` array.
+    await expect(page.evaluate(`$(selected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
+ });
+
 });
+

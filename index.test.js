@@ -206,5 +206,31 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toBeFalsy();
  });
 
-});
+  it('should toggle a new relation between structurally unequal notes', async function () {
 
+    // Pick the first two notes for this test.
+    var primary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[0].id`);
+    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+
+    log(`About to create relationship between primary #${primary_id} and secondary #${secondary_id}.`);
+
+    // Simulate click on the first note.
+    log('Selecting first <g> element.')
+    await page.keyboard.down('Shift');
+    await expect(page).toClick(`#${primary_id} .notehead`);
+    await page.keyboard.up('Shift');
+
+    // Simulate click on the secondary note.
+    await expect(page).toClick(`#${secondary_id} .notehead`);
+
+    // Enter arpeggio relation via the keyboard shortcut.
+    await page.keyboard.press('a');
+
+    // Require MEI nodes with respective xml:id attributes.
+    await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${primary_id}"]').length`)).resolves
+      .toBeTruth;
+    await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${secondary_id}"]').length`)).resolves
+      .toBeTruth;
+  })
+
+});

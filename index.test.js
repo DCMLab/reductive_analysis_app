@@ -171,5 +171,40 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page.evaluate(`$(selected[0]).attr('id')`)).resolves.toBeFalsy();
  });
 
+
+  it('should extra-toggle a note, ensuring that the relevant array is updated and the note styled accordingly', async function () {
+
+    var svg_first_note_id = await page.evaluate(`$($('svg')[1]).find('g.note').first().attr('id')`);
+    var svg_first_note_selector = `#${svg_first_note_id}`;
+    var svg_first_notehead_selector = `#${svg_first_note_id} .notehead`;
+    log(`First SVG note element: ${svg_first_note_selector}`);
+
+    // Simulate click on the first note.
+    log('Selecting first <g> element.')
+    await page.keyboard.down('Shift');
+    await expect(page).toClick(svg_first_notehead_selector);
+    await page.keyboard.up('Shift');
+
+    // Confirm that the selected note has been styled accordingly.
+    // (I *think* that Jest-Puppeteer does not provide async monitoring of global state,
+    // so checking for DOM changes before global state seems generally prudent. This might be worth revisiting.)
+    await expect(page).toMatchElement(svg_first_note_selector + `[style*="fill: red;"]`);
+
+    // Confirm that the selected note has been added to the `selected` array.
+    await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
+
+    // Simulate second click on first note (deselecting it).
+    log('Deselecting first <g> element.')
+    await page.keyboard.down('Shift');
+    await expect(page).toClick(svg_first_notehead_selector);
+    await page.keyboard.up('Shift');
+
+    // Confirm that the selected note has been styled accordingly.
+    await expect(page).toMatchElement(svg_first_note_selector + `[style*="fill: black;"]`);
+
+    // Confirm that the selected note has been added to the `selected` array.
+    await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toBeFalsy();
+ });
+
 });
 

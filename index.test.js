@@ -141,7 +141,7 @@ describe('reductive_analysis_test_suite', () => {
     expect(mei_id).toMatch(svg_id);
   })
 
-  it('should select a note, ensuring that it is added to the appropriate array and styled accordingly', async function () {
+  it('should toggle a note, ensuring that the relevant array is updated and the note styled accordingly', async function () {
 
     var svg_first_note_id = await page.evaluate(`$($('svg')[1]).find('g.note').first().attr('id')`);
     var svg_first_note_selector = `#${svg_first_note_id}`;

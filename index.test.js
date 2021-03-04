@@ -143,13 +143,13 @@ describe('reductive_analysis_test_suite', () => {
 
   it('should toggle a note, ensuring that the relevant array is updated and the note styled accordingly', async function () {
 
+    log(`About to toggle a note`);
     var svg_first_note_id = await page.evaluate(`$($('svg')[1]).find('g.note').first().attr('id')`);
     var svg_first_note_selector = `#${svg_first_note_id}`;
     var svg_first_notehead_selector = `#${svg_first_note_id} .notehead`;
-    log(`First SVG note element: ${svg_first_note_selector}`);
 
     // Simulate click on the first note.
-    log('Selecting first <g> element.')
+    log('Selecting note.')
     await expect(page).toClick(svg_first_notehead_selector);
 
     // Confirm that the selected note has been styled accordingly.
@@ -161,7 +161,7 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page.evaluate(`$(selected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
 
     // Simulate second click on first note (deselecting it).
-    log('Deselecting first <g> element.')
+    log('Deselecting note.')
     await expect(page).toClick(svg_first_notehead_selector);
 
     // Confirm that the selected note has been styled accordingly.
@@ -174,13 +174,13 @@ describe('reductive_analysis_test_suite', () => {
 
   it('should extra-toggle a note, ensuring that the relevant array is updated and the note styled accordingly', async function () {
 
+    log(`About to extra-toggle a note`);
     var svg_first_note_id = await page.evaluate(`$($('svg')[1]).find('g.note').first().attr('id')`);
     var svg_first_note_selector = `#${svg_first_note_id}`;
     var svg_first_notehead_selector = `#${svg_first_note_id} .notehead`;
-    log(`First SVG note element: ${svg_first_note_selector}`);
 
     // Simulate click on the first note.
-    log('Selecting first <g> element.')
+    log('Selecting note.')
     await page.keyboard.down('Shift');
     await expect(page).toClick(svg_first_notehead_selector);
     await page.keyboard.up('Shift');
@@ -194,7 +194,7 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
 
     // Simulate second click on first note (deselecting it).
-    log('Deselecting first <g> element.')
+    log('Deselecting note.')
     await page.keyboard.down('Shift');
     await expect(page).toClick(svg_first_notehead_selector);
     await page.keyboard.up('Shift');
@@ -215,17 +215,18 @@ describe('reductive_analysis_test_suite', () => {
     log(`About to create relationship between primary #${primary_id} and secondary #${secondary_id}.`);
 
     // Simulate click on the first note.
-    log('Selecting first <g> element.')
     await page.keyboard.down('Shift');
     await expect(page).toClick(`#${primary_id} .notehead`);
     await page.keyboard.up('Shift');
+    log('Selected primary note.')
 
     // Simulate click on the secondary note.
-    log('Selecting first <g> element.')
     await expect(page).toClick(`#${secondary_id} .notehead`);
+    log('Selected secondary note.')
 
     // Enter arpeggio relation via the keyboard shortcut.
     await page.keyboard.press('a');
+    log('Created test relation.')
 
     // Assert MEI nodes with respective xml:id attributes.
     await expect(page.evaluate(`window.mei.children[0].outerHTML

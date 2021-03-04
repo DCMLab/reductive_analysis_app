@@ -292,6 +292,19 @@ describe('reductive_analysis_test_suite', () => {
     // Assert that the notes retrieved from the relation are valid.
     await expect([primary_id, secondary_id]).toIncludeAllMembers(notes_to_test);
 
+    // Assert that primary and secondary notes are retrievable from relations (`relation_get_notes_separated`).
+    await expect(page.evaluate(`
+      window.test_notes_separated = relation_get_notes_separated(
+        window.test_relation
+      ).map(n => n[0].getAttribute('xml:id'))
+    `)).resolves.toBeTruthy();
+
+    var notes_to_test_separated = await page.evaluate(`window.test_notes_separated`);
+    log(`Note id's returned by relation_get_notes_separated: #${notes_to_test_separated[0]} #${notes_to_test_separated[1]}`);
+    log(`Primary and secondary note id's to be matched by those of relation_get_notes: #${primary_id} #${secondary_id}`);
+
+    await expect([primary_id, secondary_id]).toEqual(notes_to_test_separated);
+
   });
 
 });

@@ -244,9 +244,9 @@ describe('reductive_analysis_test_suite', () => {
     log(`Expecting to match the primary-node arc with relation id: ${expected_relation_id}.`);
 
     await expect(page.evaluate(`$(window.mei)
-      .find('arc[to="#gn-${secondary_id}"][type="secondary"][from="${expected_relation_id}"]')`)).resolves
+      .find('arc[to="#gn-${secondary_id}"][type="secondary"][from="#${expected_relation_id}"]')`)).resolves
       .toBeTruthy();
-    log(`Found a matching secondary-node arc with the expected relation id: ${expected_relation_id}.`);
+    log(`Found a matching secondary-node arc with the expected relation id: #${expected_relation_id}.`);
 
     // Placeholder assertion. To be discussed --- un-comment at your own peril.
     await expect(page

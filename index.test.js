@@ -266,14 +266,14 @@ describe('reductive_analysis_test_suite', () => {
     log(`Found a matching secondary-node arc with the expected relation id: #${expected_relation_id}.`);
 
     // Assert that a node of type `relation` has been added to the MEI tree.
-    var test_relation = await expect(page.evaluate(`
+    await expect(page.evaluate(`
          window.test_relation = Object.entries(window.mei.querySelectorAll('node[type="relation"]'))
                                       .filter( x => x[1]
                                                       .outerHTML
                                                       .match(/xml:id="${expected_relation_id}"/) )[0][1]`
-      ))
-      .resolves
-      .toBeTruthy();
+    ))
+    .resolves
+    .toBeTruthy();
 
     // Assert a graphic element for the relation.
     await expect(page).toMatchElement(`path#${expected_relation_id}`);
@@ -290,7 +290,7 @@ describe('reductive_analysis_test_suite', () => {
     log(`Primary and secondary note id's to be matched by those of relation_get_notes: #${primary_id} #${secondary_id}`);
 
     // Assert that the notes retrieved from the relation are valid.
-    await expect([primary_id, secondary_id]).toIncludeAllMembers(notes_to_test);
+    expect([primary_id, secondary_id]).toIncludeAllMembers(notes_to_test);
 
     // Assert that primary and secondary notes are retrievable from relations (`relation_get_notes_separated`).
     await expect(page.evaluate(`
@@ -303,7 +303,7 @@ describe('reductive_analysis_test_suite', () => {
     log(`Note id's returned by relation_get_notes_separated: #${notes_to_test_separated[0]} #${notes_to_test_separated[1]}`);
     log(`Primary and secondary note id's to be matched by those of relation_get_notes: #${primary_id} #${secondary_id}`);
 
-    await expect([primary_id, secondary_id]).toEqual(notes_to_test_separated);
+    expect([primary_id, secondary_id]).toEqual(notes_to_test_separated);
 
   });
 

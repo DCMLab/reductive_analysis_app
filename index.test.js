@@ -257,10 +257,16 @@ describe('reductive_analysis_test_suite', () => {
     log(`Found a matching secondary-node arc with the expected relation id: ${expected_relation_id}.`);
 
     // Placeholder assertion. To be discussed --- un-comment at your own peril.
-    // await expect(page.evaluate(`$(window.mei)
-    //   .find('node[type="relation"][k="${expected_relation_id}"]').length`)).resolves
-    //   .toBeTruthy();
+    await expect(page
+      .evaluate(`
+         Object.entries(window.mei.querySelectorAll('node[type="relation"]'))
+               .map ( x => x[1].outerHTML
+                               .match(/xml:id="${expected_relation_id}"/) ? true : false )`))
+      .resolves
+      .toIncludeAllMembers([true]);
 
+    // Assert a graphic element for the relation.
+    await expect(page).toMatchElement(`path#${expected_relation_id}`);
   });
 
 });

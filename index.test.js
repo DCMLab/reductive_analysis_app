@@ -39,7 +39,7 @@ describe('reductive_analysis_test_suite', () => {
     // with a compulsory element id and any other attribute-value pairs.
     button_test = async (buttonId, conditions) => {
       log(`testing button with element ID #${buttonId}`
-          + (conditions ? ` and attributes ${JSON.stringify(conditions)}` : ''));
+        + (conditions ? ` and attributes ${JSON.stringify(conditions)}` : ''));
 
       // Expect the element to exist
       await expect(page)
@@ -51,7 +51,7 @@ describe('reductive_analysis_test_suite', () => {
 
       // ... of type `button`
       await expect(page.evaluate(`$('#${buttonId}').attr('type')`)).resolves
-        .toMatch('button');
+      .toMatch('button');
 
       // ... fulfilling any {attr, value} pairwise conditions
       if (conditions) {
@@ -204,7 +204,7 @@ describe('reductive_analysis_test_suite', () => {
 
     // Confirm that the selected note has been added to the `selected` array.
     await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toBeFalsy();
- });
+  });
 
   it('should toggle a new relation between structurally unequal notes', async function () {
 
@@ -229,19 +229,11 @@ describe('reductive_analysis_test_suite', () => {
     log('Created test relation.')
 
     // Assert MEI nodes with respective xml:id attributes.
-    await expect(page.evaluate(`window.mei.children[0].outerHTML
-      .includes('xml:id="${primary_id}"')`)).resolves
-      .toBeTruthy();;
-    await expect(page.evaluate(`window.mei.children[0].outerHTML
-      .includes('xml:id="${secondary_id}"')`)).resolves
-      .toBeTruthy();;
-
-        // The following two assertions would be more elegant than the above but the element selector
-        // produces a syntax error, for reasons that I fail to understand.
-        // await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${primary_id}"]').length`)).resolves
-        //   .toBeTruthy();
-        // await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${secondary_id}"]').length`)).resolves
-        //   .toBeTruthy();
+      // TODO: Understand why the following saner and faster alternative doesn't seem to work.
+      // await expect(page.evaluate(`window.mei.querySelector('node[*|id*="${primary_id}"]')`)).resolves
+      //   .toBeTruthy();
+      // await expect(page.evaluate(`window.mei.querySelector('node[*|id*="${secondary_id}"]')`)).resolves
+      //   .toBeTruthy();        
 
     // Assert relation <arc>'s for primary and secondary notes.
     // This should be revisited for compliance with the TEI-derived standard.

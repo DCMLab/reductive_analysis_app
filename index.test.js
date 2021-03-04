@@ -265,14 +265,15 @@ describe('reductive_analysis_test_suite', () => {
       .toBeTruthy();
     log(`Found a matching secondary-node arc with the expected relation id: #${expected_relation_id}.`);
 
-    // Placeholder assertion. To be discussed --- un-comment at your own peril.
-    await expect(page
-      .evaluate(`
-         Object.entries(window.mei.querySelectorAll('node[type="relation"]'))
-               .map ( x => x[1].outerHTML
-                               .match(/xml:id="${expected_relation_id}"/) ? true : false )`))
+    // Assert that a node of type `relation` has been added to the MEI tree.
+    var test_relation = await expect(page.evaluate(`
+         window.test_relation = Object.entries(window.mei.querySelectorAll('node[type="relation"]'))
+                                      .filter( x => x[1]
+                                                      .outerHTML
+                                                      .match(/xml:id="${expected_relation_id}"/) )[0][1]`
+      ))
       .resolves
-      .toIncludeAllMembers([true]);
+      .toBeTruthy();
 
     // Assert a graphic element for the relation.
     await expect(page).toMatchElement(`path#${expected_relation_id}`);

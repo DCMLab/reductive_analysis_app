@@ -277,6 +277,21 @@ describe('reductive_analysis_test_suite', () => {
 
     // Assert a graphic element for the relation.
     await expect(page).toMatchElement(`path#${expected_relation_id}`);
+
+    // Assert that notes are retrievable from the test relation (`relation_get_notes`).
+    await expect(page.evaluate(`
+      window.test_notes = relation_get_notes(
+        window.test_relation
+      ).map(n => n.getAttribute('xml:id'))
+    `)).resolves.toBeTruthy();
+
+    var notes_to_test = await page.evaluate(`window.test_notes`);
+    log(`Note id's returned by relation_get_notes: #${notes_to_test[0]} #${notes_to_test[1]}`);
+    log(`Primary and secondary note id's to be matched by those of relation_get_notes: #${primary_id} #${secondary_id}`);
+
+    // Assert that the notes retrieved from the relation are valid.
+    await expect([primary_id, secondary_id]).toIncludeAllMembers(notes_to_test);
+
   });
 
 });

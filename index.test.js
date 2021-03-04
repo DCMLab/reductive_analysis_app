@@ -221,16 +221,45 @@ describe('reductive_analysis_test_suite', () => {
     await page.keyboard.up('Shift');
 
     // Simulate click on the secondary note.
+    log('Selecting first <g> element.')
     await expect(page).toClick(`#${secondary_id} .notehead`);
 
     // Enter arpeggio relation via the keyboard shortcut.
     await page.keyboard.press('a');
 
-    // Require MEI nodes with respective xml:id attributes.
-    await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${primary_id}"]').length`)).resolves
-      .toBeTruth;
-    await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${secondary_id}"]').length`)).resolves
-      .toBeTruth;
-  })
+    // Assert MEI nodes with respective xml:id attributes.
+    await expect(page.evaluate(`window.mei.children[0].outerHTML
+      .includes('xml:id="${primary_id}"')`)).resolves
+      .toBeTruthy();;
+    await expect(page.evaluate(`window.mei.children[0].outerHTML
+      .includes('xml:id="${secondary_id}"')`)).resolves
+      .toBeTruthy();;
+
+        // The following two assertions would be more elegant than the above but the element selector
+        // produces a syntax error, for reasons that I fail to understand.
+        // await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${primary_id}"]').length`)).resolves
+        //   .toBeTruthy();
+        // await expect(page.evaluate(`$(window.mei).find('node[xml\\:id*="${secondary_id}"]').length`)).resolves
+        //   .toBeTruthy();
+
+    // Assert relation <arc>'s for primary and secondary notes.
+    // This should be revisited for compliance with the TEI-derived standard.
+    // See https://github.com/DCMLab/reductive_analysis_app/issues/48.
+    var expected_relation_id = await page.evaluate(`$(window.mei)
+      .find('arc[to="#gn-${primary_id}"][type="primary"]')
+      .attr('from')`);
+    log(`Expecting to match the primary-node arc with relation id: ${expected_relation_id}.`);
+
+    await expect(page.evaluate(`$(window.mei)
+      .find('arc[to="#gn-${secondary_id}"][type="secondary"][from="${expected_relation_id}"]')`)).resolves
+      .toBeTruthy();
+    log(`Found a matching secondary-node arc with the expected relation id: ${expected_relation_id}.`);
+
+    // Placeholder assertion. To be discussed --- un-comment at your own peril.
+    // await expect(page.evaluate(`$(window.mei)
+    //   .find('node[type="relation"][k="${expected_relation_id}"]').length`)).resolves
+    //   .toBeTruthy();
+
+  });
 
 });

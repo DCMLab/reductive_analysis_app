@@ -235,8 +235,24 @@ describe('reductive_analysis_test_suite', () => {
       // await expect(page.evaluate(`window.mei.querySelector('node[*|id*="${secondary_id}"]')`)).resolves
       //   .toBeTruthy();        
 
+    await expect(page
+      .evaluate(`
+         Object.entries(window.mei.querySelectorAll('node'))
+               .map ( x => x[1].outerHTML
+                               .match(/xml:id="gn-${primary_id}"/) ? true : false )`))
+      .resolves
+      .toIncludeAllMembers([true]);
+
+    await expect(page
+      .evaluate(`
+         Object.entries(window.mei.querySelectorAll('node'))
+               .map ( x => x[1].outerHTML
+                               .match(/xml:id="gn-${secondary_id}"/) ? true : false )`))
+      .resolves
+      .toIncludeAllMembers([true]);
+
     // Assert relation <arc>'s for primary and secondary notes.
-    // This should be revisited for compliance with the TEI-derived standard.
+    // TODO: This should likely be revisited for compliance with the TEI-derived standard.
     // See https://github.com/DCMLab/reductive_analysis_app/issues/48.
     var expected_relation_id = await page.evaluate(`$(window.mei)
       .find('arc[to="#gn-${primary_id}"][type="primary"]')

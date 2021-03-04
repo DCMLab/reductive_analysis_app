@@ -240,8 +240,9 @@ describe('reductive_analysis_test_suite', () => {
     // See https://github.com/DCMLab/reductive_analysis_app/issues/48.
     var expected_relation_id = await page.evaluate(`$(window.mei)
       .find('arc[to="#gn-${primary_id}"][type="primary"]')
-      .attr('from')`);
-    log(`Expecting to match the primary-node arc with relation id: ${expected_relation_id}.`);
+      .attr('from')
+      .substring(1)`); // remove the hash prefix from the ID, for consistency.
+    log(`Expecting to match the primary-node arc with relation id: #${expected_relation_id}.`);
 
     await expect(page.evaluate(`$(window.mei)
       .find('arc[to="#gn-${secondary_id}"][type="secondary"][from="#${expected_relation_id}"]')`)).resolves

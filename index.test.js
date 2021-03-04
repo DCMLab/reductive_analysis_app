@@ -6,7 +6,6 @@ const path = require('path');
 jest.setTimeout(10000); // 20 second timeout for promise resolution.
 
 var globals = {};
-const verbose = false;
 const verbose = true;
 
 function log(s) {
@@ -99,6 +98,7 @@ describe('reductive_analysis_test_suite', () => {
   });
 
   it('should produce a directed <graph> within <mei>', async function () {
+    await page.waitForTimeout(1000);
     await expect(page.evaluate(`$(window.mei).find('graph').attr('type')`)).resolves
       .toMatch(/^directed$/);
   });

@@ -454,7 +454,7 @@ function do_relation(type,arg) {
           added.push(draw_relation_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(), he_id))); // Draw the edge
           mark_secondaries_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(),he_id));
         }
-        undo_actions.push(["relation",added,selected,extraselected]);
+        undo_actions.push(["relation",added.reverse(),selected,extraselected]);
       }else{
         [he_id,mei_elems] = add_relation(mei,mei_graph,type);
         added.push(mei_elems);  // Add it to the MEI

@@ -303,7 +303,32 @@ describe('reductive_analysis_test_suite', () => {
     log(`Note id's returned by relation_get_notes_separated: #${notes_to_test_separated[0]} #${notes_to_test_separated[1]}`);
     log(`Primary and secondary note id's to be matched by those of relation_get_notes: #${primary_id} #${secondary_id}`);
 
+    // Assert that the notes retrieved from the relation are valid.
     expect([primary_id, secondary_id]).toEqual(notes_to_test_separated);
+
+    // Attempt to press Undo.
+    await page.keyboard.press('u');
+    log('Pressed Undo via keyboard shortcut.')
+
+    // Confirm that the relation is no longer drawn.
+    await expect(page.evaluate(`window.test_relation`)).resolves.toEqual({});
+
+    // Confirm that the relation node is removed from the graph.
+    await expect(page.evaluate(`
+      document.querySelectorAll('path[id="${expected_relation_id}"]')[0] 
+    `)).resolves.toBeNil();
+
+    // Confirm that the relevant note nodes are removed from the graph.
+    await expect(page.evaluate(`
+      // Checking for any residual nodes is enough because the only possibly remaining
+      // (relation) node has already been ruled out.
+      window.mei.querySelector('node');  
+    `)).resolves.toBeNull();
+
+    // Confirm that the relevant arcs are removed from the graph.
+    await expect(page.evaluate(`
+      window.mei.querySelector('arc');
+    `)).resolves.toBeNull();
 
   });
 

@@ -135,21 +135,41 @@ function circle(p,rad) {
   return newElement;
 }
 
-function add_to_svg_bg(newElement) {
-  var sibling = document.getElementsByClassName("system")[0];
+function add_to_svg_bg_arg(svg_elem,newElement) {
+  var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
   parent.insertBefore(newElement,sibling);
 }
 
+function add_to_svg_bg(newElement) {
+  var sibling = document.getElementsByClassName("system")[0];
+  var parent = sibling.parentNode;
+  console.debug("Using global: document to get 'system' element");
+  parent.insertBefore(newElement,sibling);
+}
+
+function add_to_svg_fg_arg(svg_elem,newElement) {
+  var sibling = svg_elem.getElementsByClassName("system")[0];
+  var parent = sibling.parentNode;
+  parent.appendChild(newElement);
+}
+
 function add_to_svg_fg(newElement) {
   var sibling = document.getElementsByClassName("system")[0];
+  console.debug("Using global: document to get 'system' element");
   var parent = sibling.parentNode;
   parent.appendChild(newElement);
 }
 
 
+function g_arg(svg_elem) {
+  var newElement = svg_elem.getRootNode().createElementNS("http://www.w3.org/2000/svg", 'g');
+  return newElement;
+}
+
 function g() {
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+  console.debug("Using global: document to create new element");
   return newElement;
 }
 
@@ -157,6 +177,19 @@ function g() {
 function note_coords(note) {
   return [note.getElementsByTagName("use")[0].x.animVal.value + 100,
           note.getElementsByTagName("use")[0].y.animVal.value]
+}
+
+function get_by_oldid_elem(doc,elem) {return get_by_id(doc, id_or_oldid(elem));}
+
+// Gets all elements from the doc with the oldid
+function get_by_oldid(doc,id){
+  if (id[0] == "#") { id = id.slice(1); }
+  var elems = doc.querySelectorAll("[*|oldid='"+id+"']");
+  if(elems) {
+    return Array.from(elems);
+  }else{
+    return Array.from(doc.all).find((x) => { return x.getAttribute("oldid") == id });
+  }
 }
 
 // From id string to element
@@ -170,13 +203,39 @@ function get_by_id(doc,id) {
   }
 }
 
+// Simple utility to get oldid if available.
+function id_or_oldid(elem){
+  if(elem.hasAttribute("oldid"))
+    return elem.getAttribute("oldid");
+  else
+    return elem.id;
+}
+
+
+// From graph node to list of all arcs that refer to it
+function arcs_where_node_referred_to_arg(mei_graph,id) {
+  return Array.from(mei_graph.getElementsByTagName("arc"))
+    .filter((x) => {
+	return (x.getAttribute("from") == "#"+id || 
+		x.getAttribute("to") == "#"+id);
+     }).length > 0;
+}
+
 // From graph node to list of all arcs that refer to it
 function node_referred_to(id) {
+  console.debug("Using global: mei to find element");
   return Array.from(mei.getElementsByTagName("arc"))
     .filter((x) => {
 	return (x.getAttribute("from") == "#"+id || 
 		x.getAttribute("to") == "#"+id);
      }).length > 0;
+}
+
+// From MEI graph node to its referred note.
+function note_get_sameas_arg(prefix,note) {
+  return note.getElementsByTagName("label")[0].
+	      getElementsByTagName("note")[0].
+	      getAttribute("sameas").replace("#","#"+prefix);
 }
 
 // From MEI graph node to its referred note.
@@ -193,6 +252,7 @@ function mod(n, m) {
 
 // What's the accidentals for this note?
 function note_get_accid(note) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(note))
     note = get_by_id(mei,note.id);
   if(note.hasAttribute("accid.ges"))
@@ -214,6 +274,7 @@ function note_get_accid(note) {
 
 // Get the timestamp for a note
 function get_time(note) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(note))
     note = get_by_id(mei,note.id);
   return vrvToolkit.getTimeForElement(note.getAttribute("xml:id"));
@@ -222,6 +283,7 @@ function get_time(note) {
 
 // From any relation element to list of MEI note elements
 function relation_get_notes(he) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(he))
     he = get_by_id(mei,he.id);
   var note_nodes = relation_allnodes(he);
@@ -231,6 +293,7 @@ function relation_get_notes(he) {
 }
 // From any relation element to list of MEI note elements
 function relation_get_notes_separated(he) {
+  console.debug("Using globals: document, mei to find element");
   if(document.contains(he))
     he = get_by_id(mei,he.id);
   var prim_nodes = relation_primaries(he);
@@ -241,7 +304,20 @@ function relation_get_notes_separated(he) {
 }
 
 // Get the MEI-graph nodes that are adjacent to a relation
+function relation_allnodes_arg(mei_graph,he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+        if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
+          nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
+        }
+      });
+  return nodes;
+}
+
+// Get the MEI-graph nodes that are adjacent to a relation
 function relation_allnodes(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -252,7 +328,32 @@ function relation_allnodes(he) {
   return nodes;
 }
 // Get the MEI-graph nodes that are adjacent and primary to a relation
+function relation_primaries_arg(mei_graph,he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "primary"){
+      nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and secondary to a relation
+function relation_secondaries_arg(mei_graph,he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "secondary"){
+      nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and primary to a relation
 function relation_primaries(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -265,6 +366,7 @@ function relation_primaries(he) {
 }
 // Get the MEI-graph nodes that are adjacent and secondary to a relation
 function relation_secondaries(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -276,8 +378,38 @@ function relation_secondaries(he) {
   return nodes;
 }
 
+function relation_type(he) {
+  //TODO: Sanity checks
+  if(he.children.length == 0) {
+    return "";
+  }else{
+    return he.children[0].getAttribute("type");
+  }
+}
+
+// Set up new graph node for a note
+function add_mei_node_for_arg(mei_graph,note) {
+    var id = id_or_oldid(note);
+    var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
+    if (elem != null) {
+      return elem;
+    }
+    elem = mei_graph.getRootNode().createElement("node");
+    // This node represent that note
+    var label = mei_graph.getRootNode().createElement("label");
+    var note = mei_graph.getRootNode().createElement("note");
+    note.setAttribute("sameas","#"+id);
+    elem.appendChild(label);
+    label.appendChild(note);
+    // But should have a separate XML ID
+    elem.setAttribute("xml:id","gn-" + id);
+    mei_graph.appendChild(elem);
+    return elem;
+}
+
 // Set up new graph node for a note
 function add_mei_node_for(mei,mei_graph,note) {
+    console.debug("Using globals: mei, mei_graph to create and place elem");
     var id = note.getAttribute("id");
     var elem = get_by_id(mei,"gn-"+id);
     if (elem != null) {
@@ -297,7 +429,24 @@ function add_mei_node_for(mei,mei_graph,note) {
 }
             
 // Find graphical element and hide it
+function hide_note_arg(draw_context,note) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,note));
+  if(elem)
+    elem.style.visibility = "hidden";
+  return elem;
+}
+
+// Find graphical element and hide it
+function hide_he_arg(draw_context,he) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
+  if(elem) 
+    elem.style.visibility = "hidden";
+  return elem;
+}
+            
+// Find graphical element and hide it
 function hide_note(note) {
+  console.debug("Using globals: document to find elem");
   var elem = get_by_id(document,note_get_sameas(note));
   if(elem)
     elem.style.visibility = "hidden";
@@ -306,6 +455,7 @@ function hide_note(note) {
 
 // Find graphical element and hide it
 function hide_he(he) {
+  console.debug("Using globals: document to find elem");
   var elem = get_by_id(document,he.getAttribute("xml:id"));
   if(elem) 
     elem.style.visibility = "hidden";
@@ -327,7 +477,21 @@ function unmark_secondary(item) {
 }
 
 // For a certain relation, find its secondaries and mark them
+function mark_secondaries_arg(draw_context,mei_graph,he) {
+    var mei = draw_context.mei;
+    var svg_elem = draw_context.svg_elem;
+    if(he.tagName != "node")
+      he = get_by_id(mei_graph.getRootNode(),he.id);
+    var secondaries = relation_secondaries_arg(mei_graph,he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,n));
+	mark_secondary(svg_note);
+    });
+}
+
+// For a certain relation, find its secondaries and mark them
 function mark_secondaries(he) {
+    console.debug("Using globals: document, mei to find elems");
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
     var secondaries = relation_secondaries(he);
@@ -338,7 +502,21 @@ function mark_secondaries(he) {
 }
 
 // For a certain relation, find its secondaries and unmark them
+function unmark_secondaries_arg(draw_context,mei_graph,he) {
+    var mei = draw_context.mei;
+    var svg_elem = draw_context.svg_elem;
+    if(he.tagName != "node")
+      he = get_by_id(mei_graph.getRootNode(),he.id);
+    var secondaries = relation_secondaries_arg(mei_graph,he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_arg(draw_context.id_prefix, n));
+	unmark_secondary(svg_note);
+    });
+}
+
+// For a certain relation, find its secondaries and unmark them
 function unmark_secondaries(he) {
+    console.debug("Using globals: document, mei to find elems");
     if(!mei.contains(he))
       he = get_by_id(mei,he.id);
     var secondaries = relation_secondaries(he);
@@ -355,6 +533,7 @@ function get_measure(elem) {if(elem.tagName == "measure") return elem; else retu
 // pitch in this measure, and select them as secondary, and the previously
 // selected one as primary
 function select_samenote() {
+  console.debug("Using globals: document, mei to find elems");
   if((selected.length == 1 || extraselected.length == 1)
    && !(selected.length == 1 &&  extraselected.length == 1)){
     var svg_note;
@@ -376,6 +555,11 @@ function select_samenote() {
   }
 }
 
+function svg_find_from_mei_elem(svg_elem, id_prefix, e) {
+  // TODO: Sanity checks
+  var id = id_prefix + e.getAttribute("xml:id");
+  return svg_elem.getRootNode().getElementById(id);
+}
 
 function getBoundingBoxTop (elem) {
     // use the native SVG interface to get the bounding box
@@ -436,6 +620,26 @@ function remove_empty_relations(graph) {
 
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
+function to_text_arg(draw_contexts,mei_graph,elems) {
+  //TODO: Detect and warn for selections spanning several drawing contexts
+  if(elems.length == 0)
+    return "";
+  if(elems[0].getAttribute("class") == "note"){
+    return "notes("+elems.map((elem) => {
+      var id = id_or_oldid(elem);
+      var mei_elem = get_by_id(mei,id);
+      var accid = note_get_accid(mei_elem);
+      accid= accid.replaceAll("s","#")
+      accid= accid.replaceAll("f","b")
+      accid= accid.replaceAll("n","")
+      return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
+    }).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "relation"){
+    return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }else if(elems[0].getAttribute("class") == "metarelation"){
+    return "metarelations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
+  }
+}
 
 function to_text(elems) {
   if(elems.length == 0)
@@ -466,5 +670,12 @@ function fix_synonyms(mei) {
   return mei;
 }
 
+function prefix_ids(elem,prefix) {
+  if(elem.id != ""){
+    elem.setAttribute("oldid", elem.id);
+    elem.id = prefix+elem.id;
+  }
+  Array.from(elem.children).forEach((e) => prefix_ids(e,prefix));
+}
 
 

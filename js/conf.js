@@ -14,16 +14,16 @@ try {
   var meta_conf = {
   "context"      :{key: "c", colour: 0},
   "layer"     :{key: "l", colour: 6},
-  "phrase"   :{key: "r", colour: 2}, 
-  "section"    :{key: "t", colour: 3}, 
+  "phrase"   :{key: "r", colour: 2},
+  "section"    :{key: "t", colour: 3},
   }
 
   var type_conf = {
   "repeat"      :{key: "e", colour: 0},
   "passing"     :{key: "p", colour: 6},
-  "neighbour"   :{key: "n", colour: 2}, 
-  "harmonic"    :{key: "i", colour: 3}, 
-  "arpeggio"    :{key: "a", colour: 4}, 
+  "neighbour"   :{key: "n", colour: 2},
+  "harmonic"    :{key: "i", colour: 3},
+  "arpeggio"    :{key: "a", colour: 4},
   "urlinie"     :{key: "u", colour: 5}, 
   "bassbrechung":{key: "b", colour: 5} 
   }

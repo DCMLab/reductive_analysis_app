@@ -19,9 +19,19 @@ var unitNormal = function (p0, p1) {
       return [ n[0] / nLength, n[1] / nLength ];
 };
 
-var roundedHull2 = function (polyPoints) {
+var roundedHull1 = function (polyPoints, hullPadding) {
+  // Returns the path for a rounded hull around a single point (a
+  // circle).
+
+  var p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding];
+  var p2 = [polyPoints[0][0], polyPoints[0][1] + hullPadding];
+
+  return 'M ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
+                   + ' A ' + [hullPadding, hullPadding, '0,0,0', p1].join(',');
+};
+
+var roundedHull2 = function (polyPoints, hullPadding) {
     // Returns the path for a rounded hull around two points (a "capsule" shape).
-  var hullPadding = 200;
 
     var offsetVector = vecScale (hullPadding, unitNormal (polyPoints[0], polyPoints[1]));
     var invOffsetVector = vecScale (-1, offsetVector);
@@ -37,8 +47,7 @@ var roundedHull2 = function (polyPoints) {
         + ' L ' + p3 + ' A ' + [hullPadding, hullPadding, '0,0,0', p0].join(',');
 };
 
-var roundedHullN = function (polyPoints) {
-  var hullPadding = 200;
+var roundedHullN = function (polyPoints, hullPadding) {
     // Returns the SVG path data string representing the polygon, expanded and rounded.
 
     // Handle special cases
@@ -76,12 +85,15 @@ var roundedHullN = function (polyPoints) {
 
 
 function roundedHull(points) {
+  var hullPadding = 200;
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking
-  if(points.length == 2) {
-    newElement.setAttribute('d',roundedHull2(points));
+  if(points.length == 1) {
+    newElement.setAttribute('d',roundedHull1(points, hullPadding));
+  } else if(points.length == 2) {
+    newElement.setAttribute('d',roundedHull2(points, hullPadding));
   } else {
-    newElement.setAttribute('d',roundedHullN(d3.polygonHull(points)));
+    newElement.setAttribute('d',roundedHullN(d3.polygonHull(points), hullPadding));
   }
   return newElement;
 }

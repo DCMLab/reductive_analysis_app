@@ -506,6 +506,18 @@ function do_metarelation(type, arg ) {
     selected.concat(extraselected).forEach(toggle_selected); // De-select
 }
 
+function undo_reduce() {
+  var ix = undo_actions.findIndex((t) => t[0] == "reduce");
+  if(ix == -1)
+    return;
+  undo = undo_actions[ix];
+  undo_actions.push(undo);
+  undo_actions[ix] = null;
+  undo_actions = undo_actions.filter((x) => x != null);
+  do_undo();
+}
+
+
 // Oops, undo whatever we did last.
 function do_undo() {
     console.debug("Using globals: undo_actions, selected, extraselected, mei, rerendered_after_action");

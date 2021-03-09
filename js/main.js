@@ -507,13 +507,17 @@ function do_metarelation(type, arg ) {
 }
 
 function undo_reduce() {
+  undo_actions.reverse();
   var ix = undo_actions.findIndex((t) => t[0] == "reduce");
-  if(ix == -1)
+  if(ix == -1){
+    undo_actions.reverse();
     return;
+  }
   undo = undo_actions[ix];
-  undo_actions.push(undo);
   undo_actions[ix] = null;
   undo_actions = undo_actions.filter((x) => x != null);
+  undo_actions.reverse();
+  undo_actions.push(undo);
   do_undo();
 }
 

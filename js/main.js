@@ -53,7 +53,7 @@ var format;
 
 var zoom = 1;
 
-var arg = false;
+var arg = true;
 
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).

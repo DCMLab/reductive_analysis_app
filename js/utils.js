@@ -147,6 +147,13 @@ function circle(p,rad) {
   return newElement;
 }
 
+function flip_to_bg(elem) {
+    var paren = elem.parentElement;
+    paren.removeChild(elem);
+    paren.insertBefore(elem,paren.children[0]);
+}
+
+
 function add_to_svg_bg_arg(svg_elem,newElement) {
   var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;

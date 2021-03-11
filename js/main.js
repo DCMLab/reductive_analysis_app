@@ -55,6 +55,16 @@ var zoom = 1;
 
 var arg = true;
 
+var mouseX;
+var mouseY;
+
+window.onmousemove = (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+
+}
+
+
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
 window.addEventListener("beforeunload", function (e) {
@@ -614,6 +624,10 @@ function handle_keypress(ev) {
     return;
   if (ev.key == "Enter"){
     do_edges();
+  } else if (ev.key == "z") { // Scroll through relations
+    elem = document.elementFromPoint(mouseX, mouseY);
+    flip_to_bg(elem);
+    elem.onmouseout();
   } else if (ev.key == "u") { // UNDO
     do_undo();
   } else if (ev.key == "r") { // Reduce relations

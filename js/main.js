@@ -53,7 +53,7 @@ var format;
 
 var zoom = 1;
 
-var arg = false;
+var arg = true;
 
 var mouseX;
 var mouseY;

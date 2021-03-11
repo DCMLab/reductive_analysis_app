@@ -717,9 +717,16 @@ function note_to_rest(mei,note) {
 
 
 function prefix_ids(elem,prefix) {
-  if(elem.id != ""){
+  if(elem.id){
+    // SVG modification
     elem.setAttribute("oldid", elem.id);
     elem.id = prefix+elem.id;
+  }
+  if(elem.getAttribute("xml:id")){
+    // MEI modification
+    // No need to set oldid - we have already made links using
+    // copyof/sameas
+    elem.setAttribute("xml:id", prefix+elem.getAttribute("xml:id"));
   }
   Array.from(elem.children).forEach((e) => prefix_ids(e,prefix));
 }

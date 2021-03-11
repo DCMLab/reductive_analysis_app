@@ -52,8 +52,8 @@ var roundedHullN = function (polyPoints, hullPadding) {
 
     // Handle special cases
     if (!polyPoints || polyPoints.length < 1) return "";
-    if (polyPoints.length === 1) return roundedHull1 (polyPoints);
-    if (polyPoints.length === 2) return roundedHull2 (polyPoints);
+    if (polyPoints.length === 1) return roundedHull1 (polyPoints, hullPadding);
+    if (polyPoints.length === 2) return roundedHull2 (polyPoints, hullPadding);
 
     var segments = new Array (polyPoints.length);
 

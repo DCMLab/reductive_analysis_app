@@ -855,6 +855,9 @@ function load_finish(e) {
   orig_midi = midi;
 
   draw_contexts = [{"mei" : mei,
+                    // TODO: One draw context per existing score element
+		    // already on load.
+                    "mei_score" : mei.getElementsByTagName("score")[0],
                     "svg_elem" : svg_elem,
                     "id_prefix" : ""}];
 
@@ -944,8 +947,7 @@ function rerender() {
   prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
   
   $(new_svg_elem).html(svg2);
-  var new_draw_context = {"mei": mei2, "svg_elem" : new_svg_elem,
-    "id_prefix" : ""};
+  var new_draw_context = {"mei": mei2, "mei_score": draw_contexts[0].mei_score, "svg_elem" : new_svg_elem, "id_prefix" : ""};
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();

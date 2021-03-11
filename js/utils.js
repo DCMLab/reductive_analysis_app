@@ -641,9 +641,9 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
       var id = id_or_oldid(elem);
       var mei_elem = get_by_id(mei,id);
       var accid = note_get_accid(mei_elem);
-      accid= accid.replaceAll("s","#")
-      accid= accid.replaceAll("f","b")
-      accid= accid.replaceAll("n","")
+      accid= accid.replace(/s/g,"#")
+      accid= accid.replace(/f/g,"b")
+      accid= accid.replace(/n/g,"")
       return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
     }).join("; ")+")";
   }else if(elems[0].getAttribute("class") == "relation"){
@@ -660,9 +660,9 @@ function to_text(elems) {
     return "notes("+elems.map((elem) => {
       var mei_elem = get_by_id(mei,elem.id);
       var accid = note_get_accid(mei_elem);
-      accid= accid.replaceAll("s","#")
-      accid= accid.replaceAll("f","b")
-      accid= accid.replaceAll("n","")
+      accid= accid.replace(/s/g,"#")
+      accid= accid.replace(/f/g,"b")
+      accid= accid.replace(/n/g,"")
       return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
     }).join("; ")+")";
   }else if(elems[0].getAttribute("class") == "relation"){

@@ -28,7 +28,7 @@ function layerify(draw_context, elem) {
   var svg_elem = svg_find_from_mei_elem(draw_context.svg_elem,
                                         draw_context.id_prefix, elem);
   if(svg_elem != null && svg_elem.style.visibility == "hidden") // This elem has been reduced away
-    return (null, true);
+    return (null, true); //It may be that we should replace it with a rest instead
   var results = Array.from(elem.children).map((e) => layerify(draw_context, e));
   var new_children = results.map((p) => p[0]).filter((x) => x != null);
   var changes = (new_children.length != elem.children.length) || // Something directly below was reduced
@@ -37,7 +37,12 @@ function layerify(draw_context, elem) {
 }
 
 
-function new_layer(draw_context) {
+function new_layer(draw_context = draw_contexts[0]) {
+  var score_elem = draw_context.mei_score;
+  var [new_score_elem,changed] = layerify(draw_context, score_elem);
+  prefix_ids(new_score_elem,"0"); // Compute a better prefix
+  // Insert after the previous
+  score_elem.parentNode.insertBefore(new_score_elem, score_elem.nextSibling);
   // The basic algorithm is to take the last score element (if we're doing
   // a linear order of layers, otherwise we need the score element to build
   // off of to be given as an argument), to clone it using cloneNode(), and

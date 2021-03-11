@@ -161,11 +161,9 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   elem.setAttribute("class","relation");
   elem.setAttribute("type",type);
   elem.style.fillOpacity = "0.5";
-  elem.onwheel = (e) => {
-    var elem1 = e.target;
-    var paren = elem1.parentElement;
-    paren.removeChild(elem1);
-    paren.insertBefore(elem1,paren.children[0]);
+  elem.onwheel = (ev) => {
+    var elem1 = ev.target;
+    flip_to_bg(elem1);
     elem.onmouseout();
     return false;
   };

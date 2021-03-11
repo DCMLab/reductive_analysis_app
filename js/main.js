@@ -906,29 +906,7 @@ function rerender_mei(replace_with_rests = false) {
       // TODO
       if(replace_with_rests && !["chord","bTrem","fTrem"].includes(paren.tagName)) {
         // Add a rest
-        var rest = mei2.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
-        rest.setAttribute("xml:id","rest-"+y.getAttribute("xml:id"));
-        rest.setAttribute("dur",y.getAttribute("dur"));
-        rest.setAttribute("n",y.getAttribute("n"));
-        rest.setAttribute("dots",y.getAttribute("dots"));
-        rest.setAttribute("when",y.getAttribute("when"));
-        rest.setAttribute("layer",y.getAttribute("layer"));
-        rest.setAttribute("staff",y.getAttribute("staff"));
-        rest.setAttribute("tstamp.ges",y.getAttribute("tstamp.ges"));
-        rest.setAttribute("tstamp.real",y.getAttribute("tstamp.real"));
-        rest.setAttribute("tstamp",y.getAttribute("tstamp"));
-        rest.setAttribute("loc",y.getAttribute("loc"));
-        rest.setAttribute("dur.ges",y.getAttribute("dur.ges"));
-        rest.setAttribute("dots.ges",y.getAttribute("dots.ges"));
-        rest.setAttribute("dur.metrical",y.getAttribute("dur.ges"));
-        rest.setAttribute("dur.ppq",y.getAttribute("dur.ppq"));
-        rest.setAttribute("dur.real",y.getAttribute("dur.real"));
-        rest.setAttribute("dur.recip",y.getAttribute("dur.recip"));
-        rest.setAttribute("beam",y.getAttribute("beam"));
-        rest.setAttribute("fermata",y.getAttribute("fermata"));
-        rest.setAttribute("tuplet",y.getAttribute("tuplet"));
-        //That's all I can think of. There's probably a better
-        //way to do this..
+        var rest = note_to_rest(mei2,y)
         paren.insertBefore(rest,y);
       }
       paren.removeChild(y);

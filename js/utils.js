@@ -689,6 +689,33 @@ function fix_synonyms(mei) {
   return mei;
 }
 
+function note_to_rest(mei,note) {
+  mei.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
+  rest.setAttribute("xml:id","rest-"+note.getAttribute("xml:id"));
+  rest.setAttribute("dur",note.getAttribute("dur"));
+  rest.setAttribute("n",note.getAttribute("n"));
+  rest.setAttribute("dots",note.getAttribute("dots"));
+  rest.setAttribute("when",note.getAttribute("when"));
+  rest.setAttribute("layer",note.getAttribute("layer"));
+  rest.setAttribute("staff",note.getAttribute("staff"));
+  rest.setAttribute("tstamp.ges",note.getAttribute("tstamp.ges"));
+  rest.setAttribute("tstamp.real",note.getAttribute("tstamp.real"));
+  rest.setAttribute("tstamp",note.getAttribute("tstamp"));
+  rest.setAttribute("loc",note.getAttribute("loc"));
+  rest.setAttribute("dur.ges",note.getAttribute("dur.ges"));
+  rest.setAttribute("dots.ges",note.getAttribute("dots.ges"));
+  rest.setAttribute("dur.metrical",note.getAttribute("dur.ges"));
+  rest.setAttribute("dur.ppq",note.getAttribute("dur.ppq"));
+  rest.setAttribute("dur.real",note.getAttribute("dur.real"));
+  rest.setAttribute("dur.recip",note.getAttribute("dur.recip"));
+  rest.setAttribute("beam",note.getAttribute("beam"));
+  rest.setAttribute("fermata",note.getAttribute("fermata"));
+  rest.setAttribute("tuplet",note.getAttribute("tuplet"));
+  //That's all I can think of. There's probably a better
+  //way to do this..
+}
+
+
 function prefix_ids(elem,prefix) {
   if(elem.id != ""){
     elem.setAttribute("oldid", elem.id);

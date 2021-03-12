@@ -42,7 +42,7 @@ function draw_relation(id,type) {
   elem.setAttribute("id",id);
   elem.classList.add("relation");
   elem.setAttribute("type",type);
-  elem.style.fillOpacity = "0.5";
+//  elem.style.fillOpacity = "0.5";
   elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
@@ -58,28 +58,30 @@ function draw_relation(id,type) {
   elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
   elem.onmouseover = function (ev) {
 
-    primaries.forEach((item) => {
-        if(item.style.filter == ""){
+    primaries.forEach((item) => { item.classList.add("extrahover");});
+/*        if(item.style.filter == ""){
           item.style.transform = "translate3d(0,0,0)";
           item.style.filter = "url(\"#extraFilter\")";
-          }});
-    secondaries.forEach((item) => {
-        if(item.style.filter == ""){
+          }});*/
+    secondaries.forEach((item) => { item.classList.add("selecthover");});
+/*        if(item.style.filter == ""){
           item.style.transform = "translate3d(0,0,0)";
           item.style.filter = "url(\"#selectFilter\")";
-          }});
+          }});*/
   }
   elem.onmouseout = function (ev) {
-    primaries.forEach((item) => {
+    primaries.forEach((item) => { item.classList.remove("extrahover");});
+/*    primaries.forEach((item) => {
         if(item.style.filter == "url(\"#extraFilter\")") {
           item.style.transform = "";
           item.style.filter = "";
-        }});
-    secondaries.forEach((item) => {
+        }});*/
+    secondaries.forEach((item) => { item.classList.remove("selecthover");});
+/*    secondaries.forEach((item) => {
         if(item.style.filter == "url(\"#selectFilter\")") {
           item.style.transform = "";
           item.style.filter = "";
-        }});
+        }});*/
   }
 
   return added;
@@ -101,8 +103,8 @@ function draw_metarelation(id,type) {
   g_elem.setAttribute("id",id);
   g_elem.classList.add("metarelation");
   g_elem.setAttribute("type",type);
-  g_elem.style.fillOpacity = "0.5";
-  g_elem.style.strokeOpacity = "0.1";
+/*  g_elem.style.fillOpacity = "0.5";
+  g_elem.style.strokeOpacity = "0.1";*/
   g_elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
@@ -121,17 +123,19 @@ function draw_metarelation(id,type) {
   g_elem.onmouseover = function (ev) {
 
     targets.forEach((item) => {
-        if(item.style.filter == ""){
+	item.classList.add("relationhover");
+/*        if(item.style.filter == ""){
           item.style.transform = "translate3d(0,0,0)";
           item.style.filter = "url(\"#glowFilter\")";
-          }});
+          }*/});
   }
   g_elem.onmouseout = function (ev) {
     targets.forEach((item) => {
-        if(item.style.filter == "url(\"#glowFilter\")") {
+	item.classList.remove("relationhover");
+/*        if(item.style.filter == "url(\"#glowFilter\")") {
           item.style.transform = "";
           item.style.filter = "";
-        }});
+        }*/});
   }
   return added;
   
@@ -160,7 +164,7 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   elem.setAttribute("id",id);
   elem.classList.add("relation");
   elem.setAttribute("type",type);
-  elem.style.fillOpacity = "0.5";
+//  elem.style.fillOpacity = "0.5";
   elem.onwheel = (ev) => {
     var elem1 = ev.target;
     flip_to_bg(elem1);
@@ -175,27 +179,31 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   elem.onmouseover = function (ev) {
 
     primaries.forEach((item) => {
-        if(item.style.filter == ""){
+	item.classList.add("extrahover");
+/*        if(item.style.filter == ""){
           item.style.transform = "translate3d(0,0,0)";
           item.style.filter = "url(\"#extraFilter\")";
-          }});
+          }*/});
     secondaries.forEach((item) => {
-        if(item.style.filter == ""){
+	item.classList.add("selecthover");
+/*        if(item.style.filter == ""){
           item.style.transform = "translate3d(0,0,0)";
           item.style.filter = "url(\"#selectFilter\")";
-          }});
+          }*/});
   }
   elem.onmouseout = function (ev) {
     primaries.forEach((item) => {
-        if(item.style.filter == "url(\"#extraFilter\")") {
+	item.classList.remove("extrahover");
+/*        if(item.style.filter == "url(\"#extraFilter\")") {
           item.style.transform = "";
           item.style.filter = "";
-        }});
+        }*/});
     secondaries.forEach((item) => {
-        if(item.style.filter == "url(\"#selectFilter\")") {
+	item.classList.remove("selecthover");
+/*        if(item.style.filter == "url(\"#selectFilter\")") {
           item.style.transform = "";
           item.style.filter = "";
-        }});
+        }*/});
   }
   //TODO: Set up more onhover stuff for The Same Relation
   //Elsewhere - but perhaps that's a separate thing?
@@ -224,8 +232,8 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   elem.setAttribute("id",id);
   elem.classList.add("metarelation");
   elem.setAttribute("type",type);
-  elem.style.fillOpacity = "0.5";
-  elem.style.strokeOpacity = "0.1";
+//  elem.style.fillOpacity = "0.5";
+//  elem.style.strokeOpacity = "0.1";
   elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
@@ -241,20 +249,22 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   add_to_svg_bg_arg(svg_elem,elem);
   added.push(elem);
   elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
-  elem.onmouseover = function (ev) {
+  g_elem.onmouseover = function (ev) {
 
     targets.forEach((item) => {
-        if(item.style.filter == ""){
+	item.classList.add("relationhover");
+/*        if(item.style.filter == ""){
           item.style.transform = "translate3d(0,0,0)";
           item.style.filter = "url(\"#glowFilter\")";
-          }});
+          }*/});
   }
-  elem.onmouseout = function (ev) {
+  g_elem.onmouseout = function (ev) {
     targets.forEach((item) => {
-        if(item.style.filter == "url(\"#glowFilter\")") {
+	item.classList.remove("relationhover");
+/*        if(item.style.filter == "url(\"#glowFilter\")") {
           item.style.transform = "";
           item.style.filter = "";
-        }});
+        }*/});
   }
   return added;
 }

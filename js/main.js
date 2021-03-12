@@ -974,13 +974,12 @@ function rerender() {
   prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
   
   $(new_svg_elem).html(svg2);
-  var new_draw_context = {"mei": mei2, "svg_elem" : new_svg_elem,
+  var new_draw_context = {"mei": mei, "svg_elem" : new_svg_elem,
     "id_prefix" : ""};
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();
   svg = svg2;
-  mei = mei2;
   data = data2;
   svg_elem = new_svg_elem;
   mei_graph = add_or_fetch_graph();
@@ -990,7 +989,7 @@ function rerender() {
   if(non_notes_hidden)
     set_non_note_visibility("hidden");
   // Need also to redraw edges and relations
-  draw_graph(draw_contexts[0]);
+  draw_graph(new_draw_context);
 
   // Can't undo after a rerender.. yet, TODO: Make layers
   rerendered_after_action=undo_actions.length;

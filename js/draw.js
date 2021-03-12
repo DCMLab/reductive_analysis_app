@@ -138,16 +138,32 @@ function draw_metarelation(id,type) {
 
 }
 
-function draw_relation_arg(draw_context, mei_graph, g_elem) {
+function draw_relation_arg(draw_context, mei_graph, g_elem, draw_partial_relations = false) {
   var added = [];
   var mei = draw_context.mei;
+  var mei_graph = mei.getElementsByTagName("graph")[0];
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
-  var primaries = relation_primaries_arg(mei_graph,g_elem).map(
-      (e) => svg_find_from_mei_elem(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
-  var secondaries = relation_secondaries_arg(mei_graph,g_elem).map(
-      (e) => svg_find_from_mei_elem(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
-  var notes = primaries.concat(secondaries)
+  var primary_notes = relation_primaries_arg(mei_graph,g_elem).map((e) => get_by_id(mei, note_get_sameas(e)));
+  var secondary_notes = relation_secondaries_arg(mei_graph,g_elem).map((e) => get_by_id(mei, note_get_sameas(e)));
+  var primaries = primary_notes.map((e) => {
+      try{
+        return svg_find_from_mei_elem(svg_elem,id_prefix,e);
+      }catch{return null;}}).filter((x) => x != null)
+  var secondaries = secondary_notes.map((e) => {
+      try{
+        return svg_find_from_mei_elem(svg_elem,id_prefix,e);
+      }catch{return null;}}).filter((x) => x != null)
+  var notes = primaries.concat(secondaries);
+  if(notes.length == 0 || 
+   (!draw_partial_relations && 
+      (primaries.length   != primary_notes.length ||
+       secondaries.length != secondary_notes.length))){
+    console.log("Not drawing relation");
+    console.log(g_elem,primaries,secondaries, primary_notes,
+	secondary_notes);
+    return [];
+  }
   notes.sort((a,b) => { 
       var p1= note_coords(a);
       var p2= note_coords(b);

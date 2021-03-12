@@ -990,7 +990,7 @@ function rerender() {
   if(non_notes_hidden)
     set_non_note_visibility("hidden");
   // Need also to redraw edges and relations
-  draw_graph(draw_context[0]);
+  draw_graph(draw_contexts[0]);
 
   // Can't undo after a rerender.. yet, TODO: Make layers
   rerendered_after_action=undo_actions.length;

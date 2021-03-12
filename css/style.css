@@ -270,6 +270,13 @@ select.instance-select {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
+.extraselectednote {
+    fill: red;
+}
+.selectednote {
+    fill: green;
+}
+
 
 .metarelation:hover {
       transform: translate3d(0,0,0);

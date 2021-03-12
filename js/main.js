@@ -146,15 +146,16 @@ function toggle_selected(item,extra) {
   if(ci == "note"){
     // We're selecting notes.
     if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-      item.style.fill = "black";
+      item.classList.remove("selectednote");
+      item.classList.remove("extraselectednote");
       selected = selected.filter(x =>  x !== item);
       extraselected = extraselected.filter(x =>  x !== item);
     } else {
       if(extra) {
-        item.style.fill="red";
+	item.classList.add("extraselectednote");
         extraselected.push(item);
       }else {
-        item.style.fill ="green";
+	item.classList.add("selectednote");
         selected.push(item);
       }
     }

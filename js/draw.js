@@ -42,7 +42,7 @@ function draw_relation(id,type) {
   elem.setAttribute("id",id);
   elem.classList.add("relation");
   elem.setAttribute("type",type);
-  elem.style.fillOpacity = "0.5";
+//  elem.style.fillOpacity = "0.5";
   elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
@@ -101,8 +101,8 @@ function draw_metarelation(id,type) {
   g_elem.setAttribute("id",id);
   g_elem.classList.add("metarelation");
   g_elem.setAttribute("type",type);
-  g_elem.style.fillOpacity = "0.5";
-  g_elem.style.strokeOpacity = "0.1";
+/*  g_elem.style.fillOpacity = "0.5";
+  g_elem.style.strokeOpacity = "0.1";*/
   g_elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
@@ -160,7 +160,7 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   elem.setAttribute("id",id);
   elem.classList.add("relation");
   elem.setAttribute("type",type);
-  elem.style.fillOpacity = "0.5";
+//  elem.style.fillOpacity = "0.5";
   elem.onwheel = (ev) => {
     var elem1 = ev.target;
     flip_to_bg(elem1);
@@ -224,8 +224,8 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   elem.setAttribute("id",id);
   elem.classList.add("metarelation");
   elem.setAttribute("type",type);
-  elem.style.fillOpacity = "0.5";
-  elem.style.strokeOpacity = "0.1";
+//  elem.style.fillOpacity = "0.5";
+//  elem.style.strokeOpacity = "0.1";
   elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;

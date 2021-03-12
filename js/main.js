@@ -83,7 +83,18 @@ $(document).ready(function()
       toggle_shades();
       $("#player").midiPlayer({ color: "grey", width: 250 });
 
-    });
+  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
+  $('body').on({
+    keydown: function(e) {
+        if (e.originalEvent.key === "Shift")
+        $('#svg_outputs').addClass('shift-pressed')
+      },
+      keyup: function(e) {
+        if (e.originalEvent.key === "Shift")
+        $('#svg_outputs').removeClass('shift-pressed')
+      }
+  });
+});
 
 // Configured types need a button and a color each
 function init_type(type) {

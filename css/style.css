@@ -324,6 +324,13 @@ select.instance-select {
        stroke-width: 0.15%;
        stroke-opacity: 0.8;
 }
+.shift-pressed .relation:hover {
+      transform: translate3d(0,0,0);
+       filter: url("#glowFilter");
+       stroke: red;
+       stroke-width: 0.15%;
+       stroke-opacity: 0.8;
+}
 .selectedrelation {
     fill-opacity : 0.7;
     stroke-opacity : 0.8;

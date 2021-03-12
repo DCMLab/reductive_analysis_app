@@ -311,6 +311,9 @@ select.instance-select {
     filter : url("#selectFilter");
 }
 
+.hidden {
+  visibility: hidden
+}
 
 
 .svg_container {

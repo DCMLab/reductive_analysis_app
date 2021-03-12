@@ -217,24 +217,18 @@ function update_text(){
 // Toggle showing things other than notes in the score
 function toggle_equalize() {
   console.debug("Using globals: non_notes_hidden");
-  var hidden = "hidden";
-  if(non_notes_hidden){
-    hidden = "visible";
-    non_notes_hidden = false;
-  }else{
-    non_notes_hidden = true;
-  }
-  set_non_note_visibility(hidden);
+  non_notes_hidden = !non_notes_hidden;
+  set_non_note_visibility(non_notes_hidden);
 }
 
 function set_non_note_visibility(hidden) {
   console.debug("Using globals: document for element selection");
   Array.from(document.getElementsByClassName("beam")).forEach((x) =>
-      { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
+      { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon")
+	  { hidden ? x.classList.add("hidden") : x.classList.remove("hidden"); }})});
   hide_classes.forEach((cl) => {
     Array.from(document.getElementsByClassName(cl)).forEach((x) =>
-        { x.style.visibility= hidden; });
-  })
+	{ hidden ? x.classList.add("hidden") : x.classList.remove("hidden");})});
 }
 
 

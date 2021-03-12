@@ -726,8 +726,10 @@ function load() {
 
 
 // Draw the existing graph
-function draw_graph() {
+function draw_graph(draw_context) {
   console.debug("Using globals: mei_graph, mei, selected, extraselected, document");
+  var mei = draw_context.mei;
+  var mei_graph = mei.getElementsByTagName("graph")[0];
   // There's a multi-stage process to get all the info we
   // need... First we get the nodes from the graph element.
   var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
@@ -735,6 +737,12 @@ function draw_graph() {
   var relations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "relation";})
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
+  if(arg) {
+    relations_nodes.forEach((g_elem) => draw_relation_arg(draw_context,mei_graph,g_elem));
+    metarelations_nodes.forEach((g_elem) => draw_metarelation_arg(draw_context,mei_graph,g_elem));
+    return;
+  }
+
   // Next we get the note labels
   var note_ids = nodes_array.map((x) => {
                 try{
@@ -858,7 +866,7 @@ function load_finish(e) {
                     "svg_elem" : svg_elem,
                     "id_prefix" : ""}];
 
-  draw_graph();
+  draw_graph(draw_contexts[0]);
 
   changes = false;
   undo_actions = [];
@@ -982,7 +990,7 @@ function rerender() {
   if(non_notes_hidden)
     set_non_note_visibility("hidden");
   // Need also to redraw edges and relations
-  draw_graph();
+  draw_graph(draw_context[0]);
 
   // Can't undo after a rerender.. yet, TODO: Make layers
   rerendered_after_action=undo_actions.length;

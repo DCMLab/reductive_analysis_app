@@ -282,10 +282,37 @@ select.instance-select {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
+.extraselectedmetarelation {
+    fillOpacity : 0.9;
+    strokeOpacity : 0.8;
+    transform : translate3d(0,0,0);
+    filter : url("#extraFilter");
+}
+.selectedmetarelation {
+    fillOpacity : 0.9;
+    strokeOpacity : 0.8;
+    transform : translate3d(0,0,0);
+    filter : url("#selectFilter");
+}
 .relation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
+.extraselectedrelation {
+    fillOpacity : 0.9;
+    strokeOpacity : 0.8;
+    transform : translate3d(0,0,0);
+    filter : url("#extraFilter");
+}
+.selectedrelation {
+    fillOpacity : 0.9;
+    strokeOpacity : 0.8;
+    transform : translate3d(0,0,0);
+    filter : url("#selectFilter");
+}
+
+
+
 .svg_container {
   display: flex;
   align-items: center;

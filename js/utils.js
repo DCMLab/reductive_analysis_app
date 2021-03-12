@@ -451,7 +451,7 @@ function add_mei_node_for(mei,mei_graph,note) {
 function hide_note_arg(draw_context,note) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,note));
   if(elem)
-    elem.style.visibility = "hidden";
+    elem.classList.add("hidden");
   return elem;
 }
 
@@ -459,7 +459,7 @@ function hide_note_arg(draw_context,note) {
 function hide_he_arg(draw_context,he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
   if(elem) 
-    elem.style.visibility = "hidden";
+    elem.classList.add("hidden");
   return elem;
 }
             
@@ -468,7 +468,7 @@ function hide_note(note) {
   console.debug("Using globals: document to find elem");
   var elem = get_by_id(document,note_get_sameas(note));
   if(elem)
-    elem.style.visibility = "hidden";
+    elem.classList.add("hidden");
   return elem;
 }
 
@@ -477,7 +477,7 @@ function hide_he(he) {
   console.debug("Using globals: document to find elem");
   var elem = get_by_id(document,he.getAttribute("xml:id"));
   if(elem) 
-    elem.style.visibility = "hidden";
+    elem.classList.add("hidden");
   return elem;
 }
 

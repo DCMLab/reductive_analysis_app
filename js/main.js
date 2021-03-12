@@ -600,12 +600,12 @@ function do_undo() {
     }else if (what == "reduce") {
       if(arg){
         var [relations,notes,graphicals] = elems;
-        graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
+        graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
       } else{
         var reduce_layer = elems;
         reduce_layer.forEach((action) => {
           var [he,secondaries,graphicals] = action;
-          graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
+          graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
         });
       }
       sel.forEach((x) => {toggle_selected(x);});
@@ -896,7 +896,7 @@ function rerender_mei(replace_with_rests = false) {
   mei2.appendChild(newNode);
 
   Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
-    if(x.style.visibility == "hidden"){
+    if(x.classList.contains("hidden")){
       //TODO: this is wrong
       // 
       var y = get_by_id(mei2,x.getAttribute("id"));

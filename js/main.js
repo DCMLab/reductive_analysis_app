@@ -90,7 +90,7 @@ function init_type(type) {
   console.debug("Using globals: document, shades_array, type_shades, type_keys, button_shades for conf");
   var elem = document.createElement("input");
   elem.setAttribute("type","button");
-  elem.setAttribute("class","relationbutton");
+  elem.classList.add("relationbutton");
   elem.setAttribute("id",type + "relationbutton");
   elem.setAttribute("value","Add "+type+" relation " + "(" + type_conf[type].key + ")");
   elem.onclick = () => {do_relation(type,arg);};
@@ -105,7 +105,7 @@ function meta_type(type) {
   console.debug("Using globals: document, shades_array, meta_shades, meta_keys, button_shades for conf");
   var elem = document.createElement("input");
   elem.setAttribute("type","button");
-  elem.setAttribute("class","metarelationbutton");
+  elem.classList.add("metarelationbutton");
   elem.setAttribute("id",type + "metarelationbutton");
   elem.setAttribute("value","Add "+type+" metarelation " + "(" + meta_conf[type].key + ")");
   elem.onclick = () => {do_metarelation(type,arg);};
@@ -135,9 +135,9 @@ function toggle_he_selected(selecting) {
 // Toggle if a thing (for now: note or relation) is selected or not.
 function toggle_selected(item,extra) { 
   console.debug("Using globals: selected, extraselected for adding/removing selected items. JQuery for changing displayed text of selected items");
-  var ci = item.getAttribute("class");
+  var ci = get_class_from_classlist(item);
   if(selected.length > 0 || extraselected.length > 0) {
-    var csel = selected.concat(extraselected)[0].getAttribute("class");
+    var csel = get_class_from_classlist(selected.concat(extraselected)[0]);
     // Select only things of the same type for now - editing
     // relations to add things means deleting and re-adding
     if(ci != csel)
@@ -305,7 +305,7 @@ function delete_relation(elem) {
 function delete_relations() {
   console.debug("Using globals: selected for element selection, undo_actions for storing the action");
   //Assume no meta-edges for now, meaning we only have to
-  if(selected.length == 0 || selected[0].getAttribute("class") != "relation"){
+  if(selected.length == 0 || get_class_from_classlist(selected[0]) != "relation"){
     console.log("No relation selected!");
     return;
   }
@@ -343,7 +343,7 @@ function do_reduce() {
   var reduce_action, relations_nodes;
   // Are we doing a full reduction, or have we selected some
   // relations?
-  if(sel.length > 0 && sel[0].getAttribute("class") == "relation"){
+  if(sel.length > 0 && sel[0].classList.contains("relation")){
     relations_nodes = sel.concat(extra).map((elem) => get_by_id(mei,elem.id));
   }else {
     relations_nodes = remaining_relations;
@@ -423,7 +423,7 @@ function do_relation(type,arg) {
       return;}
     changes = true;
     var he_id, mei_elems;
-    if(selected.concat(extraselected)[0].getAttribute("class") == "relation"){
+    if(selected.concat(extraselected)[0].classList.contains("relation")){
       var types = [];
       if(arg){
         selected.concat(extraselected).forEach((he) => {
@@ -450,7 +450,7 @@ function do_relation(type,arg) {
       }
       update_text();
       undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
-    }else if(selected.concat(extraselected)[0].getAttribute("class") == "note"){
+    }else if(selected.concat(extraselected)[0].classList.contains("note")){
       var added = [];
       if(arg){
         // Add new nodes for all notes
@@ -486,7 +486,7 @@ function do_metarelation(type, arg ) {
     console.debug("Using globals: orig_mei, orig_mei_graph, selected, extraselected");
     if (selected.length == 0 && extraselected == 0) {
       return;}
-    var ci =selected.concat(extraselected)[0].getAttribute("class"); 
+    var ci = get_class_from_classlist(selected.concat(extraselected)[0]); 
     if(!(ci == "relation" || ci == "metarelation")){
       return; }
     changes = true;

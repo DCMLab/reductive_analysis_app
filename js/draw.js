@@ -40,7 +40,7 @@ function draw_relation(id,type) {
 
   var elem = roundedHull(notes.map(note_coords));
   elem.setAttribute("id",id);
-  elem.setAttribute("class","relation");
+  elem.classList.add("relation");
   elem.setAttribute("type",type);
   elem.style.fillOpacity = "0.5";
   elem.onwheel = (e) => {
@@ -99,7 +99,7 @@ function draw_metarelation(id,type) {
   var g_elem = g();
   var elem = roundedHull(coords);
   g_elem.setAttribute("id",id);
-  g_elem.setAttribute("class","metarelation");
+  g_elem.classList.add("metarelation");
   g_elem.setAttribute("type",type);
   g_elem.style.fillOpacity = "0.5";
   g_elem.style.strokeOpacity = "0.1";
@@ -158,7 +158,7 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
 
   var elem = roundedHull(notes.map(note_coords));
   elem.setAttribute("id",id);
-  elem.setAttribute("class","relation");
+  elem.classList.add("relation");
   elem.setAttribute("type",type);
   elem.style.fillOpacity = "0.5";
   elem.onwheel = (ev) => {
@@ -222,7 +222,7 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   var elem = g_arg(svg_elem);
   var elem = roundedHull(coords);
   elem.setAttribute("id",id);
-  elem.setAttribute("class","metarelation");
+  elem.classList.add("metarelation");
   elem.setAttribute("type",type);
   elem.style.fillOpacity = "0.5";
   elem.style.strokeOpacity = "0.1";

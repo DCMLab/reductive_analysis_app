@@ -298,6 +298,8 @@ select.instance-select {
 .metarelation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
+       stroke: blue;
+       stroke-width: 0.2%;
 }
 .extraselectedmetarelation {
     fill-opacity : 0.9;
@@ -318,6 +320,8 @@ select.instance-select {
 .relation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
+       stroke: red;
+       stroke-width: 0.2%;
 }
 .extraselectedrelation {
     fill-opacity : 0.9;

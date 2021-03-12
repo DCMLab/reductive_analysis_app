@@ -483,16 +483,21 @@ function hide_he(he) {
 
 // Secondaries are greyed out
 function mark_secondary(item) {
-    var current = item.style.fillOpacity;
-    if(!current)
-      current = 1;
-    item.style.fillOpacity = current * 0.5;
+  if(item.classList.contains("secondarynote")) {
+    var level = getComputedStyle(item).getPropertyValue("--how-secondary");
+    item.style.setProperty("--how-secondary", level*2);
+  }else{
+    item.classList.add("secondarynote");
+    item.style.setProperty("--how-secondary", 2);
+  }
 }
 
 // No longer a secondary - bring it back
 function unmark_secondary(item) {
-    var current = item.style.fillOpacity;
-    item.style.fillOpacity = current * 2;
+  var level = getComputedStyle(item).getPropertyValue("--how-secondary");
+  item.style.setProperty("--how-secondary", level/2);
+  if(level/2 == 1)
+    item.classList.remove("secondarynote");
 }
 
 // For a certain relation, find its secondaries and mark them

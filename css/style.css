@@ -279,6 +279,7 @@ select.instance-select {
 .extrahover {
       transform: translate3d(0,0,0);
        filter: url("#extraFilter");
+      fill: red; 
 }
 .selecthover {
       transform: translate3d(0,0,0);

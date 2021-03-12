@@ -587,6 +587,19 @@ function getBoundingBoxTop (elem) {
     return bbox.y + bbox.height;
 }
 
+function get_class_from_classlist(elem){
+  // TODO: If more things can be selected etc., it should be reflected here
+  var ci = "";
+  if(elem.classList.contains("note"))
+      ci = "note";
+  else if(elem.classList.contains("relation"))
+      ci = "relation";
+  else if(elem.classList.contains("metarelation"))
+      ci = "metarelation";
+  return ci;
+}
+
+
 function getBoundingBoxCenter (elem) {
     // use the native SVG interface to get the bounding box
     var bbox = elem.getBBox();
@@ -605,10 +618,10 @@ function getBoundingBoxOffCenter (elem) {
 }
 
 function get_metarelation_target(elem) {
-  if(elem.getAttribute("class") == "metarelation"){
+  if(elem.classList.contains("metarelation")){
     var circ= elem.getElementsByTagName("circle")[0];
     return [circ.cx.baseVal.value,circ.cy.baseVal.value];
-  }else if (elem.getAttribute("class") == "relation") {
+  }else if (elem.classList.contains("relation")) {
     return getBoundingBoxCenter(elem);
   }else{
     console.log("wtf");
@@ -643,7 +656,7 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
   //TODO: Detect and warn for selections spanning several drawing contexts
   if(elems.length == 0)
     return "";
-  if(elems[0].getAttribute("class") == "note"){
+  if(elems[0].classList.contains("note")){
     return "notes("+elems.map((elem) => {
       var id = id_or_oldid(elem);
       var mei_elem = get_by_id(mei,id);
@@ -653,9 +666,9 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
       accid= accid.replace(/n/g,"")
       return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
     }).join("; ")+")";
-  }else if(elems[0].getAttribute("class") == "relation"){
+  }else if(elems[0].classList.contains("relation")){
     return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
-  }else if(elems[0].getAttribute("class") == "metarelation"){
+  }else if(elems[0].classList.contains("metarelation")){
     return "metarelations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
   }
 }
@@ -663,7 +676,7 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
 function to_text(elems) {
   if(elems.length == 0)
     return "";
-  if(elems[0].getAttribute("class") == "note"){
+  if(elems[0].classList.contains("note")){
     return "notes("+elems.map((elem) => {
       var mei_elem = get_by_id(mei,elem.id);
       var accid = note_get_accid(mei_elem);
@@ -672,9 +685,9 @@ function to_text(elems) {
       accid= accid.replace(/n/g,"")
       return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
     }).join("; ")+")";
-  }else if(elems[0].getAttribute("class") == "relation"){
+  }else if(elems[0].classList.contains("relation")){
     return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
-  }else if(elems[0].getAttribute("class") == "metarelation"){
+  }else if(elems[0].classList.contains("metarelation")){
     return "metarelations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
   }
 }

@@ -78,7 +78,7 @@ function do_reduce_arg(draw_context, mei_graph, selection,
   var remaining_relations = all_relations_nodes.filter(
         (n) => {
            var g = get_by_id(document,draw_context.id_prefix + n.getAttribute("xml:id"));
-           return g != undefined && g.style.visibility != "hidden";
+           return g != undefined && !g.classList.contains("hidden");
          }
       );
 

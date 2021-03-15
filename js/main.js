@@ -93,7 +93,18 @@ $(document).ready(function()
       toggle_shades();
       $("#player").midiPlayer({ color: "grey", width: 250 });
 
-    });
+  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
+  $('body').on({
+    keydown: function(e) {
+        if (e.originalEvent.key === "Shift")
+        $('#svg_outputs').addClass('shift-pressed')
+      },
+      keyup: function(e) {
+        if (e.originalEvent.key === "Shift")
+        $('#svg_outputs').removeClass('shift-pressed')
+      }
+  });
+});
 
 // Configured types need a button and a color each
 function init_type(type) {
@@ -156,15 +167,16 @@ function toggle_selected(item,extra) {
   if(ci == "note"){
     // We're selecting notes.
     if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-      item.style.fill = "black";
+      item.classList.remove("selectednote");
+      item.classList.remove("extraselectednote");
       selected = selected.filter(x =>  x !== item);
       extraselected = extraselected.filter(x =>  x !== item);
     } else {
       if(extra) {
-        item.style.fill="red";
+	item.classList.add("extraselectednote");
         extraselected.push(item);
       }else {
-        item.style.fill ="green";
+	item.classList.add("selectednote");
         selected.push(item);
       }
     }
@@ -175,25 +187,29 @@ function toggle_selected(item,extra) {
       toggle_he_selected(true);
     }
     if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-      item.style.fillOpacity = 0.5;
-      item.style.strokeOpacity = 0.1;
+//      item.style.fillOpacity = 0.5;
+//      item.style.strokeOpacity = 0.1;
+      item.classList.remove("extraselectedrelation");
+      item.classList.remove("selectedrelation");
       selected = selected.filter(x =>  x !== item);
       extraselected = extraselected.filter(x =>  x !== item);
-      item.style.transform = "";
-      item.style.filter = "";
+//      item.style.transform = "";
+//      item.style.filter = "";
     } else {
       if(extra){
-        item.style.fillOpacity = 0.9;
-        item.style.strokeOpacity = 0.8;
+	item.classList.add("extraselectedrelation");
+//        item.style.fillOpacity = 0.9;
+//        item.style.strokeOpacity = 0.8;
         extraselected.push(item);
-        item.style.transform = "translate3d(0,0,0)";
-        item.style.filter = "url(\"#extraFilter\")";
+//        item.style.transform = "translate3d(0,0,0)";
+//        item.style.filter = "url(\"#extraFilter\")";
       }else{
-        item.style.fillOpacity = 0.9;
-        item.style.strokeOpacity = 0.8;
+	item.classList.add("selectedrelation");
+//        item.style.fillOpacity = 0.9;
+//        item.style.strokeOpacity = 0.8;
         selected.push(item);
-        item.style.transform = "translate3d(0,0,0)";
-        item.style.filter = "url(\"#selectFilter\")";
+//        item.style.transform = "translate3d(0,0,0)";
+//        item.style.filter = "url(\"#selectFilter\")";
       }
     }
     if(selected.concat(extraselected).length == 0){
@@ -222,24 +238,18 @@ function update_text(){
 // Toggle showing things other than notes in the score
 function toggle_equalize() {
   console.debug("Using globals: non_notes_hidden");
-  var hidden = "hidden";
-  if(non_notes_hidden){
-    hidden = "visible";
-    non_notes_hidden = false;
-  }else{
-    non_notes_hidden = true;
-  }
-  set_non_note_visibility(hidden);
+  non_notes_hidden = !non_notes_hidden;
+  set_non_note_visibility(non_notes_hidden);
 }
 
 function set_non_note_visibility(hidden) {
   console.debug("Using globals: document for element selection");
   Array.from(document.getElementsByClassName("beam")).forEach((x) =>
-      { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon") { x.style.visibility= hidden; }})});
+      { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon")
+	  { hidden ? x.classList.add("hidden") : x.classList.remove("hidden"); }})});
   hide_classes.forEach((cl) => {
     Array.from(document.getElementsByClassName(cl)).forEach((x) =>
-        { x.style.visibility= hidden; });
-  })
+	{ hidden ? x.classList.add("hidden") : x.classList.remove("hidden");})});
 }
 
 
@@ -611,12 +621,12 @@ function do_undo() {
     }else if (what == "reduce") {
       if(arg){
         var [relations,notes,graphicals] = elems;
-        graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
+        graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
       } else{
         var reduce_layer = elems;
         reduce_layer.forEach((action) => {
           var [he,secondaries,graphicals] = action;
-          graphicals.flat().forEach((x) => { if(x) x.style.visibility = "visible";});
+          graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
         });
       }
       sel.forEach((x) => {toggle_selected(x);});
@@ -918,7 +928,7 @@ function rerender_mei(replace_with_rests = false) {
   mei2.appendChild(newNode);
 
   Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
-    if(x.style.visibility == "hidden"){
+    if(x.classList.contains("hidden")){
       //TODO: this is wrong
       // 
       var y = get_by_id(mei2,x.getAttribute("id"));

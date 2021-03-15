@@ -305,6 +305,12 @@ function delete_relation(elem) {
   var removed = arcs.concat(orig_arcs).concat([elem,mei_he,orig_mei_he]);
   var action_removed = removed.map((x) => {if(x != undefined){
       var elems = [x,x.parentElement,x.nextSibling]; 
+      // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
+      // This is necessary when deleting via they keyboard (therefore while hovering).
+      try {
+        $(`g #${x.getAttribute('to').substring(4)}`).removeClass().addClass('note');
+      } catch {
+      }
       x.parentElement.removeChild(x);
       return elems;
       }});
@@ -649,6 +655,10 @@ function handle_keypress(ev) {
   } else if (ev.key == "+") { // Select same notes in the measure
     select_samenote();
     do_relation("repeat",arg);
+  } else if (ev.key == "d") { // Deselect all.
+    do_deselect();
+  } else if (ev.key == "D") { // Delete relations.
+    delete_relations();
   } else if (type_keys[ev.key]) { // Add a relation
     do_relation(type_keys[ev.key],arg);
   } else if (meta_keys[ev.key]) { // Add a relation

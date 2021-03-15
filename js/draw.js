@@ -36,9 +36,9 @@ function draw_relation(id,type) {
       var p2= note_coords(b);
       return (p1[0] - p2[0]) ? (p1[0] - p2[0]) : (p1[1] - p2[1]);
     });
+  var xdist = 1 + note_coords(notes[notes.length - 1])[0] - note_coords(notes[0])[0];
 
-
-  var elem = roundedHull(notes.map(note_coords));
+  var elem = roundedHull(notes.map(note_coords),50 + xdist ** 0.55);
   elem.setAttribute("id",id);
   elem.classList.add("relation");
   elem.setAttribute("type",type);

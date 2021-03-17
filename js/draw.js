@@ -207,7 +207,7 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
     toggle_shade(elem);
   add_to_svg_bg_arg(svg_elem,g_elem);
   added.push(g_elem);
-  elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
+  g_elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
   g_elem.onmouseover = function (ev) {
     targets.forEach((item) => { item.classList.add("relationhover"); });
   }

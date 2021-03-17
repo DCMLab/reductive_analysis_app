@@ -299,7 +299,7 @@ select.instance-select {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
        stroke: blue;
-       stroke-width: 0.2%;
+       stroke-width: 20px;
 }
 .extraselectedmetarelation {
     fill-opacity : 0.9;
@@ -321,14 +321,14 @@ select.instance-select {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
        stroke: blue;
-       stroke-width: 0.15%;
+       stroke-width: 15px;
        stroke-opacity: 0.8;
 }
 .shift-pressed .relation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
        stroke: red;
-       stroke-width: 0.15%;
+       stroke-width: 15px;
        stroke-opacity: 0.8;
 }
 .selectedrelation {
@@ -336,7 +336,7 @@ select.instance-select {
     stroke-opacity : 0.8;
     stroke: blue;
     stroke-dasharray: 100 100;
-    stroke-width: 0.15%;
+    stroke-width: 15px;
     transform : translate3d(0,0,0);
     filter : url("#selectFilter");
 }
@@ -344,7 +344,7 @@ select.instance-select {
     transform : translate3d(0,0,0);
     filter : url("#glowFilter");
     stroke: red;
-    stroke-width: 0.15%;
+    stroke-width: 15px;
     stroke-opacity: 0.8;
 }
 .extraselectedrelation {
@@ -352,7 +352,7 @@ select.instance-select {
     stroke-opacity : 0.8;
     stroke: red;
     stroke-dasharray: 80 80;
-    stroke-width: 0.15%;
+    stroke-width: 15px;
     transform : translate3d(0,0,0);
     filter : url("#extraFilter");
 }

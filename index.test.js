@@ -155,7 +155,7 @@ describe('reductive_analysis_test_suite', () => {
     // Confirm that the selected note has been styled accordingly.
     // (I *think* that Jest-Puppeteer does not provide async monitoring of global state,
     // so checking for DOM changes before global state seems generally prudent. This might be worth revisiting.)
-    await expect(page).toMatchElement(svg_first_note_selector + `[style*="fill: green;"]`);
+    await expect(page).toMatchElement(svg_first_note_selector + `[class*="selectednote"]`);
 
     // Confirm that the selected note has been added to the `selected` array.
     await expect(page.evaluate(`$(selected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
@@ -165,7 +165,7 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page).toClick(svg_first_notehead_selector);
 
     // Confirm that the selected note has been styled accordingly.
-    await expect(page).toMatchElement(svg_first_note_selector + `[style*="fill: black;"]`);
+    await expect(page).toMatchElement(svg_first_note_selector + `:not([class*="selectednote"])`);
 
     // Confirm that the selected note has been added to the `selected` array.
     await expect(page.evaluate(`$(selected[0]).attr('id')`)).resolves.toBeFalsy();
@@ -188,7 +188,7 @@ describe('reductive_analysis_test_suite', () => {
     // Confirm that the selected note has been styled accordingly.
     // (I *think* that Jest-Puppeteer does not provide async monitoring of global state,
     // so checking for DOM changes before global state seems generally prudent. This might be worth revisiting.)
-    await expect(page).toMatchElement(svg_first_note_selector + `[style*="fill: red;"]`);
+    await expect(page).toMatchElement(svg_first_note_selector + `[class*="extraselectednote"]`);
 
     // Confirm that the selected note has been added to the `selected` array.
     await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
@@ -200,7 +200,7 @@ describe('reductive_analysis_test_suite', () => {
     await page.keyboard.up('Shift');
 
     // Confirm that the selected note has been styled accordingly.
-    await expect(page).toMatchElement(svg_first_note_selector + `[style*="fill: black;"]`);
+    await expect(page).toMatchElement(svg_first_note_selector + `:not([class*="extraselectednote"])`);
 
     // Confirm that the selected note has been added to the `selected` array.
     await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toBeFalsy();

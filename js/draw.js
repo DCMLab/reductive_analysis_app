@@ -42,7 +42,6 @@ function draw_relation(id,type) {
   elem.setAttribute("id",id);
   elem.classList.add("relation");
   elem.setAttribute("type",type);
-//  elem.style.fillOpacity = "0.5";
   elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
@@ -57,31 +56,12 @@ function draw_relation(id,type) {
   added.push(elem);
   elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
   elem.onmouseover = function (ev) {
-
     primaries.forEach((item) => { item.classList.add("extrahover");});
-/*        if(item.style.filter == ""){
-          item.style.transform = "translate3d(0,0,0)";
-          item.style.filter = "url(\"#extraFilter\")";
-          }});*/
     secondaries.forEach((item) => { item.classList.add("selecthover");});
-/*        if(item.style.filter == ""){
-          item.style.transform = "translate3d(0,0,0)";
-          item.style.filter = "url(\"#selectFilter\")";
-          }});*/
   }
   elem.onmouseout = function (ev) {
     primaries.forEach((item) => { item.classList.remove("extrahover");});
-/*    primaries.forEach((item) => {
-        if(item.style.filter == "url(\"#extraFilter\")") {
-          item.style.transform = "";
-          item.style.filter = "";
-        }});*/
     secondaries.forEach((item) => { item.classList.remove("selecthover");});
-/*    secondaries.forEach((item) => {
-        if(item.style.filter == "url(\"#selectFilter\")") {
-          item.style.transform = "";
-          item.style.filter = "";
-        }});*/
   }
 
   return added;
@@ -103,8 +83,6 @@ function draw_metarelation(id,type) {
   g_elem.setAttribute("id",id);
   g_elem.classList.add("metarelation");
   g_elem.setAttribute("type",type);
-/*  g_elem.style.fillOpacity = "0.5";
-  g_elem.style.strokeOpacity = "0.1";*/
   g_elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
@@ -121,21 +99,10 @@ function draw_metarelation(id,type) {
   added.push(g_elem);
   g_elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
   g_elem.onmouseover = function (ev) {
-
-    targets.forEach((item) => {
-	item.classList.add("relationhover");
-/*        if(item.style.filter == ""){
-          item.style.transform = "translate3d(0,0,0)";
-          item.style.filter = "url(\"#glowFilter\")";
-          }*/});
+    targets.forEach((item) => { item.classList.add("relationhover"); });
   }
   g_elem.onmouseout = function (ev) {
-    targets.forEach((item) => {
-	item.classList.remove("relationhover");
-/*        if(item.style.filter == "url(\"#glowFilter\")") {
-          item.style.transform = "";
-          item.style.filter = "";
-        }*/});
+    targets.forEach((item) => { item.classList.remove("relationhover"); });
   }
   return added;
   
@@ -180,7 +147,6 @@ function draw_relation_arg(draw_context, mei_graph, g_elem, draw_partial_relatio
   elem.setAttribute("id",id);
   elem.classList.add("relation");
   elem.setAttribute("type",type);
-//  elem.style.fillOpacity = "0.5";
   elem.onwheel = (ev) => {
     var elem1 = ev.target;
     flip_to_bg(elem1);
@@ -193,33 +159,12 @@ function draw_relation_arg(draw_context, mei_graph, g_elem, draw_partial_relatio
   added.push(elem);
   elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
   elem.onmouseover = function (ev) {
-
-    primaries.forEach((item) => {
-	item.classList.add("extrahover");
-/*        if(item.style.filter == ""){
-          item.style.transform = "translate3d(0,0,0)";
-          item.style.filter = "url(\"#extraFilter\")";
-          }*/});
-    secondaries.forEach((item) => {
-	item.classList.add("selecthover");
-/*        if(item.style.filter == ""){
-          item.style.transform = "translate3d(0,0,0)";
-          item.style.filter = "url(\"#selectFilter\")";
-          }*/});
+    primaries.forEach(  (item) => { item.classList.add("extrahover"); });
+    secondaries.forEach((item) => { item.classList.add("selecthover"); });
   }
   elem.onmouseout = function (ev) {
-    primaries.forEach((item) => {
-	item.classList.remove("extrahover");
-/*        if(item.style.filter == "url(\"#extraFilter\")") {
-          item.style.transform = "";
-          item.style.filter = "";
-        }*/});
-    secondaries.forEach((item) => {
-	item.classList.remove("selecthover");
-/*        if(item.style.filter == "url(\"#selectFilter\")") {
-          item.style.transform = "";
-          item.style.filter = "";
-        }*/});
+    primaries.forEach(  (item) => { item.classList.remove("extrahover"); });
+    secondaries.forEach((item) => { item.classList.remove("selecthover"); });
   }
   //TODO: Set up more onhover stuff for The Same Relation
   //Elsewhere - but perhaps that's a separate thing?
@@ -243,14 +188,12 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   var y = targets.concat([svg_elem.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
 
   coords.push([x,y]);
-  var elem = g_arg(svg_elem);
+  var g_elem = g_arg(svg_elem);
   var elem = roundedHull(coords);
-  elem.setAttribute("id",id);
-  elem.classList.add("metarelation");
-  elem.setAttribute("type",type);
-//  elem.style.fillOpacity = "0.5";
-//  elem.style.strokeOpacity = "0.1";
-  elem.onwheel = (e) => {
+  g_elem.setAttribute("id",id);
+  g_elem.classList.add("metarelation");
+  g_elem.setAttribute("type",type);
+  g_elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
     paren.removeChild(elem1);
@@ -258,29 +201,18 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
     return false;
   };
   coords.forEach((crds) => { var line_elem = line([x,y],crds);
-      elem.appendChild(line_elem);});
-  elem.appendChild(circle([x,y],200));
+      g_elem.appendChild(line_elem);});
+  g_elem.appendChild(circle([x,y],200));
   if(shades)
     toggle_shade(elem);
-  add_to_svg_bg_arg(svg_elem,elem);
-  added.push(elem);
-  elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
+  add_to_svg_bg_arg(svg_elem,g_elem);
+  added.push(g_elem);
+  elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
   g_elem.onmouseover = function (ev) {
-
-    targets.forEach((item) => {
-	item.classList.add("relationhover");
-/*        if(item.style.filter == ""){
-          item.style.transform = "translate3d(0,0,0)";
-          item.style.filter = "url(\"#glowFilter\")";
-          }*/});
+    targets.forEach((item) => { item.classList.add("relationhover"); });
   }
   g_elem.onmouseout = function (ev) {
-    targets.forEach((item) => {
-	item.classList.remove("relationhover");
-/*        if(item.style.filter == "url(\"#glowFilter\")") {
-          item.style.transform = "";
-          item.style.filter = "";
-        }*/});
+    targets.forEach((item) => { item.classList.remove("relationhover"); });
   }
   return added;
 }

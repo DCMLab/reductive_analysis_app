@@ -177,29 +177,17 @@ function toggle_selected(item,extra) {
       toggle_he_selected(true);
     }
     if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-//      item.style.fillOpacity = 0.5;
-//      item.style.strokeOpacity = 0.1;
       item.classList.remove("extraselectedrelation");
       item.classList.remove("selectedrelation");
       selected = selected.filter(x =>  x !== item);
       extraselected = extraselected.filter(x =>  x !== item);
-//      item.style.transform = "";
-//      item.style.filter = "";
     } else {
       if(extra){
 	item.classList.add("extraselectedrelation");
-//        item.style.fillOpacity = 0.9;
-//        item.style.strokeOpacity = 0.8;
         extraselected.push(item);
-//        item.style.transform = "translate3d(0,0,0)";
-//        item.style.filter = "url(\"#extraFilter\")";
       }else{
 	item.classList.add("selectedrelation");
-//        item.style.fillOpacity = 0.9;
-//        item.style.strokeOpacity = 0.8;
         selected.push(item);
-//        item.style.transform = "translate3d(0,0,0)";
-//        item.style.filter = "url(\"#selectFilter\")";
       }
     }
     if(selected.concat(extraselected).length == 0){

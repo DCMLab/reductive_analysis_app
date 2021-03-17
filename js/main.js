@@ -345,8 +345,7 @@ function do_reduce() {
   sel.concat(extra).forEach(toggle_selected);
   if(arg){
     console.debug("Using globals: undo_actions, draw_contexts, mei_graph, selected,  extraselected.");
-    var undo = do_reduce_arg(draw_contexts[0], mei_graph, sel.concat(extra));
-    undo_actions.push(["reduce",undo,sel,extra]);
+    undo = do_reduce_arg(draw_contexts[0], mei_graph, sel, extra);
     return;
   }
   console.debug("Using globals: undo_actions, mei, mei_graph, selected,  extraselected.");
@@ -871,6 +870,7 @@ function load_finish(e) {
   $("#svg_outputs").html('<div id="svg_output0"></div>')
   $("#svg_output0").html(svg);
   svg_elem = document.getElementById("svg_output0");
+  svg_elem.classList.add("svg_output");
   if(format == "musicxml"){
     data = vrvToolkit.getMEI();
     parser = new DOMParser();
@@ -890,8 +890,27 @@ function load_finish(e) {
 		    // already on load.
                     "mei_score" : mei.getElementsByTagName("score")[0],
                     "svg_elem" : svg_elem,
-                    "id_prefix" : ""}];
+                    "id_prefix" : "",
+                    "reductions" : []}];
 
+  if(arg){
+    var new_draw_context = draw_contexts[0];
+    var reducebutton = document.createElement("input");
+    var undobutton = document.createElement("input");
+    var rerenderbutton = document.createElement("input");
+    reducebutton.setAttribute("type","button");
+    reducebutton.setAttribute("value","Reduce");
+    undobutton.setAttribute("type","button");
+    undobutton.setAttribute("value","Unreduce");
+    rerenderbutton.setAttribute("type","button");
+    rerenderbutton.setAttribute("value","Create new view");
+    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+    undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+    svg_elem.insertBefore(undobutton,    svg_elem.children[0]);
+    svg_elem.insertBefore(reducebutton,  svg_elem.children[0]);
+    svg_elem.insertBefore(rerenderbutton,svg_elem.children[0]);
+  }
   draw_graph(draw_contexts[0]);
 
   changes = false;
@@ -917,8 +936,10 @@ function load_finish(e) {
 
 
 
-function rerender_mei(replace_with_rests = false) {
+function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
   console.debug("Using globals mei, svg_elem");
+  var mei = draw_context.mei;
+  var svg_elem = draw_context.svg_elem;
   var mei2 = mei.implementation.createDocument(
         mei.documentElement.namespaceURI, //namespace to use
         null,             //name of the root element (or for empty document)
@@ -930,20 +951,20 @@ function rerender_mei(replace_with_rests = false) {
       );
   mei2.appendChild(newNode);
 
-  Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
-    if(x.classList.contains("hidden")){
+  Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
+    x = svg_find_from_mei_elem(svg_elem, draw_context.id_prefix, n);
+    if(x == null || x.classList.contains("hidden")){
       //TODO: this is wrong
       // 
-      var y = get_by_id(mei2,x.getAttribute("id"));
-      var paren = y.parentNode;
+      var paren = n.parentNode;
       // TODO: deal properly with tremolos
       // TODO
       if(replace_with_rests && !["chord","bTrem","fTrem"].includes(paren.tagName)) {
         // Add a rest
-        var rest = note_to_rest(mei2,y)
-        paren.insertBefore(rest,y);
+        var rest = note_to_rest(mei2,n)
+        paren.insertBefore(rest,n);
       }
-      paren.removeChild(y);
+      paren.removeChild(n);
     }
   });
   Array.from(mei2.getElementsByTagName("chord")).forEach((x) =>
@@ -957,6 +978,51 @@ function rerender_mei(replace_with_rests = false) {
   return mei2;
 
 }
+
+function rerender_arg(draw_context) {
+  var new_svg_elem = document.createElement("div");
+  var old_svg_elem = draw_context['svg_elem'];
+  var output_parent = old_svg_elem.parentElement;
+  new_svg_elem.setAttribute("id","svg_output" + document.getElementsByClassName("svg_output").length);
+  output_parent.insertBefore(new_svg_elem, old_svg_elem);
+  var mei2 = rerender_mei(false, draw_context);
+  var data2 = new XMLSerializer().serializeToString(mei2);
+
+  var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
+      pageHeight: 10000, breaks: "none", format: "mei"});
+
+  draw_context.id_prefix = "old"+(output_parent.children.length-2);
+  prefix_ids(old_svg_elem,draw_context.id_prefix);
+  
+  $(new_svg_elem).html(svg2);
+  new_svg_elem.classList.add("svg_output");
+  var new_draw_context = {"mei": mei, "svg_elem" : new_svg_elem,
+    "id_prefix" : "", reductions: []};
+
+  var reducebutton = document.createElement("input");
+  var undobutton = document.createElement("input");
+  var rerenderbutton = document.createElement("input");
+  reducebutton.setAttribute("type","button");
+  reducebutton.setAttribute("value","Reduce");
+  undobutton.setAttribute("type","button");
+  undobutton.setAttribute("value","Unreduce");
+  rerenderbutton.setAttribute("type","button");
+  rerenderbutton.setAttribute("value","Create new view");
+  reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+  undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+  rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+  new_svg_elem.insertBefore(undobutton,    new_svg_elem.children[0]);
+  new_svg_elem.insertBefore(reducebutton,  new_svg_elem.children[0]);
+  new_svg_elem.insertBefore(rerenderbutton,new_svg_elem.children[0]);
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
+  for (let n of document.getElementsByClassName("note")) {
+      n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
+  }
+  draw_graph(new_draw_context);
+}
+
 
 function rerender() {
   console.debug("Using globals document, svg_elem, jquery document, svg, mei, data, mei_graph, non_notes_hidden, rerendered_after_action, undo_actions")
@@ -978,22 +1044,20 @@ function rerender() {
   prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
   
   $(new_svg_elem).html(svg2);
-  var new_draw_context = {"mei": mei2, "mei_score": draw_contexts[0].mei_score, "svg_elem" : new_svg_elem, "id_prefix" : ""};
-  draw_contexts.reverse();
-  draw_contexts.push(new_draw_context);
-  draw_contexts.reverse();
+  var new_draw_context = {"mei": mei, "mei_score": draw_contexts[0].mei_score, "svg_elem" : new_svg_elem, "id_prefix" : "", reductions: []};
   svg = svg2;
-  mei = mei2;
   data = data2;
   svg_elem = new_svg_elem;
-  mei_graph = add_or_fetch_graph();
   for (let n of document.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   if(non_notes_hidden)
     set_non_note_visibility("hidden");
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
   // Need also to redraw edges and relations
-  draw_graph(draw_contexts[0]);
+  draw_graph(new_draw_context);
 
   // Can't undo after a rerender.. yet, TODO: Make layers
   rerendered_after_action=undo_actions.length;

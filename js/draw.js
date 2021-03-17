@@ -166,6 +166,11 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   var type = relation_type(g_elem);
   var targets = relation_allnodes_arg(mei_graph, g_elem).map(
       (e) => svg_find_from_mei_elem(svg_elem, id_prefix, e));
+  if(targets.indexOf(null) != -1){
+    console.log("Missing relation, not drawing metarelation");
+    return [];
+  }
+
   var coords = targets.map(get_metarelation_target);
   var x = average(coords.map((e) => e[0]));
   // Above

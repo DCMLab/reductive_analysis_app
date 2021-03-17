@@ -27,7 +27,7 @@ function new_layer_element(changes, elem, new_children) {
 function layerify(draw_context, elem) {
   var svg_elem = svg_find_from_mei_elem(draw_context.svg_elem,
                                         draw_context.id_prefix, elem);
-  if(svg_elem != null && svg_elem.style.visibility == "hidden") // This elem has been reduced away
+  if(svg_elem != null && svg_elem.classList.contains("hidden")) // This elem has been reduced away
     return (null, true); //It may be that we should replace it with a rest instead
   var results = Array.from(elem.children).map((e) => layerify(draw_context, e));
   var new_children = results.map((p) => p[0]).filter((x) => x != null);

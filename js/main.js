@@ -956,7 +956,7 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
       if(replace_with_rests && !["chord","bTrem","fTrem"].includes(paren.tagName)) {
         // Add a rest
         var rest = mei2.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
-        rest.setAttribute("xml:id","rest-"+y.getAttribute("xml:id"));
+        rest.setAttribute("xml:id","rest-"+n.getAttribute("xml:id"));
         rest.setAttribute("dur",n.getAttribute("dur"));
         rest.setAttribute("n",n.getAttribute("n"));
         rest.setAttribute("dots",n.getAttribute("dots"));

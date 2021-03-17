@@ -41,6 +41,8 @@ var redo_actions = []; //TODO, maybe?
 // The first element is the latest, shown at the top. 
 var draw_contexts = [];
 
+var layer_contexts = [];
+
 var rerendered_after_reduce = 0;
 
 var non_notes_hidden = false;
@@ -54,15 +56,6 @@ var format;
 var zoom = 1;
 
 var arg = true;
-
-var mouseX;
-var mouseY;
-
-window.onmousemove = (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-
-}
 
 
 var mouseX;

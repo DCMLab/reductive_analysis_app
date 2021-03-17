@@ -911,8 +911,10 @@ function load_finish(e) {
 
 
 
-function rerender_mei(replace_with_rests = false) {
+function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
   console.debug("Using globals mei, svg_elem");
+  var mei = draw_context.mei;
+  var svg_elem = draw_context.svg_elem;
   var mei2 = mei.implementation.createDocument(
         mei.documentElement.namespaceURI, //namespace to use
         null,             //name of the root element (or for empty document)
@@ -924,42 +926,42 @@ function rerender_mei(replace_with_rests = false) {
       );
   mei2.appendChild(newNode);
 
-  Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
-    if(x.classList.contains("hidden")){
+  Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
+    x = svg_find_from_mei_elem(svg_elem, draw_context.id_prefix, n);
+    if(x == null || x.classList.contains("hidden")){
       //TODO: this is wrong
       // 
-      var y = get_by_id(mei2,x.getAttribute("id"));
-      var paren = y.parentNode;
+      var paren = n.parentNode;
       // TODO: deal properly with tremolos
       // TODO
       if(replace_with_rests && !["chord","bTrem","fTrem"].includes(paren.tagName)) {
         // Add a rest
         var rest = mei2.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
         rest.setAttribute("xml:id","rest-"+y.getAttribute("xml:id"));
-        rest.setAttribute("dur",y.getAttribute("dur"));
-        rest.setAttribute("n",y.getAttribute("n"));
-        rest.setAttribute("dots",y.getAttribute("dots"));
-        rest.setAttribute("when",y.getAttribute("when"));
-        rest.setAttribute("layer",y.getAttribute("layer"));
-        rest.setAttribute("staff",y.getAttribute("staff"));
-        rest.setAttribute("tstamp.ges",y.getAttribute("tstamp.ges"));
-        rest.setAttribute("tstamp.real",y.getAttribute("tstamp.real"));
-        rest.setAttribute("tstamp",y.getAttribute("tstamp"));
-        rest.setAttribute("loc",y.getAttribute("loc"));
-        rest.setAttribute("dur.ges",y.getAttribute("dur.ges"));
-        rest.setAttribute("dots.ges",y.getAttribute("dots.ges"));
-        rest.setAttribute("dur.metrical",y.getAttribute("dur.ges"));
-        rest.setAttribute("dur.ppq",y.getAttribute("dur.ppq"));
-        rest.setAttribute("dur.real",y.getAttribute("dur.real"));
-        rest.setAttribute("dur.recip",y.getAttribute("dur.recip"));
-        rest.setAttribute("beam",y.getAttribute("beam"));
-        rest.setAttribute("fermata",y.getAttribute("fermata"));
-        rest.setAttribute("tuplet",y.getAttribute("tuplet"));
+        rest.setAttribute("dur",n.getAttribute("dur"));
+        rest.setAttribute("n",n.getAttribute("n"));
+        rest.setAttribute("dots",n.getAttribute("dots"));
+        rest.setAttribute("when",n.getAttribute("when"));
+        rest.setAttribute("layer",n.getAttribute("layer"));
+        rest.setAttribute("staff",n.getAttribute("staff"));
+        rest.setAttribute("tstamp.ges",n.getAttribute("tstamp.ges"));
+        rest.setAttribute("tstamp.real",n.getAttribute("tstamp.real"));
+        rest.setAttribute("tstamp",n.getAttribute("tstamp"));
+        rest.setAttribute("loc",n.getAttribute("loc"));
+        rest.setAttribute("dur.ges",n.getAttribute("dur.ges"));
+        rest.setAttribute("dots.ges",n.getAttribute("dots.ges"));
+        rest.setAttribute("dur.metrical",n.getAttribute("dur.ges"));
+        rest.setAttribute("dur.ppq",n.getAttribute("dur.ppq"));
+        rest.setAttribute("dur.real",n.getAttribute("dur.real"));
+        rest.setAttribute("dur.recip",n.getAttribute("dur.recip"));
+        rest.setAttribute("beam",n.getAttribute("beam"));
+        rest.setAttribute("fermata",n.getAttribute("fermata"));
+        rest.setAttribute("tuplet",n.getAttribute("tuplet"));
         //That's all I can think of. There's probably a better
         //way to do this..
-        paren.insertBefore(rest,y);
+        paren.insertBefore(rest,n);
       }
-      paren.removeChild(y);
+      paren.removeChild(n);
     }
   });
   Array.from(mei2.getElementsByTagName("chord")).forEach((x) =>
@@ -994,23 +996,21 @@ function rerender() {
   prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
   
   $(new_svg_elem).html(svg2);
-  var new_draw_context = {"mei": mei2, "svg_elem" : new_svg_elem,
-    "id_prefix" : ""};
-  draw_contexts.reverse();
-  draw_contexts.push(new_draw_context);
-  draw_contexts.reverse();
+  var new_draw_context = {"mei": mei, "svg_elem" : new_svg_elem,
+    "id_prefix" : "", reductions: []};
   svg = svg2;
-  mei = mei2;
   data = data2;
   svg_elem = new_svg_elem;
-  mei_graph = add_or_fetch_graph();
   for (let n of document.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   if(non_notes_hidden)
     set_non_note_visibility("hidden");
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
   // Need also to redraw edges and relations
-  draw_graph(draw_contexts[0]);
+  draw_graph(new_draw_context);
 
   // Can't undo after a rerender.. yet, TODO: Make layers
   rerendered_after_action=undo_actions.length;

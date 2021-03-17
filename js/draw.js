@@ -227,14 +227,14 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   var y = targets.concat([svg_elem.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
 
   coords.push([x,y]);
-  var elem = g_arg(svg_elem);
+  var g_elem = g_arg(svg_elem);
   var elem = roundedHull(coords);
-  elem.setAttribute("id",id);
-  elem.classList.add("metarelation");
-  elem.setAttribute("type",type);
+  g_elem.setAttribute("id",id);
+  g_elem.classList.add("metarelation");
+  g_elem.setAttribute("type",type);
 //  elem.style.fillOpacity = "0.5";
 //  elem.style.strokeOpacity = "0.1";
-  elem.onwheel = (e) => {
+  g_elem.onwheel = (e) => {
     var elem1 = e.target;
     var paren = elem1.parentElement;
     paren.removeChild(elem1);
@@ -242,13 +242,13 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
     return false;
   };
   coords.forEach((crds) => { var line_elem = line([x,y],crds);
-      elem.appendChild(line_elem);});
-  elem.appendChild(circle([x,y],200));
+      g_elem.appendChild(line_elem);});
+  g_elem.appendChild(circle([x,y],200));
   if(shades)
     toggle_shade(elem);
-  add_to_svg_bg_arg(svg_elem,elem);
-  added.push(elem);
-  elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
+  add_to_svg_bg_arg(svg_elem,g_elem);
+  added.push(g_elem);
+  elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
   g_elem.onmouseover = function (ev) {
 
     targets.forEach((item) => {

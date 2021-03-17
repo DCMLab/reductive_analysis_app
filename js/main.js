@@ -342,8 +342,7 @@ function do_reduce() {
   sel.concat(extra).forEach(toggle_selected);
   if(arg){
     console.debug("Using globals: undo_actions, draw_contexts, mei_graph, selected,  extraselected.");
-    var undo = do_reduce_arg(draw_contexts[0], mei_graph, sel.concat(extra));
-    undo_actions.push(["reduce",undo,sel,extra]);
+    undo = do_reduce_arg(draw_contexts[0], mei_graph, sel, extra);
     return;
   }
   console.debug("Using globals: undo_actions, mei, mei_graph, selected,  extraselected.");
@@ -868,6 +867,7 @@ function load_finish(e) {
   $("#svg_outputs").html('<div id="svg_output0"></div>')
   $("#svg_output0").html(svg);
   svg_elem = document.getElementById("svg_output0");
+  svg_elem.classList.add("svg_output");
   if(format == "musicxml"){
     data = vrvToolkit.getMEI();
     parser = new DOMParser();
@@ -884,8 +884,27 @@ function load_finish(e) {
 
   draw_contexts = [{"mei" : mei,
                     "svg_elem" : svg_elem,
-                    "id_prefix" : ""}];
+                    "id_prefix" : "",
+                    "reductions" : []}];
 
+  if(arg){
+    var new_draw_context = draw_contexts[0];
+    var reducebutton = document.createElement("input");
+    var undobutton = document.createElement("input");
+    var rerenderbutton = document.createElement("input");
+    reducebutton.setAttribute("type","button");
+    reducebutton.setAttribute("value","Reduce");
+    undobutton.setAttribute("type","button");
+    undobutton.setAttribute("value","Unreduce");
+    rerenderbutton.setAttribute("type","button");
+    rerenderbutton.setAttribute("value","Create new view");
+    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+    undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+    svg_elem.insertBefore(undobutton,    svg_elem.children[0]);
+    svg_elem.insertBefore(reducebutton,  svg_elem.children[0]);
+    svg_elem.insertBefore(rerenderbutton,svg_elem.children[0]);
+  }
   draw_graph(draw_contexts[0]);
 
   changes = false;
@@ -975,6 +994,51 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
   return mei2;
 
 }
+
+function rerender_arg(draw_context) {
+  var new_svg_elem = document.createElement("div");
+  var old_svg_elem = draw_context['svg_elem'];
+  var output_parent = old_svg_elem.parentElement;
+  new_svg_elem.setAttribute("id","svg_output" + document.getElementsByClassName("svg_output").length);
+  output_parent.insertBefore(new_svg_elem, old_svg_elem);
+  var mei2 = rerender_mei(false, draw_context);
+  var data2 = new XMLSerializer().serializeToString(mei2);
+
+  var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
+      pageHeight: 10000, breaks: "none", format: "mei"});
+
+  draw_context.id_prefix = "old"+(output_parent.children.length-2);
+  prefix_ids(old_svg_elem,draw_context.id_prefix);
+  
+  $(new_svg_elem).html(svg2);
+  new_svg_elem.classList.add("svg_output");
+  var new_draw_context = {"mei": mei, "svg_elem" : new_svg_elem,
+    "id_prefix" : "", reductions: []};
+
+  var reducebutton = document.createElement("input");
+  var undobutton = document.createElement("input");
+  var rerenderbutton = document.createElement("input");
+  reducebutton.setAttribute("type","button");
+  reducebutton.setAttribute("value","Reduce");
+  undobutton.setAttribute("type","button");
+  undobutton.setAttribute("value","Unreduce");
+  rerenderbutton.setAttribute("type","button");
+  rerenderbutton.setAttribute("value","Create new view");
+  reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+  undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+  rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+  new_svg_elem.insertBefore(undobutton,    new_svg_elem.children[0]);
+  new_svg_elem.insertBefore(reducebutton,  new_svg_elem.children[0]);
+  new_svg_elem.insertBefore(rerenderbutton,new_svg_elem.children[0]);
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
+  for (let n of document.getElementsByClassName("note")) {
+      n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
+  }
+  draw_graph(new_draw_context);
+}
+
 
 function rerender() {
   console.debug("Using globals document, svg_elem, jquery document, svg, mei, data, mei_graph, non_notes_hidden, rerendered_after_action, undo_actions")

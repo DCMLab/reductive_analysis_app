@@ -153,10 +153,17 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
       (e) => svg_find_from_mei_elem(svg_elem, id_prefix, get_by_id(mei, note_get_sameas(e))));
   var notes = primaries.concat(secondaries)
   notes.sort((a,b) => { 
+      if(a == null) return -1;
+      if(b == null) return 1;
       var p1= note_coords(a);
       var p2= note_coords(b);
       return (p1[0] - p2[0]) ? (p1[0] - p2[0]) : (p1[1] - p2[1]);
     });
+  if(notes[0] == null) {
+    console.log("Note missing, relation not drawn");
+    return null;
+  }
+
   var id = id_prefix + g_elem.getAttribute("xml:id");
   var type = relation_type(g_elem);
 

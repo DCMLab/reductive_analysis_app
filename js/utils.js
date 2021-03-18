@@ -716,3 +716,17 @@ function prefix_ids(elem,prefix) {
 }
 
 
+function button(value) {
+  var button = document.createElement("input");
+  button.setAttribute("type","button");
+  button.setAttribute("value", value);
+  return button;
+}
+
+function checkbox() {
+  var cb = document.createElement("input");
+  cb.setAttribute("type","checkbox");
+  return cb;
+}
+
+

@@ -99,11 +99,9 @@ $(document).ready(function()
 // Configured types need a button and a color each
 function init_type(type) {
   console.debug("Using globals: document, shades_array, type_shades, type_keys, button_shades for conf");
-  var elem = document.createElement("input");
-  elem.setAttribute("type","button");
+  var elem = button("Add "+type+" relation " + "(" + type_conf[type].key + ")");
   elem.classList.add("relationbutton");
   elem.setAttribute("id",type + "relationbutton");
-  elem.setAttribute("value","Add "+type+" relation " + "(" + type_conf[type].key + ")");
   elem.onclick = () => {do_relation(type,arg);};
   $("#relation_buttons")[0].appendChild(elem);
   type_shades[type] = shades_array[type_conf[type].colour];
@@ -114,11 +112,9 @@ function init_type(type) {
 // Configured meta types need a button and a color each
 function meta_type(type) {
   console.debug("Using globals: document, shades_array, meta_shades, meta_keys, button_shades for conf");
-  var elem = document.createElement("input");
-  elem.setAttribute("type","button");
+  var elem = button("Add "+type+" metarelation " + "(" + meta_conf[type].key + ")");
   elem.classList.add("metarelationbutton");
   elem.setAttribute("id",type + "metarelationbutton");
-  elem.setAttribute("value","Add "+type+" metarelation " + "(" + meta_conf[type].key + ")");
   elem.onclick = () => {do_metarelation(type,arg);};
   $("#meta_buttons")[0].appendChild(elem);
   meta_shades[type] = shades_array[meta_conf[type].colour];
@@ -330,8 +326,7 @@ function do_reduce() {
   sel.concat(extra).forEach(toggle_selected);
   if(arg){
     console.debug("Using globals: undo_actions, draw_contexts, mei_graph, selected,  extraselected.");
-    var undo = do_reduce_arg(draw_contexts[0], mei_graph, sel.concat(extra));
-    undo_actions.push(["reduce",undo,sel,extra]);
+    undo = do_reduce_arg(draw_contexts[0], mei_graph, sel, extra);
     return;
   }
   console.debug("Using globals: undo_actions, mei, mei_graph, selected,  extraselected.");
@@ -856,6 +851,7 @@ function load_finish(e) {
   $("#svg_outputs").html('<div id="svg_output0"></div>')
   $("#svg_output0").html(svg);
   svg_elem = document.getElementById("svg_output0");
+  svg_elem.classList.add("svg_output");
   if(format == "musicxml"){
     data = vrvToolkit.getMEI();
     parser = new DOMParser();
@@ -872,8 +868,27 @@ function load_finish(e) {
 
   draw_contexts = [{"mei" : mei,
                     "svg_elem" : svg_elem,
-                    "id_prefix" : ""}];
+                    "id_prefix" : "",
+                    "reductions" : []}];
 
+  if(arg){
+    var remove_primaries = checkbox();
+    remove_primaries.classList.add("primaries_checkbox");
+    var partial_relations = checkbox();
+    partial_relations.classList.add("partials_checkbox");
+    svg_elem.insertBefore(remove_primaries,     svg_elem.children[0]);
+    svg_elem.insertBefore(partial_relations,    svg_elem.children[0]);
+    var new_draw_context = draw_contexts[0];
+    var reducebutton = button("Reduce");
+    var undobutton = button("Unreduce");
+    var rerenderbutton = button("Create new view");
+    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+    undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+    svg_elem.insertBefore(undobutton,    svg_elem.children[0]);
+    svg_elem.insertBefore(reducebutton,  svg_elem.children[0]);
+    svg_elem.insertBefore(rerenderbutton,svg_elem.children[0]);
+  }
   draw_graph(draw_contexts[0]);
 
   changes = false;
@@ -899,8 +914,10 @@ function load_finish(e) {
 
 
 
-function rerender_mei(replace_with_rests = false) {
+function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
   console.debug("Using globals mei, svg_elem");
+  var mei = draw_context.mei;
+  var svg_elem = draw_context.svg_elem;
   var mei2 = mei.implementation.createDocument(
         mei.documentElement.namespaceURI, //namespace to use
         null,             //name of the root element (or for empty document)
@@ -912,42 +929,42 @@ function rerender_mei(replace_with_rests = false) {
       );
   mei2.appendChild(newNode);
 
-  Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
-    if(x.classList.contains("hidden")){
+  Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
+    x = svg_find_from_mei_elem(svg_elem, draw_context.id_prefix, n);
+    if(x == null || x.classList.contains("hidden")){
       //TODO: this is wrong
       // 
-      var y = get_by_id(mei2,x.getAttribute("id"));
-      var paren = y.parentNode;
+      var paren = n.parentNode;
       // TODO: deal properly with tremolos
       // TODO
       if(replace_with_rests && !["chord","bTrem","fTrem"].includes(paren.tagName)) {
         // Add a rest
         var rest = mei2.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
-        rest.setAttribute("xml:id","rest-"+y.getAttribute("xml:id"));
-        rest.setAttribute("dur",y.getAttribute("dur"));
-        rest.setAttribute("n",y.getAttribute("n"));
-        rest.setAttribute("dots",y.getAttribute("dots"));
-        rest.setAttribute("when",y.getAttribute("when"));
-        rest.setAttribute("layer",y.getAttribute("layer"));
-        rest.setAttribute("staff",y.getAttribute("staff"));
-        rest.setAttribute("tstamp.ges",y.getAttribute("tstamp.ges"));
-        rest.setAttribute("tstamp.real",y.getAttribute("tstamp.real"));
-        rest.setAttribute("tstamp",y.getAttribute("tstamp"));
-        rest.setAttribute("loc",y.getAttribute("loc"));
-        rest.setAttribute("dur.ges",y.getAttribute("dur.ges"));
-        rest.setAttribute("dots.ges",y.getAttribute("dots.ges"));
-        rest.setAttribute("dur.metrical",y.getAttribute("dur.ges"));
-        rest.setAttribute("dur.ppq",y.getAttribute("dur.ppq"));
-        rest.setAttribute("dur.real",y.getAttribute("dur.real"));
-        rest.setAttribute("dur.recip",y.getAttribute("dur.recip"));
-        rest.setAttribute("beam",y.getAttribute("beam"));
-        rest.setAttribute("fermata",y.getAttribute("fermata"));
-        rest.setAttribute("tuplet",y.getAttribute("tuplet"));
+        rest.setAttribute("xml:id","rest-"+n.getAttribute("xml:id"));
+        rest.setAttribute("dur",n.getAttribute("dur"));
+        rest.setAttribute("n",n.getAttribute("n"));
+        rest.setAttribute("dots",n.getAttribute("dots"));
+        rest.setAttribute("when",n.getAttribute("when"));
+        rest.setAttribute("layer",n.getAttribute("layer"));
+        rest.setAttribute("staff",n.getAttribute("staff"));
+        rest.setAttribute("tstamp.ges",n.getAttribute("tstamp.ges"));
+        rest.setAttribute("tstamp.real",n.getAttribute("tstamp.real"));
+        rest.setAttribute("tstamp",n.getAttribute("tstamp"));
+        rest.setAttribute("loc",n.getAttribute("loc"));
+        rest.setAttribute("dur.ges",n.getAttribute("dur.ges"));
+        rest.setAttribute("dots.ges",n.getAttribute("dots.ges"));
+        rest.setAttribute("dur.metrical",n.getAttribute("dur.ges"));
+        rest.setAttribute("dur.ppq",n.getAttribute("dur.ppq"));
+        rest.setAttribute("dur.real",n.getAttribute("dur.real"));
+        rest.setAttribute("dur.recip",n.getAttribute("dur.recip"));
+        rest.setAttribute("beam",n.getAttribute("beam"));
+        rest.setAttribute("fermata",n.getAttribute("fermata"));
+        rest.setAttribute("tuplet",n.getAttribute("tuplet"));
         //That's all I can think of. There's probably a better
         //way to do this..
-        paren.insertBefore(rest,y);
+        paren.insertBefore(rest,n);
       }
-      paren.removeChild(y);
+      paren.removeChild(n);
     }
   });
   Array.from(mei2.getElementsByTagName("chord")).forEach((x) =>
@@ -961,6 +978,51 @@ function rerender_mei(replace_with_rests = false) {
   return mei2;
 
 }
+
+function rerender_arg(draw_context) {
+  var new_svg_elem = document.createElement("div");
+  var old_svg_elem = draw_context['svg_elem'];
+  var output_parent = old_svg_elem.parentElement;
+  new_svg_elem.setAttribute("id","svg_output" + document.getElementsByClassName("svg_output").length);
+  output_parent.insertBefore(new_svg_elem, old_svg_elem);
+  var mei2 = rerender_mei(false, draw_context);
+  var data2 = new XMLSerializer().serializeToString(mei2);
+
+  var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
+      pageHeight: 10000, breaks: "none", format: "mei"});
+
+  draw_context.id_prefix = "old"+(output_parent.children.length-2);
+  prefix_ids(old_svg_elem,draw_context.id_prefix);
+  
+  $(new_svg_elem).html(svg2);
+  new_svg_elem.classList.add("svg_output");
+  var new_draw_context = {"mei": mei, "svg_elem" : new_svg_elem,
+    "id_prefix" : "", reductions: []};
+
+  var remove_primaries = checkbox();
+  remove_primaries.classList.add("primaries_checkbox");
+  var partial_relations = checkbox();
+  partial_relations.classList.add("partials_checkbox");
+  new_svg_elem.insertBefore(remove_primaries,     new_svg_elem.children[0]);
+  new_svg_elem.insertBefore(partial_relations,    new_svg_elem.children[0]);
+  var reducebutton = button("Reduce");
+  var undobutton = button("Unreduce");
+  var rerenderbutton = button("Create new view");
+  reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+  undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+  rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+  new_svg_elem.insertBefore(undobutton,    new_svg_elem.children[0]);
+  new_svg_elem.insertBefore(reducebutton,  new_svg_elem.children[0]);
+  new_svg_elem.insertBefore(rerenderbutton,new_svg_elem.children[0]);
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
+  for (let n of document.getElementsByClassName("note")) {
+      n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
+  }
+  draw_graph(new_draw_context);
+}
+
 
 function rerender() {
   console.debug("Using globals document, svg_elem, jquery document, svg, mei, data, mei_graph, non_notes_hidden, rerendered_after_action, undo_actions")
@@ -983,19 +1045,18 @@ function rerender() {
   
   $(new_svg_elem).html(svg2);
   var new_draw_context = {"mei": mei, "svg_elem" : new_svg_elem,
-    "id_prefix" : ""};
-  draw_contexts.reverse();
-  draw_contexts.push(new_draw_context);
-  draw_contexts.reverse();
+    "id_prefix" : "", reductions: []};
   svg = svg2;
   data = data2;
   svg_elem = new_svg_elem;
-  mei_graph = add_or_fetch_graph();
   for (let n of document.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   if(non_notes_hidden)
     set_non_note_visibility("hidden");
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
   // Need also to redraw edges and relations
   draw_graph(new_draw_context);
 

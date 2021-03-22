@@ -1,3 +1,5 @@
+//main.js
+
 function do_reduce_old(sel, extra) {
   console.debug("Using globals: undo_actions, mei, mei_graph, selected,  extraselected.");
   // All previous reductions
@@ -206,3 +208,127 @@ function draw_graph_old(draw_context) {
 
 }
 
+//utils.js
+
+function add_to_svg_bg(newElement) {
+  var sibling = document.getElementsByClassName("system")[0];
+  var parent = sibling.parentNode;
+  console.debug("Using global: document to get 'system' element");
+  parent.insertBefore(newElement,sibling);
+}
+
+function add_to_svg_fg(newElement) {
+  var sibling = document.getElementsByClassName("system")[0];
+  console.debug("Using global: document to get 'system' element");
+  var parent = sibling.parentNode;
+  parent.appendChild(newElement);
+}
+
+
+function g() {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+  console.debug("Using global: document to create new element");
+  return newElement;
+}
+
+// Get the MEI-graph nodes that are adjacent to a relation
+function relation_allnodes(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+        if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
+          nodes.push(get_by_id(mei,a.getAttribute("to")));
+        }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and primary to a relation
+function relation_primaries(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "primary"){
+      nodes.push(get_by_id(mei,a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+// Get the MEI-graph nodes that are adjacent and secondary to a relation
+function relation_secondaries(he) {
+  console.debug("Using globals: mei, mei_graph to find graph connections");
+  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
+  var nodes = [];
+  arcs_array.forEach((a) => {
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
+       a.getAttribute("type") == "secondary"){
+      nodes.push(get_by_id(mei,a.getAttribute("to")));
+    }
+      });
+  return nodes;
+}
+// Set up new graph node for a note
+function add_mei_node_for(mei,mei_graph,note) {
+    console.debug("Using globals: mei, mei_graph to create and place elem");
+    var id = note.getAttribute("id");
+    var elem = get_by_id(mei,"gn-"+id);
+    if (elem != null) {
+      return elem;
+    }
+    elem = mei.createElement("node");
+    // This node represent that note
+    var label = mei.createElement("label");
+    var note = mei.createElement("note");
+    note.setAttribute("sameas","#"+id);
+    elem.appendChild(label);
+    label.appendChild(note);
+    // But should have a separate XML ID
+    elem.setAttribute("xml:id","gn-" + id);
+    mei_graph.appendChild(elem);
+    return elem;
+}
+            
+// Find graphical element and hide it
+function hide_note(note) {
+  console.debug("Using globals: document to find elem");
+  var elem = get_by_id(document,note_get_sameas(note));
+  if(elem)
+    elem.classList.add("hidden");
+  return elem;
+}
+
+// Find graphical element and hide it
+function hide_he(he) {
+  console.debug("Using globals: document to find elem");
+  var elem = get_by_id(document,he.getAttribute("xml:id"));
+  if(elem) 
+    elem.classList.add("hidden");
+  return elem;
+}
+
+// For a certain relation, find its secondaries and mark them
+function mark_secondaries(he) {
+    console.debug("Using globals: document, mei to find elems");
+    if(!mei.contains(he))
+      he = get_by_id(mei,he.id);
+    var secondaries = relation_secondaries(he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(document,note_get_sameas(n));
+	mark_secondary(svg_note);
+    });
+}
+
+
+// For a certain relation, find its secondaries and unmark them
+function unmark_secondaries(he) {
+    console.debug("Using globals: document, mei to find elems");
+    if(!mei.contains(he))
+      he = get_by_id(mei,he.id);
+    var secondaries = relation_secondaries(he);
+    secondaries.forEach((n) => {
+	var svg_note = get_by_id(document,note_get_sameas(n));
+	unmark_secondary(svg_note);
+    });
+}

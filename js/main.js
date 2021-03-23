@@ -742,16 +742,7 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
   console.debug("Using globals mei, svg_elem");
   var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem;
-  var mei2 = mei.implementation.createDocument(
-        mei.documentElement.namespaceURI, //namespace to use
-        null,             //name of the root element (or for empty document)
-        null              //doctype (null for XML)
-        );
-  var newNode = mei2.importNode(
-      mei.documentElement, //node to import
-      true                 //clone its descendants
-      );
-  mei2.appendChild(newNode);
+  var mei2 = clone_mei(mei)
 
   Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
     x = svg_find_from_mei_elem(svg_elem, draw_context.id_prefix, n);

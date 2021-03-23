@@ -646,4 +646,19 @@ function prefix_ids(elem,prefix) {
   Array.from(elem.children).forEach((e) => prefix_ids(e,prefix));
 }
 
+function clone_mei(mei) {
+  var new_mei = mei.implementation.createDocument(
+	mei.namespaceURI, //namespace to use
+	null,                     //name of the root element (or for empty document)
+	null                      //doctype (null for XML)
+      );
+  var newNode = new_mei.importNode(
+          mei.documentElement, //node to import
+	  true                         //clone its descendants
+      );
+  new_mei.appendChild(newNode);
+  return new_mei;
+}
+
+
 

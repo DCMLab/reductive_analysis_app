@@ -69,6 +69,20 @@ function new_layer(draw_context = draw_contexts[0]) {
   return;
 }
 
+
+function mei_for_layer(mei, score_elem) {
+  var new_mei = clone_mei(mei);
+  var our_score = get_by_id(new_mei, score_elem.getAttribute("xml:id"));
+  var paren = our_score.parentElement;
+  for(let score of paren.getElementsByTagName("score")){
+    if(score === our_score)
+      continue;
+    paren.removeChild(score);
+  }
+  return new_mei;
+}
+
+
 // PLANS 2021-03-09
 // layerify now works as expected, making sameas/copyof connections when
 // appropriate. What's next? One possible feature is to remove elements

@@ -253,7 +253,7 @@ function node_referred_to(id) {
 }
 
 // From MEI graph node to its referred note.
-function note_get_sameas_arg(prefix,note) {
+function note_get_sameas_prefix(prefix,note) {
   return note.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
 	      getAttribute("sameas").replace("#","#"+prefix);
@@ -389,7 +389,7 @@ function add_mei_node_for_arg(mei_graph,note) {
             
 // Find graphical element and hide it
 function hide_note_arg(draw_context,note) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,note));
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_prefix(draw_context.id_prefix,note));
   if(elem)
     elem.classList.add("hidden");
   return elem;
@@ -429,7 +429,7 @@ function mark_secondaries_arg(draw_context,mei_graph,he) {
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,n));
+	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_prefix(draw_context.id_prefix,n));
 	mark_secondary(svg_note);
     });
 }
@@ -442,7 +442,7 @@ function unmark_secondaries_arg(draw_context,mei_graph,he) {
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_arg(draw_context.id_prefix, n));
+	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_prefix(draw_context.id_prefix, n));
 	unmark_secondary(svg_note);
     });
 }

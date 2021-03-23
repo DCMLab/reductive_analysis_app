@@ -205,8 +205,8 @@ function toggle_selected(item,extra) {
 function update_text(){
   var primaries, secondaries;
   if(arg){
-    primaries = to_text_arg(draw_contexts,orig_mei_graph,extraselected);
-    secondaries = to_text_arg(draw_contexts,orig_mei_graph,selected);
+    primaries = to_text_arg(draw_contexts,mei_graph,extraselected);
+    secondaries = to_text_arg(draw_contexts,mei_graph,selected);
   }else{
     primaries = to_text(extraselected);
     secondaries = to_text(selected);
@@ -366,15 +366,14 @@ function do_relation(type,arg) {
     }else if(selected.concat(extraselected)[0].classList.contains("note")){
       var added = [];
         // Add new nodes for all notes
-        var primaries = extraselected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
-        var secondaries = selected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
+        var primaries = extraselected.map((e) => add_mei_node_for_arg(mei_graph,e));
+        var secondaries = selected.map((e) => add_mei_node_for_arg(mei_graph,e));
         added.push(primaries.concat(secondaries));
-        [he_id,mei_elems] = add_relation_arg(orig_mei_graph,primaries, secondaries, type);
+        [he_id,mei_elems] = add_relation_arg(mei_graph,primaries, secondaries, type);
         added.push(mei_elems);
-        console.log(get_by_id(orig_mei, he_id));
         for(var i = 0; i < draw_contexts.length; i++) {
-          added.push(draw_relation_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(), he_id))); // Draw the edge
-          mark_secondaries_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(),he_id));
+          added.push(draw_relation_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
+          mark_secondaries_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
         }
         undo_actions.push(["relation",added.reverse(),selected,extraselected]);
       selected.concat(extraselected).forEach(toggle_selected); // De-select
@@ -385,7 +384,7 @@ function do_relation(type,arg) {
 
 
 function do_metarelation(type, arg ) {
-    console.debug("Using globals: orig_mei, orig_mei_graph, selected, extraselected");
+    console.debug("Using globals: orig_mei, mei_graph, selected, extraselected");
     if (selected.length == 0 && extraselected == 0) {
       return;}
     var ci = get_class_from_classlist(selected.concat(extraselected)[0]); 
@@ -397,18 +396,18 @@ function do_metarelation(type, arg ) {
     if(arg){
 
       var primaries = extraselected.map((e) =>
-          get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
+          get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
       var secondaries = selected.map((e) =>
-          get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
-      var [he_id,mei_elems] = add_metarelation_arg(orig_mei_graph, primaries, secondaries, type);
+          get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
+      var [he_id,mei_elems] = add_metarelation_arg(mei_graph, primaries, secondaries, type);
       added.push(mei_elems);
       for(var i = 0; i< draw_contexts.length; i++)
-        added.push(draw_metarelation_arg(draw_contexts[i], orig_mei_graph, get_by_id(orig_mei_graph.getRootNode(),he_id))); // Draw the edge
+        added.push(draw_metarelation_arg(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge
     }else{
       var [he_id,mei_elems] = add_metarelation(mei,mei_graph,type);
       added.push(mei_elems);  // Add it to the MEI
       if(mei != orig_mei){
-        var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
+        var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,mei_graph,type,he_id);
         added.push(orig_mei_elems);  // Add it to the MEI
       }
       added.push(draw_metarelation(he_id,type)); // Draw the edge
@@ -456,9 +455,9 @@ function do_undo() {
       if(what == "relation")
         added.flat().forEach((x) => { 
           if(arg){
-        if(orig_mei_graph.contains(x) && x.getAttribute("type") == "relation")
+        if(mei_graph.contains(x) && x.getAttribute("type") == "relation")
           for(var i = 0; i < draw_contexts.length; i++) 
-            unmark_secondaries_arg(draw_contexts[i],orig_mei_graph,x)
+            unmark_secondaries_arg(draw_contexts[i],mei_graph,x)
           }else if(mei.contains(x) && x.getAttribute("type") == "relation")
           unmark_secondaries(x);
           });
@@ -634,8 +633,8 @@ function load() {
 // Draw the existing graph
 function draw_graph(draw_context) {
   console.debug("Using globals: mei_graph, mei, selected, extraselected, document");
-  var mei = draw_context.mei;
-  var mei_graph = mei.getElementsByTagName("graph")[0];
+  //var mei = draw_context.mei;
+  //var mei_graph = mei.getElementsByTagName("graph")[0];
   // There's a multi-stage process to get all the info we
   // need... First we get the nodes from the graph element.
   var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
@@ -654,6 +653,8 @@ function draw_graph(draw_context) {
 // Do all of this when we have the MEI in memory
 function load_finish(e) {
   console.debug("Using globals data, parser, mei, format, svg, svg_elem, jquery document, document, mei_graph, midi, orig_*, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
+
+  // Parse the original document
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
   format = "mei";
@@ -681,10 +682,6 @@ function load_finish(e) {
 
   mei_graph = add_or_fetch_graph();
   midi = vrvToolkit.renderToMIDI();
-  orig_mei = mei;
-  orig_data = data;
-  orig_mei_graph = mei_graph;
-  orig_svg = svg;
   orig_midi = midi;
 
   draw_contexts = [{"mei" : mei,
@@ -739,8 +736,7 @@ function load_finish(e) {
 
 
 function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
-  console.debug("Using globals mei, svg_elem");
-  var mei = draw_context.mei;
+//  var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem;
   var mei2 = clone_mei(mei)
 

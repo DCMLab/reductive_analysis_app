@@ -1,6 +1,5 @@
 function draw_relation_arg(draw_context, mei_graph, g_elem) {
   var added = [];
-  var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
   var primaries = relation_primaries_arg(mei_graph,g_elem).map(

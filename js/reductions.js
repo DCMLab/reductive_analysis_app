@@ -48,7 +48,7 @@ function do_reduce_pre(draw_context) { do_reduce_arg(draw_context, mei_graph, se
 function do_reduce_arg(draw_context, mei_graph, sel, extra){
   var selection = sel.concat(extra);
   var target_relations = selection.map(
-        (ge) => get_by_id(mei_graph.getRootNode(), id_or_oldid(ge))
+        (ge) => get_by_id(mei_graph.getRootNode(), get_id(ge))
       );
 
   var all_relations_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "relation";});

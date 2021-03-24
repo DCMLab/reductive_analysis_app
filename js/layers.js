@@ -74,13 +74,18 @@ function new_layer(draw_context = draw_contexts[0]) {
 
 
 function mei_for_layer(mei, score_elem) {
+  if(!mei.contains(score_elem)){
+    console.log("Score element not in MEI, aborting");
+    return null;
+  }
   var new_mei = clone_mei(mei);
   var our_score = get_by_id(new_mei, score_elem.getAttribute("xml:id"));
   var paren = our_score.parentElement;
-  for(let score of paren.getElementsByTagName("score")){
-    if(score === our_score)
+  for(let score of Array.from(paren.getElementsByTagName("score"))){
+    if(score === our_score) 
       continue;
-    paren.removeChild(score);
+    else
+      paren.removeChild(score);
   }
   return new_mei;
 }

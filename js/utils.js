@@ -192,6 +192,8 @@ function get_by_oldid(doc,id){
 
 // From id string to element
 function get_by_id(doc,id) {
+  if(!id)
+    return null;
   if (id[0] == "#") { id = id.slice(1); }
   var elem =  doc.querySelector("[*|id='"+id+"']");
   if(elem) {
@@ -224,9 +226,9 @@ function get_id(elem) {
     // MEI traversal
     if(elem.hasAttribute("sameas"))
 	return get_id(get_by_id(mei,elem.getAttribute("sameas")))
-    if(elem.hasAttribute("copyof"))
+    else if(elem.hasAttribute("copyof"))
 	return get_id(get_by_id(mei,elem.getAttribute("copyof")))
-    else
+    else if(elem.hasAttribute("xml:id"))
         return elem.getAttribute("xml:id")
   }
 }
@@ -477,6 +479,8 @@ function select_samenote() {
 }
 
 function svg_find_from_mei_elem(svg_elem, id_prefix, e) {
+  if(!e)
+    return null;
   // TODO: Sanity checks
   var id = id_prefix + e.getAttribute("xml:id");
   return svg_elem.getRootNode().getElementById(id);

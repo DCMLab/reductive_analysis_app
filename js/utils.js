@@ -664,5 +664,20 @@ function clone_mei(mei) {
   return new_mei;
 }
 
+function get_id_pairs(elem) {
+  var item;
+  if(elem.id)
+    item = [elem.id , get_id(elem)]
+  else if(elem.hasAttribute("xml:id"))
+    item = [elem.getAttribute("xml:id") , get_id(elem)]
+  return [item].concat(Array.from(elem.children).flatMap(get_id_pairs))
+}
+
+
+
+
+
+
+
 
 

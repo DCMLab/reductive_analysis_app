@@ -598,7 +598,7 @@ function save() {
 }
 function save_orig() {
   console.debug("Using globals: orig_mei");
-  var saved = new XMLSerializer().serializeToString(orig_mei);
+  var saved = new XMLSerializer().serializeToString(mei);
   download(saved, filename+".mei", "text/xml");
 }
 
@@ -649,6 +649,49 @@ function draw_graph(draw_context) {
   }
   draw_graph_old(draw_context);
 }
+
+
+function new_layer_element() {
+  var layers_element = document.getElementById("layers");
+  var new_layer = document.createElement("div");
+  new_layer.id = "layer"+layers_element.children.length;
+  new_layer.classList.add("layer");
+  layers_element.appendChild(new_layer);
+  return new_layer;
+}
+
+function new_view_element(layer_element) {
+  var new_view = document.createElement("div");
+  new_view.id = "view"+draw_contexts.length;
+  new_view.classList.add("view");
+  layer_element.appendChild(new_view);
+  return new_view;
+}
+
+function add_buttons(draw_context) {
+    var new_draw_context = draw_context;
+    var reducebutton = document.createElement("input");
+    var undobutton = document.createElement("input");
+    var rerenderbutton = document.createElement("input");
+    var newlayerbutton = document.createElement("input");
+    newlayerbutton.setAttribute("type","button");
+    newlayerbutton.setAttribute("value","Create new layer");
+    reducebutton.setAttribute("type","button");
+    reducebutton.setAttribute("value","Reduce");
+    undobutton.setAttribute("type","button");
+    undobutton.setAttribute("value","Unreduce");
+    rerenderbutton.setAttribute("type","button");
+    rerenderbutton.setAttribute("value","Create new view");
+    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+    undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+    newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
+    draw_context.svg_elem.insertBefore(undobutton,    draw_context.svg_elem.children[0]);
+    draw_context.svg_elem.insertBefore(reducebutton,  draw_context.svg_elem.children[0]);
+    draw_context.svg_elem.insertBefore(rerenderbutton,draw_context.svg_elem.children[0]);
+    draw_context.svg_elem.insertBefore(newlayerbutton,draw_context.svg_elem.children[0]);
+}
+
 
 // Do all of this when we have the MEI in memory
 function load_finish(e) {
@@ -767,6 +810,52 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
   return mei2;
 
 }
+
+function create_new_layer(draw_context) {
+  var new_score_elem = new_layer(draw_context);
+  let new_mei = mei_for_layer(mei, new_score_elem);
+  let new_data = new XMLSerializer().serializeToString(new_mei)
+  let new_svg = vrvToolkit.renderData(new_data, {pageWidth: 20000,
+    pageHeight: 10000, breaks: "none"});
+  if (!new_svg) {
+    console.log ('Verovio could not generate SVG from MEI.');
+    return false;
+  }
+
+  var layer_element = new_layer_element();
+  var new_svg_elem = new_view_element(layer_element);
+  new_svg_elem.innerHTML = new_svg;
+  var layer_context = {
+    "mei"        : new_mei,
+    "layer_elem" : layer_element,
+    "score_elem" : new_score_elem,
+    "id_mapping" : get_id_pairs(new_score_elem)
+  }
+  layer_contexts.push(layer_context);
+  var new_draw_context = {
+		    // TODO: One draw context per existing score element
+		    // already on load.
+		    "mei_score" : new_score_elem,
+		    "svg_elem" : new_svg_elem,
+		    "layer" : layer_context,
+		    "id_prefix" : "",
+		    "reductions" : []};
+
+  add_buttons(new_draw_context)
+  draw_contexts.reverse();
+  draw_contexts.push(new_draw_context);
+  draw_contexts.reverse();
+  new_draw_context.id_prefix = draw_contexts.length;
+  prefix_ids(new_svg_elem,new_draw_context.id_prefix);
+  for (let n of new_svg_elem.getElementsByClassName("note")) {
+      n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
+  }
+  draw_graph(new_draw_context);
+  for (let h of new_svg_elem.getElementsByClassName("relation")) {
+      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
+  }
+}
+
 
 function rerender_arg(draw_context) {
   var new_svg_elem = document.createElement("div");

@@ -7,7 +7,7 @@
 // could use @sameas to indicate that they represent the same pieces of
 // music, just under different levels of abstraction.
 
-function new_layer_element(changes, elem, new_children) {
+function layer_clone_element(changes, elem, new_children) {
   // No need to copy over empty beams and measures.
   if((elem.tagName == "beam" || elem.tagName == "measure") &&
       new_children.findIndex((e) => e.tagName == "note" || 
@@ -33,7 +33,7 @@ function layerify(draw_context, elem) {
   var new_children = results.map((p) => p[0]).filter((x) => x != null);
   var changes = (new_children.length != elem.children.length) || // Something directly below was reduced
                  results.find((p) => p[1]) != undefined // Something further down changed
-  return [new_layer_element(changes,elem,new_children), changes];
+  return [layer_clone_element(changes,elem,new_children), changes];
 }
 
 

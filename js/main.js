@@ -643,7 +643,10 @@ function draw_graph(draw_context) {
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
   if(arg) {
-    relations_nodes.forEach((g_elem) => draw_relation_arg(draw_context,mei_graph,g_elem));
+    relations_nodes.forEach((g_elem) => {
+	      if(draw_relation_arg(draw_context,mei_graph,g_elem))
+		mark_secondaries_arg(draw_context,mei_graph,g_elem);
+	  })
     metarelations_nodes.forEach((g_elem) => draw_metarelation_arg(draw_context,mei_graph,g_elem));
     return;
   }

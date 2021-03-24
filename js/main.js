@@ -692,6 +692,15 @@ function add_buttons(draw_context) {
     draw_context.svg_elem.insertBefore(newlayerbutton,draw_context.svg_elem.children[0]);
 }
 
+function onclick_select_functions(draw_context) {
+  for (let n of draw_context.svg_elem.getElementsByClassName("note")) {
+      n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
+  }
+  for (let h of draw_context.svg_elem.getElementsByClassName("relation")) {
+      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
+  }
+}
+
 
 // Do all of this when we have the MEI in memory
 function load_finish(e) {

@@ -858,91 +858,48 @@ function create_new_layer(draw_context) {
 
 
 function rerender_arg(draw_context) {
-  var new_svg_elem = document.createElement("div");
+//  var new_svg_elem = document.createElement("div");
   var old_svg_elem = draw_context['svg_elem'];
   var output_parent = old_svg_elem.parentElement;
-  new_svg_elem.setAttribute("id","svg_output" + document.getElementsByClassName("svg_output").length);
+//  new_svg_elem.setAttribute("id","svg_output" + document.getElementsByClassName("svg_output").length);
+  var new_svg_elem = new_view_element(draw_context.layer.layer_elem);
   output_parent.insertBefore(new_svg_elem, old_svg_elem);
   var mei2 = rerender_mei(false, draw_context);
   var data2 = new XMLSerializer().serializeToString(mei2);
 
   var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none", format: "mei"});
-
-  draw_context.id_prefix = "old"+(output_parent.children.length-2);
-  prefix_ids(old_svg_elem,draw_context.id_prefix);
+      pageHeight: 10000, breaks: "none"});
   
-  $(new_svg_elem).html(svg2);
+  new_svg_elem.innerHTML = svg2;
   new_svg_elem.classList.add("svg_output");
-  var new_draw_context = {"mei": mei, "svg_elem" : new_svg_elem,
-    "id_prefix" : "", reductions: []};
+  var new_draw_context = {//"mei" : draw_context.mei,
+		    // TODO: One draw context per existing score element
+		    // already on load.
+		    "mei_score" : draw_context.mei_score,
+		    "svg_elem" : new_svg_elem,
+		    "layer" : draw_context.layer,
+		    "id_prefix" : "",
+		    "reductions" : []};
 
-  var reducebutton = document.createElement("input");
-  var undobutton = document.createElement("input");
-  var rerenderbutton = document.createElement("input");
-  reducebutton.setAttribute("type","button");
-  reducebutton.setAttribute("value","Reduce");
-  undobutton.setAttribute("type","button");
-  undobutton.setAttribute("value","Unreduce");
-  rerenderbutton.setAttribute("type","button");
-  rerenderbutton.setAttribute("value","Create new view");
-  reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
-  undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
-  rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
-  new_svg_elem.insertBefore(undobutton,    new_svg_elem.children[0]);
-  new_svg_elem.insertBefore(reducebutton,  new_svg_elem.children[0]);
-  new_svg_elem.insertBefore(rerenderbutton,new_svg_elem.children[0]);
+  new_draw_context.id_prefix = draw_contexts.length;
+  prefix_ids(new_svg_elem,new_draw_context.id_prefix);
+
+  add_buttons(new_draw_context)
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();
-  for (let n of document.getElementsByClassName("note")) {
+  for (let n of new_svg_elem.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   draw_graph(new_draw_context);
+  for (let h of new_svg_elem.getElementsByClassName("relation")) {
+      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
+  }
 }
 
 
 function rerender() {
-  console.debug("Using globals document, svg_elem, jquery document, svg, mei, data, mei_graph, non_notes_hidden, rerendered_after_action, undo_actions")
-  // Create new SVG element, stack the current version on
-  // it..? No I have no idea how to UI this properly.
-  var output_parent = document.getElementById("svg_outputs");
-  var new_svg_elem = document.createElement("div");
-  var old_svg_elem = svg_elem;
-  new_svg_elem.setAttribute("id","svg_output" + output_parent.children.length);
-  output_parent.prepend(new_svg_elem);
-
-  var mei2 = rerender_mei();
-  var data2 = new XMLSerializer().serializeToString(mei2);
-
-  var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none", format: "mei"});
-
-  draw_contexts[0].id_prefix = "old"+(output_parent.children.length-2);
-  prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
-  
-  $(new_svg_elem).html(svg2);
-  var new_draw_context = {"mei": mei, "mei_score": draw_contexts[0].mei_score, "svg_elem" : new_svg_elem, "id_prefix" : "", reductions: []};
-  svg = svg2;
-  data = data2;
-  svg_elem = new_svg_elem;
-  for (let n of document.getElementsByClassName("note")) {
-      n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
-  }
-  if(non_notes_hidden)
-    set_non_note_visibility("hidden");
-  draw_contexts.reverse();
-  draw_contexts.push(new_draw_context);
-  draw_contexts.reverse();
-  // Need also to redraw edges and relations
-  draw_graph(new_draw_context);
-
-  // Can't undo after a rerender.. yet, TODO: Make layers
-  rerendered_after_action=undo_actions.length;
-  // This is one of the ugliest hacks I've made I think
-  var reduces = undo_actions.filter((x) => { return x[0] == "reduce";});
-  undo_actions = [];
-  reduces.forEach((action) => {selected = action[2]; do_reduce();})
+  rerender_arg(draw_contexts[0]);
 }
 
 function texton() { text_input = true; }

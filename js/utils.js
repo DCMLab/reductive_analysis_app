@@ -254,6 +254,25 @@ function node_referred_to(id) {
      }).length > 0;
 }
 
+// From MEI graph node to the note inte the layer referring to the same one
+function note_get_sameas_layer(layer_context, node) {
+  var id = node.getElementsByTagName("label")[0].
+	      getElementsByTagName("note")[0].
+	      getAttribute("sameas");
+  var pair = layer_context.id_mapping.find((x) => ("#"+x[1]) == id);
+  if(pair)
+    return pair[0];
+  else
+    return null;
+}
+
+// From MEI graph node to the note as drawn in the draw context
+function note_get_sameas_drawn(draw_context, note) {
+  var layer_note = note_get_sameas_layer(draw_context.layer, note);
+  return "#"+draw_context.id_prefix + layer_note;
+}
+
+
 // From MEI graph node to its referred note.
 function note_get_sameas_prefix(prefix,note) {
   return note.getElementsByTagName("label")[0].

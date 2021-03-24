@@ -373,3 +373,14 @@ select.instance-select {
   height: auto
 }
 
+.layer {
+  border-style: solid;
+  border-width: 2px;
+}
+
+.view {
+  border-style: dashed;
+  border-width: 1px;
+}
+
+

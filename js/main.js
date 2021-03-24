@@ -713,59 +713,64 @@ function load_finish(e) {
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
   format = "mei";
-  if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei")
+  if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
     // We didn't get a MEI? Try if it's a musicXML
-    format = "musicxml";
-  else
-    mei = fix_synonyms(mei);
-
-  svg = vrvToolkit.renderData(data, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none", format: format});
-  if (!svg) {
-    console.log ('Verovio could not generate SVG.');
-    return false;
-  }
-  $("#svg_outputs").html('<div id="svg_output0"></div>')
-  $("#svg_output0").html(svg);
-  svg_elem = document.getElementById("svg_output0");
-  svg_elem.classList.add("svg_output");
-  if(format == "musicxml"){
+    format = "non-mei";
+    let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+      pageHeight: 10000, breaks: "none"});
+    if (!new_svg) {
+      console.log ('Verovio could not generate SVG from non-MEI file.');
+      return false;
+    }
+    // TODO: Detect failure and bail
     data = vrvToolkit.getMEI();
     parser = new DOMParser();
     mei = parser.parseFromString(data,"text/xml");
+  }else{
+    mei = fix_synonyms(mei);
   }
 
   mei_graph = add_or_fetch_graph();
   midi = vrvToolkit.renderToMIDI();
   orig_midi = midi;
+  // Clear the old (if any)
+  draw_contexts = [];
+  layer_contexts = [];
+  document.getElementById("layers").innerHTML="";
 
-  draw_contexts = [{"mei" : mei,
-                    // TODO: One draw context per existing score element
-		    // already on load.
-                    "mei_score" : mei.getElementsByTagName("score")[0],
-                    "svg_elem" : svg_elem,
-                    "id_prefix" : "",
-                    "reductions" : []}];
+  // Segment existing layers
+  var layers = Array.from(mei.getElementsByTagName("score"));
+  for(let i in layers ){
+    let score_elem = layers[i];
+    let new_mei = mei_for_layer(mei, score_elem);
+    let [new_data, new_svg] = render_mei(new_mei);
+    if (!new_svg) {
+      console.log ('Verovio could not generate SVG from MEI.');
+      return false;
+    }
 
-  if(arg){
-    var new_draw_context = draw_contexts[0];
-    var reducebutton = document.createElement("input");
-    var undobutton = document.createElement("input");
-    var rerenderbutton = document.createElement("input");
-    reducebutton.setAttribute("type","button");
-    reducebutton.setAttribute("value","Reduce");
-    undobutton.setAttribute("type","button");
-    undobutton.setAttribute("value","Unreduce");
-    rerenderbutton.setAttribute("type","button");
-    rerenderbutton.setAttribute("value","Create new view");
-    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
-    undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
-    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
-    svg_elem.insertBefore(undobutton,    svg_elem.children[0]);
-    svg_elem.insertBefore(reducebutton,  svg_elem.children[0]);
-    svg_elem.insertBefore(rerenderbutton,svg_elem.children[0]);
+    var layer_element = new_layer_element();
+    var view_element = new_view_element(layer_element);
+    view_element.innerHTML = new_svg;
+    var layer_context = {
+      "mei"        : new_mei,
+      "layer_elem" : layer_element,
+      "score_elem" : score_elem,
+      "id_mapping" : get_id_pairs(score_elem)
+    }
+    layer_contexts.push(layer_context);
+    var draw_context = {
+		      // TODO: One draw context per existing score element
+		      // already on load.
+		      "mei_score" : score_elem,
+		      "svg_elem" : view_element,
+		      "layer" : layer_context,
+		      "id_prefix" : "",
+		      "reductions" : []};
+    if(i != 0)
+      prefix_draw_context(draw_context);
+    finalize_draw_context(draw_context);
   }
-  draw_graph(draw_contexts[0]);
 
   changes = false;
   undo_actions = [];
@@ -774,9 +779,6 @@ function load_finish(e) {
 
   rerendered_after_action = 0;
 
-  for (let n of document.getElementsByClassName("note")) {
-      n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
-  }
   if(!shades)
     toggle_shades();
   document.onkeypress = function(ev) {handle_keypress(ev);};
@@ -788,7 +790,7 @@ function load_finish(e) {
 function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
 //  var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem;
-  var mei2 = clone_mei(mei)
+  var mei2 = clone_mei(draw_context.layer.mei);
 
   Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
     x = svg_find_from_mei_elem(svg_elem, draw_context.id_prefix, n);
@@ -821,9 +823,7 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
 function create_new_layer(draw_context) {
   var new_score_elem = new_layer(draw_context);
   let new_mei = mei_for_layer(mei, new_score_elem);
-  let new_data = new XMLSerializer().serializeToString(new_mei)
-  let new_svg = vrvToolkit.renderData(new_data, {pageWidth: 20000,
-    pageHeight: 10000, breaks: "none"});
+  var [new_data, new_svg] = render_mei(new_mei);
   if (!new_svg) {
     console.log ('Verovio could not generate SVG from MEI.');
     return false;
@@ -848,34 +848,48 @@ function create_new_layer(draw_context) {
 		    "id_prefix" : "",
 		    "reductions" : []};
 
+  prefix_draw_context(new_draw_context);
+  finalize_draw_context(new_draw_context);
+}
+
+function prefix_draw_context(new_draw_context){
+  new_draw_context.id_prefix = draw_contexts.length;
+  prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);
+}
+
+
+function finalize_draw_context(new_draw_context) {
+
   add_buttons(new_draw_context)
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();
-  new_draw_context.id_prefix = draw_contexts.length;
-  prefix_ids(new_svg_elem,new_draw_context.id_prefix);
-  for (let n of new_svg_elem.getElementsByClassName("note")) {
+  for (let n of new_draw_context.svg_elem.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   draw_graph(new_draw_context);
 }
 
+function render_mei(mei) {
+  var data = new XMLSerializer().serializeToString(mei);
+
+  var svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+      pageHeight: 10000, breaks: "none"});
+  return [data,svg];
+}
+
 
 function rerender_arg(draw_context) {
-//  var new_svg_elem = document.createElement("div");
-  var old_svg_elem = draw_context['svg_elem'];
-  var output_parent = old_svg_elem.parentElement;
-//  new_svg_elem.setAttribute("id","svg_output" + document.getElementsByClassName("svg_output").length);
   var new_svg_elem = new_view_element(draw_context.layer.layer_elem);
-  output_parent.insertBefore(new_svg_elem, old_svg_elem);
-  var mei2 = rerender_mei(false, draw_context);
-  var data2 = new XMLSerializer().serializeToString(mei2);
-
-  var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none"});
+  var new_mei = rerender_mei(false, draw_context);
+  var [new_data, new_svg] = render_mei(new_mei);
+  if (!new_svg) {
+    console.log ('Verovio could not generate SVG from MEI.');
+    return false;
+  }
   
-  new_svg_elem.innerHTML = svg2;
-  var new_draw_context = {//"mei" : draw_context.mei,
+  new_svg_elem.innerHTML = new_svg;
+  var new_draw_context = {
 		    // TODO: One draw context per existing score element
 		    // already on load.
 		    "mei_score" : draw_context.mei_score,
@@ -884,17 +898,8 @@ function rerender_arg(draw_context) {
 		    "id_prefix" : "",
 		    "reductions" : []};
 
-  new_draw_context.id_prefix = draw_contexts.length;
-  prefix_ids(new_svg_elem,new_draw_context.id_prefix);
-
-  add_buttons(new_draw_context)
-  draw_contexts.reverse();
-  draw_contexts.push(new_draw_context);
-  draw_contexts.reverse();
-  for (let n of new_svg_elem.getElementsByClassName("note")) {
-      n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
-  }
-  draw_graph(new_draw_context);
+  prefix_draw_context(new_draw_context);
+  finalize_draw_context(new_draw_context);
 }
 
 

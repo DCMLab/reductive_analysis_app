@@ -410,7 +410,7 @@ function add_mei_node_for_arg(mei_graph,note) {
             
 // Find graphical element and hide it
 function hide_note_arg(draw_context,note) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_prefix(draw_context.id_prefix,note));
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_drawn(draw_context,note));
   if(elem)
     elem.classList.add("hidden");
   return elem;
@@ -444,26 +444,24 @@ function unmark_secondary(item) {
 
 // For a certain relation, find its secondaries and mark them
 function mark_secondaries_arg(draw_context,mei_graph,he) {
-    var mei = draw_context.mei;
     var svg_elem = draw_context.svg_elem;
-    if(he.tagName != "node")
+    if(he.tagName != "node") //TODO: Probably bad, but shouldn't happen from do_relation
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_prefix(draw_context.id_prefix,n));
+	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_drawn(draw_context,n));
 	mark_secondary(svg_note);
     });
 }
 
 // For a certain relation, find its secondaries and unmark them
 function unmark_secondaries_arg(draw_context,mei_graph,he) {
-    var mei = draw_context.mei;
     var svg_elem = draw_context.svg_elem;
     if(he.tagName != "node")
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_prefix(draw_context.id_prefix, n));
+	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_drawn(draw_context, n));
 	unmark_secondary(svg_note);
     });
 }

@@ -772,12 +772,7 @@ function load_finish(e) {
   rerendered_after_action = 0;
 
   for (let n of document.getElementsByClassName("note")) {
-      //n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
       n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
-  }
-  for (let h of document.getElementsByClassName("relation")) {
-      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
-      //h.addEventListener('click', function(ev) {toggle_selected(h,ev.shiftKey) } )
   }
   if(!shades)
     toggle_shades();
@@ -860,9 +855,6 @@ function create_new_layer(draw_context) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   draw_graph(new_draw_context);
-  for (let h of new_svg_elem.getElementsByClassName("relation")) {
-      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
-  }
 }
 
 
@@ -880,7 +872,6 @@ function rerender_arg(draw_context) {
       pageHeight: 10000, breaks: "none"});
   
   new_svg_elem.innerHTML = svg2;
-  new_svg_elem.classList.add("svg_output");
   var new_draw_context = {//"mei" : draw_context.mei,
 		    // TODO: One draw context per existing score element
 		    // already on load.
@@ -901,9 +892,6 @@ function rerender_arg(draw_context) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   draw_graph(new_draw_context);
-  for (let h of new_svg_elem.getElementsByClassName("relation")) {
-      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
-  }
 }
 
 

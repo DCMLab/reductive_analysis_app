@@ -212,8 +212,8 @@ function id_or_oldid(elem){
 }
 
 // More complex utility to fully search until we find the "basic" ID, in
-// either the MEI or the document
-
+// either the MEI or the document.
+// Takes an element, gives an ID
 function get_id(elem) {
   console.debug("Using globals: document, mei")
   if(document.contains(elem)){

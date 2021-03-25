@@ -798,8 +798,8 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
   var mei2 = clone_mei(draw_context.layer.mei);
 
   Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
-    x = svg_find_from_mei_elem(svg_elem, draw_context.id_prefix, n);
-    if(x == null || x.classList.contains("hidden")){
+    let x = document.getElementById(id_in_svg(draw_context,get_id(n)));
+    if(!x || x.classList.contains("hidden")){
       //TODO: this is wrong
       // 
       var paren = n.parentNode;

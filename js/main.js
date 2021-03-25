@@ -773,7 +773,7 @@ function load_finish(e) {
 		      "id_prefix" : "",
 		      "reductions" : []};
     if(i != 0)
-      prefix_draw_context(draw_context);
+      draw_context.id_prefix = draw_contexts.length;
     finalize_draw_context(draw_context);
   }
 
@@ -853,13 +853,9 @@ function create_new_layer(draw_context) {
 		    "id_prefix" : "",
 		    "reductions" : []};
 
-  prefix_draw_context(new_draw_context);
-  finalize_draw_context(new_draw_context);
-}
-
-function prefix_draw_context(new_draw_context){
+  //prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length;
-  prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);
+  finalize_draw_context(new_draw_context);
 }
 
 
@@ -903,7 +899,8 @@ function rerender_arg(draw_context) {
 		    "id_prefix" : "",
 		    "reductions" : []};
 
-  prefix_draw_context(new_draw_context);
+  new_draw_context.id_prefix = draw_contexts.length;
+  prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);
   finalize_draw_context(new_draw_context);
 }
 

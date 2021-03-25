@@ -82,6 +82,7 @@ function do_edges() {
 }
 
 function do_relation_old(type,arg){
+    var orig_mei = mei;
     if(selected.concat(extraselected)[0].classList.contains("relation")){
       var types = [];
       selected.concat(extraselected).forEach((he) => {
@@ -114,7 +115,6 @@ function do_relation_old(type,arg){
 
 function draw_graph_old(draw_context) {
   console.debug("Using globals: mei_graph, mei, selected, extraselected, document");
-  var mei = draw_context.mei;
   var mei_graph = mei.getElementsByTagName("graph")[0];
   // There's a multi-stage process to get all the info we
   // need... First we get the nodes from the graph element.

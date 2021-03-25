@@ -26,6 +26,8 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
 
   var elem = roundedHull(notes.map(note_coords));
   elem.setAttribute("id",id);
+  if(id_prefix != "")
+    elem.setAttribute("oldid",g_elem.getAttribute("xml:id"));
   elem.classList.add("relation");
   elem.setAttribute("type",type);
   elem.onwheel = (ev) => {

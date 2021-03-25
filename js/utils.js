@@ -432,8 +432,8 @@ function add_mei_node_for_arg(mei_graph,note) {
             
 // Find graphical element and hide it
 function hide_note_arg(draw_context,note) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_drawn(draw_context,note));
-  if(elem)
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),id_in_svg(draw_context,node_to_note_id(note)));
+  if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
   return elem;
 }
@@ -441,7 +441,7 @@ function hide_note_arg(draw_context,note) {
 // Find graphical element and hide it
 function hide_he_arg(draw_context,he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
-  if(elem) 
+  if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
   return elem;
 }
@@ -471,7 +471,7 @@ function mark_secondaries_arg(draw_context,mei_graph,he) {
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_drawn(draw_context,n));
+	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
 	mark_secondary(svg_note);
     });
 }
@@ -483,7 +483,7 @@ function unmark_secondaries_arg(draw_context,mei_graph,he) {
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_drawn(draw_context, n));
+	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
 	unmark_secondary(svg_note);
     });
 }
@@ -517,12 +517,20 @@ function select_samenote() {
   }
 }
 
-function svg_find_from_mei_elem(svg_elem, id_prefix, e) {
+function svg_find_from_mei_elem(svg_container, id_prefix, e) {
   if(!e)
     return null;
   // TODO: Sanity checks
   var id = id_prefix + e.getAttribute("xml:id");
-  return svg_elem.getRootNode().getElementById(id);
+  var svg_e = svg_container.getRootNode().getElementById(id);
+  if(svg_e)
+    return svg_e;
+  else {
+    id = e.getAttribute("xml:id");
+    svg_e = svg_container.getRootNode().getElementById(id);
+    if(svg_container.contains(svg_e))
+      return svg_e;
+  }
 }
 
 function getBoundingBoxTop (elem) {

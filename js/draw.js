@@ -3,11 +3,11 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
   var primaries = relation_primaries_arg(mei_graph,g_elem).map(
-      (e) => svg_find_from_mei_elem(svg_elem, id_prefix, 
-	       get_by_id(mei, note_get_sameas_layer(draw_context.layer, e))));
+      (e) => document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
+    );
   var secondaries = relation_secondaries_arg(mei_graph,g_elem).map(
-      (e) => svg_find_from_mei_elem(svg_elem, id_prefix, 
-	       get_by_id(mei, note_get_sameas_layer(draw_context.layer, e))));
+      (e) => document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
+    );
   var notes = primaries.concat(secondaries)
   notes.sort((a,b) => { 
       if(!a) return -1;

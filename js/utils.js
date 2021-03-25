@@ -233,6 +233,28 @@ function get_id(elem) {
   }
 }
 
+function id_in_svg(draw_context,id) {
+  if (id[0] == "#") { id = id.slice(1); }
+  // use the layer.id_mapping to find the things in the layer score (if
+  // that's how it is), then dc.id_prefix to calculate the final id
+  var layer_id = id_in_layer(draw_context.layer, id);
+  var svg_note = document.getElementById(layer_id);
+  if(draw_context.svg_elem.contains(svg_note))
+    return layer_id;
+  if(layer_id)
+    return draw_context.id_prefix + layer_id;
+}
+
+function id_in_layer(layer_context, id) {
+  if (id[0] == "#") { id = id.slice(1); }
+  //use the layer.id_mapping to find the thing, if it exists
+  var pair = layer_context.id_mapping.find((p) => p[1] == id);
+  if(pair)
+    return pair[0];
+  else
+    return undefined; 
+}
+
 
 
 // From graph node to list of all arcs that refer to it

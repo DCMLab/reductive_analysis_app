@@ -277,7 +277,7 @@ function node_referred_to(id) {
 }
 
 // From MEI graph node to the note inte the layer referring to the same one
-function note_get_sameas_layer(layer_context, node) {
+function node_to_note_id_layer(layer_context, node) {
   var id = node.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
 	      getAttribute("sameas");
@@ -289,14 +289,16 @@ function note_get_sameas_layer(layer_context, node) {
 }
 
 // From MEI graph node to the note as drawn in the draw context
-function note_get_sameas_drawn(draw_context, note) {
-  var layer_note = note_get_sameas_layer(draw_context.layer, note);
-  return "#"+draw_context.id_prefix + layer_note;
+function node_to_note_id_drawn(draw_context, note) {
+  var layer_note = node_to_note_id_layer(draw_context.layer, note);
+  if(draw_context.svg_elem.getRootNode().getElementById(layer_note))
+    return "#" + layer_note;
+  else
+    return "#"+draw_context.id_prefix + layer_note;
 }
 
-
 // From MEI graph node to its referred note.
-function note_get_sameas_prefix(prefix,note) {
+function node_to_note_id_prefix(prefix,note) {
   return note.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
 	      getAttribute("sameas").replace("#","#"+prefix);

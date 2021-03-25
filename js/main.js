@@ -274,25 +274,23 @@ function delete_relation(elem) {
   console.debug("Using globals: mei for element selection");
   //Assume no meta-edges for now, meaning we only have to
   //remove the SVG elem, the MEI node, and any involved arcs
-  var orig_mei_he,mei_he = get_by_id(mei,elem.id);
-  unmark_secondaries(mei_he);
+  var mei_id = get_id(elem);
+  var mei_he = get_by_id(mei,mei_id);
+  var svg_hes = [];
+  for(draw_context of draw_contexts){
+    unmark_secondaries_arg(draw_context, mei_graph, mei_he);
+    svg_hes.push(get_by_id(document,draw_context.id_prefix + mei_id));
+  }
+
   
-  var orig_arcs,arcs =
+  var arcs =
     Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
       {
        return arc.getAttribute("to") == "#"+elem.id ||
               arc.getAttribute("from") == "#"+elem.id;
       });
-  if(mei != orig_mei){
-    orig_mei_he = get_by_id(mei,selected[0].id);
-    orig_arcs =
-      Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
-        {
-         return arc.getAttribute("to") == "#"+elem.id ||
-                arc.getAttribute("from") == "#"+elem.id;
-        });
-  }
-  var removed = arcs.concat(orig_arcs).concat([elem,mei_he,orig_mei_he]);
+  var removed = arcs.concat(svg_hes);
+  removed.push(mei_he);
   var action_removed = removed.map((x) => {if(x != undefined){
       var elems = [x,x.parentElement,x.nextSibling]; 
       // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
@@ -471,9 +469,16 @@ function do_undo() {
       extra.forEach((x) => {toggle_selected(x,true);});
     }else if( what == "delete relation" ) {
       var removed = elems;
-      removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
-      selected = sel;
-      selected.forEach(mark_secondaries);
+      removed.forEach((x) => {
+	  if(x) x[1].insertBefore(x[0],x[2])
+	  let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
+	  if(dc){
+	    let mei_id = get_id(x[0]);
+	    let mei_he = get_by_id(mei,mei_id);
+	    mark_secondaries_arg(dc, mei_graph, mei_he)
+	  }
+	});
+
     }else if (what == "change relation type") {
       var types = elems;
       sel.concat(extra).forEach((he) => {

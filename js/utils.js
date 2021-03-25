@@ -281,7 +281,7 @@ function note_get_sameas_prefix(prefix,note) {
 }
 
 // From MEI graph node to its referred note.
-function note_get_sameas(note) {
+function node_to_note_id(note) {
   return note.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
 	      getAttribute("sameas");
@@ -327,7 +327,7 @@ function get_time(note) {
 function relation_get_notes(he) {
   he = get_by_id(mei,get_id(he));
   var note_nodes = relation_allnodes_arg(mei_graph,he);
-  var notes = note_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
+  var notes = note_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return notes;
 
 }
@@ -335,9 +335,9 @@ function relation_get_notes(he) {
 function relation_get_notes_separated(he) {
   he = get_by_id(mei,get_id(he));
   var prim_nodes = relation_primaries_arg(mei_graph,he);
-  var prims = prim_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
+  var prims = prim_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   var sec_nodes = relation_secondaries_arg(mei_graph,he);
-  var secs = sec_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
+  var secs = sec_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return [prims,secs];
 }
 

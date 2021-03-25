@@ -128,7 +128,7 @@ function draw_graph_old(draw_context) {
   var note_ids = nodes_array.map((x) => {
                 try{
                   return [x, 
-                          note_get_sameas(x)]
+                          node_to_note_id(x)]
                 }catch{
                   return [];
                 }
@@ -293,7 +293,7 @@ function add_mei_node_for(mei,mei_graph,note) {
 // Find graphical element and hide it
 function hide_note(note) {
   console.debug("Using globals: document to find elem");
-  var elem = get_by_id(document,note_get_sameas(note));
+  var elem = get_by_id(document,node_to_note_id(note));
   if(elem)
     elem.classList.add("hidden");
   return elem;
@@ -315,7 +315,7 @@ function mark_secondaries(he) {
       he = get_by_id(mei,he.id);
     var secondaries = relation_secondaries(he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(document,note_get_sameas(n));
+	var svg_note = get_by_id(document,node_to_note_id(n));
 	mark_secondary(svg_note);
     });
 }
@@ -328,7 +328,7 @@ function unmark_secondaries(he) {
       he = get_by_id(mei,he.id);
     var secondaries = relation_secondaries(he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(document,note_get_sameas(n));
+	var svg_note = get_by_id(document,node_to_note_id(n));
 	unmark_secondary(svg_note);
     });
 }

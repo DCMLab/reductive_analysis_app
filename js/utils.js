@@ -686,7 +686,7 @@ function fix_synonyms(mei) {
 
 // Make a rest of the same properties as the given note.
 function note_to_rest(mei,note) {
-  mei.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
+  var rest = mei.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
   rest.setAttribute("xml:id","rest-"+note.getAttribute("xml:id"));
   rest.setAttribute("dur",note.getAttribute("dur"));
   rest.setAttribute("n",note.getAttribute("n"));
@@ -709,7 +709,36 @@ function note_to_rest(mei,note) {
   rest.setAttribute("tuplet",note.getAttribute("tuplet"));
   //That's all I can think of. There's probably a better
   //way to do this..
+  return rest;
 }
+
+function note_to_space(mei,note) {
+  var space = mei.createElementNS("http://www.music-encoding.org/ns/mei", 'space');
+  space.setAttribute("xml:id","rest-"+note.getAttribute("xml:id"));
+  space.setAttribute("dur",note.getAttribute("dur"));
+  space.setAttribute("n",note.getAttribute("n"));
+  space.setAttribute("dots",note.getAttribute("dots"));
+  space.setAttribute("when",note.getAttribute("when"));
+  space.setAttribute("layer",note.getAttribute("layer"));
+  space.setAttribute("staff",note.getAttribute("staff"));
+  space.setAttribute("tstamp.ges",note.getAttribute("tstamp.ges"));
+  space.setAttribute("tstamp.real",note.getAttribute("tstamp.real"));
+  space.setAttribute("tstamp",note.getAttribute("tstamp"));
+  space.setAttribute("loc",note.getAttribute("loc"));
+  space.setAttribute("dur.ges",note.getAttribute("dur.ges"));
+  space.setAttribute("dots.ges",note.getAttribute("dots.ges"));
+  space.setAttribute("dur.metrical",note.getAttribute("dur.ges"));
+  space.setAttribute("dur.ppq",note.getAttribute("dur.ppq"));
+  space.setAttribute("dur.real",note.getAttribute("dur.real"));
+  space.setAttribute("dur.recip",note.getAttribute("dur.recip"));
+  space.setAttribute("beam",note.getAttribute("beam"));
+  space.setAttribute("fermata",note.getAttribute("fermata"));
+  space.setAttribute("tuplet",note.getAttribute("tuplet"));
+  //That's all I can think of. There's probably a better
+  //way to do this..
+  return space;
+}
+
 
 // Traverse the XML tree and add on a prefix to the start of each ID. If
 // it's an SVG, we also save the old id in the oldid attribute

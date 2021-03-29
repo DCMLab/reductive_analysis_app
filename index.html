@@ -80,22 +80,21 @@
 	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("",arg)" > 
 	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value, arg)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
-	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
-	  <input type="button" id="midireducebutton" value="Play reduction" onclick="play_midi_reduction()" >
 	  <div id="relation_buttons">
 	  </div>
 	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
-	  <!--input type="button" id="downloadbutton" value="Save" onclick="save()" -->
 	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
 	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
-	  <input type="button" id="reducebutton" value="(R)educe Relations" onclick="do_reduce()" >
-	  <input type="button" id="undoreducebutton" value="Undo Reduction" onclick="undo_reduce()" >
+	  <!--input type="button" id="reducebutton" value="(R)educe Relations" onclick="do_reduce()" >
+	  <input type="button" id="undoreducebutton" value="Undo Reduction" onclick="undo_reduce()" -->
 	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	  <input type="button" id="rerenderbutton" value="Create new view" onclick="rerender()" >
-	  <input type="button" id="layerbutton" value="Create new layer" onclick="new_layer()" >
+	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
+	  <input type="button" id="midireducebutton" value="Play reduction" onclick="play_midi_reduction()" >
+	  <!--input type="button" id="rerenderbutton" value="Create new view" onclick="rerender()" >
+	  <input type="button" id="layerbutton" value="Create new layer" onclick="new_layer()" -->
 	  <!--input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" --> <br/>
 
 	</div>

@@ -16,7 +16,7 @@ function layer_clone_element(changes, elem, new_children) {
     return null;
   var new_elem = elem.cloneNode();
   if(changes){
-    new_elem.setAttribute("sameas", elem.getAttribute("xml:id"));
+    new_elem.setAttribute("corresp", elem.getAttribute("xml:id"));
   }else{
     new_elem.setAttribute("copyof", elem.getAttribute("xml:id"));
   }
@@ -27,7 +27,7 @@ function layer_clone_element(changes, elem, new_children) {
 function layerify(draw_context, elem) {
   var svg_elem = document.getElementById(id_in_svg(draw_context,get_id(elem)));
   if(elem.tagName == "note" && (!svg_elem || svg_elem.classList.contains("hidden"))) // This elem has been reduced away
-    return (null, true); //It may be that we should replace it with a rest instead
+    return [note_to_space(mei,elem), true]; //It may be that we should replace it with a space instead
   var results = Array.from(elem.children).map((e) => layerify(draw_context, e));
   var new_children = results.map((p) => p[0]).filter((x) => x != null);
   var changes = (new_children.length != elem.children.length) || // Something directly below was reduced

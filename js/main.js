@@ -676,6 +676,14 @@ function new_view_element(layer_element) {
   return new_view;
 }
 
+function button(value) {
+  var button = document.createElement("input");
+  button.setAttribute("type","button");
+  button.setAttribute("value",value);
+  return button;
+}
+
+
 function add_buttons(draw_context) {
     var new_draw_context = draw_context;
     var reducebutton = document.createElement("input");

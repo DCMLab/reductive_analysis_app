@@ -35,12 +35,22 @@ var redo_actions = []; //TODO, maybe?
 // Each draw context contains information relevant to drawing
 // into one of the SVG renders. In particular, we store
 //  * The <div> element containing the SVG
-//  * The MEI rendered, parsed into a DOM object
+//  * The outer <div> element that also contains the view-specific buttons
+//  and controls
+//  * The amount of zoom (should be moved to style?)
+//  * The stack of local reduce actions
+//  * The layer context to which this view belongs
 //  * The prefix used for the element IDs in the SVG (compared
 //    to the MEI)
-// The first element is the latest, shown at the top. 
+// The first element is the latest
 var draw_contexts = [];
 
+// Each layer context contains information relevant to the layer, such as
+//  * The rendered MEI
+//  * The score element in the original MEI
+//  * The <div> element containing the layer
+//  * A mapping from each element in the layer score element to its
+//  canonical representative
 var layer_contexts = [];
 
 var rerendered_after_reduce = 0;

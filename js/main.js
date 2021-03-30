@@ -150,9 +150,9 @@ function toggle_he_selected(selecting) {
           button.setAttribute("value",val.replace("Set to","Add"));
   });
   if(selecting)
-    document.getElementById("meta_buttons").style.display="";
+    document.getElementById("meta_buttons").classList.add("hidden");
   else
-    document.getElementById("meta_buttons").style.display="none";
+    document.getElementById("meta_buttons").classList.remove("hidden");
 }
 
 // Toggle if a thing (for now: note or relation) is selected or not.
@@ -701,6 +701,7 @@ function button(value) {
 function add_buttons(draw_context) {
     var new_draw_context = draw_context;
     var buttondiv = document.createElement("div");
+    buttondiv.classList.add("view_buttons");
     var newlayerbutton = button("Create new layer");
     var reducebutton = button("Reduce");
     var undobutton = button("Unreduce");
@@ -718,7 +719,7 @@ function add_buttons(draw_context) {
 
 
     var zoomdiv = document.createElement("div");
-    zoomdiv.style="position:sticky; top:0; right:0; z-index:2";
+    zoomdiv.classList.add("zoom_buttons");
     var zoomin = button("+");
     var zoomout = button("-");
     zoomin.onclick = () => { zoom_in(draw_context); };
@@ -948,12 +949,12 @@ function rerender() {
 function texton() { text_input = true; }
 function textoff() { text_input = false; }
 function show_buttons() {
-  $("#load_save")[0].style.display="";
-  $("#hidden_buttons")[0].style.display="none";
+  $("#load_save")[0].classList.remove("hidden");
+  $("#hidden_buttons")[0].classList.add("hidden");
 }
 function hide_buttons() {
-  $("#load_save")[0].style.display="none";
-  $("#hidden_buttons")[0].style.display="";
+  $("#load_save")[0].classList.add("hidden");
+  $("#hidden_buttons")[0].classList.remove("hidden");
 }
 
 function zoom_in(draw_context) {

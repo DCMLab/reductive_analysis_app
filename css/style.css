@@ -384,4 +384,9 @@ select.instance-select {
   border-width: 1px;
 }
 
+.main_buttons {
+position:fixed;
+bottom:0;
+z-index:2;
+}
 

@@ -62,14 +62,15 @@
 
         <script src="js/main.js" type="text/javascript">
 	</script>
-	<div id="selected_things" style="position:fixed; fill-opacity: 0.5;
-	stroke-opacity: 0.5">Primaries:<br/>Secondaries:</div>
-	<div id="hidden_buttons" style="position:fixed; bottom:0; z-index:2 ; display:none">
+	<div id="selected_things"><!-- style="position:fixed; fill-opacity: 0.5;
+	stroke-opacity: 0.5"-->Primaries:<br/>Secondaries:</div>
+	<div id="hidden_buttons" class="main_buttons hidden"><!-- style="position:fixed; bottom:0;
+	z-index:2 ; display:none"-->
 	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
 	</div>
-	<div id="load_save" style="position:fixed; bottom:0; z-index:2">
+	<div id="load_save" class="main_buttons"><!--style="position:fixed; bottom:0; z-index:2"-->
 	  <div id="player"></div>
-	  <div id="meta_buttons" style="display:none">
+	  <div id="meta_buttons" class="hidden">
 	  <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value, arg)" >
 	  <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
 	  </div>

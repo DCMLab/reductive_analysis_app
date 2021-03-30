@@ -85,6 +85,7 @@ var roundedHullN = function (polyPoints, hullPadding) {
 
 
 function roundedHull(points) {
+  // Returns an SVG path for a rounded hull around the points
   var hullPadding = 200;
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking
@@ -99,6 +100,7 @@ function roundedHull(points) {
 }
 
 function getRandomColor() {
+    // Returns a random colour
     var letters = '0123456789ABCDEF';
     var color = '#';
     for (var i = 0; i < 6; i++) {
@@ -108,6 +110,7 @@ function getRandomColor() {
 }
 
 function getRandomShade(colour) {
+    //  Returns a random shade within a specified range
     var letters = '0123456789ABCDEF';
     var shade = '#';
     for (var i = 0; i < 6; i++) {
@@ -148,6 +151,7 @@ function circle(p,rad) {
 }
 
 function flip_to_bg(elem) {
+    // Shifts the SVG element to be drawn first (e.g. in the background)
     var paren = elem.parentElement;
     paren.removeChild(elem);
     paren.insertBefore(elem,paren.children[0]);
@@ -155,50 +159,33 @@ function flip_to_bg(elem) {
 
 
 function add_to_svg_bg_arg(svg_elem,newElement) {
+  // Adds newElement in the background of the system element 
   var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
-  parent.insertBefore(newElement,sibling);
-}
-
-function add_to_svg_bg(newElement) {
-  var sibling = document.getElementsByClassName("system")[0];
-  var parent = sibling.parentNode;
-  console.debug("Using global: document to get 'system' element");
   parent.insertBefore(newElement,sibling);
 }
 
 function add_to_svg_fg_arg(svg_elem,newElement) {
+  // Adds newElement in the foreground of the system element 
   var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
   parent.appendChild(newElement);
 }
 
-function add_to_svg_fg(newElement) {
-  var sibling = document.getElementsByClassName("system")[0];
-  console.debug("Using global: document to get 'system' element");
-  var parent = sibling.parentNode;
-  parent.appendChild(newElement);
-}
-
-
 function g_arg(svg_elem) {
+  // Creates a new SVG g element
   var newElement = svg_elem.getRootNode().createElementNS("http://www.w3.org/2000/svg", 'g');
-  return newElement;
-}
-
-function g() {
-  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-  console.debug("Using global: document to create new element");
   return newElement;
 }
 
 // Note coordinates are off center by a bit
 function note_coords(note) {
+  // Computes useful coordinates of a note
   return [note.getElementsByTagName("use")[0].x.animVal.value + 100,
           note.getElementsByTagName("use")[0].y.animVal.value]
 }
 
-function get_by_oldid_elem(doc,elem) {return get_by_id(doc, id_or_oldid(elem));}
+function get_by_oldid_elem(doc,elem) {return get_by_id(doc, get_id(elem));}
 
 // Gets all elements from the doc with the oldid
 function get_by_oldid(doc,id){
@@ -211,8 +198,10 @@ function get_by_oldid(doc,id){
   }
 }
 
-// From id string to element
+// From id string to element, looking in the document doc
 function get_by_id(doc,id) {
+  if(!id)
+    return null;
   if (id[0] == "#") { id = id.slice(1); }
   var elem =  doc.querySelector("[*|id='"+id+"']");
   if(elem) {
@@ -229,6 +218,58 @@ function id_or_oldid(elem){
   else
     return elem.id;
 }
+
+// More complex utility to fully search until we find the "basic" ID, in
+// either the MEI or the document.
+// Takes an element, gives an ID string
+function get_id(elem) {
+  if(document.contains(elem)){
+    // SVG traversal
+    if(!elem.hasAttribute("oldid"))
+      return elem.id;
+    else
+      return get_id(document.getElementById(elem.getAttribute("oldid")))
+  }else if(elem.hasAttribute("xml:id")){
+    // MEI traversal
+    if(elem.hasAttribute("sameas"))
+	return get_id(get_by_id(mei,elem.getAttribute("sameas")))
+    else if(elem.hasAttribute("corresp"))
+	return get_id(get_by_id(mei,elem.getAttribute("corresp")))
+    else if(elem.hasAttribute("copyof"))
+	return get_id(get_by_id(mei,elem.getAttribute("copyof")))
+    else if(elem.hasAttribute("xml:id"))
+        return elem.getAttribute("xml:id")
+  }
+}
+
+function id_in_svg(draw_context,id) {
+  if(!id)
+    return undefined;
+  // Computes the relevant ID string for the element in the draw
+  // context that correlates to the given ID string
+  if (id[0] == "#") { id = id.slice(1); }
+  // use the layer.id_mapping to find the things in the layer score (if
+  // that's how it is), then dc.id_prefix to calculate the final id
+  var layer_id = id_in_layer(draw_context.layer, id);
+  var svg_note = document.getElementById(layer_id);
+  if(draw_context.svg_elem.contains(svg_note))
+    return layer_id;
+  if(layer_id)
+    return draw_context.id_prefix + layer_id;
+}
+
+function id_in_layer(layer_context, id) {
+  // Computes the relevant ID string for the element in the layer
+  // context that correlates to the given ID string
+  if (id[0] == "#") { id = id.slice(1); }
+  //use the layer.id_mapping to find the thing, if it exists
+  var pair = layer_context.id_mapping.find((p) => p[1] == id);
+  if(pair)
+    return pair[0];
+  else
+    return undefined; 
+}
+
 
 
 // From graph node to list of all arcs that refer to it
@@ -250,15 +291,36 @@ function node_referred_to(id) {
      }).length > 0;
 }
 
-// From MEI graph node to its referred note.
-function note_get_sameas_arg(prefix,note) {
+// From MEI graph node to the note in the layer referring to the same one
+function node_to_note_id_layer(layer_context, node) {
+  var id = node.getElementsByTagName("label")[0].
+	      getElementsByTagName("note")[0].
+	      getAttribute("sameas");
+  var pair = layer_context.id_mapping.find((x) => ("#"+x[1]) == id);
+  if(pair)
+    return pair[0];
+  else
+    return null;
+}
+
+// From MEI graph node to and ID string for the note as drawn in the draw context
+function node_to_note_id_drawn(draw_context, note) {
+  var layer_note = node_to_note_id_layer(draw_context.layer, note);
+  if(draw_context.svg_elem.getRootNode().getElementById(layer_note))
+    return "#" + layer_note;
+  else
+    return "#"+draw_context.id_prefix + layer_note;
+}
+
+// From MEI graph node to the ID string for its referred note.
+function node_to_note_id_prefix(prefix,note) {
   return note.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
 	      getAttribute("sameas").replace("#","#"+prefix);
 }
 
-// From MEI graph node to its referred note.
-function note_get_sameas(note) {
+// From MEI graph node to the ID string for its referred note.
+function node_to_note_id(note) {
   return note.getElementsByTagName("label")[0].
 	      getElementsByTagName("note")[0].
 	      getAttribute("sameas");
@@ -269,11 +331,11 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-// What's the accidentals for this note?
+// What's the accidentals for the given (SVG or MEI) note?
 function note_get_accid(note) {
   console.debug("Using globals: document, mei to find element");
   if(document.contains(note))
-    note = get_by_id(mei,note.id);
+    note = get_by_id(mei,get_id(note));
   if(note.hasAttribute("accid.ges"))
       return note.getAttribute("accid.ges");
   if(note.hasAttribute("accid"))
@@ -295,30 +357,26 @@ function note_get_accid(note) {
 function get_time(note) {
   console.debug("Using globals: document, mei to find element");
   if(document.contains(note))
-    note = get_by_id(mei,note.id);
+    note = get_by_id(mei,get_id(note));
   return vrvToolkit.getTimeForElement(note.getAttribute("xml:id"));
 }
 
 
 // From any relation element to list of MEI note elements
 function relation_get_notes(he) {
-  console.debug("Using globals: document, mei to find element");
-  if(document.contains(he))
-    he = get_by_id(mei,he.id);
-  var note_nodes = relation_allnodes(he);
-  var notes = note_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
+  he = get_by_id(mei,get_id(he));
+  var note_nodes = relation_allnodes_arg(mei_graph,he);
+  var notes = note_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return notes;
 
 }
 // From any relation element to list of MEI note elements
 function relation_get_notes_separated(he) {
-  console.debug("Using globals: document, mei to find element");
-  if(document.contains(he))
-    he = get_by_id(mei,he.id);
-  var prim_nodes = relation_primaries(he);
-  var prims = prim_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
-  var sec_nodes = relation_secondaries(he);
-  var secs = sec_nodes.map(note_get_sameas).map((n) => get_by_id(mei,n));
+  he = get_by_id(mei,get_id(he));
+  var prim_nodes = relation_primaries_arg(mei_graph,he);
+  var prims = prim_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
+  var sec_nodes = relation_secondaries_arg(mei_graph,he);
+  var secs = sec_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return [prims,secs];
 }
 
@@ -334,18 +392,6 @@ function relation_allnodes_arg(mei_graph,he) {
   return nodes;
 }
 
-// Get the MEI-graph nodes that are adjacent to a relation
-function relation_allnodes(he) {
-  console.debug("Using globals: mei, mei_graph to find graph connections");
-  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-  var nodes = [];
-  arcs_array.forEach((a) => {
-        if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
-          nodes.push(get_by_id(mei,a.getAttribute("to")));
-        }
-      });
-  return nodes;
-}
 // Get the MEI-graph nodes that are adjacent and primary to a relation
 function relation_primaries_arg(mei_graph,he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
@@ -370,33 +416,8 @@ function relation_secondaries_arg(mei_graph,he) {
       });
   return nodes;
 }
-// Get the MEI-graph nodes that are adjacent and primary to a relation
-function relation_primaries(he) {
-  console.debug("Using globals: mei, mei_graph to find graph connections");
-  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-  var nodes = [];
-  arcs_array.forEach((a) => {
-    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
-       a.getAttribute("type") == "primary"){
-      nodes.push(get_by_id(mei,a.getAttribute("to")));
-    }
-      });
-  return nodes;
-}
-// Get the MEI-graph nodes that are adjacent and secondary to a relation
-function relation_secondaries(he) {
-  console.debug("Using globals: mei, mei_graph to find graph connections");
-  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-  var nodes = [];
-  arcs_array.forEach((a) => {
-    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id") &&
-       a.getAttribute("type") == "secondary"){
-      nodes.push(get_by_id(mei,a.getAttribute("to")));
-    }
-      });
-  return nodes;
-}
 
+// Get te type string of the MEI relation node
 function relation_type(he) {
   //TODO: Sanity checks
   if(he.children.length == 0) {
@@ -408,7 +429,7 @@ function relation_type(he) {
 
 // Set up new graph node for a note
 function add_mei_node_for_arg(mei_graph,note) {
-    var id = id_or_oldid(note);
+    var id = get_id(note);
     var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
     if (elem != null) {
       return elem;
@@ -426,57 +447,19 @@ function add_mei_node_for_arg(mei_graph,note) {
     return elem;
 }
 
-// Set up new graph node for a note
-function add_mei_node_for(mei,mei_graph,note) {
-    console.debug("Using globals: mei, mei_graph to create and place elem");
-    var id = note.getAttribute("id");
-    var elem = get_by_id(mei,"gn-"+id);
-    if (elem != null) {
-      return elem;
-    }
-    elem = mei.createElement("node");
-    // This node represent that note
-    var label = mei.createElement("label");
-    var note = mei.createElement("note");
-    note.setAttribute("sameas","#"+id);
-    elem.appendChild(label);
-    label.appendChild(note);
-    // But should have a separate XML ID
-    elem.setAttribute("xml:id","gn-" + id);
-    mei_graph.appendChild(elem);
-    return elem;
-}
             
-// Find graphical element and hide it
+// Find graphical element corresponding to an MEI graph node and hide it
 function hide_note_arg(draw_context,note) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,note));
-  if(elem)
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),id_in_svg(draw_context,node_to_note_id(note)));
+  if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
   return elem;
 }
 
-// Find graphical element and hide it
+// Find graphical element corresponding to an MEI graph node and hide it
 function hide_he_arg(draw_context,he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
-  if(elem) 
-    elem.classList.add("hidden");
-  return elem;
-}
-            
-// Find graphical element and hide it
-function hide_note(note) {
-  console.debug("Using globals: document to find elem");
-  var elem = get_by_id(document,note_get_sameas(note));
-  if(elem)
-    elem.classList.add("hidden");
-  return elem;
-}
-
-// Find graphical element and hide it
-function hide_he(he) {
-  console.debug("Using globals: document to find elem");
-  var elem = get_by_id(document,he.getAttribute("xml:id"));
-  if(elem) 
+  if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
   return elem;
 }
@@ -492,7 +475,7 @@ function mark_secondary(item) {
   }
 }
 
-// No longer a secondary - bring it back
+// No longer as much of a secondary
 function unmark_secondary(item) {
   var level = getComputedStyle(item).getPropertyValue("--how-secondary");
   item.style.setProperty("--how-secondary", level/2);
@@ -500,52 +483,28 @@ function unmark_secondary(item) {
     item.classList.remove("secondarynote");
 }
 
-// For a certain relation, find its secondaries and mark them
+// For a certain MEI relation node, find its secondaries and mark them as
+// secondary in the draw context
 function mark_secondaries_arg(draw_context,mei_graph,he) {
-    var mei = draw_context.mei;
     var svg_elem = draw_context.svg_elem;
-    if(he.tagName != "node")
+    if(he.tagName != "node") //TODO: Probably bad, but shouldn't happen from do_relation
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(),note_get_sameas_arg(draw_context.id_prefix,n));
+	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
 	mark_secondary(svg_note);
     });
 }
 
-// For a certain relation, find its secondaries and mark them
-function mark_secondaries(he) {
-    console.debug("Using globals: document, mei to find elems");
-    if(!mei.contains(he))
-      he = get_by_id(mei,he.id);
-    var secondaries = relation_secondaries(he);
-    secondaries.forEach((n) => {
-	var svg_note = get_by_id(document,note_get_sameas(n));
-	mark_secondary(svg_note);
-    });
-}
-
-// For a certain relation, find its secondaries and unmark them
+// For a certain MEI relation node, find its secondaries and unmark them as
+// secondary in the draw context
 function unmark_secondaries_arg(draw_context,mei_graph,he) {
-    var mei = draw_context.mei;
     var svg_elem = draw_context.svg_elem;
     if(he.tagName != "node")
       he = get_by_id(mei_graph.getRootNode(),he.id);
     var secondaries = relation_secondaries_arg(mei_graph,he);
     secondaries.forEach((n) => {
-	var svg_note = get_by_id(svg_elem.getRootNode(), note_get_sameas_arg(draw_context.id_prefix, n));
-	unmark_secondary(svg_note);
-    });
-}
-
-// For a certain relation, find its secondaries and unmark them
-function unmark_secondaries(he) {
-    console.debug("Using globals: document, mei to find elems");
-    if(!mei.contains(he))
-      he = get_by_id(mei,he.id);
-    var secondaries = relation_secondaries(he);
-    secondaries.forEach((n) => {
-	var svg_note = get_by_id(document,note_get_sameas(n));
+	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
 	unmark_secondary(svg_note);
     });
 }
@@ -579,12 +538,24 @@ function select_samenote() {
   }
 }
 
-function svg_find_from_mei_elem(svg_elem, id_prefix, e) {
+// Deprecated
+function svg_find_from_mei_elem(svg_container, id_prefix, e) {
+  if(!e)
+    return null;
   // TODO: Sanity checks
   var id = id_prefix + e.getAttribute("xml:id");
-  return svg_elem.getRootNode().getElementById(id);
+  var svg_e = svg_container.getRootNode().getElementById(id);
+  if(svg_e)
+    return svg_e;
+  else {
+    id = e.getAttribute("xml:id");
+    svg_e = svg_container.getRootNode().getElementById(id);
+    if(svg_container.contains(svg_e))
+      return svg_e;
+  }
 }
 
+// Get the top coordinate of the bounding box of the given element
 function getBoundingBoxTop (elem) {
     // use the native SVG interface to get the bounding box
     var bbox = elem.getBBox();
@@ -592,6 +563,7 @@ function getBoundingBoxTop (elem) {
     return bbox.y + bbox.height;
 }
 
+// Get the Interesting class from a classlist
 function get_class_from_classlist(elem){
   // TODO: If more things can be selected etc., it should be reflected here
   var ci = "";
@@ -604,7 +576,7 @@ function get_class_from_classlist(elem){
   return ci;
 }
 
-
+// Get the center of the bounding box
 function getBoundingBoxCenter (elem) {
     // use the native SVG interface to get the bounding box
     var bbox = elem.getBBox();
@@ -612,6 +584,7 @@ function getBoundingBoxCenter (elem) {
     return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
 }
 
+// "Smart" selection of a coordinate
 function getBoundingBoxOffCenter (elem) {
     // use the native SVG interface to get the bounding box
     var bbox = elem.getBBox();
@@ -622,6 +595,7 @@ function getBoundingBoxOffCenter (elem) {
     return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
 }
 
+// Get the correct coordinates for where to aim the metarelation
 function get_metarelation_target(elem) {
   if(elem.classList.contains("metarelation")){
     var circ= elem.getElementsByTagName("circle")[0];
@@ -636,16 +610,18 @@ function get_metarelation_target(elem) {
 
 }
 
+// Is this an empty relation?
 function is_empty_relation(elem) {
   return relation_get_notes(elem).length == 0;
 }
 
+// Are we looking a a single note?
 function is_note_node(elem) {
   notes = elem.getElementsByTagName("note");
   return elem.tagName ="node" && notes.length == 1 && notes[0].getAttribute("sameas");
 }
 
-
+// Clean up in the graph to remove empty relations
 function remove_empty_relations(graph) {
   Array.from(graph.getElementsByTagName("node")).forEach((elem) => {
       if(!is_note_node(elem) && is_empty_relation(elem)){
@@ -654,16 +630,17 @@ function remove_empty_relations(graph) {
   });
 }
 
-
+// Average over a list of values
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
+// Compute a text to represent the elements
 function to_text_arg(draw_contexts,mei_graph,elems) {
   //TODO: Detect and warn for selections spanning several drawing contexts
   if(elems.length == 0)
     return "";
   if(elems[0].classList.contains("note")){
     return "notes("+elems.map((elem) => {
-      var id = id_or_oldid(elem);
+      var id = get_id(elem);
       var mei_elem = get_by_id(mei,id);
       var accid = note_get_accid(mei_elem);
       accid= accid.replace(/s/g,"#")
@@ -678,6 +655,7 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
   }
 }
 
+// Deprecated
 function to_text(elems) {
   if(elems.length == 0)
     return "";
@@ -697,6 +675,7 @@ function to_text(elems) {
   }
 }
 
+// Translate deprecated names
 function fix_synonyms(mei) {
   Array.from(mei.getElementsByTagName("node")).forEach((elem) => {
     if(elem.getAttribute("type") == "hyperedge")
@@ -707,12 +686,110 @@ function fix_synonyms(mei) {
   return mei;
 }
 
+// Make a rest of the same properties as the given note.
+function note_to_rest(mei,note) {
+  var rest = mei.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
+  rest.setAttribute("xml:id","rest-"+note.getAttribute("xml:id"));
+  rest.setAttribute("dur",note.getAttribute("dur"));
+  rest.setAttribute("n",note.getAttribute("n"));
+  rest.setAttribute("dots",note.getAttribute("dots"));
+  rest.setAttribute("when",note.getAttribute("when"));
+  rest.setAttribute("layer",note.getAttribute("layer"));
+  rest.setAttribute("staff",note.getAttribute("staff"));
+  rest.setAttribute("tstamp.ges",note.getAttribute("tstamp.ges"));
+  rest.setAttribute("tstamp.real",note.getAttribute("tstamp.real"));
+  rest.setAttribute("tstamp",note.getAttribute("tstamp"));
+  rest.setAttribute("loc",note.getAttribute("loc"));
+  rest.setAttribute("dur.ges",note.getAttribute("dur.ges"));
+  rest.setAttribute("dots.ges",note.getAttribute("dots.ges"));
+  rest.setAttribute("dur.metrical",note.getAttribute("dur.ges"));
+  rest.setAttribute("dur.ppq",note.getAttribute("dur.ppq"));
+  rest.setAttribute("dur.real",note.getAttribute("dur.real"));
+  rest.setAttribute("dur.recip",note.getAttribute("dur.recip"));
+  rest.setAttribute("beam",note.getAttribute("beam"));
+  rest.setAttribute("fermata",note.getAttribute("fermata"));
+  rest.setAttribute("tuplet",note.getAttribute("tuplet"));
+  //That's all I can think of. There's probably a better
+  //way to do this..
+  return rest;
+}
+
+function note_to_space(mei,note) {
+  var space = mei.createElementNS("http://www.music-encoding.org/ns/mei", 'space');
+  space.setAttribute("xml:id","rest-"+note.getAttribute("xml:id"));
+  space.setAttribute("dur",note.getAttribute("dur"));
+  space.setAttribute("n",note.getAttribute("n"));
+  space.setAttribute("dots",note.getAttribute("dots"));
+  space.setAttribute("when",note.getAttribute("when"));
+  space.setAttribute("layer",note.getAttribute("layer"));
+  space.setAttribute("staff",note.getAttribute("staff"));
+  space.setAttribute("tstamp.ges",note.getAttribute("tstamp.ges"));
+  space.setAttribute("tstamp.real",note.getAttribute("tstamp.real"));
+  space.setAttribute("tstamp",note.getAttribute("tstamp"));
+  space.setAttribute("loc",note.getAttribute("loc"));
+  space.setAttribute("dur.ges",note.getAttribute("dur.ges"));
+  space.setAttribute("dots.ges",note.getAttribute("dots.ges"));
+  space.setAttribute("dur.metrical",note.getAttribute("dur.ges"));
+  space.setAttribute("dur.ppq",note.getAttribute("dur.ppq"));
+  space.setAttribute("dur.real",note.getAttribute("dur.real"));
+  space.setAttribute("dur.recip",note.getAttribute("dur.recip"));
+  space.setAttribute("beam",note.getAttribute("beam"));
+  space.setAttribute("fermata",note.getAttribute("fermata"));
+  space.setAttribute("tuplet",note.getAttribute("tuplet"));
+  //That's all I can think of. There's probably a better
+  //way to do this..
+  return space;
+}
+
+
+// Traverse the XML tree and add on a prefix to the start of each ID. If
+// it's an SVG, we also save the old id in the oldid attribute
 function prefix_ids(elem,prefix) {
-  if(elem.id != ""){
+  if(elem.id){
+    // SVG modification
     elem.setAttribute("oldid", elem.id);
     elem.id = prefix+elem.id;
   }
+  if(elem.getAttribute("xml:id")){
+    // MEI modification
+    // No need to set oldid - we have already made links using
+    // copyof/sameas
+    elem.setAttribute("xml:id", prefix+elem.getAttribute("xml:id"));
+  }
   Array.from(elem.children).forEach((e) => prefix_ids(e,prefix));
 }
+
+// Clone an MEI into a new XMLDocument
+function clone_mei(mei) {
+  var new_mei = mei.implementation.createDocument(
+	mei.namespaceURI, //namespace to use
+	null,                     //name of the root element (or for empty document)
+	null                      //doctype (null for XML)
+      );
+  var newNode = new_mei.importNode(
+          mei.documentElement, //node to import
+	  true                         //clone its descendants
+      );
+  new_mei.appendChild(newNode);
+  return new_mei;
+}
+
+// Recursively compute a mapping between element IDs and their
+// corresponding get_id strings, i.e. what the element represents
+function get_id_pairs(elem) {
+  var item;
+  if(elem.id)
+    item = [elem.id , get_id(elem)]
+  else if(elem.hasAttribute("xml:id"))
+    item = [elem.getAttribute("xml:id") , get_id(elem)]
+  return [item].concat(Array.from(elem.children).flatMap(get_id_pairs))
+}
+
+
+
+
+
+
+
 
 

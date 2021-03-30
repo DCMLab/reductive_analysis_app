@@ -35,11 +35,23 @@ var redo_actions = []; //TODO, maybe?
 // Each draw context contains information relevant to drawing
 // into one of the SVG renders. In particular, we store
 //  * The <div> element containing the SVG
-//  * The MEI rendered, parsed into a DOM object
+//  * The outer <div> element that also contains the view-specific buttons
+//  and controls
+//  * The amount of zoom (should be moved to style?)
+//  * The stack of local reduce actions
+//  * The layer context to which this view belongs
 //  * The prefix used for the element IDs in the SVG (compared
 //    to the MEI)
-// The first element is the latest, shown at the top. 
+// The first element is the latest
 var draw_contexts = [];
+
+// Each layer context contains information relevant to the layer, such as
+//  * The rendered MEI
+//  * The score element in the original MEI
+//  * The <div> element containing the layer
+//  * A mapping from each element in the layer score element to its
+//  canonical representative
+var layer_contexts = [];
 
 var rerendered_after_reduce = 0;
 
@@ -53,7 +65,7 @@ var format;
 
 var zoom = 1;
 
-var arg = false;
+var arg = true;
 
 var mouseX;
 var mouseY;
@@ -138,9 +150,9 @@ function toggle_he_selected(selecting) {
           button.setAttribute("value",val.replace("Set to","Add"));
   });
   if(selecting)
-    document.getElementById("meta_buttons").style.display="";
+    document.getElementById("meta_buttons").classList.remove("none");
   else
-    document.getElementById("meta_buttons").style.display="none";
+    document.getElementById("meta_buttons").classList.add("none");
 }
 
 // Toggle if a thing (for now: note or relation) is selected or not.
@@ -203,8 +215,8 @@ function toggle_selected(item,extra) {
 function update_text(){
   var primaries, secondaries;
   if(arg){
-    primaries = to_text_arg(draw_contexts,orig_mei_graph,extraselected);
-    secondaries = to_text_arg(draw_contexts,orig_mei_graph,selected);
+    primaries = to_text_arg(draw_contexts,mei_graph,extraselected);
+    secondaries = to_text_arg(draw_contexts,mei_graph,selected);
   }else{
     primaries = to_text(extraselected);
     secondaries = to_text(selected);
@@ -272,50 +284,52 @@ function delete_relation(elem) {
   console.debug("Using globals: mei for element selection");
   //Assume no meta-edges for now, meaning we only have to
   //remove the SVG elem, the MEI node, and any involved arcs
-  var orig_mei_he,mei_he = get_by_id(mei,elem.id);
-  unmark_secondaries(mei_he);
+  var mei_id = get_id(elem);
+  var mei_he = get_by_id(mei,mei_id);
+  var svg_hes = [];
+  for(draw_context of draw_contexts){
+    let svg_he = get_by_id(document,draw_context.id_prefix + mei_id);
+    if(svg_he){
+      unmark_secondaries_arg(draw_context, mei_graph, mei_he);
+      svg_hes.push(svg_he);
+    }
+  }
+
   
-  var orig_arcs,arcs =
+  var arcs =
     Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
       {
        return arc.getAttribute("to") == "#"+elem.id ||
               arc.getAttribute("from") == "#"+elem.id;
       });
-  if(mei != orig_mei){
-    orig_mei_he = get_by_id(mei,selected[0].id);
-    orig_arcs =
-      Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
-        {
-         return arc.getAttribute("to") == "#"+elem.id ||
-                arc.getAttribute("from") == "#"+elem.id;
-        });
-  }
-  var removed = arcs.concat(orig_arcs).concat([elem,mei_he,orig_mei_he]);
-  var action_removed = removed.map((x) => {if(x != undefined){
+  var removed = arcs.concat(svg_hes);
+  removed.push(mei_he);
+  var action_removed = removed.map((x) => {
       var elems = [x,x.parentElement,x.nextSibling]; 
       // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
       // This is necessary when deleting via they keyboard (therefore while hovering).
       try {
         $(`g #${x.getAttribute('to').substring(4)}`).removeClass().addClass('note');
-      } catch {
+      } catch (e) {
       }
       x.parentElement.removeChild(x);
       return elems;
-      }});
+    });
 
-  return action_removed.reverse();
+  return action_removed;
 }
 
 function delete_relations() {
   console.debug("Using globals: selected for element selection, undo_actions for storing the action");
   //Assume no meta-edges for now, meaning we only have to
-  if(selected.length == 0 || get_class_from_classlist(selected[0]) != "relation"){
+  var sel = selected.concat(extraselected);
+  if(sel.length == 0 || get_class_from_classlist(sel[0]) != "relation"){
     console.log("No relation selected!");
     return;
   }
-  var removed = selected.flatMap(delete_relation);
-  undo_actions.push(["delete relation",removed,selected,[]]);
-  selected = [];
+  var removed = sel.flatMap(delete_relation);
+  undo_actions.push(["delete relation",removed.reverse(),selected,extraselected]);
+  sel.forEach(toggle_selected);
 }
 
 
@@ -330,94 +344,12 @@ function do_reduce() {
   sel.concat(extra).forEach(toggle_selected);
   if(arg){
     console.debug("Using globals: undo_actions, draw_contexts, mei_graph, selected,  extraselected.");
-    var undo = do_reduce_arg(draw_contexts[0], mei_graph, sel.concat(extra));
-    undo_actions.push(["reduce",undo,sel,extra]);
+    undo = do_reduce_arg(draw_contexts[0], mei_graph, sel, extra);
     return;
   }
-  console.debug("Using globals: undo_actions, mei, mei_graph, selected,  extraselected.");
-  // All previous reductions
-  var reduce_actions = undo_actions.filter((x) => x[0] == "reduce").map((x) => x[1]); 
-  // All relations in the graph
-  var all_relations_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "relation";}) 
-  // Remove the relations that have been removed in previous
-  // reductions
-  var remaining_relations = all_relations_nodes.filter((x) => { 
-    return !reduce_actions.flat().flat().includes(x);
-  });
-  var reduce_action, relations_nodes;
-  // Are we doing a full reduction, or have we selected some
-  // relations?
-  if(sel.length > 0 && sel[0].classList.contains("relation")){
-    relations_nodes = sel.concat(extra).map((elem) => get_by_id(mei,elem.id));
-  }else {
-    relations_nodes = remaining_relations;
-  }
-  // No primary of a remaining relation is removed in this
-  // reduction
-  var remaining_nodes = remaining_relations.map(relation_primaries).flat();
-  // We know that the remaining relations that have not been
-  // selected for reduction will remain
-  remaining_relations = remaining_relations.filter((x) => {return !relations_nodes.includes(x);});
-  // So all of their nodes should be added to the remaining
-  // nodes, not just the primaries
-  remaining_nodes = remaining_nodes.concat(remaining_relations.map(relation_secondaries).flat());
-
-  do {
-    // We want to find more relations that we know need to stay 
-    var more_remains = relations_nodes.filter((he) => { 
-        // That is, relations that have, as secondaries, nodes
-        // we know need to stay
-        return (relation_secondaries(he).findIndex((x) => {return remaining_nodes.includes(x);}) > -1);
-      });
-    // Add those relations to the ones that need to stay
-    remaining_relations = remaining_relations.concat(more_remains);
-    // And remove them from those that may be removed
-    relations_nodes = relations_nodes.filter((x) => {return !more_remains.includes(x);})
-    // And update the remaining nodes
-    remaining_nodes = remaining_nodes.concat(more_remains.map(relation_secondaries).flat());
-  // Until we reach a pass where we don't find any more
-  // relations that need to stay
-  }while(more_remains.length > 0)
-  // Any relations that remain after this loop, we can remove,
-  // including their secondaries
-
-  reduce_action = relations_nodes;
-
-  if(reduce_action.length == 0){
-    console.log("No reduction possible");
-    return;
-  }
-  undo_actions.push(["reduce", reduce_action.map((he) => {
-    var secondaries = relation_secondaries(he);
-    var graphicals = [];
-    graphicals.push(secondaries.map(hide_note));
-    graphicals.push(hide_he(he));
-    return [he,secondaries,graphicals];
-  }),sel, extra]);
+  do_reduce_old(sel,extra);
 }
 
-
-
-
-
-
-// OK we've selected stuff, let's make the selection into a
-// series of edges
-function do_edges() {
-    console.debug("Using globals: selected, extraselected, mei, orig_mei, undo_actions");
-    if (selected.length == 0 && extraselected == 0) {
-      return;}
-    changes = true;
-    var added = [];
-    added.push(draw_edges()); // Draw the edge
-    added.push(add_edges(mei));  // Add it to the MEI
-    if(mei != orig_mei)
-      added.push(add_edges(orig_mei));
-    
-    undo_actions.push(["edges",added,selected,extraselected]);
-    selected.forEach(toggle_selected); // De-select
-    extraselected.forEach(toggle_selected); // De-select
-}
 
 // OK we've selected stuff, let's make the selection into a
 // "relation".
@@ -427,9 +359,9 @@ function do_relation(type,arg) {
       return;}
     changes = true;
     var he_id, mei_elems;
+    if(arg){
     if(selected.concat(extraselected)[0].classList.contains("relation")){
       var types = [];
-      if(arg){
         selected.concat(extraselected).forEach((he) => {
         //TODO: move type_synonym application so that this
         //is the right type == the one from the MEI
@@ -441,53 +373,30 @@ function do_relation(type,arg) {
         mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
         hes.forEach(toggle_shade);
         });
-      }else{
-        selected.concat(extraselected).forEach((he) => {
-        //TODO: move type_synonym application so that this
-        //is the right type == the one from the MEI
-        types.push([he.getAttribute("type"),type]);
-        he.setAttribute("type",type);
-        var mei_he = get_by_id(mei,id_or_oldid(he));
-        mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
-        toggle_shade(he);
-        });
-      }
       update_text();
       undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
     }else if(selected.concat(extraselected)[0].classList.contains("note")){
       var added = [];
-      if(arg){
         // Add new nodes for all notes
-        var primaries = extraselected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
-        var secondaries = selected.map((e) => add_mei_node_for_arg(orig_mei_graph,e));
+        var primaries = extraselected.map((e) => add_mei_node_for_arg(mei_graph,e));
+        var secondaries = selected.map((e) => add_mei_node_for_arg(mei_graph,e));
         added.push(primaries.concat(secondaries));
-        [he_id,mei_elems] = add_relation_arg(orig_mei_graph,primaries, secondaries, type);
+        [he_id,mei_elems] = add_relation_arg(mei_graph,primaries, secondaries, type);
         added.push(mei_elems);
-        console.log(get_by_id(orig_mei, he_id));
         for(var i = 0; i < draw_contexts.length; i++) {
-          added.push(draw_relation_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(), he_id))); // Draw the edge
-          mark_secondaries_arg(draw_contexts[i],orig_mei_graph,get_by_id(orig_mei_graph.getRootNode(),he_id));
+          added.push(draw_relation_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
+          mark_secondaries_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
         }
         undo_actions.push(["relation",added.reverse(),selected,extraselected]);
-      }else{
-        [he_id,mei_elems] = add_relation(mei,mei_graph,type);
-        added.push(mei_elems);  // Add it to the MEI
-        if(mei != orig_mei){
-          var [orig_he_id,orig_mei_elems] = add_relation(orig_mei,orig_mei_graph,type,he_id);
-          added.push(orig_mei_elems);  // Add it to the MEI
-        }
-        added.push(draw_relation(he_id,type)); // Draw the edge
-        undo_actions.push(["relation",added,selected,extraselected]);
-        mark_secondaries(get_by_id(mei,he_id));
-      }
-      
       selected.concat(extraselected).forEach(toggle_selected); // De-select
     }
+    }else
+      do_relation_old(type,arg);
 }
 
 
 function do_metarelation(type, arg ) {
-    console.debug("Using globals: orig_mei, orig_mei_graph, selected, extraselected");
+    console.debug("Using globals: orig_mei, mei_graph, selected, extraselected");
     if (selected.length == 0 && extraselected == 0) {
       return;}
     var ci = get_class_from_classlist(selected.concat(extraselected)[0]); 
@@ -499,18 +408,18 @@ function do_metarelation(type, arg ) {
     if(arg){
 
       var primaries = extraselected.map((e) =>
-          get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
+          get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
       var secondaries = selected.map((e) =>
-          get_by_id(orig_mei_graph.getRootNode(), id_or_oldid(e)));
-      var [he_id,mei_elems] = add_metarelation_arg(orig_mei_graph, primaries, secondaries, type);
+          get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
+      var [he_id,mei_elems] = add_metarelation_arg(mei_graph, primaries, secondaries, type);
       added.push(mei_elems);
       for(var i = 0; i< draw_contexts.length; i++)
-        added.push(draw_metarelation_arg(draw_contexts[i], orig_mei_graph, get_by_id(orig_mei_graph.getRootNode(),he_id))); // Draw the edge
+        added.push(draw_metarelation_arg(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge
     }else{
       var [he_id,mei_elems] = add_metarelation(mei,mei_graph,type);
       added.push(mei_elems);  // Add it to the MEI
       if(mei != orig_mei){
-        var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,orig_mei_graph,type,he_id);
+        var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,mei_graph,type,he_id);
         added.push(orig_mei_elems);  // Add it to the MEI
       }
       added.push(draw_metarelation(he_id,type)); // Draw the edge
@@ -558,9 +467,9 @@ function do_undo() {
       if(what == "relation")
         added.flat().forEach((x) => { 
           if(arg){
-        if(orig_mei_graph.contains(x) && x.getAttribute("type") == "relation")
+        if(mei_graph.contains(x) && x.getAttribute("type") == "relation")
           for(var i = 0; i < draw_contexts.length; i++) 
-            unmark_secondaries_arg(draw_contexts[i],orig_mei_graph,x)
+            unmark_secondaries_arg(draw_contexts[i],mei_graph,x)
           }else if(mei.contains(x) && x.getAttribute("type") == "relation")
           unmark_secondaries(x);
           });
@@ -574,9 +483,19 @@ function do_undo() {
       extra.forEach((x) => {toggle_selected(x,true);});
     }else if( what == "delete relation" ) {
       var removed = elems;
-      removed.forEach((x) => {if(x) x[1].insertBefore(x[0],x[2])})
-      selected = sel;
-      selected.forEach(mark_secondaries);
+      removed.forEach((x) => {
+	  x[1].insertBefore(x[0],x[2])
+	  let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
+	  if(dc){
+	    let mei_id = get_id(x[0]);
+	    let mei_he = get_by_id(mei,mei_id);
+	    mark_secondaries_arg(dc, mei_graph, mei_he)
+	  }
+	});
+      // Select last selection
+      sel.forEach((x) => {toggle_selected(x);});
+      extra.forEach((x) => {toggle_selected(x,true);});
+
     }else if (what == "change relation type") {
       var types = elems;
       sel.concat(extra).forEach((he) => {
@@ -701,7 +620,7 @@ function save() {
 }
 function save_orig() {
   console.debug("Using globals: orig_mei");
-  var saved = new XMLSerializer().serializeToString(orig_mei);
+  var saved = new XMLSerializer().serializeToString(mei);
   download(saved, filename+".mei", "text/xml");
 }
 
@@ -736,8 +655,8 @@ function load() {
 // Draw the existing graph
 function draw_graph(draw_context) {
   console.debug("Using globals: mei_graph, mei, selected, extraselected, document");
-  var mei = draw_context.mei;
-  var mei_graph = mei.getElementsByTagName("graph")[0];
+  //var mei = draw_context.mei;
+  //var mei_graph = mei.getElementsByTagName("graph")[0];
   // There's a multi-stage process to get all the info we
   // need... First we get the nodes from the graph element.
   var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
@@ -746,135 +665,157 @@ function draw_graph(draw_context) {
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
   if(arg) {
-    relations_nodes.forEach((g_elem) => draw_relation_arg(draw_context,mei_graph,g_elem));
+    relations_nodes.forEach((g_elem) => {
+	      if(draw_relation_arg(draw_context,mei_graph,g_elem))
+		mark_secondaries_arg(draw_context,mei_graph,g_elem);
+	  })
     metarelations_nodes.forEach((g_elem) => draw_metarelation_arg(draw_context,mei_graph,g_elem));
     return;
   }
-
-  // Next we get the note labels
-  var note_ids = nodes_array.map((x) => {
-                try{
-                  return [x, 
-                          note_get_sameas(x)]
-                }catch{
-                  return [];
-                }
-              }).filter((x) => {return x.length != 0;});
-  // Now get the arcs/edges
-  var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
-  var relations_arcs = [];
-  var metarelations_arcs = [];
-  // And draw them all.
-  arcs_array.forEach((x) => {
-      var n1 = get_by_id(mei,x.getAttribute("from")); 
-      var n2 = get_by_id(mei,x.getAttribute("to"));
-      if (!relations_nodes.includes(n1) && !metarelations_nodes.includes(n1)){
-        //Regular edge, just draw. TODO: Fix assumption that
-        //nodes are notes if we reach this.
-        var id1 = note_ids.find((y) => {
-              return y[0] == n1;
-            })[1];
-        var id2 = note_ids.find((y) => {
-              return y[0] == n2;
-            })[1];
-        selected = [get_by_id(document,id1),get_by_id(document,id2) ];
-        draw_edges();
-        selected = [];
-      }else if (!metarelations_nodes.includes(n1)){
-        var id2 = note_ids.find((y) => {
-              return y[0] == n2;
-            })[1];
-        relations_arcs.push([n1,id2,x.getAttribute("type")]);
-      }else {
-        metarelations_arcs.push([n1,n2.getAttribute("xml:id"),x.getAttribute("type")]);
-      }
-
-  });
-  relations_nodes.forEach((x) => {
-      var relation_nodes = relations_arcs.
-                  filter((y) => {return y[0] == x;}).
-                  map((y) => {return [y[2],get_by_id(document,y[1])];})
-      selected = relation_nodes.
-                  filter((y) => {return y[0] == "secondary";}).
-                  map((y) => { return y[1];});
-      extraselected = relation_nodes.
-                  filter((y) => {return y[0] == "primary";}).
-                  map((y) => { return y[1];});
-      var he_labels = x.getElementsByTagName("label");
-      var type = "";
-      if(he_labels.length > 0){
-        type = he_labels[0].getAttribute("type");
-      }
-      var added = draw_relation(x.getAttribute("xml:id"),type);
-      if(added.length != 0)
-        mark_secondaries(x);
-      selected = [];
-      extraselected = [];
-    });
-
-  metarelations_nodes.forEach((x) => {
-      var metarelation_nodes = metarelations_arcs.
-                  filter((y) => {return y[0] == x;}).
-                  map((y) => {return [y[2],get_by_id(document,y[1])];})
-      selected = metarelation_nodes.
-                  filter((y) => {return y[0] == "secondary";}).
-                  map((y) => { return y[1];});
-      extraselected = metarelation_nodes.
-                  filter((y) => {return y[0] == "primary";}).
-                  map((y) => { return y[1];});
-      var me_labels = x.getElementsByTagName("label");
-      var type = "";
-      if(me_labels.length > 0){
-        type = me_labels[0].getAttribute("type");
-      }
-      var added = draw_metarelation(x.getAttribute("xml:id"),type);
-      selected = [];
-      extraselected = [];
-    });
-
-
+  draw_graph_old(draw_context);
 }
+
+
+function new_layer_element() {
+  var layers_element = document.getElementById("layers");
+  var new_layer = document.createElement("div");
+  new_layer.id = "layer"+layers_element.children.length;
+  new_layer.classList.add("layer");
+  layers_element.appendChild(new_layer);
+  return new_layer;
+}
+
+function new_view_elements(layer_element) {
+  var new_view = document.createElement("div");
+  new_view.id = "view"+draw_contexts.length;
+  new_view.classList.add("view");
+  var new_svg = document.createElement("div");
+  new_svg.id = "svg"+draw_contexts.length;
+  new_svg.classList.add("svg_container");
+  new_view.appendChild(new_svg);
+  layer_element.appendChild(new_view);
+  return [new_view,new_svg];
+}
+
+function button(value) {
+  var button = document.createElement("input");
+  button.setAttribute("type","button");
+  button.setAttribute("value",value);
+  return button;
+}
+
+
+function add_buttons(draw_context) {
+    var new_draw_context = draw_context;
+    var buttondiv = document.createElement("div");
+    buttondiv.classList.add("view_buttons");
+    var newlayerbutton = button("Create new layer");
+    var reducebutton = button("Reduce");
+    var undobutton = button("Unreduce");
+    var rerenderbutton = button("Create new view");
+    undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+    newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
+    buttondiv.appendChild(undobutton    );
+    buttondiv.appendChild(reducebutton  );
+    buttondiv.appendChild(rerenderbutton);
+    buttondiv.appendChild(newlayerbutton);
+
+    draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
+
+
+    var zoomdiv = document.createElement("div");
+    zoomdiv.classList.add("zoom_buttons");
+    var zoomin = button("+");
+    var zoomout = button("-");
+    zoomin.onclick = () => { zoom_in(draw_context); };
+    zoomout.onclick = () => { zoom_out(draw_context); };
+
+    zoomdiv.appendChild(zoomin);
+    zoomdiv.appendChild(zoomout);
+
+    draw_context.view_elem.appendChild(zoomdiv);
+}
+
+function onclick_select_functions(draw_context) {
+  for (let n of draw_context.svg_elem.getElementsByClassName("note")) {
+      n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
+  }
+  for (let h of draw_context.svg_elem.getElementsByClassName("relation")) {
+      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
+  }
+}
+
 
 // Do all of this when we have the MEI in memory
 function load_finish(e) {
   console.debug("Using globals data, parser, mei, format, svg, svg_elem, jquery document, document, mei_graph, midi, orig_*, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
+
+  // Parse the original document
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
   format = "mei";
-  if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei")
+  if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
     // We didn't get a MEI? Try if it's a musicXML
-    format = "musicxml";
-  else
-    mei = fix_synonyms(mei);
-
-  svg = vrvToolkit.renderData(data, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none", format: format});
-  if (!svg) {
-    console.log ('Verovio could not generate SVG.');
-    return false;
-  }
-  $("#svg_outputs").html('<div id="svg_output0"></div>')
-  $("#svg_output0").html(svg);
-  svg_elem = document.getElementById("svg_output0");
-  if(format == "musicxml"){
+    format = "non-mei";
+    let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+      pageHeight: 10000, breaks: "none"});
+    if (!new_svg) {
+      console.log ('Verovio could not generate SVG from non-MEI file.');
+      return false;
+    }
+    // TODO: Detect failure and bail
     data = vrvToolkit.getMEI();
     parser = new DOMParser();
     mei = parser.parseFromString(data,"text/xml");
+  }else{
+    mei = fix_synonyms(mei);
   }
 
   mei_graph = add_or_fetch_graph();
   midi = vrvToolkit.renderToMIDI();
-  orig_mei = mei;
-  orig_data = data;
-  orig_mei_graph = mei_graph;
-  orig_svg = svg;
   orig_midi = midi;
+  // Clear the old (if any)
+  draw_contexts = [];
+  layer_contexts = [];
+  document.getElementById("layers").innerHTML="";
 
-  draw_contexts = [{"mei" : mei,
-                    "svg_elem" : svg_elem,
-                    "id_prefix" : ""}];
+  // Segment existing layers
+  var layers = Array.from(mei.getElementsByTagName("score"));
+  for(let i in layers ){
+    let score_elem = layers[i];
+    let new_mei = mei_for_layer(mei, score_elem);
+    let [new_data, new_svg] = render_mei(new_mei);
+    if (!new_svg) {
+      console.log ('Verovio could not generate SVG from MEI.');
+      return false;
+    }
 
-  draw_graph(draw_contexts[0]);
+    var layer_element = new_layer_element();
+    var [view_element,svg_element] = new_view_elements(layer_element);
+    svg_element.innerHTML = new_svg;
+    var layer_context = {
+      "mei"        : new_mei,
+      "layer_elem" : layer_element,
+      "score_elem" : score_elem,
+      "id_mapping" : get_id_pairs(score_elem)
+    }
+    layer_contexts.push(layer_context);
+    var draw_context = {
+		      // TODO: One draw context per existing score element
+		      // already on load.
+		      "mei_score" : score_elem,
+		      "svg_elem" : svg_element,
+		      "view_elem" : view_element,
+		      "layer" : layer_context,
+		      "id_prefix" : "",
+		      "zoom" : 1,
+		      "reductions" : []};
+    if(i != 0)
+      draw_context.id_prefix = draw_contexts.length;
+    finalize_draw_context(draw_context);
+  }
 
   changes = false;
   undo_actions = [];
@@ -883,14 +824,6 @@ function load_finish(e) {
 
   rerendered_after_action = 0;
 
-  for (let n of document.getElementsByClassName("note")) {
-      //n.addEventListener('click', function(ev) {toggle_selected(n,ev.shiftKey) } )
-      n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
-  }
-  for (let h of document.getElementsByClassName("relation")) {
-      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
-      //h.addEventListener('click', function(ev) {toggle_selected(h,ev.shiftKey) } )
-  }
   if(!shades)
     toggle_shades();
   document.onkeypress = function(ev) {handle_keypress(ev);};
@@ -899,55 +832,25 @@ function load_finish(e) {
 
 
 
-function rerender_mei(replace_with_rests = false) {
-  console.debug("Using globals mei, svg_elem");
-  var mei2 = mei.implementation.createDocument(
-        mei.documentElement.namespaceURI, //namespace to use
-        null,             //name of the root element (or for empty document)
-        null              //doctype (null for XML)
-        );
-  var newNode = mei2.importNode(
-      mei.documentElement, //node to import
-      true                 //clone its descendants
-      );
-  mei2.appendChild(newNode);
+function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
+//  var mei = draw_context.mei;
+  var svg_elem = draw_context.svg_elem;
+  var mei2 = clone_mei(draw_context.layer.mei);
 
-  Array.from(svg_elem.getElementsByClassName("note")).forEach((x) => {
-    if(x.classList.contains("hidden")){
+  Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
+    let x = document.getElementById(id_in_svg(draw_context,get_id(n)));
+    if(!x || x.classList.contains("hidden")){
       //TODO: this is wrong
       // 
-      var y = get_by_id(mei2,x.getAttribute("id"));
-      var paren = y.parentNode;
+      var paren = n.parentNode;
       // TODO: deal properly with tremolos
       // TODO
       if(replace_with_rests && !["chord","bTrem","fTrem"].includes(paren.tagName)) {
         // Add a rest
-        var rest = mei2.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
-        rest.setAttribute("xml:id","rest-"+y.getAttribute("xml:id"));
-        rest.setAttribute("dur",y.getAttribute("dur"));
-        rest.setAttribute("n",y.getAttribute("n"));
-        rest.setAttribute("dots",y.getAttribute("dots"));
-        rest.setAttribute("when",y.getAttribute("when"));
-        rest.setAttribute("layer",y.getAttribute("layer"));
-        rest.setAttribute("staff",y.getAttribute("staff"));
-        rest.setAttribute("tstamp.ges",y.getAttribute("tstamp.ges"));
-        rest.setAttribute("tstamp.real",y.getAttribute("tstamp.real"));
-        rest.setAttribute("tstamp",y.getAttribute("tstamp"));
-        rest.setAttribute("loc",y.getAttribute("loc"));
-        rest.setAttribute("dur.ges",y.getAttribute("dur.ges"));
-        rest.setAttribute("dots.ges",y.getAttribute("dots.ges"));
-        rest.setAttribute("dur.metrical",y.getAttribute("dur.ges"));
-        rest.setAttribute("dur.ppq",y.getAttribute("dur.ppq"));
-        rest.setAttribute("dur.real",y.getAttribute("dur.real"));
-        rest.setAttribute("dur.recip",y.getAttribute("dur.recip"));
-        rest.setAttribute("beam",y.getAttribute("beam"));
-        rest.setAttribute("fermata",y.getAttribute("fermata"));
-        rest.setAttribute("tuplet",y.getAttribute("tuplet"));
-        //That's all I can think of. There's probably a better
-        //way to do this..
-        paren.insertBefore(rest,y);
+        var rest = note_to_rest(mei2,n)
+        paren.insertBefore(rest,n);
       }
-      paren.removeChild(y);
+      paren.removeChild(n);
     }
   });
   Array.from(mei2.getElementsByTagName("chord")).forEach((x) =>
@@ -962,70 +865,112 @@ function rerender_mei(replace_with_rests = false) {
 
 }
 
-function rerender() {
-  console.debug("Using globals document, svg_elem, jquery document, svg, mei, data, mei_graph, non_notes_hidden, rerendered_after_action, undo_actions")
-  // Create new SVG element, stack the current version on
-  // it..? No I have no idea how to UI this properly.
-  var output_parent = document.getElementById("svg_outputs");
-  var new_svg_elem = document.createElement("div");
-  var old_svg_elem = svg_elem;
-  new_svg_elem.setAttribute("id","svg_output" + output_parent.children.length);
-  output_parent.prepend(new_svg_elem);
+function create_new_layer(draw_context) {
+  var new_score_elem = new_layer(draw_context);
+  let new_mei = mei_for_layer(mei, new_score_elem);
+  var [new_data, new_svg] = render_mei(new_mei);
+  if (!new_svg) {
+    console.log ('Verovio could not generate SVG from MEI.');
+    return false;
+  }
 
-  var mei2 = rerender_mei();
-  var data2 = new XMLSerializer().serializeToString(mei2);
+  var layer_element = new_layer_element();
+  var [new_view_elem,new_svg_elem] = new_view_elements(layer_element);
+  new_svg_elem.innerHTML = new_svg;
+  var layer_context = {
+    "mei"        : new_mei,
+    "layer_elem" : layer_element,
+    "score_elem" : new_score_elem,
+    "id_mapping" : get_id_pairs(new_score_elem)
+  }
+  layer_contexts.push(layer_context);
+  var new_draw_context = {
+		    // TODO: One draw context per existing score element
+		    // already on load.
+		    "mei_score" : new_score_elem,
+		    "svg_elem" : new_svg_elem,
+		    "view_elem" : new_view_elem,
+		    "layer" : layer_context,
+		    "id_prefix" : "",
+		    "zoom" : 1,
+		    "reductions" : []};
 
-  var svg2 = vrvToolkit.renderData(data2, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none", format: "mei"});
+  //prefix_draw_context(new_draw_context);
+  new_draw_context.id_prefix = draw_contexts.length;
+  finalize_draw_context(new_draw_context);
+}
 
-  draw_contexts[0].id_prefix = "old"+(output_parent.children.length-2);
-  prefix_ids(old_svg_elem,draw_contexts[0].id_prefix);
-  
-  $(new_svg_elem).html(svg2);
-  var new_draw_context = {"mei": mei2, "svg_elem" : new_svg_elem,
-    "id_prefix" : ""};
+
+function finalize_draw_context(new_draw_context) {
+
+  add_buttons(new_draw_context)
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();
-  svg = svg2;
-  mei = mei2;
-  data = data2;
-  svg_elem = new_svg_elem;
-  mei_graph = add_or_fetch_graph();
-  for (let n of document.getElementsByClassName("note")) {
+  for (let n of new_draw_context.svg_elem.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
-  if(non_notes_hidden)
-    set_non_note_visibility("hidden");
-  // Need also to redraw edges and relations
-  draw_graph(draw_contexts[0]);
+  draw_graph(new_draw_context);
+}
 
-  // Can't undo after a rerender.. yet, TODO: Make layers
-  rerendered_after_action=undo_actions.length;
-  // This is one of the ugliest hacks I've made I think
-  var reduces = undo_actions.filter((x) => { return x[0] == "reduce";});
-  undo_actions = [];
-  reduces.forEach((action) => {selected = action[2]; do_reduce();})
+function render_mei(mei) {
+  var data = new XMLSerializer().serializeToString(mei);
+
+  var svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+      pageHeight: 10000, breaks: "none"});
+  return [data,svg];
+}
+
+
+function rerender_arg(draw_context) {
+  var [new_view_elem,new_svg_elem] = new_view_elements(draw_context.layer.layer_elem);
+  var new_mei = rerender_mei(false, draw_context);
+  var [new_data, new_svg] = render_mei(new_mei);
+  if (!new_svg) {
+    console.log ('Verovio could not generate SVG from MEI.');
+    return false;
+  }
+  
+  new_svg_elem.innerHTML = new_svg;
+  var new_draw_context = {
+		    // TODO: One draw context per existing score element
+		    // already on load.
+		    "mei_score" : draw_context.mei_score,
+		    "svg_elem" : new_svg_elem,
+		    "view_elem" : new_view_elem,
+		    "layer" : draw_context.layer,
+		    "id_prefix" : "",
+		    "zoom" : 1,
+		    "reductions" : []};
+
+  new_draw_context.id_prefix = draw_contexts.length;
+  prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);
+  finalize_draw_context(new_draw_context);
+}
+
+
+function rerender() {
+  rerender_arg(draw_contexts[0]);
 }
 
 function texton() { text_input = true; }
 function textoff() { text_input = false; }
 function show_buttons() {
-  $("#load_save")[0].style.display="";
-  $("#hidden_buttons")[0].style.display="none";
+  $("#load_save")[0].classList.remove("hidden");
+  $("#hidden_buttons")[0].classList.add("hidden");
 }
 function hide_buttons() {
-  $("#load_save")[0].style.display="none";
-  $("#hidden_buttons")[0].style.display="";
+  $("#load_save")[0].classList.add("hidden");
+  $("#hidden_buttons")[0].classList.remove("hidden");
 }
 
-function zoom_in() {
-  zoom = zoom * 1.1;
-  $("#svg_outputs")[0].style.transform="scale("+zoom+")";
+function zoom_in(draw_context) {
+  draw_context.zoom = draw_context.zoom * 1.1;
+  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
 }
-function zoom_out() {
-  zoom = zoom * 0.90909090909090;
-  $("#svg_outputs")[0].style.transform="scale("+zoom+")";
+function zoom_out(draw_context) {
+  draw_context.zoom = draw_context.zoom * 0.90909090909090;
+  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
 }
 
 

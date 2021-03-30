@@ -41,12 +41,14 @@ function calc_reduce_arg(mei_graph, remaining_relations, target_relations){
 
 }
 
+function do_reduce_pre(draw_context) { do_reduce_arg(draw_context, mei_graph, selected, extraselected);}
 
 // Do a reduction in the context, using the given graph and the
 // (optional) selected hyperedges from this context.
-function do_reduce_arg(draw_context, mei_graph, selection){
+function do_reduce_arg(draw_context, mei_graph, sel, extra){
+  var selection = sel.concat(extra);
   var target_relations = selection.map(
-        (ge) => get_by_id(mei_graph.getRootNode(), id_or_oldid(ge))
+        (ge) => get_by_id(mei_graph.getRootNode(), get_id(ge))
       );
 
   var all_relations_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "relation";});
@@ -75,7 +77,25 @@ function do_reduce_arg(draw_context, mei_graph, selection){
                       (n) => hide_note_arg(draw_context,n)
     	      ));
 
-  return [removed_relations,removed_notes,graphicals];
+  var undo = [removed_relations,removed_notes,graphicals];
+  draw_context['reductions'].push(["reduce",undo,sel,extra]);
 }
 
+function undo_reduce_arg(draw_context){
+  console.log("Using globals: selected/extraselected")
+  undo_actions = draw_context['reductions'];
+  // Get latest undo_actions
+  if(undo_actions.length == 0) {
+    console.log("Nothing to undo");
+    return;
+  }
+  // Deselect the current selection, if any
+  selected.forEach(toggle_selected);
+  extraselected.forEach((x) => {toggle_selected(x,true);});
+  [what,elems,sel,extra] = undo_actions.pop();
+  var [relations,notes,graphicals] = elems;
+  graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
+  sel.forEach((x) => {toggle_selected(x);});
+  extra.forEach((x) => {toggle_selected(x,true);});
+}
 

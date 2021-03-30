@@ -18,6 +18,8 @@
 	<script src="js/draw.js" type="text/javascript"></script>
 	<script src="js/graph.js" type="text/javascript"></script>
 	<script src="js/reductions.js" type="text/javascript"></script>
+	<script src="js/layers.js" type="text/javascript"></script>
+	<script src="js/old.js" type="text/javascript"></script>
 	<script src="js/conf.js" type="text/javascript"></script>
 	<script src="js/wildwebmidi.js" type="text/javascript"></script>
 	<script src="js/midiplayer.js" type="text/javascript"></script>
@@ -60,14 +62,15 @@
 
         <script src="js/main.js" type="text/javascript">
 	</script>
-	<div id="selected_things" style="position:fixed; fill-opacity: 0.5;
-	stroke-opacity: 0.5">Primaries:<br/>Secondaries:</div>
-	<div id="hidden_buttons" style="position:fixed; bottom:0; z-index:2 ; display:none">
+	<div id="selected_things"><!-- style="position:fixed; fill-opacity: 0.5;
+	stroke-opacity: 0.5"-->Primaries:<br/>Secondaries:</div>
+	<div id="hidden_buttons" class="main_buttons hidden"><!-- style="position:fixed; bottom:0;
+	z-index:2 ; display:none"-->
 	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
 	</div>
-	<div id="load_save" style="position:fixed; bottom:0; z-index:2">
+	<div id="load_save" class="main_buttons"><!--style="position:fixed; bottom:0; z-index:2"-->
 	  <div id="player"></div>
-	  <div id="meta_buttons" style="display:none">
+	  <div id="meta_buttons" class="none">
 	  <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value, arg)" >
 	  <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
 	  </div>
@@ -78,36 +81,35 @@
 	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("",arg)" > 
 	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value, arg)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
-	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
-	  <input type="button" id="midireducebutton" value="Play reduction" onclick="play_midi_reduction()" >
 	  <div id="relation_buttons">
 	  </div>
 	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <!--input type="button" id="uploadbutton" value="Load" onclick="load()" -->
-	  <!--input type="button" id="downloadbutton" value="Save" onclick="save()" -->
 	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
 	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
-	  <input type="button" id="reducebutton" value="(R)educe Relations" onclick="do_reduce()" >
-	  <input type="button" id="undoreducebutton" value="Undo Reduction" onclick="undo_reduce()" >
+	  <!--input type="button" id="reducebutton" value="(R)educe Relations" onclick="do_reduce()" >
+	  <input type="button" id="undoreducebutton" value="Undo Reduction" onclick="undo_reduce()" -->
 	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	  <input type="button" id="rerenderbutton" value="Create new view" onclick="rerender()" >
+	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
+	  <input type="button" id="midireducebutton" value="Play reduction" onclick="play_midi_reduction()" >
+	  <!--input type="button" id="rerenderbutton" value="Create new view" onclick="rerender()" >
+	  <input type="button" id="layerbutton" value="Create new layer" onclick="new_layer()" -->
 	  <!--input type="button" id="selectifybutton" value="Select similar notes" onclick="select_samenote()" --> <br/>
 
 	</div>
-	<div id="zoom buttons" style="position:fixed; top:0; right:0; z-index:2">
+	<!--div id="zoom buttons" style="position:fixed; top:0; right:0; z-index:2">
 	<input type="button" id="zoominbutton" class="zoombutton" value="+" onclick="zoom_in()"><br/>
 	<input type="button" id="zoomoutbutton" class="zoombutton" value="-" onclick="zoom_out()"><br/>
-	</div>
+	</div-->
 
 
         <!--//////////////////////////////////////////////-->
         <!-- The div where we are going to insert the SVG -->
         <!--//////////////////////////////////////////////-->
 	
-	<div style="transform-origin: top left; z-index:-1" id="svg_outputs">
-	<div id="svg_output0"></div>
+	<div id="layers">
 	</div>
     </body>
 </html>

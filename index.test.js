@@ -82,12 +82,12 @@ describe('reductive_analysis_test_suite', () => {
     button_test('hidebutton');
     button_test('downloadbutton');
     button_test('svgdownloadbutton');
-    button_test('reducebutton');
+//    button_test('reducebutton');
     button_test('equalizebutton');
     button_test('shadesbutton');
-    button_test('rerenderbutton');
-    button_test('zoominbutton', {'class': 'zoombutton'});
-    button_test('zoomoutbutton', {'class': 'zoombutton'});
+//    button_test('rerenderbutton');
+//    button_test('zoominbutton', {'class': 'zoombutton'});
+//    button_test('zoomoutbutton', {'class': 'zoombutton'});
   });
 
   it('should load the example MEI', async function() {

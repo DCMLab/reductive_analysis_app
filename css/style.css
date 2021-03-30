@@ -270,6 +270,14 @@ select.instance-select {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
+
+.note {
+stroke-opacity: 0;
+stroke-width: 150;
+stroke: black;
+}
+
+
 .extraselectednote {
     fill: red;
 }
@@ -367,10 +375,31 @@ select.instance-select {
   visibility: hidden
 }
 
+.none {
+  display: none;
+}
+
+
 
 .svg_container {
   display: flex;
   align-items: center;
   height: auto
+}
+
+.layer {
+  border-style: solid;
+  border-width: 2px;
+}
+
+.view {
+  border-style: dashed;
+  border-width: 1px;
+}
+
+.main_buttons {
+position:fixed;
+bottom:0;
+z-index:2;
 }
 

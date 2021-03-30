@@ -64,7 +64,7 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   var id = id_prefix + g_elem.getAttribute("xml:id");
   var type = relation_type(g_elem);
   var targets = relation_allnodes_arg(mei_graph, g_elem).map(
-      (e) => document.getElementById(id_in_svg(draw_context,get_id(e))));
+      (e) => document.getElementById(draw_context.id_prefix+get_id(e)));
   if(targets.indexOf(null) != -1){
     console.log("Missing relation, not drawing metarelation");
     return [];

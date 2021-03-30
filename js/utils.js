@@ -233,6 +233,8 @@ function get_id(elem) {
     // MEI traversal
     if(elem.hasAttribute("sameas"))
 	return get_id(get_by_id(mei,elem.getAttribute("sameas")))
+    else if(elem.hasAttribute("corresp"))
+	return get_id(get_by_id(mei,elem.getAttribute("corresp")))
     else if(elem.hasAttribute("copyof"))
 	return get_id(get_by_id(mei,elem.getAttribute("copyof")))
     else if(elem.hasAttribute("xml:id"))

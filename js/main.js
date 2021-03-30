@@ -150,9 +150,9 @@ function toggle_he_selected(selecting) {
           button.setAttribute("value",val.replace("Set to","Add"));
   });
   if(selecting)
-    document.getElementById("meta_buttons").classList.add("hidden");
+    document.getElementById("meta_buttons").classList.remove("none");
   else
-    document.getElementById("meta_buttons").classList.remove("hidden");
+    document.getElementById("meta_buttons").classList.add("none");
 }
 
 // Toggle if a thing (for now: note or relation) is selected or not.

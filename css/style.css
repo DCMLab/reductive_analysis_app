@@ -270,6 +270,14 @@ select.instance-select {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
+
+.note {
+stroke-opacity: 0;
+stroke-width: 150;
+stroke: black;
+}
+
+
 .extraselectednote {
     fill: red;
 }

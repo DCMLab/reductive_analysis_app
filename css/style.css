@@ -375,6 +375,11 @@ stroke: black;
   visibility: hidden
 }
 
+.none {
+  display: none;
+}
+
+
 
 .svg_container {
   display: flex;

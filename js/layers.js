@@ -40,7 +40,9 @@ function new_layer(draw_context = draw_contexts[0]) {
   var score_elem = draw_context.mei_score;
   var [new_score_elem,changed] = layerify(draw_context, score_elem);
   var n_layers = score_elem.parentElement.getElementsByTagName("score").length;
-  var prefix = n_layers;
+  var prefix = n_layers+"-"; //TODO: better prefix computation
+                             //The - is there to not clash with view
+			     //prefixes
 
   prefix_ids(new_score_elem,prefix); // Compute a better prefix
   // Insert after the previous

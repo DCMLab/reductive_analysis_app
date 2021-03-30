@@ -668,12 +668,16 @@ function new_layer_element() {
   return new_layer;
 }
 
-function new_view_element(layer_element) {
+function new_view_elements(layer_element) {
   var new_view = document.createElement("div");
   new_view.id = "view"+draw_contexts.length;
   new_view.classList.add("view");
+  var new_svg = document.createElement("div");
+  new_svg.id = "svg"+draw_contexts.length;
+  new_svg.classList.add("svg_container");
+  new_view.appendChild(new_svg);
   layer_element.appendChild(new_view);
-  return new_view;
+  return [new_view,new_svg];
 }
 
 function button(value) {
@@ -763,8 +767,8 @@ function load_finish(e) {
     }
 
     var layer_element = new_layer_element();
-    var view_element = new_view_element(layer_element);
-    view_element.innerHTML = new_svg;
+    var [view_element,svg_element] = new_view_elements(layer_element);
+    svg_element.innerHTML = new_svg;
     var layer_context = {
       "mei"        : new_mei,
       "layer_elem" : layer_element,
@@ -776,9 +780,11 @@ function load_finish(e) {
 		      // TODO: One draw context per existing score element
 		      // already on load.
 		      "mei_score" : score_elem,
-		      "svg_elem" : view_element,
+		      "svg_elem" : svg_element,
+		      "view_elem" : view_element,
 		      "layer" : layer_context,
 		      "id_prefix" : "",
+		      "zoom" : 1,
 		      "reductions" : []};
     if(i != 0)
       draw_context.id_prefix = draw_contexts.length;
@@ -843,7 +849,7 @@ function create_new_layer(draw_context) {
   }
 
   var layer_element = new_layer_element();
-  var new_svg_elem = new_view_element(layer_element);
+  var [new_view_elem,new_svg_elem] = new_view_elements(layer_element);
   new_svg_elem.innerHTML = new_svg;
   var layer_context = {
     "mei"        : new_mei,
@@ -857,8 +863,10 @@ function create_new_layer(draw_context) {
 		    // already on load.
 		    "mei_score" : new_score_elem,
 		    "svg_elem" : new_svg_elem,
+		    "view_elem" : new_view_elem,
 		    "layer" : layer_context,
 		    "id_prefix" : "",
+		    "zoom" : 1,
 		    "reductions" : []};
 
   //prefix_draw_context(new_draw_context);
@@ -889,7 +897,7 @@ function render_mei(mei) {
 
 
 function rerender_arg(draw_context) {
-  var new_svg_elem = new_view_element(draw_context.layer.layer_elem);
+  var [new_view_elem,new_svg_elem] = new_view_elements(draw_context.layer.layer_elem);
   var new_mei = rerender_mei(false, draw_context);
   var [new_data, new_svg] = render_mei(new_mei);
   if (!new_svg) {
@@ -903,8 +911,10 @@ function rerender_arg(draw_context) {
 		    // already on load.
 		    "mei_score" : draw_context.mei_score,
 		    "svg_elem" : new_svg_elem,
+		    "view_elem" : new_view_elem,
 		    "layer" : draw_context.layer,
 		    "id_prefix" : "",
+		    "zoom" : 1,
 		    "reductions" : []};
 
   new_draw_context.id_prefix = draw_contexts.length;
@@ -928,13 +938,13 @@ function hide_buttons() {
   $("#hidden_buttons")[0].style.display="";
 }
 
-function zoom_in() {
-  zoom = zoom * 1.1;
-  $("#svg_outputs")[0].style.transform="scale("+zoom+")";
+function zoom_in(draw_context) {
+  draw_context.zoom = draw_context.zoom * 1.1;
+  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
 }
-function zoom_out() {
-  zoom = zoom * 0.90909090909090;
-  $("#svg_outputs")[0].style.transform="scale("+zoom+")";
+function zoom_out(draw_context) {
+  draw_context.zoom = draw_context.zoom * 0.90909090909090;
+  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
 }
 
 

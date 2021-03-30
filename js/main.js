@@ -288,8 +288,11 @@ function delete_relation(elem) {
   var mei_he = get_by_id(mei,mei_id);
   var svg_hes = [];
   for(draw_context of draw_contexts){
-    unmark_secondaries_arg(draw_context, mei_graph, mei_he);
-    svg_hes.push(get_by_id(document,draw_context.id_prefix + mei_id));
+    let svg_he = get_by_id(document,draw_context.id_prefix + mei_id);
+    if(svg_he){
+      unmark_secondaries_arg(draw_context, mei_graph, mei_he);
+      svg_hes.push(svg_he);
+    }
   }
 
   
@@ -301,7 +304,7 @@ function delete_relation(elem) {
       });
   var removed = arcs.concat(svg_hes);
   removed.push(mei_he);
-  var action_removed = removed.map((x) => {if(x != undefined){
+  var action_removed = removed.map((x) => {
       var elems = [x,x.parentElement,x.nextSibling]; 
       // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
       // This is necessary when deleting via they keyboard (therefore while hovering).
@@ -311,21 +314,22 @@ function delete_relation(elem) {
       }
       x.parentElement.removeChild(x);
       return elems;
-      }});
+    });
 
-  return action_removed.reverse();
+  return action_removed;
 }
 
 function delete_relations() {
   console.debug("Using globals: selected for element selection, undo_actions for storing the action");
   //Assume no meta-edges for now, meaning we only have to
-  if(selected.length == 0 || get_class_from_classlist(selected[0]) != "relation"){
+  var sel = selected.concat(extraselected);
+  if(sel.length == 0 || get_class_from_classlist(sel[0]) != "relation"){
     console.log("No relation selected!");
     return;
   }
-  var removed = selected.flatMap(delete_relation);
-  undo_actions.push(["delete relation",removed,selected,[]]);
-  selected = [];
+  var removed = sel.flatMap(delete_relation);
+  undo_actions.push(["delete relation",removed.reverse(),selected,extraselected]);
+  sel.forEach(toggle_selected);
 }
 
 
@@ -480,7 +484,7 @@ function do_undo() {
     }else if( what == "delete relation" ) {
       var removed = elems;
       removed.forEach((x) => {
-	  if(x) x[1].insertBefore(x[0],x[2])
+	  x[1].insertBefore(x[0],x[2])
 	  let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
 	  if(dc){
 	    let mei_id = get_id(x[0]);
@@ -488,6 +492,9 @@ function do_undo() {
 	    mark_secondaries_arg(dc, mei_graph, mei_he)
 	  }
 	});
+      // Select last selection
+      sel.forEach((x) => {toggle_selected(x);});
+      extra.forEach((x) => {toggle_selected(x,true);});
 
     }else if (what == "change relation type") {
       var types = elems;

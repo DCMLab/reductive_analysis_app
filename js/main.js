@@ -690,26 +690,34 @@ function button(value) {
 
 function add_buttons(draw_context) {
     var new_draw_context = draw_context;
-    var reducebutton = document.createElement("input");
-    var undobutton = document.createElement("input");
-    var rerenderbutton = document.createElement("input");
-    var newlayerbutton = document.createElement("input");
-    newlayerbutton.setAttribute("type","button");
-    newlayerbutton.setAttribute("value","Create new layer");
-    reducebutton.setAttribute("type","button");
-    reducebutton.setAttribute("value","Reduce");
-    undobutton.setAttribute("type","button");
-    undobutton.setAttribute("value","Unreduce");
-    rerenderbutton.setAttribute("type","button");
-    rerenderbutton.setAttribute("value","Create new view");
-    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+    var buttondiv = document.createElement("div");
+    var newlayerbutton = button("Create new layer");
+    var reducebutton = button("Reduce");
+    var undobutton = button("Unreduce");
+    var rerenderbutton = button("Create new view");
     undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
     rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
     newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
-    draw_context.svg_elem.insertBefore(undobutton,    draw_context.svg_elem.children[0]);
-    draw_context.svg_elem.insertBefore(reducebutton,  draw_context.svg_elem.children[0]);
-    draw_context.svg_elem.insertBefore(rerenderbutton,draw_context.svg_elem.children[0]);
-    draw_context.svg_elem.insertBefore(newlayerbutton,draw_context.svg_elem.children[0]);
+    buttondiv.appendChild(undobutton    );
+    buttondiv.appendChild(reducebutton  );
+    buttondiv.appendChild(rerenderbutton);
+    buttondiv.appendChild(newlayerbutton);
+
+    draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
+
+
+    var zoomdiv = document.createElement("div");
+    zoomdiv.style="position:sticky; top:0; right:0; z-index:2";
+    var zoomin = button("+");
+    var zoomout = button("-");
+    zoomin.onclick = () => { zoom_in(draw_context); };
+    zoomout.onclick = () => { zoom_out(draw_context); };
+
+    zoomdiv.appendChild(zoomin);
+    zoomdiv.appendChild(zoomout);
+
+    draw_context.view_elem.appendChild(zoomdiv);
 }
 
 function onclick_select_functions(draw_context) {

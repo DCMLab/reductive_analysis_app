@@ -8,7 +8,7 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   var secondaries = relation_secondaries_arg(mei_graph,g_elem).map(
       (e) => document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
     );
-  var notes = primaries.concat(secondaries)
+  var notes = primaries.concat(secondaries);
   notes.sort((a,b) => { 
       if(!a) return -1;
       if(!b) return 1;

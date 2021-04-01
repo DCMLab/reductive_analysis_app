@@ -969,11 +969,11 @@ function hide_buttons() {
 
 function zoom_in(draw_context) {
   draw_context.zoom = draw_context.zoom * 1.1;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  draw_context.svg_elem.children[0].style.transform="scale("+draw_context.zoom+")";
 }
 function zoom_out(draw_context) {
   draw_context.zoom = draw_context.zoom * 0.90909090909090;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  draw_context.svg_elem.children[0].style.transform="scale("+draw_context.zoom+")";
 }
 
 

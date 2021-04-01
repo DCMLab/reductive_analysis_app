@@ -80,7 +80,11 @@ function mei_for_layer(mei, score_elem) {
     return null;
   }
   var new_mei = clone_mei(mei);
-  var our_score = get_by_id(new_mei, score_elem.getAttribute("xml:id"));
+  var our_score;
+  if(!score_elem.hasAttribute("xml:id"))
+    our_score = new_mei.getElementsByTagName("score")[0];
+  else
+    our_score= get_by_id(new_mei, score_elem.getAttribute("xml:id"));
   var paren = our_score.parentElement;
   for(let score of Array.from(paren.getElementsByTagName("score"))){
     if(score === our_score) 

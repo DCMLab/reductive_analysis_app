@@ -331,6 +331,13 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
+// Integer division
+function div(n, m) {
+  Math.floor(n/m);
+}
+
+function average2(x,y){ return (x+y)/2;}
+
 // What's the accidentals for the given (SVG or MEI) note?
 function note_get_accid(note) {
   console.debug("Using globals: document, mei to find element");

@@ -45,6 +45,8 @@ var redo_actions = []; //TODO, maybe?
 // The first element is the latest
 var draw_contexts = [];
 
+var current_draw_context;
+
 // Each layer context contains information relevant to the layer, such as
 //  * The rendered MEI
 //  * The score element in the original MEI
@@ -73,9 +75,10 @@ var mouseY;
 window.onmousemove = (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
-
+  // Not sure if this is the best way...
+  var elem = document.elementFromPoint(mouseX, mouseY);
+  current_draw_context = draw_contexts.find((dc) => dc.view_elem.contains(elem));
 }
-
 
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).

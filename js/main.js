@@ -567,6 +567,8 @@ function handle_keypress(ev) {
     do_relation("repeat",arg);
   } else if (ev.key == "d") { // Deselect all.
     do_deselect();
+  } else if (ev.key == "x") { // Deselect all.
+    console.log(note_params());
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
   } else if (type_keys[ev.key]) { // Add a relation
@@ -906,6 +908,7 @@ function create_new_layer(draw_context) {
 
 function finalize_draw_context(new_draw_context) {
 
+  new_draw_context.measure_map = compute_measure_map(new_draw_context);
   add_buttons(new_draw_context)
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);

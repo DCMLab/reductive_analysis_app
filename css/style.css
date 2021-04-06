@@ -42,11 +42,11 @@
     position: fixed;
     right: 3em;
     top: 1em;
-    background: rgb(46, 142, 87, 0.2);
+    background: rgb(20, 20, 20, 0.7);
     backdrop-filter: blur(2px);
     border-radius: 10px;
     padding: 1em;
-    color: darkblue;
+    color: white;
 }
 /* .hide-show { */
 /*     display: inline-block; */

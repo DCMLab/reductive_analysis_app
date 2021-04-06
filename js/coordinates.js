@@ -158,7 +158,7 @@ function note_params() {
   const measure = coord_measure(dc,pt);
   if(!measure){
     console.log("Pointer outside measures");
-    return;
+    return [null,null,null];
   }
   const staff   = coord_staff(dc,pt, measure);
   const [pname,oct]       = coord_pitch(dc,pt,staff);
@@ -261,11 +261,14 @@ function add_note(layer_context, pname, oct, note, sim=true, id="") {
 function place_note() {
   if(placing_note!="" && !current_draw_context.layer.original_score){
     let [pname, oct, note] = note_params();
+    if(!pname)
+      return;
     var new_element_id = "new-"+random_id();
     // Draw it temporarily
     draw_note(pname, oct, note, true, new_element_id); 
     // Add it to the current layer
     add_note(current_draw_context.layer, pname, oct, note, true, new_element_id);
+    toggle_placing_note();
   }
 }
 
@@ -274,7 +277,8 @@ function start_placing_note() {
     return;
   let [pname, oct, note] = note_params();
   placing_note = "temp"+random_id();
-  show_note(pname, oct, note, true,placing_note);
+  if(pname)
+    show_note(pname, oct, note, true,placing_note);
 }
 
 function stop_placing_note() {
@@ -295,5 +299,6 @@ function update_placing_note() {
   if(current_draw_context.layer.original_score)
     return;
   let [pname, oct, note] = note_params();
-  show_note(pname, oct, note, true, placing_note);
+  if(pname)
+    show_note(pname, oct, note, true, placing_note);
 }

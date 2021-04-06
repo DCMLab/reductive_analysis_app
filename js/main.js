@@ -584,6 +584,8 @@ function handle_keypress(ev) {
   } else if (ev.key == "+") { // Select same notes in the measure
     select_samenote();
     do_relation("repeat",arg);
+  } else if (ev.key == "x") { // Select same notes in the measure
+    toggle_placing_note();
   } else if (ev.key == "d") { // Deselect all.
     do_deselect();
   } else if (ev.key == "D") { // Delete relations.
@@ -852,7 +854,7 @@ function load_finish(e) {
   document.onkeypress = function(ev) {handle_keypress(ev);};
   document.onkeydown = handle_keydown;
   document.onkeyup = handle_keyup;
-  document.onclick = handle_click;
+  document.getElementById("layers").onclick = handle_click;
   return true;
 }
 

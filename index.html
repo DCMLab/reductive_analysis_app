@@ -82,6 +82,7 @@
 	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("",arg)" > 
 	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value, arg)" >
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
+	  <input type="button" id="addnoteputton" value="Toggle adding a note" onclick="toggle_placing_note()"/>
 	  <div id="relation_buttons">
 	  </div>
 	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">

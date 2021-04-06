@@ -94,12 +94,27 @@ function diatonic_note_n(note) {
   return oct * 7 + (pnames.indexOf(pname));
 }
 
-function pitch_grid(staff,note) {
+function pitch_grid(staff) {
   // Given a staff and a reference note in that staff, give a function that
   // computes a pitch name and octave for a given y coordinate
   const mid = staff_midpoint(staff);
   const thrd = - Math.abs(staff_third_distance(staff));
   const snd = thrd/2;
+  const ns = staff.getElementsByClassName("note");
+  var note;
+  if(ns.length > 0)
+    note = ns[0];
+  else{
+    // No notes in current staff
+    const sys = staff.closest(".system");
+    // Look through the other staves
+    const staves = Array.from(sys.getElementsByClassName("staff"));
+    // For something that has the same height as this
+    const sibling_staff = staves.find((st) => staff_midpoint(st) == mid &&
+	st.getElementsByClassName("note").length > 0);
+    // And a note we can compare heights with
+    note = sibling_staff.getElementsByClassName("note")[0];
+  }
   // What's the diatonic note number at the middle line of the staff
   const mid_n = diatonic_note_n(note) - Math.floor((note_coords(note)[1] - mid)/snd);
   
@@ -131,6 +146,8 @@ function coord_pitch(dc,pt,staff) {
 // Same procedure as for coord_staff, if we're not allowing new chords
 function closest_note(dc,pt,staff) {
   var notes = Array.from(staff.getElementsByClassName("note")).map((n) => [note_coords(n)[0],n]);
+  if(notes.length == 0)
+    return null;
   notes.sort((a,b) => a[0] - b[0]);
   var index_maybe = notes.findIndex((n) => pt.x < n[0]);
   if(index_maybe == 0)
@@ -163,6 +180,8 @@ function note_params() {
   const staff   = coord_staff(dc,pt, measure);
   const [pname,oct]       = coord_pitch(dc,pt,staff);
   const sim_note = closest_note(dc,pt,staff);
+  if(!sim_note)
+    return [null,null,null];
 //  const [rel_event,simul] = coord_event(dc,pt, staff, measure);
   return [pname,oct,sim_note];
 }

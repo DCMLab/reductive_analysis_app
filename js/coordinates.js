@@ -184,6 +184,8 @@ function show_note(pname, oct, note, sim=true, id="") {
   if(sim){
     let [x,y] = note_params_coords_sim(pname, oct, note);
     // "Copy" the other note
+    //TODO use Smart(tm) computations to draw it independently, with smart
+    //stem and notehead directions
     let [nx,ny] = note_coords(note);
     var u = document.createElementNS("http://www.w3.org/2000/svg", 'use');
     u.setAttributeNS('http://www.w3.org/1999/xlink',"href","#"+note.id);
@@ -195,6 +197,36 @@ function show_note(pname, oct, note, sim=true, id="") {
   }
 }
 
+function draw_note(pname, oct, note, sim=true, id="") {
+  var dc = current_draw_context;
+  var curr_elem = document.getElementById(id);
+  if(curr_elem)
+    curr_elem.parentElement.removeChild(curr_elem);
+  if(sim){
+    let [x,y] = note_params_coords_sim(pname, oct, note);
+    // "Copy" the other note
+    //TODO use Smart(tm) computations to draw it independently, with smart
+    //stem and notehead directions
+    var g = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+    var gh = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+    var u = document.createElementNS("http://www.w3.org/2000/svg", 'use');
+    // Same notehead
+    u.setAttributeNS('http://www.w3.org/1999/xlink',"href",
+         note.getElementsByTagName("use")[0].getAttributeNS('http://www.w3.org/1999/xlink',"href"));
+    // And offset it with A Bit
+    u.setAttribute("x",x-100);
+    u.setAttribute("y",y);
+    u.setAttribute("height","720px");
+    u.setAttribute("width","720px");
+    g.id = id;
+    g.classList.add("note");
+    gh.classList.add("notehead");
+    gh.appendChild(u);
+    g.appendChild(gh);
+    note.parentElement.appendChild(g);
+    g.onclick= function(ev) {toggle_selected(g,ev.shiftKey) };
+  }
+}
 
 
 

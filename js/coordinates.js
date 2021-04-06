@@ -168,7 +168,34 @@ function note_params() {
   return [pname,oct,sim_note];
 }
 
+function note_params_coords_sim(pname, oct, note) {
+  var staff = note.closest(".staff"); //Assume we're in the same staff
+  var n = staff.getElementsByClassName("note")[0];
+  // TODO: Handle if there are no notes in the current staff
+//  var [y_to_p,p_to_y] = pitch_grid(staff,note);
+  return [note_coords(note)[0],staff.p_to_y(pname,oct)];
 }
+
+function show_note(pname, oct, note, sim=true, id="") {
+  var dc = current_draw_context;
+  var curr_elem = document.getElementById(id);
+  if(curr_elem)
+    curr_elem.parentElement.removeChild(curr_elem);
+  if(sim){
+    let [x,y] = note_params_coords_sim(pname, oct, note);
+    // "Copy" the other note
+    let [nx,ny] = note_coords(note);
+    var u = document.createElementNS("http://www.w3.org/2000/svg", 'use');
+    u.setAttributeNS('http://www.w3.org/1999/xlink',"href","#"+note.id);
+    // And offset it with A Bit
+    u.setAttribute("x",x-nx);
+    u.setAttribute("y",y-ny);
+    u.id = id;
+    note.parentElement.appendChild(u);
+  }
+}
+
+
 
 
 

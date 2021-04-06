@@ -38,6 +38,15 @@
     min-height: 1em;
 }
 
+#selected_things {
+    position: fixed;
+    right: 3em;
+    top: 1em;
+    background: rgb(46, 142, 87, 0.2);
+    border-radius: 10px;
+    padding: 1em;
+    color: darkblue;
+}
 /* .hide-show { */
 /*     display: inline-block; */
 /*     margin-left: auto; */

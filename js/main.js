@@ -94,6 +94,8 @@ $(document).ready(function()
       Object.keys(meta_conf).forEach(meta_type);
       toggle_shades();
       $("#player").midiPlayer({ color: "grey", width: 250 });
+      $("#selected_things").hide();
+
 
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   $('body').on({
@@ -221,8 +223,12 @@ function update_text(){
     primaries = to_text(extraselected);
     secondaries = to_text(selected);
   }
-  $("#selected_things").html("Primaries: "+primaries+"<br/>Secondaries: "+secondaries);  
-
+  if (primaries || secondaries) {
+    $("#selected_things").show();
+    $("#selected_things").html("Primaries: "+primaries+"<br/>Secondaries: "+secondaries);  
+  } else {
+    $("#selected_things").hide();
+  }
 }
 
 // Toggle showing things other than notes in the score

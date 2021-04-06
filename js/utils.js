@@ -698,59 +698,52 @@ function fix_synonyms(mei) {
   return mei;
 }
 
+var attributes = [ "dur",
+		   "n",
+		   "dots",
+		   "when",
+		   "layer",
+		   "staff",
+		   "tstamp.ges",
+		   "tstamp.real",
+		   "tstamp",
+		   "loc",
+		   "dur.ges",
+		   "dots.ges",
+		   "dur.metrical",
+		   "dur.ppq",
+		   "dur.real",
+		   "dur.recip",
+		   "beam",
+		   "fermata",
+		   "tuplet" ];
+
 // Make a rest of the same properties as the given note.
 function note_to_rest(mei,note) {
   var rest = mei.createElementNS("http://www.music-encoding.org/ns/mei", 'rest');
   rest.setAttribute("xml:id","rest-"+note.getAttribute("xml:id"));
-  rest.setAttribute("dur",note.getAttribute("dur"));
-  rest.setAttribute("n",note.getAttribute("n"));
-  rest.setAttribute("dots",note.getAttribute("dots"));
-  rest.setAttribute("when",note.getAttribute("when"));
-  rest.setAttribute("layer",note.getAttribute("layer"));
-  rest.setAttribute("staff",note.getAttribute("staff"));
-  rest.setAttribute("tstamp.ges",note.getAttribute("tstamp.ges"));
-  rest.setAttribute("tstamp.real",note.getAttribute("tstamp.real"));
-  rest.setAttribute("tstamp",note.getAttribute("tstamp"));
-  rest.setAttribute("loc",note.getAttribute("loc"));
-  rest.setAttribute("dur.ges",note.getAttribute("dur.ges"));
-  rest.setAttribute("dots.ges",note.getAttribute("dots.ges"));
-  rest.setAttribute("dur.metrical",note.getAttribute("dur.ges"));
-  rest.setAttribute("dur.ppq",note.getAttribute("dur.ppq"));
-  rest.setAttribute("dur.real",note.getAttribute("dur.real"));
-  rest.setAttribute("dur.recip",note.getAttribute("dur.recip"));
-  rest.setAttribute("beam",note.getAttribute("beam"));
-  rest.setAttribute("fermata",note.getAttribute("fermata"));
-  rest.setAttribute("tuplet",note.getAttribute("tuplet"));
-  //That's all I can think of. There's probably a better
-  //way to do this..
+  for(a of attributes)
+    if(note.hasAttribute(a))
+      rest.setAttribute(a,note.getAttribute(a));
   return rest;
 }
-
+// Make a space of the same properties as the given note.
 function note_to_space(mei,note) {
   var space = mei.createElementNS("http://www.music-encoding.org/ns/mei", 'space');
-  space.setAttribute("xml:id","rest-"+note.getAttribute("xml:id"));
-  space.setAttribute("dur",note.getAttribute("dur"));
-  space.setAttribute("n",note.getAttribute("n"));
-  space.setAttribute("dots",note.getAttribute("dots"));
-  space.setAttribute("when",note.getAttribute("when"));
-  space.setAttribute("layer",note.getAttribute("layer"));
-  space.setAttribute("staff",note.getAttribute("staff"));
-  space.setAttribute("tstamp.ges",note.getAttribute("tstamp.ges"));
-  space.setAttribute("tstamp.real",note.getAttribute("tstamp.real"));
-  space.setAttribute("tstamp",note.getAttribute("tstamp"));
-  space.setAttribute("loc",note.getAttribute("loc"));
-  space.setAttribute("dur.ges",note.getAttribute("dur.ges"));
-  space.setAttribute("dots.ges",note.getAttribute("dots.ges"));
-  space.setAttribute("dur.metrical",note.getAttribute("dur.ges"));
-  space.setAttribute("dur.ppq",note.getAttribute("dur.ppq"));
-  space.setAttribute("dur.real",note.getAttribute("dur.real"));
-  space.setAttribute("dur.recip",note.getAttribute("dur.recip"));
-  space.setAttribute("beam",note.getAttribute("beam"));
-  space.setAttribute("fermata",note.getAttribute("fermata"));
-  space.setAttribute("tuplet",note.getAttribute("tuplet"));
-  //That's all I can think of. There's probably a better
-  //way to do this..
+  space.setAttribute("xml:id","space-"+note.getAttribute("xml:id"));
+  for(a of attributes)
+    if(note.hasAttribute(a))
+      space.setAttribute(a,note.getAttribute(a));
   return space;
+}
+// Make a chord of the same properties as the given note.
+function note_to_chord(mei,note) {
+  var chord = mei.createElementNS("http://www.music-encoding.org/ns/mei", 'chord');
+  chord.setAttribute("xml:id","chord-"+note.getAttribute("xml:id"));
+  for(a of attributes)
+    if(note.hasAttribute(a))
+      chord.setAttribute(a,note.getAttribute(a));
+  return chord;
 }
 
 

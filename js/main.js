@@ -551,7 +551,6 @@ function do_undo() {
 
 function handle_keydown(ev) {
   if(ev.key="Control"){
-    console.log("painting");
     let [pname, oct, note] = note_params();
     temp_element_id = "temp"+random_id();
     show_note(pname, oct, note, true,temp_element_id);
@@ -560,7 +559,6 @@ function handle_keydown(ev) {
 
 function handle_keyup(ev) {
   if(ev.key="Control"){
-    console.log("not painting");
     let elem = document.getElementById(temp_element_id);
     elem.parentElement.removeChild(elem);
     temp_element_id="";

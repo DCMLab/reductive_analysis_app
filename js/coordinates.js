@@ -228,6 +228,34 @@ function draw_note(pname, oct, note, sim=true, id="") {
   }
 }
 
-
+function add_note(layer_context, pname, oct, note, sim=true, id="") {
+  var l = get_by_id(mei,get_id(note));
+  if(!layer_context.score_elem.contains(l)){
+    console.log("Note not in layer?");
+    return false;
+  }
+  var n = mei.createElement("note");
+  n.setAttribute("xml:id",id);
+  if(sim){
+    let c;
+    if(l.closest("chord"))
+      c = l.closest("chord");
+    else{
+      c = note_to_chord(mei,l);
+      console.log(c);
+      l.parentElement.insertBefore(c,l);
+      l.parentElement.removeChild(l);
+      c.appendChild(l);
+    }
+    n.setAttribute("pname",pname);
+    //TODO Figure out accidentals, gestural or otherwise
+    n.setAttribute("oct",oct);
+    c.appendChild(n);
+    layer_context.id_mapping.push([id,id]);
+  }else{
+    console.log("Not implemented");
+    return false;
+  }
+}
 
 

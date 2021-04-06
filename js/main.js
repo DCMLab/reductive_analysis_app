@@ -69,6 +69,9 @@ var zoom = 1;
 
 var arg = true;
 
+// Hovering and adding notes
+var temp_element_id="";
+
 var mouseX;
 var mouseY;
 
@@ -78,6 +81,10 @@ window.onmousemove = (e) => {
   // Not sure if this is the best way...
   var elem = document.elementFromPoint(mouseX, mouseY);
   current_draw_context = draw_contexts.find((dc) => dc.view_elem.contains(elem));
+  if(temp_element_id!=""){
+    let [pname, oct, note] = note_params();
+    show_note(pname, oct, note, true, temp_element_id);
+  }
 }
 
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
@@ -542,6 +549,24 @@ function do_undo() {
 
 }
 
+function handle_keydown(ev) {
+  if(ev.key="Control"){
+    console.log("painting");
+    let [pname, oct, note] = note_params();
+    temp_element_id = "temp"+random_id();
+    show_note(pname, oct, note, true,temp_element_id);
+  }
+}
+
+function handle_keyup(ev) {
+  if(ev.key="Control"){
+    console.log("not painting");
+    let elem = document.getElementById(temp_element_id);
+    elem.parentElement.removeChild(elem);
+    temp_element_id="";
+  }
+}
+
 
 // We have keyboard commands!
 function handle_keypress(ev) {
@@ -568,7 +593,9 @@ function handle_keypress(ev) {
   } else if (ev.key == "d") { // Deselect all.
     do_deselect();
   } else if (ev.key == "x") { // Deselect all.
-    console.log(note_params());
+    let [pname, oct, note] = note_params();
+    console.log([pname, oct, note]);
+    show_note(pname, oct, note);
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
   } else if (type_keys[ev.key]) { // Add a relation
@@ -832,8 +859,11 @@ function load_finish(e) {
   if(!shades)
     toggle_shades();
   document.onkeypress = function(ev) {handle_keypress(ev);};
+  document.onkeydown = handle_keydown;
+  document.onkeyup = handle_keyup;
   return true;
 }
+
 
 
 

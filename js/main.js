@@ -552,7 +552,7 @@ function do_undo() {
 }
 
 function handle_keydown(ev) {
-  if(ev.key="Control" && !current_draw_context.layer.original_score){
+  if(ev.key=="Control" && !current_draw_context.layer.original_score){
     let [pname, oct, note] = note_params();
     temp_element_id = "temp"+random_id();
     show_note(pname, oct, note, true,temp_element_id);
@@ -560,7 +560,7 @@ function handle_keydown(ev) {
 }
 
 function handle_keyup(ev) {
-  if(ev.key="Control"){
+  if(ev.key=="Control"){
     let elem = document.getElementById(temp_element_id);
     if(elem)
       elem.parentElement.removeChild(elem);

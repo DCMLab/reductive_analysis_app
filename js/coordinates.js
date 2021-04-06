@@ -24,8 +24,7 @@ function compute_measure_map(draw_context) {
   var notes = Array.from(svg.getElementsByClassName("note"));
   // We let the right edge of each measure make up the grid lines
   var measure_map = measures.map((msr) => [msr.getBBox().x + msr.getBBox().width, msr]); 
-  measure_map.sort((x,y) => x - y);
-  measure_map.reverse(); // Go from right
+  measure_map.sort((x,y) => x[0] - y[0]);
   return measure_map;
   // Maybe replace s.id with the 'n' of the staff in the MEI
 }
@@ -72,7 +71,7 @@ function coord_staff(dc, pt, measure) {
   // midpoints between midpoints
   var staves = Array.from(measure.getElementsByClassName("staff")); 
   var stave_coords = staves.map((s) => [staff_midpoint(s),s]);
-  stave_coords.sort();
+  stave_coords.sort((a,b) => a[0] - b[0]);
   var index_maybe = stave_coords.findIndex((s) => pt.y < s[0]);
   if(index_maybe == 0)
     return stave_coords[0][1];
@@ -132,7 +131,7 @@ function coord_pitch(dc,pt,staff) {
 // Same procedure as for coord_staff, if we're not allowing new chords
 function closest_note(dc,pt,staff) {
   var notes = Array.from(staff.getElementsByClassName("note")).map((n) => [note_coords(n)[0],n]);
-  notes.sort();
+  notes.sort((a,b) => a[0] - b[0]);
   var index_maybe = notes.findIndex((n) => pt.x < n[0]);
   if(index_maybe == 0)
     return notes[0][1];
@@ -213,7 +212,7 @@ function draw_note(pname, oct, note, sim=true, id="") {
     // Same notehead
     u.setAttributeNS('http://www.w3.org/1999/xlink',"href",
          note.getElementsByTagName("use")[0].getAttributeNS('http://www.w3.org/1999/xlink',"href"));
-    // And offset it with A Bit
+    // And scale and place it appropriately
     u.setAttribute("x",x-100);
     u.setAttribute("y",y);
     u.setAttribute("height","720px");

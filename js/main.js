@@ -835,7 +835,7 @@ function load_finish(e) {
 function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
 //  var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem;
-  var mei2 = clone_mei(draw_context.layer.mei);
+  var mei2 = mei_for_layer(mei,draw_context.layer.score_elem);
 
   Array.from(mei2.getElementsByTagName("note")).forEach((n) => {
     let x = document.getElementById(id_in_svg(draw_context,get_id(n)));

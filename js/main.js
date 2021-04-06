@@ -106,17 +106,6 @@ $(document).ready(function()
       toggle_shades();
       $("#player").midiPlayer({ color: "grey", width: 250 });
 
-  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
-  $('body').on({
-    keydown: function(e) {
-        if (e.originalEvent.key === "Shift")
-        $('#svg_container').addClass('shift-pressed')
-      },
-      keyup: function(e) {
-        if (e.originalEvent.key === "Shift")
-        $('#svg_container').removeClass('shift-pressed')
-      }
-  });
 });
 
 // Configured types need a button and a color each
@@ -554,12 +543,18 @@ function handle_keydown(ev) {
   if(ev.key=="Control"){
     start_placing_note();
   }
+  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
+  if (ev.key === "Shift")
+    $('#layers').addClass('shift-pressed')
 }
 
 function handle_keyup(ev) {
   if(ev.key=="Control"){
     stop_placing_note();
   }
+  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
+  if (ev.key === "Shift")
+    $('#layers').removeClass('shift-pressed')
 }
 
 function handle_click(ev) {

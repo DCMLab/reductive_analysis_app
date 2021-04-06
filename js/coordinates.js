@@ -129,6 +129,24 @@ function coord_pitch(dc,pt,staff) {
   return staff.y_to_p(pt.y);
 }
 
+// Same procedure as for coord_staff, if we're not allowing new chords
+function closest_note(dc,pt,staff) {
+  var notes = Array.from(staff.getElementsByClassName("note")).map((n) => [note_coords(n)[0],n]);
+  notes.sort();
+  var index_maybe = notes.findIndex((n) => pt.x < n[0]);
+  if(index_maybe == 0)
+    return notes[0][1];
+  if(index_maybe == -1)
+    return notes[notes.length - 1][1];
+  const divider = average2(notes[index_maybe - 1][0],
+                           notes[index_maybe     ][0]);
+  if(pt.x < divider)
+    return notes[index_maybe - 1][1];
+  else
+    return notes[index_maybe    ][1];
+}
+
+
 
 function note_params() {
   // Compute the note parameters that make sense for the pointer position
@@ -145,8 +163,10 @@ function note_params() {
   }
   const staff   = coord_staff(dc,pt, measure);
   const [pname,oct]       = coord_pitch(dc,pt,staff);
-//  const [rel_event,simul] = coord_event(dc,pt, staff);
-  return [pname,oct];
+  const sim_note = closest_note(dc,pt,staff);
+//  const [rel_event,simul] = coord_event(dc,pt, staff, measure);
+  return [pname,oct,sim_note];
+}
 
 }
 

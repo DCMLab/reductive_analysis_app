@@ -565,6 +565,17 @@ function handle_keyup(ev) {
   }
 }
 
+function handle_click(ev) {
+  if(temp_element_id!=""){
+    let [pname, oct, note] = note_params();
+    var new_element_id = "new-"+random_id();
+    // Draw it temporarily
+    draw_note(pname, oct, note, true, new_element_id); 
+    // Add it to the current layer
+    add_note(current_draw_context.layer, pname, oct, note, true, new_element_id);
+  }
+}
+
 
 // We have keyboard commands!
 function handle_keypress(ev) {
@@ -859,9 +870,9 @@ function load_finish(e) {
   document.onkeypress = function(ev) {handle_keypress(ev);};
   document.onkeydown = handle_keydown;
   document.onkeyup = handle_keyup;
+  document.onclick = handle_click;
   return true;
 }
-
 
 
 

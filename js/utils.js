@@ -178,6 +178,11 @@ function g_arg(svg_elem) {
   return newElement;
 }
 
+function random_id(n=5) {
+  return Math.floor(Math.random() * (1 << (n*4))).toString(16);
+}
+
+
 // Note coordinates are off center by a bit
 function note_coords(note) {
   // Computes useful coordinates of a note

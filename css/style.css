@@ -43,6 +43,7 @@
     right: 3em;
     top: 1em;
     background: rgb(46, 142, 87, 0.2);
+    backdrop-filter: blur(2px);
     border-radius: 10px;
     padding: 1em;
     color: darkblue;

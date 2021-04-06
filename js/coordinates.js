@@ -258,3 +258,42 @@ function add_note(layer_context, pname, oct, note, sim=true, id="") {
 }
 
 
+function place_note() {
+  if(placing_note!="" && !current_draw_context.layer.original_score){
+    let [pname, oct, note] = note_params();
+    var new_element_id = "new-"+random_id();
+    // Draw it temporarily
+    draw_note(pname, oct, note, true, new_element_id); 
+    // Add it to the current layer
+    add_note(current_draw_context.layer, pname, oct, note, true, new_element_id);
+  }
+}
+
+function start_placing_note() {
+  if(current_draw_context.layer.original_score)
+    return;
+  let [pname, oct, note] = note_params();
+  placing_note = "temp"+random_id();
+  show_note(pname, oct, note, true,placing_note);
+}
+
+function stop_placing_note() {
+  let elem = document.getElementById(placing_note);
+  if(elem)
+    elem.parentElement.removeChild(elem);
+  placing_note="";
+}
+
+function toggle_placing_note() {
+  if(placing_note)
+    stop_placing_note();
+  else
+    start_placing_note();
+}
+
+function update_placing_note() {
+  if(current_draw_context.layer.original_score)
+    return;
+  let [pname, oct, note] = note_params();
+  show_note(pname, oct, note, true, placing_note);
+}

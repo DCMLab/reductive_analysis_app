@@ -70,7 +70,7 @@ var zoom = 1;
 var arg = true;
 
 // Hovering and adding notes
-var temp_element_id="";
+var placing_note="";
 
 var mouseX;
 var mouseY;
@@ -83,9 +83,8 @@ window.onmousemove = (e) => {
   var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem));
   if(dc)
     current_draw_context = dc;
-  if(temp_element_id!="" && !current_draw_context.layer.original_score){
-    let [pname, oct, note] = note_params();
-    show_note(pname, oct, note, true, temp_element_id);
+  if(placing_note!=""){
+    update_placing_note();
   }
 }
 
@@ -111,11 +110,11 @@ $(document).ready(function()
   $('body').on({
     keydown: function(e) {
         if (e.originalEvent.key === "Shift")
-        $('#svg_outputs').addClass('shift-pressed')
+        $('#svg_container').addClass('shift-pressed')
       },
       keyup: function(e) {
         if (e.originalEvent.key === "Shift")
-        $('#svg_outputs').removeClass('shift-pressed')
+        $('#svg_container').removeClass('shift-pressed')
       }
   });
 });
@@ -552,31 +551,19 @@ function do_undo() {
 }
 
 function handle_keydown(ev) {
-  if(ev.key=="Control" && !current_draw_context.layer.original_score){
-    let [pname, oct, note] = note_params();
-    temp_element_id = "temp"+random_id();
-    show_note(pname, oct, note, true,temp_element_id);
+  if(ev.key=="Control"){
+    start_placing_note();
   }
 }
 
 function handle_keyup(ev) {
   if(ev.key=="Control"){
-    let elem = document.getElementById(temp_element_id);
-    if(elem)
-      elem.parentElement.removeChild(elem);
-    temp_element_id="";
+    stop_placing_note();
   }
 }
 
 function handle_click(ev) {
-  if(temp_element_id!="" && !current_draw_context.layer.original_score){
-    let [pname, oct, note] = note_params();
-    var new_element_id = "new-"+random_id();
-    // Draw it temporarily
-    draw_note(pname, oct, note, true, new_element_id); 
-    // Add it to the current layer
-    add_note(current_draw_context.layer, pname, oct, note, true, new_element_id);
-  }
+  place_note();
 }
 
 
@@ -604,10 +591,6 @@ function handle_keypress(ev) {
     do_relation("repeat",arg);
   } else if (ev.key == "d") { // Deselect all.
     do_deselect();
-  } else if (ev.key == "x") { // Deselect all.
-    let [pname, oct, note] = note_params();
-    console.log([pname, oct, note]);
-    show_note(pname, oct, note);
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
   } else if (type_keys[ev.key]) { // Add a relation

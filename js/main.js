@@ -80,8 +80,10 @@ window.onmousemove = (e) => {
   mouseY = e.clientY;
   // Not sure if this is the best way...
   var elem = document.elementFromPoint(mouseX, mouseY);
-  current_draw_context = draw_contexts.find((dc) => dc.view_elem.contains(elem));
-  if(temp_element_id!=""){
+  var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem));
+  if(dc)
+    current_draw_context = dc;
+  if(temp_element_id!="" && !current_draw_context.layer.original_score){
     let [pname, oct, note] = note_params();
     show_note(pname, oct, note, true, temp_element_id);
   }
@@ -550,7 +552,7 @@ function do_undo() {
 }
 
 function handle_keydown(ev) {
-  if(ev.key="Control"){
+  if(ev.key="Control" && !current_draw_context.layer.original_score){
     let [pname, oct, note] = note_params();
     temp_element_id = "temp"+random_id();
     show_note(pname, oct, note, true,temp_element_id);
@@ -560,13 +562,14 @@ function handle_keydown(ev) {
 function handle_keyup(ev) {
   if(ev.key="Control"){
     let elem = document.getElementById(temp_element_id);
-    elem.parentElement.removeChild(elem);
+    if(elem)
+      elem.parentElement.removeChild(elem);
     temp_element_id="";
   }
 }
 
 function handle_click(ev) {
-  if(temp_element_id!=""){
+  if(temp_element_id!="" && !current_draw_context.layer.original_score){
     let [pname, oct, note] = note_params();
     var new_element_id = "new-"+random_id();
     // Draw it temporarily
@@ -840,7 +843,8 @@ function load_finish(e) {
       "mei"        : new_mei,
       "layer_elem" : layer_element,
       "score_elem" : score_elem,
-      "id_mapping" : get_id_pairs(score_elem)
+      "id_mapping" : get_id_pairs(score_elem),
+      "original_score" : i == 0 // The first layer is assumed to be the original score
     }
     layer_contexts.push(layer_context);
     var draw_context = {
@@ -925,7 +929,8 @@ function create_new_layer(draw_context) {
     "mei"        : new_mei,
     "layer_elem" : layer_element,
     "score_elem" : new_score_elem,
-    "id_mapping" : get_id_pairs(new_score_elem)
+    "id_mapping" : get_id_pairs(new_score_elem),
+    "original_score" : false
   }
   layer_contexts.push(layer_context);
   var new_draw_context = {

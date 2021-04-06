@@ -104,7 +104,7 @@ function pitch_grid(staff,note) {
   // What's the diatonic note number at the middle line of the staff
   const mid_n = diatonic_note_n(note) - Math.floor((note_coords(note)[1] - mid)/snd);
   
-  return (y) => {
+  return [(y) => {
     // What's the diatonic note number?
     // TODO: this may need adjustment by snd/2
     var diatonic_n = Math.floor((y + snd/2 - mid)/snd) + mid_n;
@@ -112,7 +112,12 @@ function pitch_grid(staff,note) {
     var note = pnames[mod(diatonic_n, 7)];
 
     return [note,oct];
-  }
+  },(pname,oct) => {
+    var diatonic_n = oct*7 + pnames.indexOf(pname);
+    return mid + (diatonic_n - mid_n)*snd;
+  }]
+
+
 }
 
 function coord_pitch(dc,pt,staff) {
@@ -120,8 +125,8 @@ function coord_pitch(dc,pt,staff) {
   // relative to a specific staff.
   var n = staff.getElementsByClassName("note")[0];
   // TODO: Handle if there are no notes in the current staff
-  var y_to_p = pitch_grid(staff,n);
-  return y_to_p(pt.y);
+//  var [y_to_p,p_to_y] = pitch_grid(staff,n);
+  return staff.y_to_p(pt.y);
 }
 
 

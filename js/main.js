@@ -916,6 +916,13 @@ function finalize_draw_context(new_draw_context) {
   for (let n of new_draw_context.svg_elem.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
+  for (let s of new_draw_context.svg_elem.getElementsByClassName("staff")) {
+    //TODO: handle staves with no notes in them
+      let n = s.getElementsByClassName("note")[0];
+      let [y_to_p,p_to_y] = pitch_grid(s,n);
+      s.y_to_p = y_to_p;
+      s.p_to_y = p_to_y;
+  }
   draw_graph(new_draw_context);
 }
 

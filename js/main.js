@@ -534,7 +534,17 @@ function do_undo() {
       }
       sel.forEach((x) => {toggle_selected(x);});
       extra.forEach((x) => {toggle_selected(x,true);});
+    }else if (what == "add note") {
+      var [mei_elems,graphicals] = elems;
+      graphicals.forEach((x) => x.parentNode.removeChild(x));
+      mei_elems[0].parentNode.removeChild(mei_elems[0]);
+      if(mei_elems.length > 1){
+	var c = mei_elems[1];
+	c.parentNode.insertBefore(c.children[0],c);
+	c.parentNode.removeChild(c);
+      }
     }
+
 
 
 }

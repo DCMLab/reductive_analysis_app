@@ -218,6 +218,7 @@ function show_note(pname, oct, note, sim=true, id="") {
 function draw_note(pname, oct, note, sim=true, id="") {
   var dc = current_draw_context;
   var curr_elem = document.getElementById(id);
+  var added=[];
   if(curr_elem)
     curr_elem.parentElement.removeChild(curr_elem);
   if(sim){
@@ -243,7 +244,9 @@ function draw_note(pname, oct, note, sim=true, id="") {
     g.appendChild(gh);
     note.parentElement.appendChild(g);
     g.onclick= function(ev) {toggle_selected(g,ev.shiftKey) };
+    added.push(g);
   }
+  return added.reverse();
 }
 
 function add_note(layer_context, pname, oct, note, sim=true, id="") {
@@ -253,6 +256,7 @@ function add_note(layer_context, pname, oct, note, sim=true, id="") {
     return false;
   }
   var n = mei.createElement("note");
+  var added = [];
   n.setAttribute("xml:id",id);
   if(sim){
     let c;
@@ -264,16 +268,19 @@ function add_note(layer_context, pname, oct, note, sim=true, id="") {
       l.parentElement.insertBefore(c,l);
       l.parentElement.removeChild(l);
       c.appendChild(l);
+      added.push(c);
     }
     n.setAttribute("pname",pname);
     //TODO Figure out accidentals, gestural or otherwise
     n.setAttribute("oct",oct);
     c.appendChild(n);
+    added.push(n);
     layer_context.id_mapping.push([id,id]);
   }else{
     console.log("Not implemented");
     return false;
   }
+  return added.reverse();
 }
 
 
@@ -283,11 +290,13 @@ function place_note() {
     if(!pname)
       return;
     var new_element_id = "new-"+random_id();
+    var added = [];
     // Draw it temporarily
-    draw_note(pname, oct, note, true, new_element_id); 
+    added.push(draw_note(pname, oct, note, true, new_element_id));
     // Add it to the current layer
-    add_note(current_draw_context.layer, pname, oct, note, true, new_element_id);
+    added.push(add_note(current_draw_context.layer, pname, oct, note, true, new_element_id));
     toggle_placing_note();
+    undo_actions.push(["add note",added.reverse(),[],[]]);
   }
 }
 

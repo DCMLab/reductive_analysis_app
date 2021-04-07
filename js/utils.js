@@ -782,7 +782,10 @@ function get_id_pairs(elem) {
     item = [elem.id , get_id(elem)]
   else if(elem.hasAttribute("xml:id"))
     item = [elem.getAttribute("xml:id") , get_id(elem)]
-  return [item].concat(Array.from(elem.children).flatMap(get_id_pairs))
+  if(item)
+    return [item].concat(Array.from(elem.children).flatMap(get_id_pairs));
+  else
+    return Array.from(elem.children).flatMap(get_id_pairs);
 }
 
 

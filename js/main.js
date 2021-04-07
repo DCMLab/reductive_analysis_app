@@ -225,7 +225,7 @@ function update_text(){
   }
   if (primaries || secondaries) {
     $("#selected_things").show();
-    $("#selected_things").html("Primaries: "+primaries+"<br/>Secondaries: "+secondaries);  
+    $("#selected_things").html("<span class='selected_primaries'>Primaries: </span>"+primaries+"<br/><span class='selected_secondaries'>Secondaries: </span>"+secondaries);  
   } else {
     $("#selected_things").hide();
   }

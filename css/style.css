@@ -49,6 +49,14 @@
     padding: 1em;
     color: white;
 }
+
+#selected_things .selected_primaries {
+    color: orangered;
+}
+
+#selected_things .selected_secondaries {
+    color: chartreuse;
+}
 /* .hide-show { */
 /*     display: inline-block; */
 /*     margin-left: auto; */

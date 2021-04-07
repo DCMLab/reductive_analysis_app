@@ -38,6 +38,25 @@
     min-height: 1em;
 }
 
+#selected_things {
+    font-family: monospace;
+    position: fixed;
+    right: 3em;
+    top: 1em;
+    background: rgb(20, 20, 20, 0.7);
+    backdrop-filter: blur(2px);
+    border-radius: 10px;
+    padding: 1em;
+    color: white;
+}
+
+#selected_things .selected_primaries {
+    color: orangered;
+}
+
+#selected_things .selected_secondaries {
+    color: chartreuse;
+}
 /* .hide-show { */
 /*     display: inline-block; */
 /*     margin-left: auto; */

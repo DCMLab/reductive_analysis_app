@@ -369,7 +369,7 @@ function do_relation(type,arg) {
         var id = id_or_oldid(he);
         var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
         hes.forEach((he) => he.setAttribute("type",type));
-        var mei_he = get_by_id(orig_mei,id);
+        var mei_he = get_by_id(mei,id);
         mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
         hes.forEach(toggle_shade);
         });
@@ -806,7 +806,7 @@ function load_finish(e) {
   document.getElementById("layers").innerHTML="";
 
   // Segment existing layers
-  var layers = Array.from(mei.getElementsByTagName("score"));
+  var layers = Array.from(mei.getElementsByTagName("body")[0].getElementsByTagName("score"));
   for(let i in layers ){
     let score_elem = layers[i];
     let new_mei = mei_for_layer(mei, score_elem);

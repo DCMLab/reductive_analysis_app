@@ -45,6 +45,8 @@ var redo_actions = []; //TODO, maybe?
 // The first element is the latest
 var draw_contexts = [];
 
+var current_draw_context;
+
 // Each layer context contains information relevant to the layer, such as
 //  * The rendered MEI
 //  * The score element in the original MEI
@@ -67,15 +69,24 @@ var zoom = 1;
 
 var arg = true;
 
+// Hovering and adding notes
+var placing_note="";
+
 var mouseX;
 var mouseY;
 
 window.onmousemove = (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
-
+  // Not sure if this is the best way...
+  var elem = document.elementFromPoint(mouseX, mouseY);
+  var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem));
+  if(dc)
+    current_draw_context = dc;
+  if(placing_note!=""){
+    update_placing_note();
+  }
 }
-
 
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
@@ -97,17 +108,6 @@ $(document).ready(function()
       $("#selected_things").hide();
 
 
-  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
-  $('body').on({
-    keydown: function(e) {
-        if (e.originalEvent.key === "Shift")
-        $('#svg_outputs').addClass('shift-pressed')
-      },
-      keyup: function(e) {
-        if (e.originalEvent.key === "Shift")
-        $('#svg_outputs').removeClass('shift-pressed')
-      }
-  });
 });
 
 // Configured types need a button and a color each
@@ -540,9 +540,41 @@ function do_undo() {
       }
       sel.forEach((x) => {toggle_selected(x);});
       extra.forEach((x) => {toggle_selected(x,true);});
+    }else if (what == "add note") {
+      var [mei_elems,graphicals] = elems;
+      graphicals.forEach((x) => x.parentNode.removeChild(x));
+      mei_elems[0].parentNode.removeChild(mei_elems[0]);
+      if(mei_elems.length > 1){
+	var c = mei_elems[1];
+	c.parentNode.insertBefore(c.children[0],c);
+	c.parentNode.removeChild(c);
+      }
     }
 
 
+
+}
+
+function handle_keydown(ev) {
+  if(ev.key=="Control"){
+    start_placing_note();
+  }
+  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
+  if (ev.key === "Shift")
+    $('#layers').addClass('shift-pressed')
+}
+
+function handle_keyup(ev) {
+  if(ev.key=="Control"){
+    stop_placing_note();
+  }
+  // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
+  if (ev.key === "Shift")
+    $('#layers').removeClass('shift-pressed')
+}
+
+function handle_click(ev) {
+  place_note();
 }
 
 
@@ -568,6 +600,8 @@ function handle_keypress(ev) {
   } else if (ev.key == "+") { // Select same notes in the measure
     select_samenote();
     do_relation("repeat",arg);
+  } else if (ev.key == "x") { // Select same notes in the measure
+    toggle_placing_note();
   } else if (ev.key == "d") { // Deselect all.
     do_deselect();
   } else if (ev.key == "D") { // Delete relations.
@@ -805,7 +839,8 @@ function load_finish(e) {
       "mei"        : new_mei,
       "layer_elem" : layer_element,
       "score_elem" : score_elem,
-      "id_mapping" : get_id_pairs(score_elem)
+      "id_mapping" : get_id_pairs(score_elem),
+      "original_score" : i == 0 // The first layer is assumed to be the original score
     }
     layer_contexts.push(layer_context);
     var draw_context = {
@@ -833,6 +868,9 @@ function load_finish(e) {
   if(!shades)
     toggle_shades();
   document.onkeypress = function(ev) {handle_keypress(ev);};
+  document.onkeydown = handle_keydown;
+  document.onkeyup = handle_keyup;
+  document.getElementById("layers").onclick = handle_click;
   return true;
 }
 
@@ -887,7 +925,8 @@ function create_new_layer(draw_context) {
     "mei"        : new_mei,
     "layer_elem" : layer_element,
     "score_elem" : new_score_elem,
-    "id_mapping" : get_id_pairs(new_score_elem)
+    "id_mapping" : get_id_pairs(new_score_elem),
+    "original_score" : false
   }
   layer_contexts.push(layer_context);
   var new_draw_context = {
@@ -909,12 +948,19 @@ function create_new_layer(draw_context) {
 
 function finalize_draw_context(new_draw_context) {
 
+  new_draw_context.measure_map = compute_measure_map(new_draw_context);
   add_buttons(new_draw_context)
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();
   for (let n of new_draw_context.svg_elem.getElementsByClassName("note")) {
       n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
+  }
+  for (let s of new_draw_context.svg_elem.getElementsByClassName("staff")) {
+    //TODO: handle staves with no notes in them
+      let [y_to_p,p_to_y] = pitch_grid(s);
+      s.y_to_p = y_to_p;
+      s.p_to_y = p_to_y;
   }
   draw_graph(new_draw_context);
 }
@@ -972,11 +1018,11 @@ function hide_buttons() {
 
 function zoom_in(draw_context) {
   draw_context.zoom = draw_context.zoom * 1.1;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  draw_context.svg_elem.children[0].style.transform="scale("+draw_context.zoom+")";
 }
 function zoom_out(draw_context) {
   draw_context.zoom = draw_context.zoom * 0.90909090909090;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  draw_context.svg_elem.children[0].style.transform="scale("+draw_context.zoom+")";
 }
 
 

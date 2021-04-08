@@ -750,14 +750,22 @@ function add_buttons(draw_context) {
     var buttondiv = document.createElement("div");
     buttondiv.classList.add("view_buttons");
     var newlayerbutton = button("Create new layer");
+    newlayerbutton.classList.add("newlayerbutton");
+    newlayerbutton.id = (draw_context.id_prefix+"newlayerbutton");
     var reducebutton = button("Reduce");
-    var undobutton = button("Unreduce");
+    reducebutton.classList.add("reducebutton");
+    reducebutton.id = (draw_context.id_prefix+"reducebutton");
+    var unreducebutton = button("Unreduce");
+    unreducebutton.classList.add("unreducebutton");
+    unreducebutton.id = (draw_context.id_prefix+"unreducebutton");
     var rerenderbutton = button("Create new view");
-    undobutton.onclick =     () =>{undo_reduce_arg(new_draw_context);}
+    rerenderbutton.classList.add("rerenderbutton");
+    rerenderbutton.id = (draw_context.id_prefix+"rerenderbutton");
+    unreducebutton.onclick = () =>{undo_reduce_arg(new_draw_context);}
     reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
     rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
     newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
-    buttondiv.appendChild(undobutton    );
+    buttondiv.appendChild(unreducebutton);
     buttondiv.appendChild(reducebutton  );
     buttondiv.appendChild(rerenderbutton);
     buttondiv.appendChild(newlayerbutton);
@@ -768,7 +776,11 @@ function add_buttons(draw_context) {
     var zoomdiv = document.createElement("div");
     zoomdiv.classList.add("zoom_buttons");
     var zoomin = button("+");
+    zoomin.classList.add("zoominbutton");
+    zoomin.id = (draw_context.id_prefix+"zoominbutton");
     var zoomout = button("-");
+    zoomout.classList.add("zoomoutbutton");
+    zoomout.id = (draw_context.id_prefix+"zoomoutbutton");
     zoomin.onclick = () => { zoom_in(draw_context); };
     zoomout.onclick = () => { zoom_out(draw_context); };
 

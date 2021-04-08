@@ -1,24 +1,17 @@
 // GLOBALS
 // Load Verovio
 var vrvToolkit = new verovio.toolkit();
-var orig_svg;
-var orig_mei;
-var orig_mei_graph;
-var orig_midi;
-var orig_data;
 // Clicking selects
 var selected = [];
 // Shift-clicking extra selects
 var extraselected = [];
-// This is our SVG
-var svg;
-var svg_elem;
 // And the underlying MEI
 var mei;
 // And the graph node in the MEI
 var mei_graph;
 // And the MIDI
 var midi;
+var orig_midi;
 // This is the MEI as text (pre-parse)
 var data;
 // We need a reader
@@ -55,19 +48,11 @@ var current_draw_context;
 //  canonical representative
 var layer_contexts = [];
 
-var rerendered_after_reduce = 0;
-
 var non_notes_hidden = false;
 
 var text_input=false;
 
 var shades = false;
-
-var format;
-
-var zoom = 1;
-
-var arg = true;
 
 // Hovering and adding notes
 var placing_note="";
@@ -99,15 +84,12 @@ window.addEventListener("beforeunload", function (e) {
 });
 
 // Once things are loaded, do configuration stuff
-$(document).ready(function()
-    {
-      Object.keys(type_conf).forEach(init_type);
-      Object.keys(meta_conf).forEach(meta_type);
-      toggle_shades();
-      $("#player").midiPlayer({ color: "grey", width: 250 });
-      $("#selected_things").hide();
-
-
+$(document).ready(function() {
+  Object.keys(type_conf).forEach(init_type);
+  Object.keys(meta_conf).forEach(meta_type);
+  toggle_shades();
+  $("#player").midiPlayer({ color: "grey", width: 250 });
+  $("#selected_things").hide();
 });
 
 // Configured types need a button and a color each
@@ -118,7 +100,7 @@ function init_type(type) {
   elem.classList.add("relationbutton");
   elem.setAttribute("id",type + "relationbutton");
   elem.setAttribute("value","Add "+type+" relation " + "(" + type_conf[type].key + ")");
-  elem.onclick = () => {do_relation(type,arg);};
+  elem.onclick = () => {do_relation(type);};
   $("#relation_buttons")[0].appendChild(elem);
   type_shades[type] = shades_array[type_conf[type].colour];
   type_keys[type_conf[type].key] = type;
@@ -133,7 +115,7 @@ function meta_type(type) {
   elem.classList.add("metarelationbutton");
   elem.setAttribute("id",type + "metarelationbutton");
   elem.setAttribute("value","Add "+type+" metarelation " + "(" + meta_conf[type].key + ")");
-  elem.onclick = () => {do_metarelation(type,arg);};
+  elem.onclick = () => {do_metarelation(type);};
   $("#meta_buttons")[0].appendChild(elem);
   meta_shades[type] = shades_array[meta_conf[type].colour];
   meta_keys[meta_conf[type].key] = type;
@@ -145,11 +127,11 @@ function toggle_he_selected(selecting) {
   console.debug("Using globals: document for changing button texts/visibility");
 
   Array.from(document.getElementsByClassName("relationbutton")).forEach((button) => {
-        var val = button.getAttribute("value");
-        if(selecting)
-          button.setAttribute("value",val.replace("Add","Set to"));
-        else
-          button.setAttribute("value",val.replace("Set to","Add"));
+    var val = button.getAttribute("value");
+    if(selecting)
+      button.setAttribute("value",val.replace("Add","Set to"));
+    else
+      button.setAttribute("value",val.replace("Set to","Add"));
   });
   if(selecting)
     document.getElementById("meta_buttons").classList.remove("none");
@@ -177,10 +159,10 @@ function toggle_selected(item,extra) {
       extraselected = extraselected.filter(x =>  x !== item);
     } else {
       if(extra) {
-	item.classList.add("extraselectednote");
+        item.classList.add("extraselectednote");
         extraselected.push(item);
       }else {
-	item.classList.add("selectednote");
+        item.classList.add("selectednote");
         selected.push(item);
       }
     }
@@ -197,10 +179,10 @@ function toggle_selected(item,extra) {
       extraselected = extraselected.filter(x =>  x !== item);
     } else {
       if(extra){
-	item.classList.add("extraselectedrelation");
+        item.classList.add("extraselectedrelation");
         extraselected.push(item);
       }else{
-	item.classList.add("selectedrelation");
+        item.classList.add("selectedrelation");
         selected.push(item);
       }
     }
@@ -216,13 +198,8 @@ function toggle_selected(item,extra) {
 
 function update_text(){
   var primaries, secondaries;
-  if(arg){
-    primaries = to_text_arg(draw_contexts,mei_graph,extraselected);
-    secondaries = to_text_arg(draw_contexts,mei_graph,selected);
-  }else{
-    primaries = to_text(extraselected);
-    secondaries = to_text(selected);
-  }
+    primaries = to_text(draw_contexts,mei_graph,extraselected);
+    secondaries = to_text(draw_contexts,mei_graph,selected);
   if (primaries || secondaries) {
     $("#selected_things").show();
     $("#selected_things").html("<span class='selected_primaries'>Primaries: </span>"+primaries+"<br/><span class='selected_secondaries'>Secondaries: </span>"+secondaries);  
@@ -240,12 +217,18 @@ function toggle_equalize() {
 
 function set_non_note_visibility(hidden) {
   console.debug("Using globals: document for element selection");
-  Array.from(document.getElementsByClassName("beam")).forEach((x) =>
-      { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon")
-	  { hidden ? x.classList.add("hidden") : x.classList.remove("hidden"); }})});
+  Array.from(document.getElementsByClassName("beam")).forEach((x) => {
+    Array.from(x.children).forEach((x) => { 
+      if(x.tagName == "polygon") { 
+        hidden ? x.classList.add("hidden") : x.classList.remove("hidden"); 
+      }
+    })
+  });
   hide_classes.forEach((cl) => {
-    Array.from(document.getElementsByClassName(cl)).forEach((x) =>
-	{ hidden ? x.classList.add("hidden") : x.classList.remove("hidden");})});
+    Array.from(document.getElementsByClassName(cl)).forEach((x) => { 
+      hidden ? x.classList.add("hidden") : x.classList.remove("hidden");
+    })
+  });
 }
 
 
@@ -296,7 +279,7 @@ function delete_relation(elem) {
   for(draw_context of draw_contexts){
     let svg_he = get_by_id(document,draw_context.id_prefix + mei_id);
     if(svg_he){
-      unmark_secondaries_arg(draw_context, mei_graph, mei_he);
+      unmark_secondaries(draw_context, mei_graph, mei_he);
       svg_hes.push(svg_he);
     }
   }
@@ -340,219 +323,150 @@ function delete_relations() {
 
 
 
-// This reduces away the relations where all the secondaries
-// are not primary in any non-reduced relation. TODO: This, 
-// while better than before, no doubt has room for optimisation
-function do_reduce() {
-  // Remember what's selected, and unselect it
-  var sel = selected;
-  var extra = extraselected;
-  sel.concat(extra).forEach(toggle_selected);
-  if(arg){
-    console.debug("Using globals: undo_actions, draw_contexts, mei_graph, selected,  extraselected.");
-    undo = do_reduce_arg(draw_contexts[0], mei_graph, sel, extra);
-    return;
-  }
-  do_reduce_old(sel,extra);
-}
-
-
 // OK we've selected stuff, let's make the selection into a
 // "relation".
-function do_relation(type,arg) {
-    console.debug("Using globals: selected, extraselected, mei, orig_mei, undo_actions");
-    if (selected.length == 0 && extraselected == 0) {
-      return;}
-    changes = true;
-    var he_id, mei_elems;
-    if(arg){
-    if(selected.concat(extraselected)[0].classList.contains("relation")){
-      var types = [];
-        selected.concat(extraselected).forEach((he) => {
-        //TODO: move type_synonym application so that this
-        //is the right type == the one from the MEI
-        types.push([he.getAttribute("type"),type]);
-        var id = id_or_oldid(he);
-        var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
-        hes.forEach((he) => he.setAttribute("type",type));
-        var mei_he = get_by_id(mei,id);
-        mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
-        hes.forEach(toggle_shade);
-        });
-      update_text();
-      undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
-    }else if(selected.concat(extraselected)[0].classList.contains("note")){
-      var added = [];
-        // Add new nodes for all notes
-        var primaries = extraselected.map((e) => add_mei_node_for_arg(mei_graph,e));
-        var secondaries = selected.map((e) => add_mei_node_for_arg(mei_graph,e));
-        added.push(primaries.concat(secondaries));
-        [he_id,mei_elems] = add_relation_arg(mei_graph,primaries, secondaries, type);
-        added.push(mei_elems);
-        for(var i = 0; i < draw_contexts.length; i++) {
-          added.push(draw_relation_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
-          mark_secondaries_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
-        }
-        undo_actions.push(["relation",added.reverse(),selected,extraselected]);
-      selected.concat(extraselected).forEach(toggle_selected); // De-select
-    }
-    }else
-      do_relation_old(type,arg);
-}
-
-
-function do_metarelation(type, arg ) {
-    console.debug("Using globals: orig_mei, mei_graph, selected, extraselected");
-    if (selected.length == 0 && extraselected == 0) {
-      return;}
-    var ci = get_class_from_classlist(selected.concat(extraselected)[0]); 
-    if(!(ci == "relation" || ci == "metarelation")){
-      return; }
-    changes = true;
+function do_relation(type) {
+  console.debug("Using globals: selected, extraselected, mei, orig_mei, undo_actions");
+  if (selected.length == 0 && extraselected == 0) {
+    return;}
+  changes = true;
+  var he_id, mei_elems;
+  if(selected.concat(extraselected)[0].classList.contains("relation")){
+    var types = [];
+    selected.concat(extraselected).forEach((he) => {
+      //TODO: move type_synonym application so that this
+      //is the right type == the one from the MEI
+      types.push([he.getAttribute("type"),type]);
+      var id = id_or_oldid(he);
+      var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
+      hes.forEach((he) => he.setAttribute("type",type));
+      var mei_he = get_by_id(mei,id);
+      mei_he.getElementsByTagName("label")[0].setAttribute("type",type);
+      hes.forEach(toggle_shade);
+    });
+    update_text();
+    undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
+  }else if(selected.concat(extraselected)[0].classList.contains("note")){
     var added = [];
-    var he_id,mei_elems;
-    if(arg){
-
-      var primaries = extraselected.map((e) =>
-          get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
-      var secondaries = selected.map((e) =>
-          get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
-      var [he_id,mei_elems] = add_metarelation_arg(mei_graph, primaries, secondaries, type);
-      added.push(mei_elems);
-      for(var i = 0; i< draw_contexts.length; i++)
-        added.push(draw_metarelation_arg(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge
-    }else{
-      var [he_id,mei_elems] = add_metarelation(mei,mei_graph,type);
-      added.push(mei_elems);  // Add it to the MEI
-      if(mei != orig_mei){
-        var [orig_he_id,orig_mei_elems] = add_metarelation(orig_mei,mei_graph,type,he_id);
-        added.push(orig_mei_elems);  // Add it to the MEI
-      }
-      added.push(draw_metarelation(he_id,type)); // Draw the edge
+    // Add new nodes for all notes
+    var primaries = extraselected.map((e) => add_mei_node_for(mei_graph,e));
+    var secondaries = selected.map((e) => add_mei_node_for(mei_graph,e));
+    added.push(primaries.concat(secondaries));
+    [he_id,mei_elems] = add_relation(mei_graph,primaries, secondaries, type);
+    added.push(mei_elems);
+    for(var i = 0; i < draw_contexts.length; i++) {
+      added.push(draw_relation(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
+      mark_secondaries(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
     }
-    
-    undo_actions.push(["metarelation",added,selected,extraselected]);
+    undo_actions.push(["relation",added.reverse(),selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select
+  }
 }
 
-function undo_reduce() {
-  undo_actions.reverse();
-  var ix = undo_actions.findIndex((t) => t[0] == "reduce");
-  if(ix == -1){
-    undo_actions.reverse();
-    return;
-  }
-  undo = undo_actions[ix];
-  undo_actions[ix] = null;
-  undo_actions = undo_actions.filter((x) => x != null);
-  undo_actions.reverse();
-  undo_actions.push(undo);
-  do_undo();
+
+function do_metarelation(type) {
+  console.debug("Using globals: orig_mei, mei_graph, selected, extraselected");
+  if (selected.length == 0 && extraselected == 0) {
+    return;}
+  var ci = get_class_from_classlist(selected.concat(extraselected)[0]); 
+  if(!(ci == "relation" || ci == "metarelation")){
+    return; }
+  changes = true;
+  var added = [];
+  var he_id,mei_elems;
+
+  var primaries = extraselected.map((e) =>
+      get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
+  var secondaries = selected.map((e) =>
+      get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
+  var [he_id,mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type);
+  added.push(mei_elems);
+  for(var i = 0; i< draw_contexts.length; i++)
+    added.push(draw_metarelation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge
+
+  undo_actions.push(["metarelation",added,selected,extraselected]);
+  selected.concat(extraselected).forEach(toggle_selected); // De-select
 }
 
 
 // Oops, undo whatever we did last.
 function do_undo() {
-    console.debug("Using globals: undo_actions, selected, extraselected, mei, rerendered_after_action");
-    // Get latest undo_actions
-    if(undo_actions.length == 0) {
-      console.log("Nothing to undo");
-      return;
-    }
-    if(undo_actions.length == rerendered_after_action){
-      console.log("Cannot undo past a rerender");
-      return;
-    }
-    // Deselect the current selection, if any
-    selected.forEach(toggle_selected);
-    extraselected.forEach((x) => {toggle_selected(x,true);});
+  console.debug("Using globals: undo_actions, selected, extraselected, mei, rerendered_after_action");
+  // Get latest undo_actions
+  if(undo_actions.length == 0) {
+    console.log("Nothing to undo");
+    return;
+  }
+  if(undo_actions.length == rerendered_after_action){
+    console.log("Cannot undo past a rerender");
+    return;
+  }
+  // Deselect the current selection, if any
+  selected.forEach(toggle_selected);
+  extraselected.forEach((x) => {toggle_selected(x,true);});
 
-    [what,elems,sel,extra] = undo_actions.pop();
-    if(what == "edges" || what == "relation" || what == "metarelation") {
-      var added = elems;
-      if(what == "relation")
-        added.flat().forEach((x) => { 
-          if(arg){
+  [what,elems,sel,extra] = undo_actions.pop();
+  if(what == "edges" || what == "relation" || what == "metarelation") {
+    var added = elems;
+    if(what == "relation")
+      added.flat().forEach((x) => { 
         if(mei_graph.contains(x) && x.getAttribute("type") == "relation")
           for(var i = 0; i < draw_contexts.length; i++) 
-            unmark_secondaries_arg(draw_contexts[i],mei_graph,x)
-          }else if(mei.contains(x) && x.getAttribute("type") == "relation")
-          unmark_secondaries(x);
-          });
-      // Remove added elements
-      added.flat().forEach((x) => {
-          if(!node_referred_to(x.getAttribute("xml:id")))
-            x.parentNode.removeChild(x);
-          });
-      // Select last selection
-      sel.forEach((x) => {toggle_selected(x);});
-      extra.forEach((x) => {toggle_selected(x,true);});
-    }else if( what == "delete relation" ) {
-      var removed = elems;
-      removed.forEach((x) => {
-	  x[1].insertBefore(x[0],x[2])
-	  let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
-	  if(dc){
-	    let mei_id = get_id(x[0]);
-	    let mei_he = get_by_id(mei,mei_id);
-	    mark_secondaries_arg(dc, mei_graph, mei_he)
-	  }
-	});
-      // Select last selection
-      sel.forEach((x) => {toggle_selected(x);});
-      extra.forEach((x) => {toggle_selected(x,true);});
-
-    }else if (what == "change relation type") {
-      var types = elems;
-      sel.concat(extra).forEach((he) => {
-          if(arg){
-        //TODO: move type_synonym application so that this
-        //is the right type == the one from the MEI
-        var [from,to] = types.pop();
-        var id = id_or_oldid(he);
-        var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
-        hes.forEach((he) => he.setAttribute("type",from));
-        var mei_he = get_by_id(orig_mei,id);
-        mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
-        hes.forEach(toggle_shade);
-          }else{
-        //TODO: move type_synonym application so that this
-        //is the right type == the one from the MEI
-        var [from,to] = types.pop();
-        he.setAttribute("type",from);
-        var mei_he = get_by_id(mei,id_or_oldid(he));
-        mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
-        toggle_shade(he);
-          }
+            unmark_secondaries(draw_contexts[i],mei_graph,x)
       });
-      sel.forEach((x) => {toggle_selected(x);});
-      extra.forEach((x) => {toggle_selected(x,true);});
-    }else if (what == "reduce") {
-      if(arg){
-        var [relations,notes,graphicals] = elems;
-        graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
-      } else{
-        var reduce_layer = elems;
-        reduce_layer.forEach((action) => {
-          var [he,secondaries,graphicals] = action;
-          graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
-        });
+    // Remove added elements
+    added.flat().forEach((x) => {
+      if(!node_referred_to(x.getAttribute("xml:id")))
+        x.parentNode.removeChild(x);
+    });
+    // Select last selection
+    sel.forEach((x) => {toggle_selected(x);});
+    extra.forEach((x) => {toggle_selected(x,true);});
+  }else if( what == "delete relation" ) {
+    var removed = elems;
+    removed.forEach((x) => {
+      x[1].insertBefore(x[0],x[2])
+      let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
+      if(dc){
+        let mei_id = get_id(x[0]);
+        let mei_he = get_by_id(mei,mei_id);
+        mark_secondaries(dc, mei_graph, mei_he)
       }
-      sel.forEach((x) => {toggle_selected(x);});
-      extra.forEach((x) => {toggle_selected(x,true);});
-    }else if (what == "add note") {
-      var [mei_elems,graphicals] = elems;
-      graphicals.forEach((x) => x.parentNode.removeChild(x));
-      mei_elems[0].parentNode.removeChild(mei_elems[0]);
-      if(mei_elems.length > 1){
-	var c = mei_elems[1];
-	c.parentNode.insertBefore(c.children[0],c);
-	c.parentNode.removeChild(c);
-      }
+    });
+    // Select last selection
+    sel.forEach((x) => {toggle_selected(x);});
+    extra.forEach((x) => {toggle_selected(x,true);});
+
+  }else if (what == "change relation type") {
+    var types = elems;
+    sel.concat(extra).forEach((he) => {
+      //TODO: move type_synonym application so that this
+      //is the right type == the one from the MEI
+      var [from,to] = types.pop();
+      var id = id_or_oldid(he);
+      var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
+      hes.forEach((he) => he.setAttribute("type",from));
+      var mei_he = get_by_id(orig_mei,id);
+      mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
+      hes.forEach(toggle_shade);
+    });
+    sel.forEach((x) => {toggle_selected(x);});
+    extra.forEach((x) => {toggle_selected(x,true);});
+  }else if (what == "reduce") {
+    var [relations,notes,graphicals] = elems;
+    graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
+    sel.forEach((x) => {toggle_selected(x);});
+    extra.forEach((x) => {toggle_selected(x,true);});
+  }else if (what == "add note") {
+    var [mei_elems,graphicals] = elems;
+    graphicals.forEach((x) => x.parentNode.removeChild(x));
+    mei_elems[0].parentNode.removeChild(mei_elems[0]);
+    if(mei_elems.length > 1){
+      var c = mei_elems[1];
+      c.parentNode.insertBefore(c.children[0],c);
+      c.parentNode.removeChild(c);
     }
-
-
-
+  }
 }
 
 function handle_keydown(ev) {
@@ -599,7 +513,7 @@ function handle_keypress(ev) {
     toggle_shades();
   } else if (ev.key == "+") { // Select same notes in the measure
     select_samenote();
-    do_relation("repeat",arg);
+    do_relation("repeat");
   } else if (ev.key == "x") { // Select same notes in the measure
     toggle_placing_note();
   } else if (ev.key == "d") { // Deselect all.
@@ -607,9 +521,9 @@ function handle_keypress(ev) {
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
   } else if (type_keys[ev.key]) { // Add a relation
-    do_relation(type_keys[ev.key],arg);
+    do_relation(type_keys[ev.key]);
   } else if (meta_keys[ev.key]) { // Add a relation
-    do_metarelation(meta_keys[ev.key],arg);
+    do_metarelation(meta_keys[ev.key]);
   }else {
     console.log(ev);
   }
@@ -619,22 +533,22 @@ function handle_keypress(ev) {
 // Taken from StackOverflow answer by Kanchu at
 // https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
 function download(data, filename, type) {
-    console.debug("Using globals: document, window");
-    var file = new Blob([data], {type: type});
-    if (window.navigator.msSaveOrOpenBlob) // IE10+
-        window.navigator.msSaveOrOpenBlob(file, filename);
-    else { // Others
-        var a = document.createElement("a"),
-                url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);  
-        }, 0); 
-    }
+  console.debug("Using globals: document, window");
+  var file = new Blob([data], {type: type});
+  if (window.navigator.msSaveOrOpenBlob) // IE10+
+    window.navigator.msSaveOrOpenBlob(file, filename);
+  else { // Others
+    var a = document.createElement("a"),
+        url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);  
+    }, 0); 
+  }
 }
 
 // If the MEI already has a graph, we add on to that. TODO:
@@ -704,15 +618,11 @@ function draw_graph(draw_context) {
   var relations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "relation";})
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
-  if(arg) {
     relations_nodes.forEach((g_elem) => {
-	      if(draw_relation_arg(draw_context,mei_graph,g_elem))
-		mark_secondaries_arg(draw_context,mei_graph,g_elem);
-	  })
-    metarelations_nodes.forEach((g_elem) => draw_metarelation_arg(draw_context,mei_graph,g_elem));
-    return;
-  }
-  draw_graph_old(draw_context);
+      if(draw_relation(draw_context,mei_graph,g_elem))
+        mark_secondaries(draw_context,mei_graph,g_elem);
+    });
+    metarelations_nodes.forEach((g_elem) => draw_metarelation(draw_context,mei_graph,g_elem));
 }
 
 
@@ -746,71 +656,69 @@ function button(value) {
 
 
 function add_buttons(draw_context) {
-    var new_draw_context = draw_context;
-    var buttondiv = document.createElement("div");
-    buttondiv.classList.add("view_buttons");
-    var newlayerbutton = button("Create new layer");
-    newlayerbutton.classList.add("newlayerbutton");
-    newlayerbutton.id = (draw_context.id_prefix+"newlayerbutton");
-    var reducebutton = button("Reduce");
-    reducebutton.classList.add("reducebutton");
-    reducebutton.id = (draw_context.id_prefix+"reducebutton");
-    var unreducebutton = button("Unreduce");
-    unreducebutton.classList.add("unreducebutton");
-    unreducebutton.id = (draw_context.id_prefix+"unreducebutton");
-    var rerenderbutton = button("Create new view");
-    rerenderbutton.classList.add("rerenderbutton");
-    rerenderbutton.id = (draw_context.id_prefix+"rerenderbutton");
-    unreducebutton.onclick = () =>{undo_reduce_arg(new_draw_context);}
-    reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
-    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
-    newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
-    buttondiv.appendChild(unreducebutton);
-    buttondiv.appendChild(reducebutton  );
-    buttondiv.appendChild(rerenderbutton);
-    buttondiv.appendChild(newlayerbutton);
+  var new_draw_context = draw_context;
+  var buttondiv = document.createElement("div");
+  buttondiv.classList.add("view_buttons");
+  var newlayerbutton = button("Create new layer");
+  newlayerbutton.classList.add("newlayerbutton");
+  newlayerbutton.id = (draw_context.id_prefix+"newlayerbutton");
+  var reducebutton = button("Reduce");
+  reducebutton.classList.add("reducebutton");
+  reducebutton.id = (draw_context.id_prefix+"reducebutton");
+  var unreducebutton = button("Unreduce");
+  unreducebutton.classList.add("unreducebutton");
+  unreducebutton.id = (draw_context.id_prefix+"unreducebutton");
+  var rerenderbutton = button("Create new view");
+  rerenderbutton.classList.add("rerenderbutton");
+  rerenderbutton.id = (draw_context.id_prefix+"rerenderbutton");
+  unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
+  reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
+  rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
+  newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
+  buttondiv.appendChild(unreducebutton);
+  buttondiv.appendChild(reducebutton  );
+  buttondiv.appendChild(rerenderbutton);
+  buttondiv.appendChild(newlayerbutton);
 
-    draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
+  draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
 
 
-    var zoomdiv = document.createElement("div");
-    zoomdiv.classList.add("zoom_buttons");
-    var zoomin = button("+");
-    zoomin.classList.add("zoominbutton");
-    zoomin.id = (draw_context.id_prefix+"zoominbutton");
-    var zoomout = button("-");
-    zoomout.classList.add("zoomoutbutton");
-    zoomout.id = (draw_context.id_prefix+"zoomoutbutton");
-    zoomin.onclick = () => { zoom_in(draw_context); };
-    zoomout.onclick = () => { zoom_out(draw_context); };
+  var zoomdiv = document.createElement("div");
+  zoomdiv.classList.add("zoom_buttons");
+  var zoomin = button("+");
+  zoomin.classList.add("zoominbutton");
+  zoomin.id = (draw_context.id_prefix+"zoominbutton");
+  var zoomout = button("-");
+  zoomout.classList.add("zoomoutbutton");
+  zoomout.id = (draw_context.id_prefix+"zoomoutbutton");
+  zoomin.onclick = () => { zoom_in(draw_context); };
+  zoomout.onclick = () => { zoom_out(draw_context); };
 
-    zoomdiv.appendChild(zoomin);
-    zoomdiv.appendChild(zoomout);
+  zoomdiv.appendChild(zoomin);
+  zoomdiv.appendChild(zoomout);
 
-    draw_context.view_elem.appendChild(zoomdiv);
+  draw_context.view_elem.appendChild(zoomdiv);
 }
 
 function onclick_select_functions(draw_context) {
   for (let n of draw_context.svg_elem.getElementsByClassName("note")) {
-      n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
+    n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   for (let h of draw_context.svg_elem.getElementsByClassName("relation")) {
-      h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
+    h.onclick = function(ev) {toggle_selected(h,ev.shiftKey) };
   }
 }
 
 
 // Do all of this when we have the MEI in memory
 function load_finish(e) {
-  console.debug("Using globals data, parser, mei, format, svg, svg_elem, jquery document, document, mei_graph, midi, orig_*, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
+  console.debug("Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
 
   // Parse the original document
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
-  format = "mei";
   if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
     // We didn't get a MEI? Try if it's a musicXML
-    format = "non-mei";
     let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
       pageHeight: 10000, breaks: "none"});
     if (!new_svg) {
@@ -856,15 +764,15 @@ function load_finish(e) {
     }
     layer_contexts.push(layer_context);
     var draw_context = {
-		      // TODO: One draw context per existing score element
-		      // already on load.
-		      "mei_score" : score_elem,
-		      "svg_elem" : svg_element,
-		      "view_elem" : view_element,
-		      "layer" : layer_context,
-		      "id_prefix" : "",
-		      "zoom" : 1,
-		      "reductions" : []};
+                      // TODO: One draw context per existing score element
+                      // already on load.
+                      "mei_score" : score_elem,
+                      "svg_elem" : svg_element,
+                      "view_elem" : view_element,
+                      "layer" : layer_context,
+                      "id_prefix" : "",
+                      "zoom" : 1,
+                      "reductions" : []};
     if(i != 0)
       draw_context.id_prefix = draw_contexts.length;
     finalize_draw_context(draw_context);
@@ -909,13 +817,12 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
       paren.removeChild(n);
     }
   });
-  Array.from(mei2.getElementsByTagName("chord")).forEach((x) =>
-    {
+  Array.from(mei2.getElementsByTagName("chord")).forEach((x) => {
     var paren = x.parentNode;
     if(x.getElementsByTagName("note").length == 0){
       x.parentNode.removeChild(x);
     }
-    });
+  });
 
   return mei2;
 
@@ -942,15 +849,15 @@ function create_new_layer(draw_context) {
   }
   layer_contexts.push(layer_context);
   var new_draw_context = {
-		    // TODO: One draw context per existing score element
-		    // already on load.
-		    "mei_score" : new_score_elem,
-		    "svg_elem" : new_svg_elem,
-		    "view_elem" : new_view_elem,
-		    "layer" : layer_context,
-		    "id_prefix" : "",
-		    "zoom" : 1,
-		    "reductions" : []};
+                    // TODO: One draw context per existing score element
+                    // already on load.
+                    "mei_score" : new_score_elem,
+                    "svg_elem" : new_svg_elem,
+                    "view_elem" : new_view_elem,
+                    "layer" : layer_context,
+                    "id_prefix" : "",
+                    "zoom" : 1,
+                    "reductions" : []};
 
   //prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length;
@@ -966,13 +873,13 @@ function finalize_draw_context(new_draw_context) {
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();
   for (let n of new_draw_context.svg_elem.getElementsByClassName("note")) {
-      n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
+    n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
   for (let s of new_draw_context.svg_elem.getElementsByClassName("staff")) {
     //TODO: handle staves with no notes in them
-      let [y_to_p,p_to_y] = pitch_grid(s);
-      s.y_to_p = y_to_p;
-      s.p_to_y = p_to_y;
+    let [y_to_p,p_to_y] = pitch_grid(s);
+    s.y_to_p = y_to_p;
+    s.p_to_y = p_to_y;
   }
   draw_graph(new_draw_context);
 }
@@ -980,13 +887,16 @@ function finalize_draw_context(new_draw_context) {
 function render_mei(mei) {
   var data = new XMLSerializer().serializeToString(mei);
 
-  var svg = vrvToolkit.renderData(data, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none"});
+  var svg = vrvToolkit.renderData(data, {
+                  pageWidth: 20000,
+                  pageHeight: 10000, 
+                  breaks: "none"
+  });
   return [data,svg];
 }
 
 
-function rerender_arg(draw_context) {
+function rerender(draw_context) {
   var [new_view_elem,new_svg_elem] = new_view_elements(draw_context.layer.layer_elem);
   var new_mei = rerender_mei(false, draw_context);
   var [new_data, new_svg] = render_mei(new_mei);
@@ -997,25 +907,21 @@ function rerender_arg(draw_context) {
   
   new_svg_elem.innerHTML = new_svg;
   var new_draw_context = {
-		    // TODO: One draw context per existing score element
-		    // already on load.
-		    "mei_score" : draw_context.mei_score,
-		    "svg_elem" : new_svg_elem,
-		    "view_elem" : new_view_elem,
-		    "layer" : draw_context.layer,
-		    "id_prefix" : "",
-		    "zoom" : 1,
-		    "reductions" : []};
+                    // TODO: One draw context per existing score element
+                    // already on load.
+                    "mei_score" : draw_context.mei_score,
+                    "svg_elem" : new_svg_elem,
+                    "view_elem" : new_view_elem,
+                    "layer" : draw_context.layer,
+                    "id_prefix" : "",
+                    "zoom" : 1,
+                    "reductions" : []};
 
   new_draw_context.id_prefix = draw_contexts.length;
   prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);
   finalize_draw_context(new_draw_context);
 }
 
-
-function rerender() {
-  rerender_arg(draw_contexts[0]);
-}
 
 function texton() { text_input = true; }
 function textoff() { text_input = false; }

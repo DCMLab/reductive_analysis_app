@@ -1,7 +1,7 @@
 
 // Add a "relation" to the MEI graph element. We model this
 // with a new node.
-function add_relation_arg(mei_graph, primaries, secondaries, type, he_id_param) {
+function add_relation(mei_graph, primaries, secondaries, type, he_id_param) {
   var added = [];
   // Add a new node for the relation
   var he_elem = mei_graph.getRootNode().createElement("node");
@@ -10,18 +10,18 @@ function add_relation_arg(mei_graph, primaries, secondaries, type, he_id_param) 
   if(typeof type != 'undefined')
     he_label.setAttribute("type",type)
   he_elem.appendChild(he_label);
-  // Who knows if this is enough
+
   var he_id;
+  // If we're given a parameter ID, use that, otherwise generate a new one
   if(typeof he_id_param == 'undefined')
-    he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
+    he_id = "he-"+random_id(5);
   else
     he_id = he_id_param;
   he_elem.setAttribute("xml:id",he_id);
   mei_graph.appendChild(he_elem);
   added.push(he_elem);
+  // Set up the connections to the given primaries and secondaries
   for(var i = 0; i < primaries.length; i++) {
-    // So that we can refer to the node (not the note) ID in
-    // arcs/edges
     var elem = mei.createElement("arc");
     elem.setAttribute("from","#"+he_id);
     elem.setAttribute("to","#"+primaries[i].getAttribute("xml:id"));
@@ -30,8 +30,6 @@ function add_relation_arg(mei_graph, primaries, secondaries, type, he_id_param) 
     added.push(elem);
   }
   for(var i = 0; i < secondaries.length; i++) {
-    // So that we can refer to the node (not the note) ID in
-    // arcs/edges
     var elem = mei.createElement("arc");
     elem.setAttribute("from","#"+he_id);
     elem.setAttribute("to","#"+secondaries[i].getAttribute("xml:id"));
@@ -42,20 +40,16 @@ function add_relation_arg(mei_graph, primaries, secondaries, type, he_id_param) 
   return [he_id,added.reverse()];
 }
 
-function add_metarelation_arg(mei_graph, primaries, secondaries, type,he_id_param) {
-  // Add a new node for the relation
-  //TODO: we use the id attribute of the selected
-  //primaries/secondaries. This is correct now, but needs
-  //refactoring when the interactions start being more
-  //complicated
+function add_metarelation(mei_graph, primaries, secondaries, type,he_id_param) {
   var added = [];
+  // Add a new node for the relation
   var he_elem = mei_graph.getRootNode().createElement("node");
   he_elem.setAttribute("type","metarelation");
   var he_label = mei_graph.getRootNode().createElement("label");
   if(typeof type != 'undefined')
     he_label.setAttribute("type",type)
   he_elem.appendChild(he_label);
-  // Who knows if this is enough
+  // Use the given ID parameter if given
   var he_id;
   if(typeof he_id_param == 'undefined')
     he_id = "he-"+Math.floor(Math.random() * (1 << 20)).toString(16);
@@ -64,9 +58,9 @@ function add_metarelation_arg(mei_graph, primaries, secondaries, type,he_id_para
   he_elem.setAttribute("xml:id",he_id);
   mei_graph.appendChild(he_elem);
   added.push(he_elem);
+
+  // Set up the connections to the given primaries and secondaries
   for(var i = 0; i < primaries.length; i++) {
-    // So that we can refer to the node (not the note) ID in
-    // arcs/edges
     var elem = mei_graph.getRootNode().createElement("arc");
     elem.setAttribute("from","#"+he_id);
     elem.setAttribute("to","#"+primaries[i].getAttribute("xml:id"));
@@ -75,8 +69,6 @@ function add_metarelation_arg(mei_graph, primaries, secondaries, type,he_id_para
     added.push(elem);
   }
   for(var i = 0; i < secondaries.length; i++) {
-    // So that we can refer to the node (not the note) ID in
-    // arcs/edges
     var elem = mei_graph.getRootNode().createElement("arc");
     elem.setAttribute("from","#"+he_id);
     elem.setAttribute("to","#"+secondaries[i].getAttribute("xml:id"));

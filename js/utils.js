@@ -2,21 +2,21 @@
 // Vector operations, taken from 
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
 var vecScale = function (scale, v) {
-      // Returns the vector 'v' scaled by 'scale'.
-      return [ scale * v[0], scale * v[1] ];
+  // Returns the vector 'v' scaled by 'scale'.
+  return [ scale * v[0], scale * v[1] ];
 }
 
 var vecSum = function (pv1, pv2) {
-      // Returns the sum of two vectors, or a combination of a point and a
-      // vector.
-      return [ pv1[0] + pv2[0], pv1[1] + pv2[1] ];
+  // Returns the sum of two vectors, or a combination of a point and a
+  // vector.
+  return [ pv1[0] + pv2[0], pv1[1] + pv2[1] ];
 }
 
 var unitNormal = function (p0, p1) {
-      // Returns the unit normal to the line segment from p0 to p1.
-      var n = [ p0[1] - p1[1], p1[0] - p0[0] ];
-      var nLength = Math.sqrt (n[0]*n[0] + n[1]*n[1]);
-      return [ n[0] / nLength, n[1] / nLength ];
+  // Returns the unit normal to the line segment from p0 to p1.
+  var n = [ p0[1] - p1[1], p1[0] - p0[0] ];
+  var nLength = Math.sqrt (n[0]*n[0] + n[1]*n[1]);
+  return [ n[0] / nLength, n[1] / nLength ];
 };
 
 var roundedHull1 = function (polyPoints, hullPadding) {
@@ -27,60 +27,60 @@ var roundedHull1 = function (polyPoints, hullPadding) {
   var p2 = [polyPoints[0][0], polyPoints[0][1] + hullPadding];
 
   return 'M ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-                   + ' A ' + [hullPadding, hullPadding, '0,0,0', p1].join(',');
+    + ' A ' + [hullPadding, hullPadding, '0,0,0', p1].join(',');
 };
 
 var roundedHull2 = function (polyPoints, hullPadding) {
-    // Returns the path for a rounded hull around two points (a "capsule" shape).
+  // Returns the path for a rounded hull around two points (a "capsule" shape).
 
-    var offsetVector = vecScale (hullPadding, unitNormal (polyPoints[0], polyPoints[1]));
-    var invOffsetVector = vecScale (-1, offsetVector);
-    // around that note coordinates are not at the centroids
+  var offsetVector = vecScale (hullPadding, unitNormal (polyPoints[0], polyPoints[1]));
+  var invOffsetVector = vecScale (-1, offsetVector);
+  // around that note coordinates are not at the centroids
 
-    var p0 = vecSum (polyPoints[0], offsetVector);
-    var p1 = vecSum (polyPoints[1], offsetVector);
-    var p2 = vecSum (polyPoints[1], invOffsetVector);
-    var p3 = vecSum (polyPoints[0], invOffsetVector);
+  var p0 = vecSum (polyPoints[0], offsetVector);
+  var p1 = vecSum (polyPoints[1], offsetVector);
+  var p2 = vecSum (polyPoints[1], invOffsetVector);
+  var p3 = vecSum (polyPoints[0], invOffsetVector);
 
-    return 'M ' + p0
-        + ' L ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-        + ' L ' + p3 + ' A ' + [hullPadding, hullPadding, '0,0,0', p0].join(',');
+  return 'M ' + p0
+    + ' L ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
+    + ' L ' + p3 + ' A ' + [hullPadding, hullPadding, '0,0,0', p0].join(',');
 };
 
 var roundedHullN = function (polyPoints, hullPadding) {
-    // Returns the SVG path data string representing the polygon, expanded and rounded.
+  // Returns the SVG path data string representing the polygon, expanded and rounded.
 
-    // Handle special cases
-    if (!polyPoints || polyPoints.length < 1) return "";
-    if (polyPoints.length === 1) return roundedHull1 (polyPoints, hullPadding);
-    if (polyPoints.length === 2) return roundedHull2 (polyPoints, hullPadding);
+  // Handle special cases
+  if (!polyPoints || polyPoints.length < 1) return "";
+  if (polyPoints.length === 1) return roundedHull1 (polyPoints, hullPadding);
+  if (polyPoints.length === 2) return roundedHull2 (polyPoints, hullPadding);
 
-    var segments = new Array (polyPoints.length);
+  var segments = new Array (polyPoints.length);
 
-    // Calculate each offset (outwards) segment of the convex hull.
-    for (var segmentIndex = 0;  segmentIndex < segments.length;  ++segmentIndex) {
-        var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length-1] : polyPoints[segmentIndex-1];
-        var p1 = polyPoints[segmentIndex];
+  // Calculate each offset (outwards) segment of the convex hull.
+  for (var segmentIndex = 0;  segmentIndex < segments.length;  ++segmentIndex) {
+    var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length-1] : polyPoints[segmentIndex-1];
+    var p1 = polyPoints[segmentIndex];
 
-        // Compute the offset vector for the line segment, with length = hullPadding.
-        var offset = vecScale (hullPadding, unitNormal (p0, p1));
+    // Compute the offset vector for the line segment, with length = hullPadding.
+    var offset = vecScale (hullPadding, unitNormal (p0, p1));
 
-        segments[segmentIndex] = [ vecSum (p0, offset), vecSum (p1, offset) ];
+    segments[segmentIndex] = [ vecSum (p0, offset), vecSum (p1, offset) ];
+  }
+
+  var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',');
+
+  segments = segments.map (function (segment, index) {
+    var pathFragment = "";
+    if (index === 0) {
+      var pathFragment = 'M ' + segments[segments.length-1][1] + ' ';
     }
+    pathFragment += arcData + segment[0] + ' L ' + segment[1];
 
-    var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',');
+    return pathFragment;
+  });
 
-    segments = segments.map (function (segment, index) {
-        var pathFragment = "";
-        if (index === 0) {
-    	var pathFragment = 'M ' + segments[segments.length-1][1] + ' ';
-        }
-        pathFragment += arcData + segment[0] + ' L ' + segment[1];
-
-        return pathFragment;
-    });
-
-    return segments.join(' ');
+  return segments.join(' ');
 }
 
 
@@ -100,30 +100,30 @@ function roundedHull(points) {
 }
 
 function getRandomColor() {
-    // Returns a random colour
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(4+Math.random() * 8)];
-    }
-    return color;
+  // Returns a random colour
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(4+Math.random() * 8)];
+  }
+  return color;
 }
 
 function getRandomShade(colour) {
-    //  Returns a random shade within a specified range
-    var letters = '0123456789ABCDEF';
-    var shade = '#';
-    for (var i = 0; i < 6; i++) {
-      if(
-	  ((colour == 'r' || colour == 'y' || colour == 'm')&& i < 2) ||
-	  ((colour == 'g' || colour == 'y' || colour == 'c')&& (i < 4 && i > 1)) ||
-	  ((colour == 'b' || colour == 'c' || colour == 'm')&& i > 3) 
-	)
-	shade += letters[14]//Math.floor(6+Math.random() * 8)];
-      else 
-	shade += letters[5];
-    }
-    return shade+'88'; //Semitransparency
+  //  Returns a random shade within a specified range
+  var letters = '0123456789ABCDEF';
+  var shade = '#';
+  for (var i = 0; i < 6; i++) {
+    if(
+        ((colour == 'r' || colour == 'y' || colour == 'm')&& i < 2) ||
+        ((colour == 'g' || colour == 'y' || colour == 'c')&& (i < 4 && i > 1)) ||
+        ((colour == 'b' || colour == 'c' || colour == 'm')&& i > 3) 
+      )
+      shade += letters[14]//Math.floor(6+Math.random() * 8)];
+    else 
+      shade += letters[5];
+  }
+  return shade+'88'; //Semitransparency
 }
 
 
@@ -151,28 +151,28 @@ function circle(p,rad) {
 }
 
 function flip_to_bg(elem) {
-    // Shifts the SVG element to be drawn first (e.g. in the background)
-    var paren = elem.parentElement;
-    paren.removeChild(elem);
-    paren.insertBefore(elem,paren.children[0]);
+  // Shifts the SVG element to be drawn first (e.g. in the background)
+  var paren = elem.parentElement;
+  paren.removeChild(elem);
+  paren.insertBefore(elem,paren.children[0]);
 }
 
 
-function add_to_svg_bg_arg(svg_elem,newElement) {
+function add_to_svg_bg(svg_elem,newElement) {
   // Adds newElement in the background of the system element 
   var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
   parent.insertBefore(newElement,sibling);
 }
 
-function add_to_svg_fg_arg(svg_elem,newElement) {
+function add_to_svg_fg(svg_elem,newElement) {
   // Adds newElement in the foreground of the system element 
   var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
   parent.appendChild(newElement);
 }
 
-function g_arg(svg_elem) {
+function g(svg_elem) {
   // Creates a new SVG g element
   var newElement = svg_elem.getRootNode().createElementNS("http://www.w3.org/2000/svg", 'g');
   return newElement;
@@ -237,13 +237,13 @@ function get_id(elem) {
   }else if(elem.hasAttribute("xml:id")){
     // MEI traversal
     if(elem.hasAttribute("sameas"))
-	return get_id(get_by_id(mei,elem.getAttribute("sameas")))
+      return get_id(get_by_id(mei,elem.getAttribute("sameas")))
     else if(elem.hasAttribute("corresp"))
-	return get_id(get_by_id(mei,elem.getAttribute("corresp")))
+      return get_id(get_by_id(mei,elem.getAttribute("corresp")))
     else if(elem.hasAttribute("copyof"))
-	return get_id(get_by_id(mei,elem.getAttribute("copyof")))
+      return get_id(get_by_id(mei,elem.getAttribute("copyof")))
     else if(elem.hasAttribute("xml:id"))
-        return elem.getAttribute("xml:id")
+      return elem.getAttribute("xml:id")
   }
 }
 
@@ -278,11 +278,11 @@ function id_in_layer(layer_context, id) {
 
 
 // From graph node to list of all arcs that refer to it
-function arcs_where_node_referred_to_arg(mei_graph,id) {
+function arcs_where_node_referred_to(mei_graph,id) {
   return Array.from(mei_graph.getElementsByTagName("arc"))
     .filter((x) => {
-	return (x.getAttribute("from") == "#"+id || 
-		x.getAttribute("to") == "#"+id);
+        return (x.getAttribute("from") == "#"+id || 
+                x.getAttribute("to") == "#"+id);
      }).length > 0;
 }
 
@@ -291,16 +291,16 @@ function node_referred_to(id) {
   console.debug("Using global: mei to find element");
   return Array.from(mei.getElementsByTagName("arc"))
     .filter((x) => {
-	return (x.getAttribute("from") == "#"+id || 
-		x.getAttribute("to") == "#"+id);
+        return (x.getAttribute("from") == "#"+id || 
+                x.getAttribute("to") == "#"+id);
      }).length > 0;
 }
 
 // From MEI graph node to the note in the layer referring to the same one
 function node_to_note_id_layer(layer_context, node) {
   var id = node.getElementsByTagName("label")[0].
-	      getElementsByTagName("note")[0].
-	      getAttribute("sameas");
+                getElementsByTagName("note")[0].
+                getAttribute("sameas");
   var pair = layer_context.id_mapping.find((x) => ("#"+x[1]) == id);
   if(pair)
     return pair[0];
@@ -320,15 +320,15 @@ function node_to_note_id_drawn(draw_context, note) {
 // From MEI graph node to the ID string for its referred note.
 function node_to_note_id_prefix(prefix,note) {
   return note.getElementsByTagName("label")[0].
-	      getElementsByTagName("note")[0].
-	      getAttribute("sameas").replace("#","#"+prefix);
+              getElementsByTagName("note")[0].
+              getAttribute("sameas").replace("#","#"+prefix);
 }
 
 // From MEI graph node to the ID string for its referred note.
 function node_to_note_id(note) {
   return note.getElementsByTagName("label")[0].
-	      getElementsByTagName("note")[0].
-	      getAttribute("sameas");
+              getElementsByTagName("note")[0].
+              getAttribute("sameas");
 }
 
 // Always-positive modulo
@@ -349,19 +349,19 @@ function note_get_accid(note) {
   if(document.contains(note))
     note = get_by_id(mei,get_id(note));
   if(note.hasAttribute("accid.ges"))
-      return note.getAttribute("accid.ges");
+    return note.getAttribute("accid.ges");
   if(note.hasAttribute("accid"))
-      return note.getAttribute("accid");
+    return note.getAttribute("accid");
   if(note.children.length == 0)
-      return "";
+    return "";
   var accids = note.getElementsByTagName("accid");
   if(accids.length == 0)
     return "";
   var accid = accids[0]; //We don't care if there's more than one.
   if(accid.hasAttribute("accid.ges"))
-      return accid.getAttribute("accid.ges");
+    return accid.getAttribute("accid.ges");
   if(accid.hasAttribute("accid"))
-      return accid.getAttribute("accid");
+    return accid.getAttribute("accid");
   return "";
 }
 
@@ -377,7 +377,7 @@ function get_time(note) {
 // From any relation element to list of MEI note elements
 function relation_get_notes(he) {
   he = get_by_id(mei,get_id(he));
-  var note_nodes = relation_allnodes_arg(mei_graph,he);
+  var note_nodes = relation_allnodes(mei_graph,he);
   var notes = note_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return notes;
 
@@ -385,27 +385,27 @@ function relation_get_notes(he) {
 // From any relation element to list of MEI note elements
 function relation_get_notes_separated(he) {
   he = get_by_id(mei,get_id(he));
-  var prim_nodes = relation_primaries_arg(mei_graph,he);
+  var prim_nodes = relation_primaries(mei_graph,he);
   var prims = prim_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
-  var sec_nodes = relation_secondaries_arg(mei_graph,he);
+  var sec_nodes = relation_secondaries(mei_graph,he);
   var secs = sec_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return [prims,secs];
 }
 
 // Get the MEI-graph nodes that are adjacent to a relation
-function relation_allnodes_arg(mei_graph,he) {
+function relation_allnodes(mei_graph,he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
-        if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
-          nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
-        }
-      });
+    if(a.getAttribute("from") == "#"+he.getAttribute("xml:id")){
+      nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
+    }
+  });
   return nodes;
 }
 
 // Get the MEI-graph nodes that are adjacent and primary to a relation
-function relation_primaries_arg(mei_graph,he) {
+function relation_primaries(mei_graph,he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -413,11 +413,11 @@ function relation_primaries_arg(mei_graph,he) {
        a.getAttribute("type") == "primary"){
       nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
     }
-      });
+  });
   return nodes;
 }
 // Get the MEI-graph nodes that are adjacent and secondary to a relation
-function relation_secondaries_arg(mei_graph,he) {
+function relation_secondaries(mei_graph,he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -425,7 +425,7 @@ function relation_secondaries_arg(mei_graph,he) {
        a.getAttribute("type") == "secondary"){
       nodes.push(get_by_id(mei_graph.getRootNode(),a.getAttribute("to")));
     }
-      });
+  });
   return nodes;
 }
 
@@ -440,28 +440,28 @@ function relation_type(he) {
 }
 
 // Set up new graph node for a note
-function add_mei_node_for_arg(mei_graph,note) {
-    var id = get_id(note);
-    var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
-    if (elem != null) {
-      return elem;
-    }
-    elem = mei_graph.getRootNode().createElement("node");
-    // This node represent that note
-    var label = mei_graph.getRootNode().createElement("label");
-    var note = mei_graph.getRootNode().createElement("note");
-    note.setAttribute("sameas","#"+id);
-    elem.appendChild(label);
-    label.appendChild(note);
-    // But should have a separate XML ID
-    elem.setAttribute("xml:id","gn-" + id);
-    mei_graph.appendChild(elem);
+function add_mei_node_for(mei_graph,note) {
+  var id = get_id(note);
+  var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
+  if (elem != null) {
     return elem;
+  }
+  elem = mei_graph.getRootNode().createElement("node");
+  // This node represent that note
+  var label = mei_graph.getRootNode().createElement("label");
+  var note = mei_graph.getRootNode().createElement("note");
+  note.setAttribute("sameas","#"+id);
+  elem.appendChild(label);
+  label.appendChild(note);
+  // But should have a separate XML ID
+  elem.setAttribute("xml:id","gn-" + id);
+  mei_graph.appendChild(elem);
+  return elem;
 }
 
             
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_note_arg(draw_context,note) {
+function hide_note(draw_context,note) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),id_in_svg(draw_context,node_to_note_id(note)));
   if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
@@ -469,7 +469,7 @@ function hide_note_arg(draw_context,note) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_he_arg(draw_context,he) {
+function hide_he(draw_context,he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
   if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
@@ -497,28 +497,28 @@ function unmark_secondary(item) {
 
 // For a certain MEI relation node, find its secondaries and mark them as
 // secondary in the draw context
-function mark_secondaries_arg(draw_context,mei_graph,he) {
-    var svg_elem = draw_context.svg_elem;
-    if(he.tagName != "node") //TODO: Probably bad, but shouldn't happen from do_relation
-      he = get_by_id(mei_graph.getRootNode(),he.id);
-    var secondaries = relation_secondaries_arg(mei_graph,he);
-    secondaries.forEach((n) => {
-	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
-	mark_secondary(svg_note);
-    });
+function mark_secondaries(draw_context,mei_graph,he) {
+  var svg_elem = draw_context.svg_elem;
+  if(he.tagName != "node") //TODO: Probably bad, but shouldn't happen from do_relation
+    he = get_by_id(mei_graph.getRootNode(),he.id);
+  var secondaries = relation_secondaries(mei_graph,he);
+  secondaries.forEach((n) => {
+    var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
+    mark_secondary(svg_note);
+  });
 }
 
 // For a certain MEI relation node, find its secondaries and unmark them as
 // secondary in the draw context
-function unmark_secondaries_arg(draw_context,mei_graph,he) {
-    var svg_elem = draw_context.svg_elem;
-    if(he.tagName != "node")
-      he = get_by_id(mei_graph.getRootNode(),he.id);
-    var secondaries = relation_secondaries_arg(mei_graph,he);
-    secondaries.forEach((n) => {
-	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
-	unmark_secondary(svg_note);
-    });
+function unmark_secondaries(draw_context,mei_graph,he) {
+  var svg_elem = draw_context.svg_elem;
+  if(he.tagName != "node")
+    he = get_by_id(mei_graph.getRootNode(),he.id);
+  var secondaries = relation_secondaries(mei_graph,he);
+  secondaries.forEach((n) => {
+    var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
+    unmark_secondary(svg_note);
+  });
 }
 
 //Find the measure this MEI score element occurs in
@@ -540,11 +540,10 @@ function select_samenote() {
     var measure = get_measure(note);
     var candidates = Array.from(measure.getElementsByTagName("note"));
     candidates.forEach((x) => { if(
-    	      x.getAttribute("oct") == note.getAttribute("oct") &&
-    	      x.getAttribute("pname") == note.getAttribute("pname")) {
-          toggle_selected(get_by_id(document,x.getAttribute("xml:id")));
-        }
-        });
+                  x.getAttribute("oct") == note.getAttribute("oct") &&
+                  x.getAttribute("pname") == note.getAttribute("pname")) 
+      toggle_selected(get_by_id(document,x.getAttribute("xml:id")));
+    });
     //This is an ugly hack
     toggle_selected(svg_note,true);
   }
@@ -569,10 +568,10 @@ function svg_find_from_mei_elem(svg_container, id_prefix, e) {
 
 // Get the top coordinate of the bounding box of the given element
 function getBoundingBoxTop (elem) {
-    // use the native SVG interface to get the bounding box
-    var bbox = elem.getBBox();
-    // return the center of the bounding box
-    return bbox.y + bbox.height;
+  // use the native SVG interface to get the bounding box
+  var bbox = elem.getBBox();
+  // return the center of the bounding box
+  return bbox.y + bbox.height;
 }
 
 // Get the Interesting class from a classlist
@@ -580,31 +579,31 @@ function get_class_from_classlist(elem){
   // TODO: If more things can be selected etc., it should be reflected here
   var ci = "";
   if(elem.classList.contains("note"))
-      ci = "note";
+    ci = "note";
   else if(elem.classList.contains("relation"))
-      ci = "relation";
+    ci = "relation";
   else if(elem.classList.contains("metarelation"))
-      ci = "metarelation";
+    ci = "metarelation";
   return ci;
 }
 
 // Get the center of the bounding box
 function getBoundingBoxCenter (elem) {
-    // use the native SVG interface to get the bounding box
-    var bbox = elem.getBBox();
-    // return the center of the bounding box
-    return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
+  // use the native SVG interface to get the bounding box
+  var bbox = elem.getBBox();
+  // return the center of the bounding box
+  return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
 }
 
 // "Smart" selection of a coordinate
 function getBoundingBoxOffCenter (elem) {
-    // use the native SVG interface to get the bounding box
-    var bbox = elem.getBBox();
-    // return the center of the bounding box
-    if(bbox.height > 500){
-      return [bbox.x + bbox.width/2, bbox.y +200];
-    }
-    return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
+  // use the native SVG interface to get the bounding box
+  var bbox = elem.getBBox();
+  // return the center of the bounding box
+  if(bbox.height > 500){
+    return [bbox.x + bbox.width/2, bbox.y +200];
+  }
+  return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
 }
 
 // Get the correct coordinates for where to aim the metarelation
@@ -619,7 +618,6 @@ function get_metarelation_target(elem) {
     console.log(elem);
     return [0,0];
   }
-
 }
 
 // Is this an empty relation?
@@ -636,9 +634,9 @@ function is_note_node(elem) {
 // Clean up in the graph to remove empty relations
 function remove_empty_relations(graph) {
   Array.from(graph.getElementsByTagName("node")).forEach((elem) => {
-      if(!is_note_node(elem) && is_empty_relation(elem)){
-        elem.parentNode.removeChild(elem);
-      }
+    if(!is_note_node(elem) && is_empty_relation(elem)){
+      elem.parentNode.removeChild(elem);
+    }
   });
 }
 
@@ -646,39 +644,19 @@ function remove_empty_relations(graph) {
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
 // Compute a text to represent the elements
-function to_text_arg(draw_contexts,mei_graph,elems) {
+function to_text(draw_contexts,mei_graph,elems) {
   //TODO: Detect and warn for selections spanning several drawing contexts
   if(elems.length == 0)
     return "";
   if(elems[0].classList.contains("note")){
     elems.sort((n,m) => {
-	const [nx,ny] = note_coords(n);
-	const [mx,my] = note_coords(m);
-	return (nx - mx == 0) ? my - ny : nx - mx;
+      const [nx,ny] = note_coords(n);
+      const [mx,my] = note_coords(m);
+      return (nx - mx == 0) ? my - ny : nx - mx;
     });
     return "notes("+elems.map((elem) => {
       var id = get_id(elem);
       var mei_elem = get_by_id(mei,id);
-      var accid = note_get_accid(mei_elem);
-      accid= accid.replace(/s/g,"#")
-      accid= accid.replace(/f/g,"b")
-      accid= accid.replace(/n/g,"")
-      return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
-    }).join("; ")+")";
-  }else if(elems[0].classList.contains("relation")){
-    return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
-  }else if(elems[0].classList.contains("metarelation")){
-    return "metarelations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
-  }
-}
-
-// Deprecated
-function to_text(elems) {
-  if(elems.length == 0)
-    return "";
-  if(elems[0].classList.contains("note")){
-    return "notes("+elems.map((elem) => {
-      var mei_elem = get_by_id(mei,elem.id);
       var accid = note_get_accid(mei_elem);
       accid= accid.replace(/s/g,"#")
       accid= accid.replace(/f/g,"b")
@@ -704,24 +682,24 @@ function fix_synonyms(mei) {
 }
 
 var attributes = [ "dur",
-		   "n",
-		   "dots",
-		   "when",
-		   "layer",
-		   "staff",
-		   "tstamp.ges",
-		   "tstamp.real",
-		   "tstamp",
-		   "loc",
-		   "dur.ges",
-		   "dots.ges",
-		   "dur.metrical",
-		   "dur.ppq",
-		   "dur.real",
-		   "dur.recip",
-		   "beam",
-		   "fermata",
-		   "tuplet" ];
+                   "n",
+                   "dots",
+                   "when",
+                   "layer",
+                   "staff",
+                   "tstamp.ges",
+                   "tstamp.real",
+                   "tstamp",
+                   "loc",
+                   "dur.ges",
+                   "dots.ges",
+                   "dur.metrical",
+                   "dur.ppq",
+                   "dur.real",
+                   "dur.recip",
+                   "beam",
+                   "fermata",
+                   "tuplet" ];
 
 // Make a rest of the same properties as the given note.
 function note_to_rest(mei,note) {
@@ -772,14 +750,14 @@ function prefix_ids(elem,prefix) {
 // Clone an MEI into a new XMLDocument
 function clone_mei(mei) {
   var new_mei = mei.implementation.createDocument(
-	mei.namespaceURI, //namespace to use
-	null,                     //name of the root element (or for empty document)
-	null                      //doctype (null for XML)
-      );
+      mei.namespaceURI, //namespace to use
+      null,                     //name of the root element (or for empty document)
+      null                      //doctype (null for XML)
+    );
   var newNode = new_mei.importNode(
-          mei.documentElement, //node to import
-	  true                         //clone its descendants
-      );
+      mei.documentElement, //node to import
+      true                         //clone its descendants
+    );
   new_mei.appendChild(newNode);
   return new_mei;
 }
@@ -797,12 +775,6 @@ function get_id_pairs(elem) {
   else
     return Array.from(elem.children).flatMap(get_id_pairs);
 }
-
-
-
-
-
-
 
 
 

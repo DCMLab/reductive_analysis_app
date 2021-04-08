@@ -671,14 +671,19 @@ function add_buttons(draw_context) {
   var rerenderbutton = button("Create new view");
   rerenderbutton.classList.add("rerenderbutton");
   rerenderbutton.id = (draw_context.id_prefix+"rerenderbutton");
+  var playbutton = button("Play reduction");
+  playbutton.classList.add("midibutton");
+  playbutton.id = (draw_context.id_prefix+"midibutton");
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
   newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
+  playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   buttondiv.appendChild(unreducebutton);
   buttondiv.appendChild(reducebutton  );
   buttondiv.appendChild(rerenderbutton);
   buttondiv.appendChild(newlayerbutton);
+  buttondiv.appendChild(playbutton);
 
   draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
 
@@ -734,8 +739,6 @@ function load_finish(e) {
   }
 
   mei_graph = add_or_fetch_graph();
-  midi = vrvToolkit.renderToMIDI();
-  orig_midi = midi;
   // Clear the old (if any)
   draw_contexts = [];
   layer_contexts = [];
@@ -773,10 +776,14 @@ function load_finish(e) {
                       "id_prefix" : "",
                       "zoom" : 1,
                       "reductions" : []};
-    if(i != 0)
+    if(i == 0){
+      midi = vrvToolkit.renderToMIDI();
+      orig_midi = midi;
+    }else
       draw_context.id_prefix = draw_contexts.length;
     finalize_draw_context(draw_context);
   }
+
 
   changes = false;
   undo_actions = [];
@@ -953,8 +960,8 @@ function play_midi() {
   $("#player").midiPlayer.play("data:audio/midi;base64,"+orig_midi);
 }
 
-function play_midi_reduction() {
-  var mei2 = rerender_mei(true);
+function play_midi_reduction(draw_context=draw_contexts[0]) {
+  var mei2 = rerender_mei(true, draw_context);
   var data2 = new XMLSerializer().serializeToString(mei2);
   vrvToolkit.loadData(data2);
   $("#player").midiPlayer.play("data:audio/midi;base64,"+vrvToolkit.renderToMIDI());

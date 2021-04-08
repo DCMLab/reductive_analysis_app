@@ -12,31 +12,7 @@ function log(s) {
   verbose ? console.log(s) : true;
 }
 
-describe('reductive_analysis_test_suite', () => {
-
-  beforeAll(async () => {
-    await page.goto("http://localhost:8000");
-
-    // Import relevant webapp globals into the testing environment.
-    globals.type_conf = await page.evaluate('type_conf');
-    globals.meta_conf = await page.evaluate('meta_conf');
-    console.log("DOM fully loaded and parsed?");
-  });
-
-  it('should run a rudimentary test on static HTML to confirm Jest works', async function() {
-    await expect(page.title()).resolves.toMatch(/DCML.*/s, {timeout: 30000});
-    //await expect(page).toMatch(/Primaries.*Secondaries/s, {timeout: 30000});
-  });
-
-  it('should parse conf.js without throwing an exception', async function() {
-    await expect(page.evaluate('CONFIG_OK')).resolves.toBeTrue();
-  });
-
-  it('should set up all buttons with expected element IDs and attributes', async function() {
-
-    // Helper function to test a single button
-    // with a compulsory element id and any other attribute-value pairs.
-    button_test = async (buttonId, conditions) => {
+var button_test = async (buttonId, conditions) => {
       log(`testing button with element ID #${buttonId}`
         + (conditions ? ` and attributes ${JSON.stringify(conditions)}` : ''));
 
@@ -61,6 +37,31 @@ describe('reductive_analysis_test_suite', () => {
       }
     }
 
+describe('reductive_analysis_test_suite', () => {
+
+  beforeAll(async () => {
+    await page.goto("http://localhost:8000");
+
+    // Import relevant webapp globals into the testing environment.
+    globals.type_conf = await page.evaluate('type_conf');
+    globals.meta_conf = await page.evaluate('meta_conf');
+    console.log("DOM fully loaded and parsed?");
+  });
+
+  it('should run a rudimentary test on static HTML to confirm Jest works', async function() {
+    await expect(page.title()).resolves.toMatch(/DCML.*/s, {timeout: 30000});
+    //await expect(page).toMatch(/Primaries.*Secondaries/s, {timeout: 30000});
+  });
+
+  it('should parse conf.js without throwing an exception', async function() {
+    await expect(page.evaluate('CONFIG_OK')).resolves.toBeTrue();
+  });
+
+  it('should set up all buttons with expected element IDs and attributes', async function() {
+
+    // Helper function to test a single button
+    // with a compulsory element id and any other attribute-value pairs.
+
     // Test programmatically generated relation buttons.
     Object.keys(globals.type_conf).forEach(async (b) =>
       button_test(`${b}relationbutton`, {'class': 'relationbutton'})
@@ -82,12 +83,8 @@ describe('reductive_analysis_test_suite', () => {
     button_test('hidebutton');
     button_test('downloadbutton');
     button_test('svgdownloadbutton');
-//    button_test('reducebutton');
     button_test('equalizebutton');
     button_test('shadesbutton');
-//    button_test('rerenderbutton');
-//    button_test('zoominbutton', {'class': 'zoombutton'});
-//    button_test('zoomoutbutton', {'class': 'zoombutton'});
   });
 
   it('should load the example MEI', async function() {
@@ -96,6 +93,16 @@ describe('reductive_analysis_test_suite', () => {
       path.join(__dirname, 'test_scores', 'mozart13.xml')
     );
   });
+
+  it('should have loaded view-specific buttons', async function  () {
+      button_test('reducebutton', {'class': 'reducebutton'});
+      button_test('unreducebutton', {'class': 'unreducebutton'});
+      button_test('rerenderbutton', {'class': 'rerenderbutton'});
+      button_test('newlayerbutton', {'class': 'newlayerbutton'});
+      button_test('zoominbutton', {'class': 'zoominbutton'});
+      button_test('zoomoutbutton', {'class': 'zoomoutbutton'});
+  });
+
 
   it('should produce a directed <graph> within <mei>', async function () {
     await page.waitForTimeout(1000);
@@ -330,6 +337,62 @@ describe('reductive_analysis_test_suite', () => {
       window.mei.querySelector('arc');
     `)).resolves.toBeNull();
 
+  });
+
+  it('should reduce the relation between structurally unequal notes, hiding the less important one', async function () {
+    // Re-enter arpeggio relation via the keyboard shortcut.
+    await page.keyboard.press('a');
+    log('Re-created test relation.')
+
+    // Find and click the reduce button
+    var reducebutton_id = "reducebutton";
+    await expect(page).toClick(`#${reducebutton_id}`);
+
+    log('Reduced the test relation.');
+
+    // Check that the secondary note has been hidden
+    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+    await expect(page.evaluate(`
+	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeTruthy();
+
+    // And also the relation
+    var expected_relation_id = await page.evaluate(`$(window.mei)
+      .find('arc[to="#gn-${secondary_id}"][type="secondary"]')
+      .attr('from')
+      .substring(1)`); // remove the hash prefix from the ID, for consistency.
+    await expect(page.evaluate(`
+	document.querySelectorAll('path[id="${expected_relation_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeTruthy();
+  });
+
+  it('should unreduce the relation, showing it again', async function () {
+    // Find and click the unreducebutton
+    var unreducebutton_id = "unreducebutton";
+    await expect(page).toClick(`#${unreducebutton_id}`);
+
+    log('Unreduced the test relation.');
+
+    // Check that the secondary note is shown again
+    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+    await expect(page.evaluate(`
+	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeFalsy();
+
+    // And also the relation
+    var expected_relation_id = await page.evaluate(`$(window.mei)
+      .find('arc[to="#gn-${secondary_id}"][type="secondary"]')
+      .attr('from')
+      .substring(1)`); // remove the hash prefix from the ID, for consistency.
+    await expect(page.evaluate(`
+	document.querySelectorAll('path[id="${expected_relation_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeFalsy();
+
+    var reducebutton_id = "reducebutton";
+
+    await expect(page).toClick(`#${reducebutton_id}`);
+
+    log('Re-reduced the test relation.');
   });
 
 });

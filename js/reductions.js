@@ -2,16 +2,16 @@ function calc_reduce(mei_graph, remaining_relations, target_relations){
   // No primary of a remaining relation is removed in this
   // reduction
   var remaining_nodes = remaining_relations.map(
-    		      (he) => relation_primaries(mei_graph,he)
-    		    ).flat();
+                          (he) => relation_primaries(mei_graph,he)
+                        ).flat();
   // We know that the remaining relations that have not been
   // selected for reduction will remain
   remaining_relations = remaining_relations.filter((x) => {return !target_relations.includes(x);});
   // So all of their nodes should be added to the remaining
   // nodes, not just the primaries
   remaining_nodes = remaining_nodes.concat(remaining_relations.map(
-    		  (he) => relation_secondaries(mei_graph,he)
-    		).flat());
+                      (he) => relation_secondaries(mei_graph,he)
+                    ).flat());
 
   do {
     // We want to find more relations that we know need to stay 
@@ -26,8 +26,8 @@ function calc_reduce(mei_graph, remaining_relations, target_relations){
     target_relations = target_relations.filter((x) => {return !more_remains.includes(x);})
     // And update the remaining nodes
     remaining_nodes = remaining_nodes.concat(more_remains.map(
-    		    (he) => relation_secondaries(mei_graph,he)
-    		  ).flat());
+                        (he) => relation_secondaries(mei_graph,he)
+                      ).flat());
   // Until we reach a pass where we don't find any more
   // relations that need to stay
   }while(more_remains.length > 0)
@@ -53,12 +53,10 @@ function do_reduce(draw_context, mei_graph, sel, extra){
 
   var all_relations_nodes = Array.from(mei_graph.getElementsByTagName("node")).filter((x) => { return x.getAttribute("type") == "relation";});
 
-  var remaining_relations = all_relations_nodes.filter(
-        (n) => {
-           var g = get_by_id(document,draw_context.id_prefix + n.getAttribute("xml:id"));
-           return g != undefined && !g.classList.contains("hidden");
-         }
-      );
+  var remaining_relations = all_relations_nodes.filter((n) => {
+	 var g = get_by_id(document,draw_context.id_prefix + n.getAttribute("xml:id"));
+	 return g != undefined && !g.classList.contains("hidden");
+  });
 
   if(target_relations.length == 0)
     target_relations = remaining_relations;
@@ -66,16 +64,16 @@ function do_reduce(draw_context, mei_graph, sel, extra){
   // The removed notes we get are _nodes in the graph_, but
   // hide_note is built with that in mind.
   var [removed_relations, removed_notes] = calc_reduce(mei_graph, 
-                                                           remaining_relations, 
-    						       target_relations);
+						       remaining_relations, 
+						       target_relations);
   var graphicals =[];
   graphicals.push(removed_relations.map(
-    		(r) => hide_he(draw_context,r)
-    	      ));
+                    (r) => hide_he(draw_context,r)
+                  ));
 
   graphicals.push(removed_notes.map(
-                      (n) => hide_note(draw_context,n)
-    	      ));
+		    (n) => hide_note(draw_context,n)
+                  ));
 
   var undo = [removed_relations,removed_notes,graphicals];
   draw_context['reductions'].push(["reduce",undo,sel,extra]);

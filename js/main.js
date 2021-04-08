@@ -936,10 +936,6 @@ function rerender(draw_context) {
 }
 
 
-function rerender() {
-  rerender(draw_contexts[0]);
-}
-
 function texton() { text_input = true; }
 function textoff() { text_input = false; }
 function show_buttons() {

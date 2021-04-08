@@ -1,4 +1,4 @@
-function draw_relation_arg(draw_context, mei_graph, g_elem) {
+function draw_relation(draw_context, mei_graph, g_elem) {
   var added = [];
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
@@ -56,7 +56,7 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
 
 }
 
-function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
+function draw_metarelation(draw_context, mei_graph, g_elem) {
   var added = [];
   var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem;

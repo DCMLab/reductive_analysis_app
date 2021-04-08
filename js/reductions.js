@@ -1,4 +1,4 @@
-function calc_reduce_arg(mei_graph, remaining_relations, target_relations){
+function calc_reduce(mei_graph, remaining_relations, target_relations){
   // No primary of a remaining relation is removed in this
   // reduction
   var remaining_nodes = remaining_relations.map(
@@ -41,11 +41,11 @@ function calc_reduce_arg(mei_graph, remaining_relations, target_relations){
 
 }
 
-function do_reduce_pre(draw_context) { do_reduce_arg(draw_context, mei_graph, selected, extraselected);}
+function do_reduce_pre(draw_context) { do_reduce(draw_context, mei_graph, selected, extraselected);}
 
 // Do a reduction in the context, using the given graph and the
 // (optional) selected hyperedges from this context.
-function do_reduce_arg(draw_context, mei_graph, sel, extra){
+function do_reduce(draw_context, mei_graph, sel, extra){
   var selection = sel.concat(extra);
   var target_relations = selection.map(
         (ge) => get_by_id(mei_graph.getRootNode(), get_id(ge))
@@ -65,7 +65,7 @@ function do_reduce_arg(draw_context, mei_graph, sel, extra){
 
   // The removed notes we get are _nodes in the graph_, but
   // hide_note is built with that in mind.
-  var [removed_relations, removed_notes] = calc_reduce_arg(mei_graph, 
+  var [removed_relations, removed_notes] = calc_reduce(mei_graph, 
                                                            remaining_relations, 
     						       target_relations);
   var graphicals =[];
@@ -81,7 +81,7 @@ function do_reduce_arg(draw_context, mei_graph, sel, extra){
   draw_context['reductions'].push(["reduce",undo,sel,extra]);
 }
 
-function undo_reduce_arg(draw_context){
+function undo_reduce(draw_context){
   console.log("Using globals: selected/extraselected")
   undo_actions = draw_context['reductions'];
   // Get latest undo_actions

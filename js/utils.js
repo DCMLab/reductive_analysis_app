@@ -780,9 +780,3 @@ function get_id_pairs(elem) {
 
 
 
-
-
-
-
-
-

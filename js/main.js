@@ -362,10 +362,10 @@ function do_relation(type) {
         var primaries = extraselected.map((e) => add_mei_node_for(mei_graph,e));
         var secondaries = selected.map((e) => add_mei_node_for(mei_graph,e));
         added.push(primaries.concat(secondaries));
-        [he_id,mei_elems] = add_relation_arg(mei_graph,primaries, secondaries, type);
+        [he_id,mei_elems] = add_relation(mei_graph,primaries, secondaries, type);
         added.push(mei_elems);
         for(var i = 0; i < draw_contexts.length; i++) {
-          added.push(draw_relation_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
+          added.push(draw_relation(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
           mark_secondaries(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
         }
         undo_actions.push(["relation",added.reverse(),selected,extraselected]);
@@ -389,28 +389,13 @@ function do_metarelation(type, arg ) {
           get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
       var secondaries = selected.map((e) =>
           get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
-      var [he_id,mei_elems] = add_metarelation_arg(mei_graph, primaries, secondaries, type);
+      var [he_id,mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type);
       added.push(mei_elems);
       for(var i = 0; i< draw_contexts.length; i++)
-        added.push(draw_metarelation_arg(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge
+        added.push(draw_metarelation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge
     
     undo_actions.push(["metarelation",added,selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select
-}
-
-function undo_reduce() {
-  undo_actions.reverse();
-  var ix = undo_actions.findIndex((t) => t[0] == "reduce");
-  if(ix == -1){
-    undo_actions.reverse();
-    return;
-  }
-  undo = undo_actions[ix];
-  undo_actions[ix] = null;
-  undo_actions = undo_actions.filter((x) => x != null);
-  undo_actions.reverse();
-  undo_actions.push(undo);
-  do_undo();
 }
 
 
@@ -647,10 +632,10 @@ function draw_graph(draw_context) {
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
     relations_nodes.forEach((g_elem) => {
-	      if(draw_relation_arg(draw_context,mei_graph,g_elem))
+	      if(draw_relation(draw_context,mei_graph,g_elem))
 		mark_secondaries(draw_context,mei_graph,g_elem);
 	  })
-    metarelations_nodes.forEach((g_elem) => draw_metarelation_arg(draw_context,mei_graph,g_elem));
+    metarelations_nodes.forEach((g_elem) => draw_metarelation(draw_context,mei_graph,g_elem));
 }
 
 
@@ -699,9 +684,9 @@ function add_buttons(draw_context) {
     var rerenderbutton = button("Create new view");
     rerenderbutton.classList.add("rerenderbutton");
     rerenderbutton.id = (draw_context.id_prefix+"rerenderbutton");
-    unreducebutton.onclick = () =>{undo_reduce_arg(new_draw_context);}
+    unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
     reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
-    rerenderbutton.onclick = () =>{   rerender_arg(new_draw_context);}
+    rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
     newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
     buttondiv.appendChild(unreducebutton);
     buttondiv.appendChild(reducebutton  );
@@ -924,7 +909,7 @@ function render_mei(mei) {
 }
 
 
-function rerender_arg(draw_context) {
+function rerender(draw_context) {
   var [new_view_elem,new_svg_elem] = new_view_elements(draw_context.layer.layer_elem);
   var new_mei = rerender_mei(false, draw_context);
   var [new_data, new_svg] = render_mei(new_mei);
@@ -952,7 +937,7 @@ function rerender_arg(draw_context) {
 
 
 function rerender() {
-  rerender_arg(draw_contexts[0]);
+  rerender(draw_contexts[0]);
 }
 
 function texton() { text_input = true; }

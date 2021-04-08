@@ -355,4 +355,21 @@ describe('reductive_analysis_test_suite', () => {
       )).resolves.toBeTruthy();
   });
 
+  it('should unreduce the relation, showing it again', async function () {
+    var unreducebutton_id = "unreducebutton";
+    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+    await expect(page).toClick(`#${unreducebutton_id}`);
+
+    log('Unreduced the test relation.');
+
+    await expect(page.evaluate(`
+	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeFalsy();
+
+    var reducebutton_id = "reducebutton";
+    await expect(page).toClick(`#${reducebutton_id}`);
+
+    log('Re-reduced the test relation.');
+  });
+
 });

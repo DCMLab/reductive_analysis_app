@@ -85,11 +85,11 @@ window.addEventListener("beforeunload", function (e) {
 
 // Once things are loaded, do configuration stuff
 $(document).ready(function() {
-      Object.keys(type_conf).forEach(init_type);
-      Object.keys(meta_conf).forEach(meta_type);
-      toggle_shades();
-      $("#player").midiPlayer({ color: "grey", width: 250 });
-      $("#selected_things").hide();
+  Object.keys(type_conf).forEach(init_type);
+  Object.keys(meta_conf).forEach(meta_type);
+  toggle_shades();
+  $("#player").midiPlayer({ color: "grey", width: 250 });
+  $("#selected_things").hide();
 });
 
 // Configured types need a button and a color each

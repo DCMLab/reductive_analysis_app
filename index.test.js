@@ -337,6 +337,21 @@ describe('reductive_analysis_test_suite', () => {
       window.mei.querySelector('arc');
     `)).resolves.toBeNull();
 
+    // Re-enter arpeggio relation via the keyboard shortcut.
+    await page.keyboard.press('a');
+    log('Re-created test relation.')
+  });
+
+  it('should reduce the relation between structurally unequal notes, hiding the less important one', async function () {
+    var reducebutton_id = "reducebutton";
+    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+    await expect(page).toClick(`#${reducebutton_id}`);
+
+    log('Reduced the test relation.');
+
+    await expect(page.evaluate(`
+	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeTruthy();
   });
 
 });

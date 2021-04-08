@@ -158,21 +158,21 @@ function flip_to_bg(elem) {
 }
 
 
-function add_to_svg_bg_arg(svg_elem,newElement) {
+function add_to_svg_bg(svg_elem,newElement) {
   // Adds newElement in the background of the system element 
   var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
   parent.insertBefore(newElement,sibling);
 }
 
-function add_to_svg_fg_arg(svg_elem,newElement) {
+function add_to_svg_fg(svg_elem,newElement) {
   // Adds newElement in the foreground of the system element 
   var sibling = svg_elem.getElementsByClassName("system")[0];
   var parent = sibling.parentNode;
   parent.appendChild(newElement);
 }
 
-function g_arg(svg_elem) {
+function g(svg_elem) {
   // Creates a new SVG g element
   var newElement = svg_elem.getRootNode().createElementNS("http://www.w3.org/2000/svg", 'g');
   return newElement;
@@ -278,7 +278,7 @@ function id_in_layer(layer_context, id) {
 
 
 // From graph node to list of all arcs that refer to it
-function arcs_where_node_referred_to_arg(mei_graph,id) {
+function arcs_where_node_referred_to(mei_graph,id) {
   return Array.from(mei_graph.getElementsByTagName("arc"))
     .filter((x) => {
 	return (x.getAttribute("from") == "#"+id || 
@@ -377,7 +377,7 @@ function get_time(note) {
 // From any relation element to list of MEI note elements
 function relation_get_notes(he) {
   he = get_by_id(mei,get_id(he));
-  var note_nodes = relation_allnodes_arg(mei_graph,he);
+  var note_nodes = relation_allnodes(mei_graph,he);
   var notes = note_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return notes;
 
@@ -385,15 +385,15 @@ function relation_get_notes(he) {
 // From any relation element to list of MEI note elements
 function relation_get_notes_separated(he) {
   he = get_by_id(mei,get_id(he));
-  var prim_nodes = relation_primaries_arg(mei_graph,he);
+  var prim_nodes = relation_primaries(mei_graph,he);
   var prims = prim_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
-  var sec_nodes = relation_secondaries_arg(mei_graph,he);
+  var sec_nodes = relation_secondaries(mei_graph,he);
   var secs = sec_nodes.map(node_to_note_id).map((n) => get_by_id(mei,n));
   return [prims,secs];
 }
 
 // Get the MEI-graph nodes that are adjacent to a relation
-function relation_allnodes_arg(mei_graph,he) {
+function relation_allnodes(mei_graph,he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -405,7 +405,7 @@ function relation_allnodes_arg(mei_graph,he) {
 }
 
 // Get the MEI-graph nodes that are adjacent and primary to a relation
-function relation_primaries_arg(mei_graph,he) {
+function relation_primaries(mei_graph,he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -417,7 +417,7 @@ function relation_primaries_arg(mei_graph,he) {
   return nodes;
 }
 // Get the MEI-graph nodes that are adjacent and secondary to a relation
-function relation_secondaries_arg(mei_graph,he) {
+function relation_secondaries(mei_graph,he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName("arc"));
   var nodes = [];
   arcs_array.forEach((a) => {
@@ -440,7 +440,7 @@ function relation_type(he) {
 }
 
 // Set up new graph node for a note
-function add_mei_node_for_arg(mei_graph,note) {
+function add_mei_node_for(mei_graph,note) {
     var id = get_id(note);
     var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
     if (elem != null) {
@@ -461,7 +461,7 @@ function add_mei_node_for_arg(mei_graph,note) {
 
             
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_note_arg(draw_context,note) {
+function hide_note(draw_context,note) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),id_in_svg(draw_context,node_to_note_id(note)));
   if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
@@ -469,7 +469,7 @@ function hide_note_arg(draw_context,note) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_he_arg(draw_context,he) {
+function hide_he(draw_context,he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
   if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
@@ -497,11 +497,11 @@ function unmark_secondary(item) {
 
 // For a certain MEI relation node, find its secondaries and mark them as
 // secondary in the draw context
-function mark_secondaries_arg(draw_context,mei_graph,he) {
+function mark_secondaries(draw_context,mei_graph,he) {
     var svg_elem = draw_context.svg_elem;
     if(he.tagName != "node") //TODO: Probably bad, but shouldn't happen from do_relation
       he = get_by_id(mei_graph.getRootNode(),he.id);
-    var secondaries = relation_secondaries_arg(mei_graph,he);
+    var secondaries = relation_secondaries(mei_graph,he);
     secondaries.forEach((n) => {
 	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
 	mark_secondary(svg_note);
@@ -510,11 +510,11 @@ function mark_secondaries_arg(draw_context,mei_graph,he) {
 
 // For a certain MEI relation node, find its secondaries and unmark them as
 // secondary in the draw context
-function unmark_secondaries_arg(draw_context,mei_graph,he) {
+function unmark_secondaries(draw_context,mei_graph,he) {
     var svg_elem = draw_context.svg_elem;
     if(he.tagName != "node")
       he = get_by_id(mei_graph.getRootNode(),he.id);
-    var secondaries = relation_secondaries_arg(mei_graph,he);
+    var secondaries = relation_secondaries(mei_graph,he);
     secondaries.forEach((n) => {
 	var svg_note = document.getElementById(id_in_svg(draw_context,node_to_note_id(n)))
 	unmark_secondary(svg_note);
@@ -646,7 +646,7 @@ function remove_empty_relations(graph) {
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
 // Compute a text to represent the elements
-function to_text_arg(draw_contexts,mei_graph,elems) {
+function to_text(draw_contexts,mei_graph,elems) {
   //TODO: Detect and warn for selections spanning several drawing contexts
   if(elems.length == 0)
     return "";
@@ -659,26 +659,6 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
     return "notes("+elems.map((elem) => {
       var id = get_id(elem);
       var mei_elem = get_by_id(mei,id);
-      var accid = note_get_accid(mei_elem);
-      accid= accid.replace(/s/g,"#")
-      accid= accid.replace(/f/g,"b")
-      accid= accid.replace(/n/g,"")
-      return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
-    }).join("; ")+")";
-  }else if(elems[0].classList.contains("relation")){
-    return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
-  }else if(elems[0].classList.contains("metarelation")){
-    return "metarelations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
-  }
-}
-
-// Deprecated
-function to_text(elems) {
-  if(elems.length == 0)
-    return "";
-  if(elems[0].classList.contains("note")){
-    return "notes("+elems.map((elem) => {
-      var mei_elem = get_by_id(mei,elem.id);
       var accid = note_get_accid(mei_elem);
       accid= accid.replace(/s/g,"#")
       accid= accid.replace(/f/g,"b")

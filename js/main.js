@@ -214,8 +214,8 @@ function toggle_selected(item,extra) {
 
 function update_text(){
   var primaries, secondaries;
-    primaries = to_text_arg(draw_contexts,mei_graph,extraselected);
-    secondaries = to_text_arg(draw_contexts,mei_graph,selected);
+    primaries = to_text(draw_contexts,mei_graph,extraselected);
+    secondaries = to_text(draw_contexts,mei_graph,selected);
   if (primaries || secondaries) {
     $("#selected_things").show();
     $("#selected_things").html("<span class='selected_primaries'>Primaries: </span>"+primaries+"<br/><span class='selected_secondaries'>Secondaries: </span>"+secondaries);  
@@ -289,7 +289,7 @@ function delete_relation(elem) {
   for(draw_context of draw_contexts){
     let svg_he = get_by_id(document,draw_context.id_prefix + mei_id);
     if(svg_he){
-      unmark_secondaries_arg(draw_context, mei_graph, mei_he);
+      unmark_secondaries(draw_context, mei_graph, mei_he);
       svg_hes.push(svg_he);
     }
   }
@@ -359,14 +359,14 @@ function do_relation(type) {
     }else if(selected.concat(extraselected)[0].classList.contains("note")){
       var added = [];
         // Add new nodes for all notes
-        var primaries = extraselected.map((e) => add_mei_node_for_arg(mei_graph,e));
-        var secondaries = selected.map((e) => add_mei_node_for_arg(mei_graph,e));
+        var primaries = extraselected.map((e) => add_mei_node_for(mei_graph,e));
+        var secondaries = selected.map((e) => add_mei_node_for(mei_graph,e));
         added.push(primaries.concat(secondaries));
         [he_id,mei_elems] = add_relation_arg(mei_graph,primaries, secondaries, type);
         added.push(mei_elems);
         for(var i = 0; i < draw_contexts.length; i++) {
           added.push(draw_relation_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
-          mark_secondaries_arg(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
+          mark_secondaries(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
         }
         undo_actions.push(["relation",added.reverse(),selected,extraselected]);
       selected.concat(extraselected).forEach(toggle_selected); // De-select
@@ -437,7 +437,7 @@ function do_undo() {
         added.flat().forEach((x) => { 
         if(mei_graph.contains(x) && x.getAttribute("type") == "relation")
           for(var i = 0; i < draw_contexts.length; i++) 
-            unmark_secondaries_arg(draw_contexts[i],mei_graph,x)
+            unmark_secondaries(draw_contexts[i],mei_graph,x)
           });
       // Remove added elements
       added.flat().forEach((x) => {
@@ -455,7 +455,7 @@ function do_undo() {
 	  if(dc){
 	    let mei_id = get_id(x[0]);
 	    let mei_he = get_by_id(mei,mei_id);
-	    mark_secondaries_arg(dc, mei_graph, mei_he)
+	    mark_secondaries(dc, mei_graph, mei_he)
 	  }
 	});
       // Select last selection
@@ -648,7 +648,7 @@ function draw_graph(draw_context) {
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
     relations_nodes.forEach((g_elem) => {
 	      if(draw_relation_arg(draw_context,mei_graph,g_elem))
-		mark_secondaries_arg(draw_context,mei_graph,g_elem);
+		mark_secondaries(draw_context,mei_graph,g_elem);
 	  })
     metarelations_nodes.forEach((g_elem) => draw_metarelation_arg(draw_context,mei_graph,g_elem));
 }

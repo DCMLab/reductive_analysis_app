@@ -2,10 +2,10 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   var added = [];
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
-  var primaries = relation_primaries_arg(mei_graph,g_elem).map(
+  var primaries = relation_primaries(mei_graph,g_elem).map(
       (e) => document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
     );
-  var secondaries = relation_secondaries_arg(mei_graph,g_elem).map(
+  var secondaries = relation_secondaries(mei_graph,g_elem).map(
       (e) => document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
     );
   var notes = primaries.concat(secondaries);
@@ -38,7 +38,7 @@ function draw_relation_arg(draw_context, mei_graph, g_elem) {
   };
   if(shades)
     toggle_shade(elem);
-  add_to_svg_bg_arg(svg_elem,elem);
+  add_to_svg_bg(svg_elem,elem);
   added.push(elem);
   elem.onclick = function(ev) {toggle_selected(elem,ev.shiftKey);};
   elem.onmouseover = function (ev) {
@@ -63,7 +63,7 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   var id_prefix = draw_context.id_prefix;
   var id = id_prefix + g_elem.getAttribute("xml:id");
   var type = relation_type(g_elem);
-  var targets = relation_allnodes_arg(mei_graph, g_elem).map(
+  var targets = relation_allnodes(mei_graph, g_elem).map(
       (e) => document.getElementById(draw_context.id_prefix+get_id(e)));
   if(targets.indexOf(null) != -1){
     console.log("Missing relation, not drawing metarelation");
@@ -76,7 +76,7 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   var y = targets.concat([svg_elem.getElementsByClassName("system")[0]]).map((b) => b.getBBox().y).sort((a,b) => a > b)[0] - 500;
 
   coords.push([x,y]);
-  var g_elem = g_arg(svg_elem);
+  var g_elem = g(svg_elem);
   var elem = roundedHull(coords);
   g_elem.setAttribute("id",id);
   g_elem.classList.add("metarelation");
@@ -93,7 +93,7 @@ function draw_metarelation_arg(draw_context, mei_graph, g_elem) {
   g_elem.appendChild(circle([x,y],200));
   if(shades)
     toggle_shade(elem);
-  add_to_svg_bg_arg(svg_elem,g_elem);
+  add_to_svg_bg(svg_elem,g_elem);
   added.push(g_elem);
   g_elem.onclick = function(ev) {toggle_selected(g_elem,ev.shiftKey);};
   g_elem.onmouseover = function (ev) {

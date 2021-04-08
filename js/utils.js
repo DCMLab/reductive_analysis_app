@@ -651,6 +651,11 @@ function to_text_arg(draw_contexts,mei_graph,elems) {
   if(elems.length == 0)
     return "";
   if(elems[0].classList.contains("note")){
+    elems.sort((n,m) => {
+	const [nx,ny] = note_coords(n);
+	const [mx,my] = note_coords(m);
+	return (nx - mx == 0) ? my - ny : nx - mx;
+    });
     return "notes("+elems.map((elem) => {
       var id = get_id(elem);
       var mei_elem = get_by_id(mei,id);

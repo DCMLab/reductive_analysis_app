@@ -130,11 +130,11 @@ function toggle_he_selected(selecting) {
   console.debug("Using globals: document for changing button texts/visibility");
 
   Array.from(document.getElementsByClassName("relationbutton")).forEach((button) => {
-        var val = button.getAttribute("value");
-        if(selecting)
-          button.setAttribute("value",val.replace("Add","Set to"));
-        else
-          button.setAttribute("value",val.replace("Set to","Add"));
+    var val = button.getAttribute("value");
+    if(selecting)
+      button.setAttribute("value",val.replace("Add","Set to"));
+    else
+      button.setAttribute("value",val.replace("Set to","Add"));
   });
   if(selecting)
     document.getElementById("meta_buttons").classList.remove("none");
@@ -162,10 +162,10 @@ function toggle_selected(item,extra) {
       extraselected = extraselected.filter(x =>  x !== item);
     } else {
       if(extra) {
-	item.classList.add("extraselectednote");
+        item.classList.add("extraselectednote");
         extraselected.push(item);
       }else {
-	item.classList.add("selectednote");
+        item.classList.add("selectednote");
         selected.push(item);
       }
     }
@@ -182,10 +182,10 @@ function toggle_selected(item,extra) {
       extraselected = extraselected.filter(x =>  x !== item);
     } else {
       if(extra){
-	item.classList.add("extraselectedrelation");
+        item.classList.add("extraselectedrelation");
         extraselected.push(item);
       }else{
-	item.classList.add("selectedrelation");
+        item.classList.add("selectedrelation");
         selected.push(item);
       }
     }
@@ -222,10 +222,10 @@ function set_non_note_visibility(hidden) {
   console.debug("Using globals: document for element selection");
   Array.from(document.getElementsByClassName("beam")).forEach((x) =>
       { Array.from(x.children).forEach((x) => { if(x.tagName == "polygon")
-	  { hidden ? x.classList.add("hidden") : x.classList.remove("hidden"); }})});
+          { hidden ? x.classList.add("hidden") : x.classList.remove("hidden"); }})});
   hide_classes.forEach((cl) => {
     Array.from(document.getElementsByClassName(cl)).forEach((x) =>
-	{ hidden ? x.classList.add("hidden") : x.classList.remove("hidden");})});
+        { hidden ? x.classList.add("hidden") : x.classList.remove("hidden");})});
 }
 
 
@@ -422,14 +422,14 @@ function do_undo() {
     }else if( what == "delete relation" ) {
       var removed = elems;
       removed.forEach((x) => {
-	  x[1].insertBefore(x[0],x[2])
-	  let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
-	  if(dc){
-	    let mei_id = get_id(x[0]);
-	    let mei_he = get_by_id(mei,mei_id);
-	    mark_secondaries(dc, mei_graph, mei_he)
-	  }
-	});
+          x[1].insertBefore(x[0],x[2])
+          let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
+          if(dc){
+            let mei_id = get_id(x[0]);
+            let mei_he = get_by_id(mei,mei_id);
+            mark_secondaries(dc, mei_graph, mei_he)
+          }
+        });
       // Select last selection
       sel.forEach((x) => {toggle_selected(x);});
       extra.forEach((x) => {toggle_selected(x,true);});
@@ -459,9 +459,9 @@ function do_undo() {
       graphicals.forEach((x) => x.parentNode.removeChild(x));
       mei_elems[0].parentNode.removeChild(mei_elems[0]);
       if(mei_elems.length > 1){
-	var c = mei_elems[1];
-	c.parentNode.insertBefore(c.children[0],c);
-	c.parentNode.removeChild(c);
+        var c = mei_elems[1];
+        c.parentNode.insertBefore(c.children[0],c);
+        c.parentNode.removeChild(c);
       }
     }
 
@@ -619,9 +619,9 @@ function draw_graph(draw_context) {
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
     relations_nodes.forEach((g_elem) => {
-	      if(draw_relation(draw_context,mei_graph,g_elem))
-		mark_secondaries(draw_context,mei_graph,g_elem);
-	  })
+              if(draw_relation(draw_context,mei_graph,g_elem))
+                mark_secondaries(draw_context,mei_graph,g_elem);
+          })
     metarelations_nodes.forEach((g_elem) => draw_metarelation(draw_context,mei_graph,g_elem));
 }
 
@@ -764,15 +764,15 @@ function load_finish(e) {
     }
     layer_contexts.push(layer_context);
     var draw_context = {
-		      // TODO: One draw context per existing score element
-		      // already on load.
-		      "mei_score" : score_elem,
-		      "svg_elem" : svg_element,
-		      "view_elem" : view_element,
-		      "layer" : layer_context,
-		      "id_prefix" : "",
-		      "zoom" : 1,
-		      "reductions" : []};
+                      // TODO: One draw context per existing score element
+                      // already on load.
+                      "mei_score" : score_elem,
+                      "svg_elem" : svg_element,
+                      "view_elem" : view_element,
+                      "layer" : layer_context,
+                      "id_prefix" : "",
+                      "zoom" : 1,
+                      "reductions" : []};
     if(i != 0)
       draw_context.id_prefix = draw_contexts.length;
     finalize_draw_context(draw_context);
@@ -850,15 +850,15 @@ function create_new_layer(draw_context) {
   }
   layer_contexts.push(layer_context);
   var new_draw_context = {
-		    // TODO: One draw context per existing score element
-		    // already on load.
-		    "mei_score" : new_score_elem,
-		    "svg_elem" : new_svg_elem,
-		    "view_elem" : new_view_elem,
-		    "layer" : layer_context,
-		    "id_prefix" : "",
-		    "zoom" : 1,
-		    "reductions" : []};
+                    // TODO: One draw context per existing score element
+                    // already on load.
+                    "mei_score" : new_score_elem,
+                    "svg_elem" : new_svg_elem,
+                    "view_elem" : new_view_elem,
+                    "layer" : layer_context,
+                    "id_prefix" : "",
+                    "zoom" : 1,
+                    "reductions" : []};
 
   //prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length;
@@ -905,15 +905,15 @@ function rerender(draw_context) {
   
   new_svg_elem.innerHTML = new_svg;
   var new_draw_context = {
-		    // TODO: One draw context per existing score element
-		    // already on load.
-		    "mei_score" : draw_context.mei_score,
-		    "svg_elem" : new_svg_elem,
-		    "view_elem" : new_view_elem,
-		    "layer" : draw_context.layer,
-		    "id_prefix" : "",
-		    "zoom" : 1,
-		    "reductions" : []};
+                    // TODO: One draw context per existing score element
+                    // already on load.
+                    "mei_score" : draw_context.mei_score,
+                    "svg_elem" : new_svg_elem,
+                    "view_elem" : new_view_elem,
+                    "layer" : draw_context.layer,
+                    "id_prefix" : "",
+                    "zoom" : 1,
+                    "reductions" : []};
 
   new_draw_context.id_prefix = draw_contexts.length;
   prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);

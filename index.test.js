@@ -344,29 +344,52 @@ describe('reductive_analysis_test_suite', () => {
     await page.keyboard.press('a');
     log('Re-created test relation.')
 
+    // Find and click the reduce button
     var reducebutton_id = "reducebutton";
-    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
     await expect(page).toClick(`#${reducebutton_id}`);
 
     log('Reduced the test relation.');
 
+    // Check that the secondary note has been hidden
+    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
     await expect(page.evaluate(`
 	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeTruthy();
+
+    // And also the relation
+    var expected_relation_id = await page.evaluate(`$(window.mei)
+      .find('arc[to="#gn-${secondary_id}"][type="secondary"]')
+      .attr('from')
+      .substring(1)`); // remove the hash prefix from the ID, for consistency.
+    await expect(page.evaluate(`
+	document.querySelectorAll('path[id="${expected_relation_id}"]')[0].classList.contains("hidden") `
       )).resolves.toBeTruthy();
   });
 
   it('should unreduce the relation, showing it again', async function () {
+    // Find and click the unreducebutton
     var unreducebutton_id = "unreducebutton";
-    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
     await expect(page).toClick(`#${unreducebutton_id}`);
 
     log('Unreduced the test relation.');
 
+    // Check that the secondary note is shown again
+    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
     await expect(page.evaluate(`
 	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
       )).resolves.toBeFalsy();
 
+    // And also the relation
+    var expected_relation_id = await page.evaluate(`$(window.mei)
+      .find('arc[to="#gn-${secondary_id}"][type="secondary"]')
+      .attr('from')
+      .substring(1)`); // remove the hash prefix from the ID, for consistency.
+    await expect(page.evaluate(`
+	document.querySelectorAll('path[id="${expected_relation_id}"]')[0].classList.contains("hidden") `
+      )).resolves.toBeFalsy();
+
     var reducebutton_id = "reducebutton";
+
     await expect(page).toClick(`#${reducebutton_id}`);
 
     log('Re-reduced the test relation.');

@@ -12,31 +12,7 @@ function log(s) {
   verbose ? console.log(s) : true;
 }
 
-describe('reductive_analysis_test_suite', () => {
-
-  beforeAll(async () => {
-    await page.goto("http://localhost:8000");
-
-    // Import relevant webapp globals into the testing environment.
-    globals.type_conf = await page.evaluate('type_conf');
-    globals.meta_conf = await page.evaluate('meta_conf');
-    console.log("DOM fully loaded and parsed?");
-  });
-
-  it('should run a rudimentary test on static HTML to confirm Jest works', async function() {
-    await expect(page.title()).resolves.toMatch(/DCML.*/s, {timeout: 30000});
-    //await expect(page).toMatch(/Primaries.*Secondaries/s, {timeout: 30000});
-  });
-
-  it('should parse conf.js without throwing an exception', async function() {
-    await expect(page.evaluate('CONFIG_OK')).resolves.toBeTrue();
-  });
-
-  it('should set up all buttons with expected element IDs and attributes', async function() {
-
-    // Helper function to test a single button
-    // with a compulsory element id and any other attribute-value pairs.
-    button_test = async (buttonId, conditions) => {
+var button_test = async (buttonId, conditions) => {
       log(`testing button with element ID #${buttonId}`
         + (conditions ? ` and attributes ${JSON.stringify(conditions)}` : ''));
 
@@ -61,6 +37,31 @@ describe('reductive_analysis_test_suite', () => {
       }
     }
 
+describe('reductive_analysis_test_suite', () => {
+
+  beforeAll(async () => {
+    await page.goto("http://localhost:8000");
+
+    // Import relevant webapp globals into the testing environment.
+    globals.type_conf = await page.evaluate('type_conf');
+    globals.meta_conf = await page.evaluate('meta_conf');
+    console.log("DOM fully loaded and parsed?");
+  });
+
+  it('should run a rudimentary test on static HTML to confirm Jest works', async function() {
+    await expect(page.title()).resolves.toMatch(/DCML.*/s, {timeout: 30000});
+    //await expect(page).toMatch(/Primaries.*Secondaries/s, {timeout: 30000});
+  });
+
+  it('should parse conf.js without throwing an exception', async function() {
+    await expect(page.evaluate('CONFIG_OK')).resolves.toBeTrue();
+  });
+
+  it('should set up all buttons with expected element IDs and attributes', async function() {
+
+    // Helper function to test a single button
+    // with a compulsory element id and any other attribute-value pairs.
+
     // Test programmatically generated relation buttons.
     Object.keys(globals.type_conf).forEach(async (b) =>
       button_test(`${b}relationbutton`, {'class': 'relationbutton'})
@@ -82,12 +83,8 @@ describe('reductive_analysis_test_suite', () => {
     button_test('hidebutton');
     button_test('downloadbutton');
     button_test('svgdownloadbutton');
-//    button_test('reducebutton');
     button_test('equalizebutton');
     button_test('shadesbutton');
-//    button_test('rerenderbutton');
-//    button_test('zoominbutton', {'class': 'zoombutton'});
-//    button_test('zoomoutbutton', {'class': 'zoombutton'});
   });
 
   it('should load the example MEI', async function() {
@@ -96,6 +93,16 @@ describe('reductive_analysis_test_suite', () => {
       path.join(__dirname, 'test_scores', 'mozart13.xml')
     );
   });
+
+  it('should have loaded view-specific buttons', async function  () {
+      button_test('reducebutton', {'class': 'reducebutton'});
+      button_test('unreducebutton', {'class': 'unreducebutton'});
+      button_test('rerenderbutton', {'class': 'rerenderbutton'});
+      button_test('newlayerbutton', {'class': 'newlayerbutton'});
+      button_test('zoominbutton', {'class': 'zoominbutton'});
+      button_test('zoomoutbutton', {'class': 'zoomoutbutton'});
+  });
+
 
   it('should produce a directed <graph> within <mei>', async function () {
     await page.waitForTimeout(1000);

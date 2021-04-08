@@ -374,7 +374,7 @@ function do_relation(type) {
 }
 
 
-function do_metarelation(type, arg ) {
+function do_metarelation(type) {
     console.debug("Using globals: orig_mei, mei_graph, selected, extraselected");
     if (selected.length == 0 && extraselected == 0) {
       return;}

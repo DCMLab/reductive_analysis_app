@@ -1,24 +1,17 @@
 // GLOBALS
 // Load Verovio
 var vrvToolkit = new verovio.toolkit();
-var orig_svg;
-var orig_mei;
-var orig_mei_graph;
-var orig_midi;
-var orig_data;
 // Clicking selects
 var selected = [];
 // Shift-clicking extra selects
 var extraselected = [];
-// This is our SVG
-var svg;
-var svg_elem;
 // And the underlying MEI
 var mei;
 // And the graph node in the MEI
 var mei_graph;
 // And the MIDI
 var midi;
+var orig_midi;
 // This is the MEI as text (pre-parse)
 var data;
 // We need a reader
@@ -55,17 +48,11 @@ var current_draw_context;
 //  canonical representative
 var layer_contexts = [];
 
-var rerendered_after_reduce = 0;
-
 var non_notes_hidden = false;
 
 var text_input=false;
 
 var shades = false;
-
-var format;
-
-var zoom = 1;
 
 // Hovering and adding notes
 var placing_note="";
@@ -725,15 +712,13 @@ function onclick_select_functions(draw_context) {
 
 // Do all of this when we have the MEI in memory
 function load_finish(e) {
-  console.debug("Using globals data, parser, mei, format, svg, svg_elem, jquery document, document, mei_graph, midi, orig_*, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
+  console.debug("Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
 
   // Parse the original document
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
-  format = "mei";
   if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
     // We didn't get a MEI? Try if it's a musicXML
-    format = "non-mei";
     let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
       pageHeight: 10000, breaks: "none"});
     if (!new_svg) {

@@ -112,7 +112,7 @@ function draw_metarelation(draw_context, mei_graph, g_elem) {
       g_elem.appendChild(line_elem);});
   // Type-dependent shades
   if(shades)
-    toggle_shade(elem);
+    toggle_shade(g_elem);
   // We can scroll among metarelations as well
   g_elem.onwheel = (e) => {
     var elem1 = e.target;

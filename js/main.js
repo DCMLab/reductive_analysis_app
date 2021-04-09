@@ -620,8 +620,8 @@ function add_buttons(draw_context) {
   rerenderbutton.classList.add("rerenderbutton");
   rerenderbutton.id = (draw_context.id_prefix+"rerenderbutton");
   var playbutton = button("Play reduction");
-  playbutton.classList.add("midibutton");
-  playbutton.id = (draw_context.id_prefix+"midibutton");
+  playbutton.classList.add("midireducebutton");
+  playbutton.id = (draw_context.id_prefix+"midireducebutton");
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}

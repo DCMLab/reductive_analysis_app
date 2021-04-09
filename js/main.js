@@ -269,59 +269,6 @@ function toggle_shades() {
   Array.from(document.getElementsByClassName("metarelationbutton")).forEach(toggle_button_shade);
 }
 
-function delete_relation(elem) {
-  console.debug("Using globals: mei for element selection");
-  //Assume no meta-edges for now, meaning we only have to
-  //remove the SVG elem, the MEI node, and any involved arcs
-  var mei_id = get_id(elem);
-  var mei_he = get_by_id(mei,mei_id);
-  var svg_hes = [];
-  for(draw_context of draw_contexts){
-    let svg_he = get_by_id(document,draw_context.id_prefix + mei_id);
-    if(svg_he){
-      unmark_secondaries(draw_context, mei_graph, mei_he);
-      svg_hes.push(svg_he);
-    }
-  }
-
-  
-  var arcs =
-    Array.from(mei.getElementsByTagName("arc")).filter((arc) =>
-      {
-       return arc.getAttribute("to") == "#"+elem.id ||
-              arc.getAttribute("from") == "#"+elem.id;
-      });
-  var removed = arcs.concat(svg_hes);
-  removed.push(mei_he);
-  var action_removed = removed.map((x) => {
-      var elems = [x,x.parentElement,x.nextSibling]; 
-      // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
-      // This is necessary when deleting via they keyboard (therefore while hovering).
-      try {
-        $(`g #${x.getAttribute('to').substring(4)}`).removeClass().addClass('note');
-      } catch (e) {
-      }
-      x.parentElement.removeChild(x);
-      return elems;
-    });
-
-  return action_removed;
-}
-
-function delete_relations() {
-  console.debug("Using globals: selected for element selection, undo_actions for storing the action");
-  //Assume no meta-edges for now, meaning we only have to
-  var sel = selected.concat(extraselected);
-  if(sel.length == 0 || get_class_from_classlist(sel[0]) != "relation"){
-    console.log("No relation selected!");
-    return;
-  }
-  var removed = sel.flatMap(delete_relation);
-  undo_actions.push(["delete relation",removed.reverse(),selected,extraselected]);
-  sel.forEach(toggle_selected);
-}
-
-
 
 // OK we've selected stuff, let's make the selection into a
 // "relation".
@@ -427,7 +374,8 @@ function do_undo() {
     removed.forEach((x) => {
       x[1].insertBefore(x[0],x[2])
       let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
-      if(dc){
+      let rel = get_class_from_classlist(x[0]) == "relation";
+      if(dc && rel){
         let mei_id = get_id(x[0]);
         let mei_he = get_by_id(mei,mei_id);
         mark_secondaries(dc, mei_graph, mei_he)

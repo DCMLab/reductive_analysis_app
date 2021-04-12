@@ -159,6 +159,41 @@ function add_buttons(draw_context) {
   draw_context.view_elem.appendChild(zoomdiv);
 }
 
+function add_filter(draw_context, div, type, thing) {
+  var d = document.createElement("div");
+  var cb = checkbox(type);
+  cb.id = draw_context.id_prefix + type + "filtercb";
+  cb.classList.add(type+"filtercb");
+  cb.checked = true;
+  d.appendChild(cb);
+  d.append(type);
+  div.appendChild(d);
+  cb.onclick = (ev) => {
+    var filtered = !cb.checked;
+    Array.from(draw_context.svg_elem.getElementsByClassName(thing)).forEach((e) => {
+      if(e.getAttribute("type") == type){
+        if(filtered)
+	  e.classList.add("filtered");
+	else
+	  e.classList.remove("filtered");
+      }
+    });
+  };
+}
+
+function add_filters(draw_context) {
+  var div = document.createElement("div");
+  div.id = draw_context.id_prefix + "filterdiv";
+  div.classList.add("filterdiv");
+  draw_context.view_elem.appendChild(div);
+
+  Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));
+  Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, "metarelation"));
+}
+
+
+
+
 function onclick_select_functions(draw_context) {
   for (let n of draw_context.svg_elem.getElementsByClassName("note")) {
     n.onclick = function(ev) {toggle_selected(n,ev.shiftKey) };

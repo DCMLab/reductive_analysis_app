@@ -308,34 +308,6 @@ function draw_graph(draw_context) {
 }
 
 
-function new_layer_element() {
-  var layers_element = document.getElementById("layers");
-  var new_layer = document.createElement("div");
-  new_layer.id = "layer"+layers_element.children.length;
-  new_layer.classList.add("layer");
-  layers_element.appendChild(new_layer);
-  return new_layer;
-}
-
-function new_view_elements(layer_element) {
-  var new_view = document.createElement("div");
-  new_view.id = "view"+draw_contexts.length;
-  new_view.classList.add("view");
-  var new_svg = document.createElement("div");
-  new_svg.id = "svg"+draw_contexts.length;
-  new_svg.classList.add("svg_container");
-  new_view.appendChild(new_svg);
-  layer_element.appendChild(new_view);
-  return [new_view,new_svg];
-}
-
-function button(value) {
-  var button = document.createElement("input");
-  button.setAttribute("type","button");
-  button.setAttribute("value",value);
-  return button;
-}
-
 
 
 // Do all of this when we have the MEI in memory

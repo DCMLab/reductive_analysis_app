@@ -9,6 +9,8 @@ var shades = false;
 // Hovering and adding notes
 var placing_note="";
 
+var current_draw_context;
+
 var mouseX;
 var mouseY;
 

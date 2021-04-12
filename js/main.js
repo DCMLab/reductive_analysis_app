@@ -34,8 +34,6 @@ var redo_actions = []; //TODO, maybe?
 // The first element is the latest
 var draw_contexts = [];
 
-var current_draw_context;
-
 // Each layer context contains information relevant to the layer, such as
 //  * The rendered MEI
 //  * The score element in the original MEI

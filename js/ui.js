@@ -141,6 +141,8 @@ function add_buttons(draw_context) {
 
   draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
 
+  add_filters(draw_context);
+
 
   var zoomdiv = document.createElement("div");
   zoomdiv.classList.add("zoom_buttons");

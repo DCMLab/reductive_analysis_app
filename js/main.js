@@ -1,10 +1,6 @@
 // GLOBALS
 // Load Verovio
 var vrvToolkit = new verovio.toolkit();
-// Clicking selects
-var selected = [];
-// Shift-clicking extra selects
-var extraselected = [];
 // And the underlying MEI
 var mei;
 // And the graph node in the MEI
@@ -48,18 +44,6 @@ var current_draw_context;
 //  canonical representative
 var layer_contexts = [];
 
-var non_notes_hidden = false;
-
-var text_input=false;
-
-var shades = false;
-
-// Hovering and adding notes
-var placing_note="";
-
-var mouseX;
-var mouseY;
-
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
 window.addEventListener("beforeunload", function (e) {
@@ -78,62 +62,6 @@ $(document).ready(function() {
   $("#player").midiPlayer({ color: "grey", width: 250 });
   $("#selected_things").hide();
 });
-
-// Toggle if a thing (for now: note or relation) is selected or not.
-function toggle_selected(item,extra) { 
-  console.debug("Using globals: selected, extraselected for adding/removing selected items. JQuery for changing displayed text of selected items");
-  var ci = get_class_from_classlist(item);
-  if(selected.length > 0 || extraselected.length > 0) {
-    var csel = get_class_from_classlist(selected.concat(extraselected)[0]);
-    // Select only things of the same type for now - editing
-    // relations to add things means deleting and re-adding
-    if(ci != csel)
-      return;
-  }
-  if(ci == "note"){
-    // We're selecting notes.
-    if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-      item.classList.remove("selectednote");
-      item.classList.remove("extraselectednote");
-      selected = selected.filter(x =>  x !== item);
-      extraselected = extraselected.filter(x =>  x !== item);
-    } else {
-      if(extra) {
-        item.classList.add("extraselectednote");
-        extraselected.push(item);
-      }else {
-        item.classList.add("selectednote");
-        selected.push(item);
-      }
-    }
-  } else if(ci == "relation" || ci == "metarelation"){
-    //Relation selection
-    if(selected.concat(extraselected).length == 0){
-      // We're beginning to select relations
-      toggle_he_selected(true);
-    }
-    if(selected.find(x => x === item) || extraselected.find(x => x === item)) {
-      item.classList.remove("extraselectedrelation");
-      item.classList.remove("selectedrelation");
-      selected = selected.filter(x =>  x !== item);
-      extraselected = extraselected.filter(x =>  x !== item);
-    } else {
-      if(extra){
-        item.classList.add("extraselectedrelation");
-        extraselected.push(item);
-      }else{
-        item.classList.add("selectedrelation");
-        selected.push(item);
-      }
-    }
-    if(selected.concat(extraselected).length == 0){
-      // We're finished selecting relations
-      toggle_he_selected(false);
-    }
-  }
-
-  update_text();
-}
 
 
 // OK we've selected stuff, let's make the selection into a

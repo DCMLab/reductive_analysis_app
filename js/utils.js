@@ -798,6 +798,13 @@ function new_view_elements(layer_element) {
   return [new_view,new_svg];
 }
 
+function checkbox(value) {
+  var checkbox = document.createElement("input");
+  checkbox.setAttribute("type","checkbox");
+  checkbox.setAttribute("value",value);
+  return checkbox;
+}
+
 function button(value) {
   var button = document.createElement("input");
   button.setAttribute("type","button");

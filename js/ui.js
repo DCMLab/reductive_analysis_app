@@ -25,11 +25,15 @@ var extraselected = [];
 function toggle_selected(item,extra) { 
   console.debug("Using globals: selected, extraselected for adding/removing selected items. JQuery for changing displayed text of selected items");
   var ci = get_class_from_classlist(item);
+  var cd = item.closest("div");
   if(selected.length > 0 || extraselected.length > 0) {
     var csel = get_class_from_classlist(selected.concat(extraselected)[0]);
+    var cdsel = selected.concat(extraselected)[0].closest("div");
     // Select only things of the same type for now - editing
     // relations to add things means deleting and re-adding
     if(ci != csel)
+      return;
+    if(cd != cdsel)
       return;
   }
   if(ci == "note"){

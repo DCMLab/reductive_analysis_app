@@ -394,6 +394,10 @@ stroke: black;
   visibility: hidden
 }
 
+.filtered {
+  visibility: hidden
+}
+
 .none {
   display: none;
 }

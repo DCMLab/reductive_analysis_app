@@ -81,16 +81,16 @@ function do_reduce(draw_context, mei_graph, sel, extra){
 
 function undo_reduce(draw_context){
   console.log("Using globals: selected/extraselected")
-  undo_actions = draw_context['reductions'];
-  // Get latest undo_actions
-  if(undo_actions.length == 0) {
-    console.log("Nothing to undo");
+  unreduce_actions = draw_context['reductions'];
+  // Get latest unreduce_actions
+  if(unreduce_actions.length == 0) {
+    console.log("Nothing to unreduce");
     return;
   }
   // Deselect the current selection, if any
   selected.forEach(toggle_selected);
   extraselected.forEach((x) => {toggle_selected(x,true);});
-  [what,elems,sel,extra] = undo_actions.pop();
+  [what,elems,sel,extra] = unreduce_actions.pop();
   var [relations,notes,graphicals] = elems;
   graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
   sel.forEach((x) => {toggle_selected(x);});

@@ -433,6 +433,7 @@ stroke: black;
 .view {
   border-style: dashed;
   border-width: 1px;
+  position: relative;
 }
 
 .main_buttons {

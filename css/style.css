@@ -67,6 +67,21 @@
 
 /* annotation component */
 
+.filterdiv {
+    position: absolute;
+    top: 2em;
+    backdrop-filter: blur(2px);
+    clip: rect(auto,auto,1.5rem,auto);
+    overflow-y: hidden;
+    border-radius: 0 0 10px 0;
+    transition: clip 0.5s;
+    font-family: sans-serif;
+}
+
+.filterdiv:hover {
+    clip: rect(auto, auto, 50rem, auto);
+}
+
 @media screen and (min-width: 48em) {
     .gh-input .load-padder {
         margin-top: 28px;
@@ -418,6 +433,7 @@ stroke: black;
 .view {
   border-style: dashed;
   border-width: 1px;
+  position: relative;
 }
 
 .main_buttons {

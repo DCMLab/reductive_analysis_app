@@ -172,8 +172,12 @@ function add_filter(draw_context, div, type, thing) {
   cb.classList.add(type+"filtercb");
   cb.checked = true;
   d.appendChild(cb);
-  d.append(type);
   div.appendChild(d);
+  var label = document. createElement("Label");
+  label.setAttribute("for", cb.id);
+  label.style.color = type_shades[type];
+  label.innerHTML = type;
+  d.appendChild(label);
   cb.onclick = (ev) => {
     var filtered = !cb.checked;
     Array.from(draw_context.svg_elem.getElementsByClassName(thing)).forEach((e) => {
@@ -191,6 +195,7 @@ function add_filters(draw_context) {
   var div = document.createElement("div");
   div.id = draw_context.id_prefix + "filterdiv";
   div.classList.add("filterdiv");
+  div.innerHTML = "&#9776;"
   draw_context.view_elem.appendChild(div);
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));

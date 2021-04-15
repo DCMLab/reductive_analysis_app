@@ -168,8 +168,11 @@ function add_filter(draw_context, div, type, thing) {
   cb.classList.add(type+"filtercb");
   cb.checked = true;
   d.appendChild(cb);
-  d.append(type);
   div.appendChild(d);
+  var label = document. createElement("Label");
+  label.setAttribute("for", cb.id);
+  label.innerHTML = type;
+  d.appendChild(label);
   cb.onclick = (ev) => {
     var filtered = !cb.checked;
     Array.from(draw_context.svg_elem.getElementsByClassName(thing)).forEach((e) => {

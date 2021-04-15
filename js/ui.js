@@ -171,6 +171,7 @@ function add_filter(draw_context, div, type, thing) {
   div.appendChild(d);
   var label = document. createElement("Label");
   label.setAttribute("for", cb.id);
+  label.style.color = type_shades[type];
   label.innerHTML = type;
   d.appendChild(label);
   cb.onclick = (ev) => {

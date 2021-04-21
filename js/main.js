@@ -56,6 +56,7 @@ window.addEventListener("beforeunload", function (e) {
 $(document).ready(function() {
   Object.keys(type_conf).forEach(init_type);
   Object.keys(meta_conf).forEach(meta_type);
+  Object.keys(combo_conf).forEach(combo_type);
   toggle_shades();
   $("#player").midiPlayer({ color: "grey", width: 250 });
   $("#selected_things").hide();

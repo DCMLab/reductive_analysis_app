@@ -105,6 +105,25 @@ function do_relation(type) {
   }
 }
 
+function do_comborelation(type) {
+  var all = selected.concat(extraselected);
+  if (all.length < 3 || extraselected.length > 2) { return;} 
+  all.sort((a,b) => {
+    var [ax,ay] = note_coords(a);
+    var [bx,by] = note_coords(b);
+    return ax - bx;
+  });
+  var fst = all.shift();
+  var snd = all.pop();
+  selected = selected.filter((e) => e == fst || e == snd);
+  do_relation(combo_conf[type].outer);
+  
+  extraselected = [fst,snd];
+  selected = all;
+  do_relation(combo_conf[type].total);
+
+}
+
 
 function do_metarelation(type) {
   console.debug("Using globals: orig_mei, mei_graph, selected, extraselected");

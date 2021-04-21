@@ -132,16 +132,21 @@ function add_buttons(draw_context) {
   var playbutton = button("Play reduction");
   playbutton.classList.add("midireducebutton");
   playbutton.id = (draw_context.id_prefix+"midireducebutton");
+  var hierbutton = button("Show hierarchy");
+  hierbutton.classList.add("hierarchybutton");
+  hierbutton.id = (draw_context.id_prefix+"hierarchybutton");
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
   newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
+  hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50);}
   buttondiv.appendChild(unreducebutton);
   buttondiv.appendChild(reducebutton  );
   buttondiv.appendChild(rerenderbutton);
   buttondiv.appendChild(newlayerbutton);
   buttondiv.appendChild(playbutton);
+  buttondiv.appendChild(hierbutton);
 
   draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
 

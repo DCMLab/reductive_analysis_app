@@ -267,7 +267,7 @@ function handle_keypress(ev) {
   } else if (ev.key == "u") { // UNDO
     do_undo();
   } else if (ev.key == "r") { // Reduce relations
-    do_reduce();
+    do_reduce_pre(current_draw_context);
   } else if (ev.key == "s") { // Show/hide ties etc.
     toggle_equalize();
   } else if (ev.key == "h") { // Toggle type-dependent shades

@@ -84,9 +84,8 @@ var roundedHullN = function (polyPoints, hullPadding) {
 }
 
 
-function roundedHull(points) {
+function roundedHull(points, hullPadding=200) {
   // Returns an SVG path for a rounded hull around the points
-  var hullPadding = 200;
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking
   if(points.length == 1) {

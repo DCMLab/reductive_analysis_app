@@ -475,6 +475,14 @@ function hide_he(draw_context,he) {
   return elem;
 }
 
+// Find graphical element corresponding to an MEI graph node and hide it
+function hide_he_hier(draw_context,he) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),"hier"+draw_context.id_prefix + he.getAttribute("xml:id"));
+  if(elem && draw_context.svg_elem.contains(elem)) 
+    elem.classList.add("hidden");
+  return elem;
+}
+
 // Secondaries are greyed out
 function mark_secondary(item) {
   if(item.classList.contains("secondarynote")) {

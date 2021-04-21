@@ -9,6 +9,8 @@ try {
 
   var meta_shades = {};
 
+  var combo_keys = {};
+
   var button_shades = {};
 
   var meta_conf = {
@@ -27,6 +29,12 @@ try {
   "urlinie"     :{key: "u", colour: 5}, 
   "bassbrechung":{key: "b", colour: 5} 
   }
+
+  var combo_conf = {
+    "passing_comb" : {key: "P", total: "passing", outer: "arpeggio"},
+    "neighbour_comb" : {key: "N", total: "neighbour", outer: "repeat"},
+  }
+
 
   var type_synonym = {
     "prolongation" : "passing",

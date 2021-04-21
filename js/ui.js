@@ -99,6 +99,18 @@ function init_type(type) {
 }
 
 // Configured meta types need a button and a color each
+function combo_type(type) {
+  var elem = document.createElement("input");
+  elem.setAttribute("type","button");
+  elem.classList.add("comborelationbutton");
+  elem.setAttribute("id",type + "comborelationbutton");
+  elem.setAttribute("value","Add "+combo_conf[type].total+" comborelation " + "(" + combo_conf[type].key + ")");
+  elem.onclick = () => {do_comborelation(type);};
+  $("#combo_buttons")[0].appendChild(elem);
+  combo_keys[combo_conf[type].key] = type;
+}
+
+// Configured meta types need a button and a color each
 function meta_type(type) {
   console.debug("Using globals: document, shades_array, meta_shades, meta_keys, button_shades for conf");
   var elem = document.createElement("input");
@@ -285,6 +297,8 @@ function handle_keypress(ev) {
     do_relation(type_keys[ev.key]);
   } else if (meta_keys[ev.key]) { // Add a relation
     do_metarelation(meta_keys[ev.key]);
+  } else if (combo_keys[ev.key]) { // Add a relation
+    do_comborelation(combo_keys[ev.key]);
   }else {
     console.log(ev);
   }

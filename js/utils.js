@@ -650,6 +650,17 @@ function remove_empty_relations(graph) {
 // Average over a list of values
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
+function note_to_text(svg_elem){
+  var id = get_id(svg_elem);
+  var mei_elem = get_by_id(mei,id);
+  var accid = note_get_accid(mei_elem);
+  accid= accid.replace(/s/g,"#")
+  accid= accid.replace(/f/g,"b")
+  accid= accid.replace(/n/g,"")
+  return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
+}
+
+
 // Compute a text to represent the elements
 function to_text(draw_contexts,mei_graph,elems) {
   //TODO: Detect and warn for selections spanning several drawing contexts
@@ -661,15 +672,7 @@ function to_text(draw_contexts,mei_graph,elems) {
       const [mx,my] = note_coords(m);
       return (nx - mx == 0) ? my - ny : nx - mx;
     });
-    return "notes("+elems.map((elem) => {
-      var id = get_id(elem);
-      var mei_elem = get_by_id(mei,id);
-      var accid = note_get_accid(mei_elem);
-      accid= accid.replace(/s/g,"#")
-      accid= accid.replace(/f/g,"b")
-      accid= accid.replace(/n/g,"")
-      return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
-    }).join("; ")+")";
+    return "notes("+elems.map(note_to_text).join("; ")+")";
   }else if(elems[0].classList.contains("relation")){
     return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
   }else if(elems[0].classList.contains("metarelation")){

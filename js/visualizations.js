@@ -25,6 +25,12 @@ function calc_hierarchy(notes, relations, roots_low=true) {
 function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
+  var g_elem = svg_elem.getRootNode().getElementById("hier"+id_prefix);
+  var existing = g_elem ? true : false;
+  if(!g_elem)
+    g_elem = g(svg_elem);
+  else
+    g_elem.innerHTML = "";
   // find layers
   var current_note_nodes = Array.from(svg_elem.
 					getElementsByClassName("note")).
@@ -45,23 +51,41 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
 
   // find coordinates
   var layers_coords = layers.flatMap((layer,ix) => layer.map((e) => {
-	var n = document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
-	var [x,y] = note_coords(n);
+	let n = document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
+	let [x,y] = note_coords(n);
 	return [e, [x,svg_top - layer_dist*ix]]
       }));
-  console.log(hullPadding);
+
+  // draw nodes
+  layers_coords.forEach(([e,p]) => {
+      let r = hullPadding < 100 ? 50 : hullPadding/2;
+      let circ = circle(p,r);
+      let note_g = g(svg_elem);
+      let note_id = node_to_note_id(e);
+      note_g.id = "hier"+id_prefix+note_id;
+      // TODO: Make work
+      let txt = text(note_to_text(note_id),[p[0]+r+10,p[1]+r+10]);
+      txt.style.fontFamiy = "sans-serif";
+      txt.style.fontSize = (r > 75 ? 150 : r*2)+"px";
+
+      note_g.appendChild(circ);
+      note_g.appendChild(txt);
+      g_elem.appendChild(note_g);
+
+  });
+
 
   // draw hierarchy
   current_relation_nodes.forEach((r) => {
     // ID, type, and original SVG elem
-    var id = id_prefix + r.getAttribute("xml:id");
-    var type = relation_type(r);
-    var elem_in_score = document.getElementById(id);
+    let id = id_prefix + r.getAttribute("xml:id");
+    let type = relation_type(r);
+    let elem_in_score = document.getElementById(id);
 
-    var nodes = relation_allnodes(mei_graph,r);
-    var node_coords = nodes.map((n) => layers_coords.find((x) => x[0] == n)[1]);
+    let nodes = relation_allnodes(mei_graph,r);
+    let node_coords = nodes.map((n) => layers_coords.find((x) => x[0] == n)[1]);
 
-    var elem = roundedHull(node_coords, hullPadding);
+    let elem = roundedHull(node_coords, hullPadding);
     elem.setAttribute("id","hier"+id);
     if(id_prefix != "")
       elem.setAttribute("oldid",g_elem.getAttribute("xml:id"));
@@ -92,19 +116,22 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
     };
 
     // Add it to the SVG
-    add_to_svg_bg(svg_elem,elem);
+    g_elem.appendChild(elem);
 
   });
+  g_elem.id="hier"+id_prefix;
+  add_to_svg_bg(svg_elem,g_elem);
 
   // change viewport
-  var [x,y,w,h] = svg_viewbox.split(" ");
-  var ydiff = (layers.length*layer_dist);
-  svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
- 
-  var svg_num_height = Number(svg_height.split("p")[0]); //Assume "XYZpx"
-  // change height
-  svg_elem.children[0].setAttribute("height", (svg_num_height * ((h-(y-ydiff))/(h - y))) + "px");
-  
+  if(!existing){
+    var [x,y,w,h] = svg_viewbox.split(" ");
+    var ydiff = (layers.length*layer_dist);
+    svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
+   
+    var svg_num_height = Number(svg_height.split("p")[0]); //Assume "XYZpx"
+    // change height
+    svg_elem.children[0].setAttribute("height", (svg_num_height * ((h-(y-ydiff))/(h - y))) + "px");
+  }
 } 
 
 

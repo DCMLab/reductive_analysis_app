@@ -74,9 +74,11 @@ function do_reduce(draw_context, mei_graph, sel, extra){
   graphicals.push(removed_notes.map(
 		    (n) => hide_note(draw_context,n)
                   ));
-
   graphicals.push(removed_relations.map(
                     (r) => hide_he_hier(draw_context,r)
+                  ));
+  graphicals.push(removed_notes.map(
+                    (n) => hide_note_hier(draw_context,n)
                   ));
   var undo = [removed_relations,removed_notes,graphicals];
   draw_context['reductions'].push(["reduce",undo,sel,extra]);

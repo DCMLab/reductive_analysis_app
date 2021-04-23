@@ -22,7 +22,7 @@ function calc_hierarchy(notes, relations, roots_low=true) {
   return ret;
 }
 
-function draw_hierarchy_graph(draw_context, hullPadding=200) {
+function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
   // find layers
@@ -35,7 +35,7 @@ function draw_hierarchy_graph(draw_context, hullPadding=200) {
                                             getElementsByClassName("relation")).
 					    map(get_id).
 					    map((id) => get_by_id(mei,id));
-  var layers = calc_hierarchy(current_note_nodes,current_relation_nodes);
+  var layers = calc_hierarchy(current_note_nodes,current_relation_nodes, roots_low);
   
   var svg_height = svg_elem.children[0].getAttribute("height");
   var svg_viewbox = svg_elem.getElementsByClassName("definition-scale")[0].getAttribute("viewBox");

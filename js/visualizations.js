@@ -66,7 +66,7 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
       // TODO: Make work
       let txt = text(note_to_text(note_id),[p[0]+r+10,p[1]+r+10]);
       txt.style.fontFamiy = "sans-serif";
-      txt.style.fontSize = (r > 75 ? 150 : r*2)+"px";
+      txt.style.fontSize = (r < 100 ? 200 : (r > 200 ? 400 : r*2))+"px";
 
       note_g.appendChild(circ);
       note_g.appendChild(txt);

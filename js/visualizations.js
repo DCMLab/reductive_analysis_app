@@ -2,17 +2,20 @@
 
 
 // Returns a list of list of IDs
-function calc_hierarchy(notes, relations) {
+function calc_hierarchy(notes, relations, roots_low=true) {
   var ret = [];
   var rels = relations;
   var ns = notes.filter((x) => x != undefined);
   do{
+    let ret_notes = [];
+    if(roots_low)
+      ret_notes = ns.filter((n) => !(rels.find((r) => relation_allnodes(mei_graph,r).includes(n))));
     var [removed_relations, removed_notes] = calc_reduce(mei_graph, 
 							 rels, 
 							 rels);
-    var ret_notes = removed_notes.filter((n) => ns.includes(n));
+    ret_notes = ret_notes.concat(removed_notes.filter((n) => ns.includes(n)));
     ret.push(ret_notes);
-    ns = ns.filter((x) => !removed_notes.includes(x))
+    ns = ns.filter((x) => !ret_notes.includes(x))
     rels = rels.filter((x) => !removed_relations.includes(x))
   }while(removed_notes.length + removed_relations.length  > 0)
   ret.push(ns);

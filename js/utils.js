@@ -160,6 +160,16 @@ function text(text,p) {
   return newElement;
 }
 
+// Make a tspan with dx,dy 
+function tspan(text,p,dy,dx=0) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
+  newElement.setAttribute("x",p[0]);
+  newElement.setAttribute("dx",dx);
+  newElement.setAttribute("dy",dy);
+  newElement.append(text);
+  return newElement;
+}
+
 
 function flip_to_bg(elem) {
   // Shifts the SVG element to be drawn first (e.g. in the background)

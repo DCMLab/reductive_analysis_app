@@ -137,6 +137,7 @@ function add_buttons(draw_context) {
   hierbutton.id = (draw_context.id_prefix+"hierarchybutton");
   var hiercheck = checkbox("Roots low");
   hiercheck.id = (draw_context.id_prefix+"hierarchycb");
+  hiercheck.checked = true;
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}

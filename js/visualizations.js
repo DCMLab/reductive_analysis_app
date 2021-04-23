@@ -56,22 +56,36 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
 	return [e, [x,svg_top - layer_dist*ix]]
       }));
 
+  //TODO: For now draw only one node per place - needs changing when
+  //interactive
+  var placed_nodes = {};
   // draw nodes
   layers_coords.forEach(([e,p]) => {
       let r = hullPadding < 100 ? 50 : hullPadding/2;
-      let circ = circle(p,r);
-      let note_g = g(svg_elem);
+      let fontSize =  (r < 100 ? 200 : (r > 200 ? 400 : r*2));
       let note_id = node_to_note_id(e);
-      note_g.id = "hier"+id_prefix+note_id;
-      // TODO: Make work
-      let txt = text(note_to_text(note_id),[p[0]+r+10,p[1]+r+10]);
-      txt.style.fontFamiy = "sans-serif";
-      txt.style.fontSize = (r < 100 ? 200 : (r > 200 ? 400 : r*2))+"px";
+      let note_g = placed_nodes[p];
+      let txt;
+      let txt_p =[p[0]+r+10,p[1]+r+25-fontSize];
+      if(!note_g){
+        note_g = g(svg_elem);
 
-      note_g.appendChild(circ);
-      note_g.appendChild(txt);
-      g_elem.appendChild(note_g);
+        let circ = circle(p,r);
+	note_g.appendChild(circ);
+	note_g.id = "hier"+id_prefix+note_id;
 
+	txt = text("",txt_p);
+	txt.style.fontFamiy = "sans-serif";
+	txt.style.fontSize =fontSize+"px";
+	txt.classList.add("nodetext");
+
+	note_g.appendChild(txt);
+	g_elem.appendChild(note_g);
+	placed_nodes[p] = note_g;
+      }else
+	txt = note_g.getElementsByTagName("text")[0];
+      let tsp = tspan(note_to_text(note_id),txt_p, fontSize);
+      txt.appendChild(tsp);
   });
 
 

@@ -149,6 +149,18 @@ function circle(p,rad) {
   return newElement;
 }
 
+// Draw a text at point p 
+function text(text,p) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+  if(p){
+    newElement.setAttribute("x",p[0]);
+    newElement.setAttribute("y",p[1]);
+  }
+  newElement.append(text);
+  return newElement;
+}
+
+
 function flip_to_bg(elem) {
   // Shifts the SVG element to be drawn first (e.g. in the background)
   var paren = elem.parentElement;

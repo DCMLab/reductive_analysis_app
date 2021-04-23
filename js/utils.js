@@ -339,7 +339,7 @@ function node_to_note_id_prefix(prefix,note) {
 function node_to_note_id(note) {
   return note.getElementsByTagName("label")[0].
               getElementsByTagName("note")[0].
-              getAttribute("sameas");
+              getAttribute("sameas").replace("#","");
 }
 
 // Always-positive modulo

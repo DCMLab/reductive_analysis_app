@@ -27,7 +27,7 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
   var id_prefix = draw_context.id_prefix;
   var g_elem = svg_elem.getRootNode().getElementById("hier"+id_prefix);
   var existing = g_elem ? true : false;
-  if(!g_elem)
+  if(!existing)
     g_elem = g(svg_elem);
   else
     g_elem.innerHTML = "";

@@ -140,15 +140,27 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
   if(!existing){
     var [x,y,w,h] = svg_viewbox.split(" ");
     var ydiff = (layers.length*layer_dist);
+    draw_context.old_viewbox = [x,y,w,h].join(" ");
     svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
    
     var svg_num_height = Number(svg_height.split("p")[0]); //Assume "XYZpx"
+    draw_context.old_height = svg_height;
     // change height
     svg_elem.children[0].setAttribute("height", (svg_num_height * ((h-(y-ydiff))/(h - y))) + "px");
   }
 } 
 
 
+function hide_hierarchy_graph(draw_context) {
+  var svg_elem = draw_context.svg_elem;
+  var id_prefix = draw_context.id_prefix;
+  var g_elem = svg_elem.getRootNode().getElementById("hier"+id_prefix);
+  if(g_elem){
+    svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",draw_context.old_viewbox);
+    svg_elem.children[0].setAttribute("height", draw_context.old_height);
+    g_elem.parentElement.removeChild(g_elem);
+  }
+}
 
 
 

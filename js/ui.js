@@ -161,23 +161,6 @@ function add_buttons(draw_context) {
   draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
 
   add_filters(draw_context);
-
-
-  var zoomdiv = document.createElement("div");
-  zoomdiv.classList.add("zoom_buttons");
-  var zoomin = button("+");
-  zoomin.classList.add("zoominbutton");
-  zoomin.id = (draw_context.id_prefix+"zoominbutton");
-  var zoomout = button("-");
-  zoomout.classList.add("zoomoutbutton");
-  zoomout.id = (draw_context.id_prefix+"zoomoutbutton");
-  zoomin.onclick = () => { zoom_in(draw_context); };
-  zoomout.onclick = () => { zoom_out(draw_context); };
-
-  zoomdiv.appendChild(zoomin);
-  zoomdiv.appendChild(zoomout);
-
-  draw_context.view_elem.appendChild(zoomdiv);
 }
 
 function add_filter(draw_context, div, type, thing) {
@@ -215,6 +198,22 @@ function add_filters(draw_context) {
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));
   Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, "metarelation"));
+
+  var zoomdiv = document.createElement("div");
+  zoomdiv.classList.add("zoom_buttons");
+  var zoomin = button("+");
+  zoomin.classList.add("zoominbutton");
+  zoomin.id = (draw_context.id_prefix+"zoominbutton");
+  var zoomout = button("-");
+  zoomout.classList.add("zoomoutbutton");
+  zoomout.id = (draw_context.id_prefix+"zoomoutbutton");
+  zoomin.onclick = () => { zoom_in(draw_context); };
+  zoomout.onclick = () => { zoom_out(draw_context); };
+
+  zoomdiv.appendChild(zoomin);
+  zoomdiv.appendChild(zoomout);
+
+  div.appendChild(zoomdiv);
 }
 
 

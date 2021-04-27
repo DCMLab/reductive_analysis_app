@@ -440,7 +440,8 @@ function relation_type(he) {
 
 // Set up new graph node for a note
 function add_mei_node_for(mei_graph,note) {
-  var id = get_id(note);
+  var svg_id = get_id(note);
+  var id = get_id(get_by_id(mei,svg_id));
   var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
   if (elem != null) {
     return elem;

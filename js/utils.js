@@ -149,6 +149,28 @@ function circle(p,rad) {
   return newElement;
 }
 
+// Draw a text at point p 
+function text(text,p) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+  if(p){
+    newElement.setAttribute("x",p[0]);
+    newElement.setAttribute("y",p[1]);
+  }
+  newElement.append(text);
+  return newElement;
+}
+
+// Make a tspan with dx,dy 
+function tspan(text,p,dy,dx=0) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
+  newElement.setAttribute("x",p[0]);
+  newElement.setAttribute("dx",dx);
+  newElement.setAttribute("dy",dy);
+  newElement.append(text);
+  return newElement;
+}
+
+
 function flip_to_bg(elem) {
   // Shifts the SVG element to be drawn first (e.g. in the background)
   var paren = elem.parentElement;
@@ -327,7 +349,7 @@ function node_to_note_id_prefix(prefix,note) {
 function node_to_note_id(note) {
   return note.getElementsByTagName("label")[0].
               getElementsByTagName("note")[0].
-              getAttribute("sameas");
+              getAttribute("sameas").replace("#","");
 }
 
 // Always-positive modulo
@@ -469,8 +491,24 @@ function hide_note(draw_context,note) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
+function hide_note_hier(draw_context,note) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),"hier"+id_in_svg(draw_context,node_to_note_id(note)));
+  if(elem && draw_context.svg_elem.contains(elem)) 
+    elem.classList.add("hidden");
+  return elem;
+}
+
+// Find graphical element corresponding to an MEI graph node and hide it
 function hide_he(draw_context,he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
+  if(elem && draw_context.svg_elem.contains(elem)) 
+    elem.classList.add("hidden");
+  return elem;
+}
+
+// Find graphical element corresponding to an MEI graph node and hide it
+function hide_he_hier(draw_context,he) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),"hier"+draw_context.id_prefix + he.getAttribute("xml:id"));
   if(elem && draw_context.svg_elem.contains(elem)) 
     elem.classList.add("hidden");
   return elem;

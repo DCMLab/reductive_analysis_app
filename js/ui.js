@@ -132,16 +132,31 @@ function add_buttons(draw_context) {
   var playbutton = button("Play reduction");
   playbutton.classList.add("midireducebutton");
   playbutton.id = (draw_context.id_prefix+"midireducebutton");
+  var hierbutton = button("Show/update hierarchy");
+  hierbutton.classList.add("hierarchybutton");
+  hierbutton.id = (draw_context.id_prefix+"hierarchybutton");
+  var hidehierbutton = button("Hide hierarchy");
+  hidehierbutton.classList.add("hidehierarchybutton");
+  hidehierbutton.id = (draw_context.id_prefix+"hidehierarchybutton");
+  var hiercheck = checkbox("Roots low");
+  hiercheck.id = (draw_context.id_prefix+"hierarchycb");
+  hiercheck.checked = true;
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
   newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
+  hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
+  hidehierbutton.onclick = () =>{hide_hierarchy_graph(new_draw_context);}
   buttondiv.appendChild(unreducebutton);
   buttondiv.appendChild(reducebutton  );
   buttondiv.appendChild(rerenderbutton);
   buttondiv.appendChild(newlayerbutton);
   buttondiv.appendChild(playbutton);
+  buttondiv.appendChild(hierbutton);
+  buttondiv.appendChild(hidehierbutton);
+  buttondiv.appendChild(hiercheck);
+  buttondiv.append("Draw roots low");
 
   draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
 

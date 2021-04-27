@@ -84,9 +84,8 @@ var roundedHullN = function (polyPoints, hullPadding) {
 }
 
 
-function roundedHull(points) {
+function roundedHull(points, hullPadding=200) {
   // Returns an SVG path for a rounded hull around the points
-  var hullPadding = 200;
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking
   if(points.length == 1) {
@@ -149,6 +148,28 @@ function circle(p,rad) {
   newElement.style.strokeWidth = "15px"; 
   return newElement;
 }
+
+// Draw a text at point p 
+function text(text,p) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+  if(p){
+    newElement.setAttribute("x",p[0]);
+    newElement.setAttribute("y",p[1]);
+  }
+  newElement.append(text);
+  return newElement;
+}
+
+// Make a tspan with dx,dy 
+function tspan(text,p,dy,dx=0) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
+  newElement.setAttribute("x",p[0]);
+  newElement.setAttribute("dx",dx);
+  newElement.setAttribute("dy",dy);
+  newElement.append(text);
+  return newElement;
+}
+
 
 function flip_to_bg(elem) {
   // Shifts the SVG element to be drawn first (e.g. in the background)
@@ -328,7 +349,7 @@ function node_to_note_id_prefix(prefix,note) {
 function node_to_note_id(note) {
   return note.getElementsByTagName("label")[0].
               getElementsByTagName("note")[0].
-              getAttribute("sameas");
+              getAttribute("sameas").replace("#","");
 }
 
 // Always-positive modulo
@@ -441,7 +462,8 @@ function relation_type(he) {
 
 // Set up new graph node for a note
 function add_mei_node_for(mei_graph,note) {
-  var id = get_id(note);
+  var svg_id = get_id(note);
+  var id = get_id(get_by_id(mei,svg_id));
   var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
   if (elem != null) {
     return elem;
@@ -469,6 +491,14 @@ function hide_note(draw_context,note) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
+function hide_note_hier(draw_context,note) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),"hier"+id_in_svg(draw_context,node_to_note_id(note)));
+  if(elem && draw_context.svg_elem.contains(elem)) 
+    elem.classList.add("hidden");
+  return elem;
+}
+
+// Find graphical element corresponding to an MEI graph node and hide it
 function hide_he(draw_context,he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(),draw_context.id_prefix + he.getAttribute("xml:id"));
   if(elem && draw_context.svg_elem.contains(elem)) 
@@ -476,8 +506,20 @@ function hide_he(draw_context,he) {
   return elem;
 }
 
+// Find graphical element corresponding to an MEI graph node and hide it
+function hide_he_hier(draw_context,he) {
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(),"hier"+draw_context.id_prefix + he.getAttribute("xml:id"));
+  if(elem && draw_context.svg_elem.contains(elem)) 
+    elem.classList.add("hidden");
+  return elem;
+}
+
 // Secondaries are greyed out
 function mark_secondary(item) {
+  if(!item){
+    console.log("Not a note");
+    return;
+  }
   if(item.classList.contains("secondarynote")) {
     var level = getComputedStyle(item).getPropertyValue("--how-secondary");
     item.style.setProperty("--how-secondary", level*2);
@@ -489,6 +531,10 @@ function mark_secondary(item) {
 
 // No longer as much of a secondary
 function unmark_secondary(item) {
+  if(!item){
+    console.log("Not a note");
+    return;
+  }
   var level = getComputedStyle(item).getPropertyValue("--how-secondary");
   item.style.setProperty("--how-secondary", level/2);
   if(level/2 == 1)
@@ -643,6 +689,16 @@ function remove_empty_relations(graph) {
 // Average over a list of values
 function average(l) {return l.reduce((a,b) => a + b, 0)/l.length;}
 
+function note_to_text(id){
+  var mei_elem = get_by_id(mei,id);
+  var accid = note_get_accid(mei_elem);
+  accid= accid.replace(/s/g,"#")
+  accid= accid.replace(/f/g,"b")
+  accid= accid.replace(/n/g,"")
+  return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
+}
+
+
 // Compute a text to represent the elements
 function to_text(draw_contexts,mei_graph,elems) {
   //TODO: Detect and warn for selections spanning several drawing contexts
@@ -654,15 +710,7 @@ function to_text(draw_contexts,mei_graph,elems) {
       const [mx,my] = note_coords(m);
       return (nx - mx == 0) ? my - ny : nx - mx;
     });
-    return "notes("+elems.map((elem) => {
-      var id = get_id(elem);
-      var mei_elem = get_by_id(mei,id);
-      var accid = note_get_accid(mei_elem);
-      accid= accid.replace(/s/g,"#")
-      accid= accid.replace(/f/g,"b")
-      accid= accid.replace(/n/g,"")
-      return mei_elem.getAttribute("pname")+accid+mei_elem.getAttribute("oct");
-    }).join("; ")+")";
+    return "notes("+elems.map((n) => note_to_text(get_id(n))).join("; ")+")";
   }else if(elems[0].classList.contains("relation")){
     return "relations("+elems.map((elem) => elem.getAttribute("type")).join("; ")+")";
   }else if(elems[0].classList.contains("metarelation")){

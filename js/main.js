@@ -95,8 +95,11 @@ function do_relation(type) {
     [he_id,mei_elems] = add_relation(mei_graph,primaries, secondaries, type);
     added.push(mei_elems);
     for(var i = 0; i < draw_contexts.length; i++) {
-      added.push(draw_relation(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id))); // Draw the edge
-      mark_secondaries(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
+      let g_elem =draw_relation(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id));
+      if(g_elem){
+	added.push(g_elem); // Draw the edge
+	mark_secondaries(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(),he_id));
+      }
     }
     undo_actions.push(["relation",added.reverse(),selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select

@@ -462,7 +462,8 @@ function relation_type(he) {
 
 // Set up new graph node for a note
 function add_mei_node_for(mei_graph,note) {
-  var id = get_id(note);
+  var svg_id = get_id(note);
+  var id = get_id(get_by_id(mei,svg_id));
   var elem = get_by_id(mei_graph.getRootNode(),"gn-"+id);
   if (elem != null) {
     return elem;
@@ -517,6 +518,7 @@ function hide_he_hier(draw_context,he) {
 function mark_secondary(item) {
   if(!item){
     console.log("Not a note");
+    return;
   }
   if(item.classList.contains("secondarynote")) {
     var level = getComputedStyle(item).getPropertyValue("--how-secondary");
@@ -529,6 +531,10 @@ function mark_secondary(item) {
 
 // No longer as much of a secondary
 function unmark_secondary(item) {
+  if(!item){
+    console.log("Not a note");
+    return;
+  }
   var level = getComputedStyle(item).getPropertyValue("--how-secondary");
   item.style.setProperty("--how-secondary", level/2);
   if(level/2 == 1)

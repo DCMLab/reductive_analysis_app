@@ -480,6 +480,7 @@ function hide_he(draw_context,he) {
 function mark_secondary(item) {
   if(!item){
     console.log("Not a note");
+    return;
   }
   if(item.classList.contains("secondarynote")) {
     var level = getComputedStyle(item).getPropertyValue("--how-secondary");
@@ -492,6 +493,10 @@ function mark_secondary(item) {
 
 // No longer as much of a secondary
 function unmark_secondary(item) {
+  if(!item){
+    console.log("Not a note");
+    return;
+  }
   var level = getComputedStyle(item).getPropertyValue("--how-secondary");
   item.style.setProperty("--how-secondary", level/2);
   if(level/2 == 1)

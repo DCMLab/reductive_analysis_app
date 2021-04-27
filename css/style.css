@@ -39,6 +39,7 @@
 }
 
 #selected_things {
+    z-index: 1;
     font-family: monospace;
     position: fixed;
     right: 3em;

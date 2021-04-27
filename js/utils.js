@@ -515,6 +515,9 @@ function hide_he_hier(draw_context,he) {
 
 // Secondaries are greyed out
 function mark_secondary(item) {
+  if(!item){
+    console.log("Not a note");
+  }
   if(item.classList.contains("secondarynote")) {
     var level = getComputedStyle(item).getPropertyValue("--how-secondary");
     item.style.setProperty("--how-secondary", level*2);

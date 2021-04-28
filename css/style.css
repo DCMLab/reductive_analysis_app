@@ -9,6 +9,8 @@
 
 #layers {
   width: fit-content;
+  width: -moz-fit-content;
+  padding-bottom: 10em;
 }
 
 .file-input {
@@ -76,6 +78,7 @@
     position: sticky;
     display: inline-block;
     width: fit-content;
+    width: -moz-fit-content;
     top: 0;
     left: 0;
     height: 20px;

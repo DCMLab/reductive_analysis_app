@@ -278,7 +278,7 @@ function handle_keypress(ev) {
     elem = document.elementFromPoint(mouseX, mouseY);
     flip_to_bg(elem);
     elem.onmouseout();
-  } else if (ev.key == "u") { // UNDO
+  } else if (ev.key == "U") { // UNDO
     do_undo();
   } else if (ev.key == "r") { // Reduce relations
     do_reduce_pre(current_draw_context);

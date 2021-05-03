@@ -314,7 +314,7 @@ describe('reductive_analysis_test_suite', () => {
     expect([primary_id, secondary_id]).toEqual(notes_to_test_separated);
 
     // Attempt to press Undo.
-    await page.keyboard.press('u');
+    await page.keyboard.press('U');
     log('Pressed Undo via keyboard shortcut.')
 
     // Confirm that the relation is no longer drawn.

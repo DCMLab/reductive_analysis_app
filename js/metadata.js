@@ -19,6 +19,7 @@ function initialize_metadata() {
     let resp = mei.createElement("respStmt");
     composer = mei.createElement("persName");
     composer.setAttribute("role","composer");
+    composer.setAttribute("xml:id","composer");
     resp.appendChild(composer);
     titleStmt.appendChild(resp);
   }else{
@@ -28,22 +29,65 @@ function initialize_metadata() {
   document.getElementById("composer").value = composer.innerHTML;
 
   var analyst = resp.querySelector("[role=analyst]");
-  if(analyst)
-    document.getElementById("analyst").value = analyst.innerHTML;
-  else{
+  if(analyst){
+    add_resp_person_input("analyst",analyst.getAttribute("xml:id"),analyst.innerHTML);
+  } else{
     analyst = mei.createElement("persName");
     analyst.setAttribute("role","analyst");
+    analyst.setAttribute("xml:id","analyst");
     resp.appendChild(analyst);
+    add_resp_person_input("analyst");
   }
   var annotator = resp.querySelector("[role=annotator]");
-  if(annotator)
-    document.getElementById("annotator").value = annotator.innerHTML;
-  else{
+  if(annotator){
+    add_resp_person_input("annotator",annotator.getAttribute("xml:id"),annotator.innerHTML);
+  } else{
     annotator = mei.createElement("persName");
     annotator.setAttribute("role","annotator");
+    annotator.setAttribute("xml:id","annotator");
     resp.appendChild(annotator);
+    add_resp_person_input("annotator");
   }
 }
+
+function metadata_textinput(role){
+  var input = document.createElement("input");
+  input.setAttribute("type","text");
+  input.setAttribute("id",role);
+  input.onfocus = texton;
+  input.onblur = update_metadata;
+  return input;
+}
+
+function metadata_respassign(role,id) {
+  var input = document.createElement("input");
+  input.setAttribute("type","button");
+  input.setAttribute("id",role+"_respassign");
+  input.setAttribute("value","Assign responsibility");
+  input.onclick = () => {assign_responsibility_selected(id);};
+  return input;
+}
+
+
+function add_resp_person_input(role,id="",value=""){
+  if(!id)
+    id = role;
+  var div = document.getElementById("metadata_input");
+  div.append(role+": ");
+  var ti = metadata_textinput(role);
+  ti.value = value;
+  div.appendChild(ti);
+  div.append(metadata_respassign(role,id));
+  div.appendChild(document.createElement("br"));
+  
+/*
+	  Analyst: <input type="text" id="analyst" onfocus="texton()" onblur="update_metadata()">
+	           <input type="button" id="analyst_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"analyst\")" /><br/>
+	  Annotator: <input type="text" id="annotator" onfocus="texton()" onblur="update_metadata()">
+	           <input type="button" id="annotator_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"annotator\")" /><br/>
+*/
+}
+
 
 function update_metadata() {
   //Runs after focus leaves one of the metadata text fields
@@ -93,6 +137,17 @@ function assign_responsibility_selected(resp) {
   // Loops through the selected (SVG) relations and notes and assigns @resp
   // to the argument xml:id
   // Make this undoable
+  var sel = selected.concat(extraselected);
+  if(sel.length == 0)
+    return;
+  for(elem of sel){
+    let mei_id = get_id(elem);
+    let mei_he = get_by_id(mei,mei_id);
+    let lbl = mei_he.querySelector("label");
+    lbl.setAttribute("resp",resp);
+  }
+  
+
 }
 
 function remove_responsibility() {

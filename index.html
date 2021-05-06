@@ -24,6 +24,7 @@
 	<script src="js/layers.js" type="text/javascript"></script>
 	<script src="js/coordinates.js" type="text/javascript"></script>
 	<script src="js/visualizations.js" type="text/javascript"></script>
+	<script src="js/metadata.js" type="text/javascript"></script>
 	<script src="js/ui.js" type="text/javascript"></script>
 	<script src="js/conf.js" type="text/javascript"></script>
 	<link type="text/css" rel="stylesheet" href="css/style.css" >
@@ -93,6 +94,14 @@
 	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
 	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
+	  <div id="metadata_input">
+	  Title: <input type="text" id="metadata_title" onfocus="texton()" onblur="update_metadata()"><br/>
+	  Composer: <input type="text" id="composer" onfocus="texton()" onblur="update_metadata()"><br/>
+	  Analyst: <input type="text" id="analyst" onfocus="texton()" onblur="update_metadata()">
+	           <input type="button" id="analyst_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"analyst\")" /><br/>
+	  Annotator: <input type="text" id="annotator" onfocus="texton()" onblur="update_metadata()">
+	           <input type="button" id="annotator_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"annotator\")" /><br/>
+	  </div>
 
 	</div>
 

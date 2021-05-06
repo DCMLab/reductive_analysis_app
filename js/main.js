@@ -335,6 +335,7 @@ function load_finish(e) {
   }
 
   mei_graph = add_or_fetch_graph();
+  initialize_metadata();
   // Clear the old (if any)
   draw_contexts = [];
   layer_contexts = [];

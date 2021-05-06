@@ -142,9 +142,13 @@ function assign_responsibility_selected(resp) {
     return;
   for(elem of sel){
     let mei_id = get_id(elem);
-    let mei_he = get_by_id(mei,mei_id);
-    let lbl = mei_he.querySelector("label");
-    lbl.setAttribute("resp",resp);
+    let mei_elem = get_by_id(mei,mei_id);
+    if(mei_elem.tagName == "note"){
+      mei_elem.setAttribute("resp",resp);
+    }else{// Assume relation or metarelation
+      let lbl = mei_he.querySelector("label");
+      lbl.setAttribute("resp",resp);
+    }
   }
   
 

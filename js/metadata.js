@@ -14,19 +14,27 @@ function initialize_metadata() {
   document.getElementById("metadata_title").value = title.innerHTML;
 
   // Get or add composer element and set it to what's in the textfield
+  // TODO: Try more places in the MEI
   var composer, resp, resps = titleStmt.getElementsByTagName("respStmt");
   if(resps.length == 0){
     let resp = mei.createElement("respStmt");
+    titleStmt.appendChild(resp);
+  }else{
+    resp = resps[0];
+  }
+  if(resp.querySelector("[role=composer]"))
+    composer = resp.querySelector("[role=composer]");
+  else{
     composer = mei.createElement("persName");
     composer.setAttribute("role","composer");
     composer.setAttribute("xml:id","composer");
     resp.appendChild(composer);
-    titleStmt.appendChild(resp);
-  }else{
-    resp = resps[0];
-    composer = resp.querySelector("[role=composer]");
   }
+
   document.getElementById("composer").value = composer.innerHTML;
+
+  var optionals = document.getElementById("optional_metadata_input");
+  optionals.innerHTML="";
 
   var analyst = resp.querySelector("[role=analyst]");
   if(analyst){
@@ -72,7 +80,7 @@ function metadata_respassign(role,id) {
 function add_resp_person_input(role,id="",value=""){
   if(!id)
     id = role;
-  var div = document.getElementById("metadata_input");
+  var div = document.getElementById("optional_metadata_input");
   div.append(role+": ");
   var ti = metadata_textinput(role);
   ti.value = value;

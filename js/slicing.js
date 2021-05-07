@@ -106,33 +106,9 @@ function new_sliced_layer(draw_context) {
   var prefix = n_layers+"-"; //TODO: better prefix computation
                              //The - is there to not clash with view
 			     //prefixes
-
   prefix_ids(new_score_elem,prefix); // Compute a better prefix
   // Insert after the previous
   score_elem.parentNode.insertBefore(new_score_elem, score_elem.nextSibling);
-  // The basic algorithm is to take the last score element (if we're doing
-  // a linear order of layers, otherwise we need the score element to build
-  // off of to be given as an argument), to clone it using cloneNode(), and
-  // then to do a preorder traversal of the tree, and for each element
-  // do the following pseudocode:
-  //
-  // FUNCTION LAYERIFY // This function takes a node in the score and
-  //                   // returns NULL if it has been reduced, unchanged if
-  //                   // it has no ID, and with a new ID and either
-  //                   // @sameas or @copyof depending on if the subtree
-  //                   // includes reduced nodes or not.
-  // IF this node has been reduced THEN
-  //   RETURN (NULL, T)
-  // LET (new_children, changed) = UNZIP MAP LAYERIFY ONTO children
-  // IF REDUCE changed WITH OR and F
-  //   RETURN (link_with_sameas(this).with_children(new_children), T)
-  // ELSE
-  //   RETURN (link_with_copyof(this).with_children(new_children), F)
-  //
-  // After which we fit the modified tree with a new ID prefix (built as a
-  // tree address in preparation of hierarchical layer arrangements) and
-  // attach it as a sibling to the previous score element, and potentially
-  // modify the scoreDef appropriately.
   return new_score_elem;
 }
 

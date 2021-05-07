@@ -133,6 +133,9 @@ function add_buttons(draw_context) {
   var newlayerbutton = button("Create new layer");
   newlayerbutton.classList.add("newlayerbutton");
   newlayerbutton.id = (draw_context.id_prefix+"newlayerbutton");
+  var slicecheck = checkbox("Sliced");
+  slicecheck.id = (draw_context.id_prefix+"slicedcb");
+  slicecheck.checked = false;
   var reducebutton = button("Reduce");
   reducebutton.classList.add("reducebutton");
   reducebutton.id = (draw_context.id_prefix+"reducebutton");
@@ -157,7 +160,7 @@ function add_buttons(draw_context) {
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
-  newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
+  newlayerbutton.onclick = () =>{ create_new_layer(new_draw_context,slicecheck.checked);}
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
   hidehierbutton.onclick = () =>{hide_hierarchy_graph(new_draw_context);}
@@ -165,6 +168,8 @@ function add_buttons(draw_context) {
   buttondiv.appendChild(reducebutton  );
   buttondiv.appendChild(rerenderbutton);
   buttondiv.appendChild(newlayerbutton);
+  buttondiv.appendChild(slicecheck);
+  buttondiv.append("Sliced");
   buttondiv.appendChild(playbutton);
   buttondiv.appendChild(hierbutton);
   buttondiv.appendChild(hidehierbutton);

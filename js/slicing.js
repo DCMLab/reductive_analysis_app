@@ -1,0 +1,123 @@
+// TODO:
+// Render to MIDI :check:
+// Get all notes :check:
+// Make a timestamp-to-ID map :check:
+//   var time_id_map = {};
+//   ids.map((id) => {if(!id) return; let t = vrvToolkit.getTimeForElement(id); if(!time_id_map[t]) time_id_map[t] = [id]; else time_id_map[t].push(id); })
+// Create a new score element with everything (mdiv etc.)
+// Choose number of systems?
+// Make a measure for each slice
+// Add the notes of that slice
+//  by onset (schenkerian)
+//  or by presence, tied (protovoice)
+// Take care when adding to only add one "note" per pitch (use @sameas)
+// Optionally do verticalisations
+
+function slicify(draw_context, score_elem) {
+  var mei2 = rerender_mei(true, draw_context);
+  var data2 = new XMLSerializer().serializeToString(mei2);
+  vrvToolkit.loadData(data2);
+  vrvToolkit.renderToMIDI();
+  var notes = Array.from(mei2.getElementsByTagName("note"));
+  var ids = notes.map((n) => n.getAttribute("xml:id"));
+  var time_id_map = {}; 
+  ids.forEach((id) => {
+      if(!id) return; 
+      let t = vrvToolkit.getTimeForElement(id); 
+      if(!time_id_map[t]) 
+        time_id_map[t] = [id]; 
+      else 
+        time_id_map[t].push(id);
+  });
+
+  // Get a new score element, update scoreDef etc.
+
+  var modified_scoreDef = score_elem.getElementsByTagName("scoreDef")[0].cloneNode(true);
+  var staffDefs = modified_scoreDef.getElementsByTagName("staffDef");
+  var new_score_elem = mei.createElement("score");
+  //TODO ID
+  var new_section_elem = mei.createElement("section");
+  //TODO ID
+  new_score_elem.appendChild(modified_scoreDef);
+  new_score_elem.appendChild(new_section_elem);
+  Object.entries(time_id_map).forEach(([t,ids]) => {
+    let new_measure = mei.createElement("measure");
+    new_measure.setAttribute("xml:id","measure-"+t);
+    new_section_elem.appendChild(new_measure);
+    for(staffDef of staffDefs){
+      let new_staff = mei.createElement("staff");
+      // TODO: set ID
+      new_staff.setAttribute("n",staffDef.getAttribute("n"));
+      new_measure.appendChild(new_staff);
+    }
+
+    // Just add in the onset slice for now
+    // For the rest, we need to use vrvToolkit.getElementsAtTime and then
+    // Be Smart(tm) about adding ties and updating IDs
+    ids.forEach((id) => {
+      let old_note = get_by_id(mei,id);
+      let new_note = old_note.cloneNode(true);
+      new_note.setAttribute("dur",4);
+      new_note.setAttribute("dur.ges",4);
+      new_note.setAttribute("dur.ppq",2);
+      let staff_n = old_note.closest("staff").getAttribute("n");
+      let layer_n = old_note.closest("staff").getAttribute("n");
+      let staff = new_measure.querySelector("staff[n=\""+staff_n+"\"]");
+      if(!staff){
+	  console.log("Could not find staff")
+	  abort();
+      }
+      let layer = staff.querySelector("layer[n=\""+layer_n+"\"]");
+      if(!layer){
+	layer = mei.createElement("layer");
+	//TODO: set ID
+	staff.appendChild(layer);
+      }
+      layer.appendChild(new_note);
+    });
+  });
+  return new_score_elem;
+}
+
+
+function new_sliced_layer(draw_context) {
+  var score_elem = draw_context.mei_score;
+  var new_score_elem = slicify(draw_context, score_elem);
+  var n_layers = score_elem.parentElement.getElementsByTagName("score").length;
+  var prefix = n_layers+"-"; //TODO: better prefix computation
+                             //The - is there to not clash with view
+			     //prefixes
+
+  prefix_ids(new_score_elem,prefix); // Compute a better prefix
+  // Insert after the previous
+  score_elem.parentNode.insertBefore(new_score_elem, score_elem.nextSibling);
+  // The basic algorithm is to take the last score element (if we're doing
+  // a linear order of layers, otherwise we need the score element to build
+  // off of to be given as an argument), to clone it using cloneNode(), and
+  // then to do a preorder traversal of the tree, and for each element
+  // do the following pseudocode:
+  //
+  // FUNCTION LAYERIFY // This function takes a node in the score and
+  //                   // returns NULL if it has been reduced, unchanged if
+  //                   // it has no ID, and with a new ID and either
+  //                   // @sameas or @copyof depending on if the subtree
+  //                   // includes reduced nodes or not.
+  // IF this node has been reduced THEN
+  //   RETURN (NULL, T)
+  // LET (new_children, changed) = UNZIP MAP LAYERIFY ONTO children
+  // IF REDUCE changed WITH OR and F
+  //   RETURN (link_with_sameas(this).with_children(new_children), T)
+  // ELSE
+  //   RETURN (link_with_copyof(this).with_children(new_children), F)
+  //
+  // After which we fit the modified tree with a new ID prefix (built as a
+  // tree address in preparation of hierarchical layer arrangements) and
+  // attach it as a sibling to the previous score element, and potentially
+  // modify the scoreDef appropriately.
+  return new_score_elem;
+}
+
+
+
+
+

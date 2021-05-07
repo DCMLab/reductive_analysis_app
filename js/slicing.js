@@ -35,9 +35,9 @@ function slicify(draw_context, score_elem) {
   var modified_scoreDef = score_elem.getElementsByTagName("scoreDef")[0].cloneNode(true);
   var staffDefs = modified_scoreDef.getElementsByTagName("staffDef");
   var new_score_elem = mei.createElement("score");
-  //TODO ID
+  new_score_elem.setAttribute("xml:id",score_elem.getAttribute("xml:id")+"-sliced");
   var new_section_elem = mei.createElement("section");
-  //TODO ID
+  new_section_elem.setAttribute("xml:id",score_elem.getAttribute("xml:id")+"-slicedsection");
   new_score_elem.appendChild(modified_scoreDef);
   new_score_elem.appendChild(new_section_elem);
   Object.entries(time_id_map).forEach(([t,ids]) => {
@@ -57,11 +57,10 @@ function slicify(draw_context, score_elem) {
     ids.forEach((id) => {
       let old_note = get_by_id(mei,id);
       let new_note = old_note.cloneNode(true);
-      new_note.setAttribute("dur",4);
-      new_note.setAttribute("dur.ges",4);
-      new_note.setAttribute("dur.ppq",2);
+      new_note.setAttribute("corresp",id);
       let staff_n = old_note.closest("staff").getAttribute("n");
-      let layer_n = old_note.closest("staff").getAttribute("n");
+      let layer_n = old_note.closest("layer").getAttribute("n");
+      let old_chord = old_note.closest("chord");
       let staff = new_measure.querySelector("staff[n=\""+staff_n+"\"]");
       if(!staff){
 	  console.log("Could not find staff")
@@ -70,10 +69,30 @@ function slicify(draw_context, score_elem) {
       let layer = staff.querySelector("layer[n=\""+layer_n+"\"]");
       if(!layer){
 	layer = mei.createElement("layer");
+	layer.setAttribute("n",layer_n);
 	//TODO: set ID
 	staff.appendChild(layer);
       }
-      layer.appendChild(new_note);
+      new_note.removeAttribute("dots");
+      new_note.removeAttribute("dots.ges");
+      if(old_chord){
+        let chord_id = old_chord.getAttribute("xml:id");
+	let new_chord = layer.querySelector("chord[corresp=\""+chord_id+"\"]");
+	if(!new_chord){
+	  new_chord = mei.createElement("chord");
+	  new_chord.setAttribute("corresp", chord_id);
+	  new_chord.setAttribute("dur",4);
+	  new_chord.setAttribute("dur.ges",4);
+	  new_chord.setAttribute("dur.ppq",2);
+	  layer.appendChild(new_chord);
+	}
+	new_chord.appendChild(new_note);
+      }else{
+	new_note.setAttribute("dur",4);
+	new_note.setAttribute("dur.ges",4);
+	new_note.setAttribute("dur.ppq",2);
+	layer.appendChild(new_note);
+      }
     });
   });
   return new_score_elem;

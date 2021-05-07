@@ -458,8 +458,12 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
 
 }
 
-function create_new_layer(draw_context) {
-  var new_score_elem = new_layer(draw_context);
+function create_new_layer(draw_context,sliced =false) {
+  var new_score_elem;
+  if(sliced)
+    new_score_elem = new_sliced_layer(draw_context);
+  else
+    new_score_elem = new_layer(draw_context);
   let new_mei = mei_for_layer(mei, new_score_elem);
   var [new_data, new_svg] = render_mei(new_mei);
   if (!new_svg) {

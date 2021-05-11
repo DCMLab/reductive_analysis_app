@@ -60,7 +60,7 @@ $(document).ready(function() {
   $("#player").midiPlayer({ color: "grey", width: 250 });
   $("#selected_things").hide();
 
-  $("#hull_controller").on('change', handle_hull_controller);
+  $("#hull_controller").on('input', handle_hull_controller);
 });
 
 

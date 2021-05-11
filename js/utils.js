@@ -24,7 +24,7 @@ var roundedHull1 = function (polyPoints, hullPadding) {
   // circle).
 
   var p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding];
-  var p2 = [polyPoints[0][0], polyPoints[0][1] + hullPadding];
+  var p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)];
 
   return 'M ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
     + ' A ' + [hullPadding, hullPadding, '0,0,0', p1].join(',');

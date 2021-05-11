@@ -318,6 +318,7 @@ function load_finish(e) {
   // Parse the original document
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
+  vrvToolkit = new verovio.toolkit();
   if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
     // We didn't get a MEI? Try if it's a musicXML
     let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,

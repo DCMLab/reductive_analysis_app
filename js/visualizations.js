@@ -28,7 +28,7 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
   var g_elem = svg_elem.getRootNode().getElementById("hier"+id_prefix);
   var existing = g_elem ? true : false;
   if(!existing)
-    g_elem = g(svg_elem);
+    g_elem = g();
   else
     g_elem.innerHTML = "";
   // find layers
@@ -68,7 +68,7 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
       let txt;
       let txt_p =[p[0]+r+10,p[1]+r+25-fontSize];
       if(!note_g){
-        note_g = g(svg_elem);
+        note_g = g();
 
         let circ = circle(p,r);
 	note_g.appendChild(circ);

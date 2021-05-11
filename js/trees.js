@@ -74,13 +74,21 @@ function draw_textbox(txt, padding=25) {
 
 
 
-function draw_tree(input, draw_context, min_dist = -500) {
+function draw_tree(draw_context, input ="",baseline=0, min_dist = -1000) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
   var svg_height = svg_elem.children[0].getAttribute("height");
   var svg_viewbox = svg_elem.getElementsByClassName("definition-scale")[0].getAttribute("viewBox");
   // find top of system
   var svg_top = 0;
+
+  if(!input)
+    input = document.getElementById(id_prefix+"treeinput").value;
+
+  var tree_g = svg_elem.getRootNode().getElementById("tree"+id_prefix);
+  var existing = tree_g ? true : false;
+  if(existing)
+    tree_g.parentNode.removeChild(tree_g);
 
   var tree = JSON.parse(input);
   var xlist = selected.concat(extraselected);
@@ -111,7 +119,7 @@ function draw_tree(input, draw_context, min_dist = -500) {
 
   // Adjust height
   // change viewport
-  {
+  if(!existing){
     var [x,y,w,h] = svg_viewbox.split(" ");
     var ydiff = -tree.y;
     draw_context.old_viewbox = [x,y,w,h].join(" ");
@@ -121,7 +129,7 @@ function draw_tree(input, draw_context, min_dist = -500) {
     draw_context.old_height = svg_height;
     // change height
     svg_elem.children[0].setAttribute("height", (svg_num_height * ((h-(y-ydiff))/(h - y))) + "px");
-  }
+  }// Else do Smart Calculations on old_viewbox
 
 }
 

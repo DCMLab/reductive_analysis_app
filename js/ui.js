@@ -114,6 +114,7 @@ function meta_type(type) {
 }
 
 function add_buttons(draw_context) {
+  add_filters(draw_context);
   var new_draw_context = draw_context;
   var buttondiv = document.createElement("div");
   buttondiv.classList.add("view_buttons");
@@ -158,9 +159,7 @@ function add_buttons(draw_context) {
   buttondiv.appendChild(hiercheck);
   buttondiv.append("Draw roots low");
 
-  draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[0]);
-
-  add_filters(draw_context);
+  draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[1]);
 }
 
 function add_filter(draw_context, div, type, thing) {
@@ -193,8 +192,8 @@ function add_filters(draw_context) {
   var div = document.createElement("div");
   div.id = draw_context.id_prefix + "filterdiv";
   div.classList.add("filterdiv");
-  div.innerHTML = "&#9776;"
-  draw_context.view_elem.appendChild(div);
+  div.innerHTML = "&#9776;<br/></br>"
+  draw_context.view_elem.prepend(div);
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));
   Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, "metarelation"));

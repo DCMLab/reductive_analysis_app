@@ -193,9 +193,9 @@ function add_to_svg_fg(svg_elem,newElement) {
   parent.appendChild(newElement);
 }
 
-function g(svg_elem) {
+function g() {
   // Creates a new SVG g element
-  var newElement = svg_elem.getRootNode().createElementNS("http://www.w3.org/2000/svg", 'g');
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
   return newElement;
 }
 

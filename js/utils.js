@@ -152,6 +152,19 @@ function circle(p,rad) {
   return newElement;
 }
 
+// Draw a rectangle at point p with width/height
+function rect(p,width, height) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+  newElement.setAttribute("x",p[0]);
+  newElement.setAttribute("y",p[1]);
+  newElement.setAttribute("width",width);
+  newElement.setAttribute("height",height);
+  newElement.style.stroke = "#000";
+  newElement.style.fill = "white";
+  newElement.style.strokeWidth = "15px"; 
+  return newElement;
+}
+
 // Draw a text at point p 
 function text(text,p) {
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'text');

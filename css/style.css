@@ -435,6 +435,7 @@ stroke: black;
   top: 50px;
   left: 0;
   padding-left: 130px; /* Should be greater than the width of `filterdiv`. */
+  transform-origin: left center;
 }
 
 .layer {

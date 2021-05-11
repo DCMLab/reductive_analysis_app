@@ -159,7 +159,22 @@ function add_buttons(draw_context) {
   buttondiv.appendChild(hiercheck);
   buttondiv.append("Draw roots low");
 
+
+  // Tree stuff
+  var treetext = document.createElement("textarea");
+  treetext.id = draw_context.id_prefix +"treeinput";
+  treetext.width="100px";
+  var treebutton = button("Align JSON tree: ");
+  treebutton.id = draw_context.id_prefix+"treebutton";
+  treebutton.onclick = () =>{draw_tree(new_draw_context);};
+  treetext.onfocus=texton;
+  treetext.onblur=textoff;
+  buttondiv.appendChild(treebutton);
+  buttondiv.appendChild(treetext);
+
+
   draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[1]);
+
 }
 
 function add_filter(draw_context, div, type, thing) {

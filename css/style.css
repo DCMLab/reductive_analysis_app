@@ -9,6 +9,8 @@
 
 #layers {
   width: fit-content;
+  width: -moz-fit-content;
+  padding-bottom: 10em;
 }
 
 .file-input {
@@ -73,18 +75,22 @@
 /* annotation component */
 
 .filterdiv {
-    position: absolute;
-    top: 2em;
-    backdrop-filter: blur(2px);
-    clip: rect(auto,auto,1.5rem,auto);
+    position: sticky;
+    width: fit-content;
+    width: -moz-fit-content;
+    top: 0;
+    left: 0;
+    height: 20px;
     overflow-y: hidden;
     border-radius: 0 0 10px 0;
-    transition: clip 0.5s;
+    transition: height 0.5s;
     font-family: sans-serif;
+    float: left;
+    z-index: 1;
 }
 
 .filterdiv:hover {
-    clip: rect(auto, auto, 50rem, auto);
+    height: 400px; /* Should be at least as long as the filter list. */
 }
 
 @media screen and (min-width: 48em) {
@@ -425,9 +431,11 @@ stroke: black;
 
 
 .svg_container {
-  display: flex;
-  align-items: center;
-  height: auto
+  height: auto;
+  top: 50px;
+  left: 0;
+  padding-left: 130px; /* Should be greater than the width of `filterdiv`. */
+  transform-origin: left center;
 }
 
 .layer {
@@ -439,6 +447,7 @@ stroke: black;
   border-style: dashed;
   border-width: 1px;
   position: relative;
+  width: max-content;
 }
 
 .main_buttons {
@@ -447,3 +456,17 @@ bottom:0;
 z-index:2;
 }
 
+.view_buttons {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  left: 130px;
+  width: auto;
+  vertical-align: top;
+  z-index: 1;
+  float: left;
+}
+
+.view_buttons input {
+  vertical-align: top;
+}

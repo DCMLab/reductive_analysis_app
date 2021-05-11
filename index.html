@@ -71,6 +71,9 @@
 	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
 	</div>
 	<div id="load_save" class="main_buttons">
+	  <div id="hull_controller_container">
+	  <input type="range" min="20" max="200" class="slider" id="hull_controller">
+	  </div>
 	  <div id="player"></div>
 	  <div id="meta_buttons" class="none">
 	  <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >

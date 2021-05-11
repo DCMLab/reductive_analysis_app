@@ -76,7 +76,6 @@
 
 .filterdiv {
     position: sticky;
-    display: inline-block;
     width: fit-content;
     width: -moz-fit-content;
     top: 0;
@@ -91,7 +90,7 @@
 }
 
 .filterdiv:hover {
-    height: 100%;
+    height: 400px; /* Should be at least as long as the filter list. */
 }
 
 @media screen and (min-width: 48em) {
@@ -432,10 +431,10 @@ stroke: black;
 
 
 .svg_container {
-  display: flex;
-  align-items: center;
   height: auto;
-  margin-left: 150px;
+  top: 50px;
+  left: 0;
+  padding-left: 130px; /* Should be greater than the width of `filterdiv`. */
 }
 
 .layer {
@@ -447,6 +446,7 @@ stroke: black;
   border-style: dashed;
   border-width: 1px;
   position: relative;
+  width: max-content;
 }
 
 .main_buttons {
@@ -459,11 +459,11 @@ z-index:2;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  left: 10em;
+  left: 130px;
   width: auto;
-  display: inline-block;
   vertical-align: top;
   z-index: 1;
+  float: left;
 }
 
 .view_buttons input {

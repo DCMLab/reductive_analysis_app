@@ -439,6 +439,7 @@ function play_midi_reduction(draw_context=draw_contexts[0]) {
 }
 
 function handle_hull_controller() {
+  do_deselect();
   $(".relation").remove();
   $(".metarelation").remove(); 
   var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));

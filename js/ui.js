@@ -438,3 +438,17 @@ function play_midi_reduction(draw_context=draw_contexts[0]) {
 
 }
 
+function handle_hull_controller() {
+  $(".relation").remove();
+  $(".metarelation").remove(); 
+  var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
+  var relations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "relation";})
+  var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
+  draw_contexts.forEach(draw_context => {
+    relations_nodes.forEach((g_elem) => {
+      unmark_secondaries(draw_context,mei_graph,g_elem);
+    })
+  });
+  draw_contexts.hullPadding = $("#hull_controller").val();
+  draw_contexts.forEach(context => draw_graph(context));
+}

@@ -59,6 +59,8 @@ $(document).ready(function() {
   toggle_shades();
   $("#player").midiPlayer({ color: "grey", width: 250 });
   $("#selected_things").hide();
+
+  $("#hull_controller").on('change', handle_hull_controller);
 });
 
 
@@ -340,6 +342,9 @@ function load_finish(e) {
   draw_contexts = [];
   layer_contexts = [];
   document.getElementById("layers").innerHTML="";
+
+  $("#hull_controller").val(200);
+  draw_contexts.hullPadding = $("#hull_controller").val();
 
   // Segment existing layers
   var layers = Array.from(mei.getElementsByTagName("body")[0].getElementsByTagName("score"));

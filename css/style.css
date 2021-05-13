@@ -510,3 +510,43 @@ z-index:2;
   resize: none;
   height: 20px;
 }
+
+#metadata_input {
+  background: rgba(61, 61, 61, 0.5);
+  border: none;
+  color: white;
+  position: fixed;
+  top: 30px;
+  right: -450px;
+  padding: 1.5rem; 
+  border-color: rgba(61, 61, 61, 0.5);
+  border-right: none;
+  font-family: Arial;
+  transform: right 0.2s;
+  transform-origin: 0% 10%;
+  z-index: -1;
+}
+
+#metadata_input:hover {
+  right: 0;
+}
+
+#metadata_input_title {
+  transform: rotate(90deg);
+  transform-origin: -2% 25%;
+  color: black;
+  transition: transform 0.2s;
+}
+
+#metadata_input:hover #metadata_input_title {
+  transform: rotate(0);
+}
+
+input[type=text] {
+  background-color: rgba(61, 61, 61, 0.5);
+  color: greenyellow;
+  border: none;
+  padding: 4px 4px 4px 12px;
+  box-sizing: border-box;
+  margin: 3px;
+}

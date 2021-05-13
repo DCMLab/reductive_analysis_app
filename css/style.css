@@ -448,8 +448,13 @@ stroke: black;
   transform-origin: left center;
 }
 
+.layer {
+  min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the layer below is empty.*/
+}
+
 .view {
   position: relative;
+  min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
 }
 
 .main_buttons {

@@ -451,8 +451,6 @@ stroke: black;
 
 .svg_container {
   height: auto;
-  top: 50px;
-  left: 0;
   padding-left: 155px; /* Should be greater than the width of `filterdiv`. */
   transform-origin: left center;
 }
@@ -477,7 +475,6 @@ z-index:2;
   position: sticky;
   top: 0;
   left: 154px;
-  vertical-align: top;
   z-index: 1;
   float: left;
   padding-right: 1rem;

@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
     margin-left: auto;
     margin-right: auto;
@@ -80,17 +85,22 @@
     width: -moz-fit-content;
     top: 0;
     left: 0;
-    height: 20px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0.3rem;
+    padding-top: 0.3rem;
+    height: 21px;
     overflow-y: hidden;
-    border-radius: 0 0 10px 0;
-    transition: height 0.5s;
+    transition: height 0.2s;
     font-family: sans-serif;
     float: left;
     z-index: 1;
+    backdrop-filter: blur(2px);
+    background: rgba(61, 61, 61, 0.5);
 }
 
 .filterdiv:hover {
-    height: 400px; /* Should be at least as long as the filter list. */
+    height: 300px; /* Should be at least as long as the filter list. */
 }
 
 @media screen and (min-width: 48em) {
@@ -434,20 +444,12 @@ stroke: black;
   height: auto;
   top: 50px;
   left: 0;
-  padding-left: 130px; /* Should be greater than the width of `filterdiv`. */
+  padding-left: 155px; /* Should be greater than the width of `filterdiv`. */
   transform-origin: left center;
 }
 
-.layer {
-  border-style: solid;
-  border-width: 2px;
-}
-
 .view {
-  border-style: dashed;
-  border-width: 1px;
   position: relative;
-  width: max-content;
 }
 
 .main_buttons {
@@ -460,13 +462,37 @@ z-index:2;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  left: 130px;
-  width: auto;
+  left: 154px;
   vertical-align: top;
   z-index: 1;
   float: left;
+  padding-right: 1rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
+  height: 21px;  backdrop-filter: blur(2px);
+  background: rgba(61, 61, 61, 0.5);
+  font-family: Arial;
+  font-size: 14px;
+  clip-path: polygon(0 0, 1.2% 0, 1.2% 100%, 0 100%);  /* Must be adjusted according to button row length. */
+  transition: clip-path 0.2s;
+  transition-delay: 1.5s;
+}
+
+.view_buttons:hover {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition-delay: 0s;
 }
 
 .view_buttons input {
   vertical-align: top;
+}
+
+.view_buttons label {
+  vertical-align: top;
+  margin-right: 2rem;
+}
+
+.view_buttons textarea {
+  resize: none;
+  height: 20px;
 }

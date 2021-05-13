@@ -164,18 +164,24 @@ function add_buttons(draw_context) {
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
   hidehierbutton.onclick = () =>{hide_hierarchy_graph(new_draw_context);}
+  buttondiv.appendChild(document.createTextNode("\u25B6   "));
   buttondiv.appendChild(unreducebutton);
   buttondiv.appendChild(reducebutton  );
   buttondiv.appendChild(rerenderbutton);
   buttondiv.appendChild(newlayerbutton);
   buttondiv.appendChild(slicecheck);
-  buttondiv.append("Sliced");
+  var slice_label = document.createElement("label")
+  slice_label.htmlFor = draw_context.id_prefix+"slicedcb";
+  slice_label.appendChild(document.createTextNode("Sliced"));
+  buttondiv.append(slice_label);
   buttondiv.appendChild(playbutton);
   buttondiv.appendChild(hierbutton);
   buttondiv.appendChild(hidehierbutton);
   buttondiv.appendChild(hiercheck);
-  buttondiv.append("Draw roots low");
-
+  var roots_low_label = document.createElement("label")
+  roots_low_label.htmlFor = draw_context.id_prefix+"hierarchycb";
+  roots_low_label.appendChild(document.createTextNode("Draw roots low"));
+  buttondiv.append(roots_low_label);
 
   // Tree stuff
   var treetext = document.createElement("textarea");

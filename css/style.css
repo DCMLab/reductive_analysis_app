@@ -520,7 +520,7 @@ z-index:2;
   font-family: Arial;
   transform: right 0.2s;
   transform-origin: 0% 10%;
-  z-index: -1;
+  z-index: 2;
 }
 
 #metadata_input:hover {

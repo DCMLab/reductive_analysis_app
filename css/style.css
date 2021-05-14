@@ -87,28 +87,45 @@ body {
 
 /* annotation component */
 
+.sidebar {
+  position: sticky;
+  width: fit-content;
+  width: -moz-fit-content;
+  top: 0;
+  left: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
+  height: max-content;
+  overflow-y: hidden;
+  transition: height 0.2s;
+  font-family: sans-serif;
+  float: left;
+  background: lightgray;
+  z-index: 2;
+}
+
 .filterdiv {
-    position: sticky;
-    width: fit-content;
-    width: -moz-fit-content;
-    top: 0;
-    left: 0;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-bottom: 0.3rem;
-    padding-top: 0.3rem;
-    height: 21px;
-    overflow-y: hidden;
-    transition: height 0.2s;
-    font-family: sans-serif;
-    float: left;
-    z-index: 1;
-    backdrop-filter: blur(2px);
-    background: rgba(61, 61, 61, 0.5);
+  width: 30px;
+  top: 0;
+  left: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
+  height: 21px;
+  overflow-y: hidden;
+  transition: height 0.2s;
+  font-family: sans-serif;
+  z-index: 1;
+  backdrop-filter: blur(2px);
+  background: lightgray;
 }
 
 .filterdiv:hover {
-    height: 300px; /* Should be at least as long as the filter list. */
+  height: max-content;
+  width: max-content;
 }
 
 @media screen and (min-width: 48em) {
@@ -450,7 +467,7 @@ stroke: black;
 
 .svg_container {
   height: auto;
-  padding-left: 155px; /* Should be greater than the width of `filterdiv`. */
+  padding-left: 255px; /* Should be greater than the width of `filterdiv`. */
   transform-origin: left center;
 }
 
@@ -464,33 +481,55 @@ stroke: black;
 }
 
 .main_buttons {
-position:fixed;
-bottom:0;
-z-index:2;
+  position: fixed;
+  bottom: 0;
+  z-index: 2;
+  width: 100vw;
+  background: lightgray;
+  color: black;
+  backdrop-filter: blur(2px);
+  transition: left 0.2s;
+  left: calc(-100% + 36px);
+}
+
+#player {
+  display: inline-block;
+}
+
+#midiPlayer_div {
+  display: inline-block;
+}
+
+#hull_controller_container {
+  display: inline-block;
+}
+
+.main_buttons:hover {
+  transform: translateY(0);
+  left: 0;
+}
+
+#main_buttons_title {
+ font-size: 48px;
+ text-align: right;
 }
 
 .view_buttons {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  left: 154px;
+  width: 30px;
   z-index: 1;
-  float: left;
+  height: 21px;  backdrop-filter: blur(2px);
+  background: lightgray;
+  font-family: Arial;
+  font-size: 14px;
+  padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 0.3rem;
   padding-top: 0.3rem;
-  height: 21px;  backdrop-filter: blur(2px);
-  background: rgba(61, 61, 61, 0.5);
-  font-family: Arial;
-  font-size: 14px;
-  clip-path: polygon(0 0, 1.2% 0, 1.2% 100%, 0 100%);  /* Must be adjusted according to button row length. */
-  transition: clip-path 0.2s;
-  transition-delay: 1.5s;
 }
 
 .view_buttons:hover {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  transition-delay: 0s;
+  height: max-content;
+  width: max-content; 
 }
 
 .view_buttons input {
@@ -508,9 +547,9 @@ z-index:2;
 }
 
 #metadata_input {
-  background: rgba(61, 61, 61, 0.5);
+  background: lightgray;
   border: none;
-  color: white;
+  color: black;
   position: fixed;
   top: 30px;
   right: -450px;
@@ -545,4 +584,37 @@ input[type=text] {
   padding: 4px 4px 4px 12px;
   box-sizing: border-box;
   margin: 3px;
+}
+
+input[type=text] {
+  background-color: rgba(61, 61, 61, 0.5);
+  color: greenyellow;
+  border: none;
+  padding: 4px 4px 4px 12px;
+  box-sizing: border-box;
+  margin: 3px;
+}
+
+textarea {
+  background-color: rgba(61, 61, 61, 0.5);
+  color: greenyellow;
+  border: none;
+  padding: 4px 4px 4px 12px;
+  box-sizing: border-box;
+  margin: 3px;
+}
+
+input[type="button"] {
+border: solid 1px;
+border-color: lightgray;
+padding: 2px;
+margin: 2px;
+}
+
+input[type="button"]:active {
+background: darkgray;
+}
+
+input[type="button"]:hover {
+  border-color: blue;
 }

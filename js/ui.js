@@ -164,24 +164,45 @@ function add_buttons(draw_context) {
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
   hidehierbutton.onclick = () =>{hide_hierarchy_graph(new_draw_context);}
-  buttondiv.appendChild(document.createTextNode("\u25B6   "));
+
+  buttondiv.appendChild(document.createTextNode("\u25BC"));
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+
   buttondiv.appendChild(unreducebutton);
+  buttondiv.appendChild(document.createElement("br"));
+
   buttondiv.appendChild(reducebutton  );
+  buttondiv.appendChild(document.createElement("br"));
+
   buttondiv.appendChild(rerenderbutton);
+  buttondiv.appendChild(document.createElement("br"));
+
   buttondiv.appendChild(newlayerbutton);
+  buttondiv.appendChild(document.createElement("br"));
   buttondiv.appendChild(slicecheck);
   var slice_label = document.createElement("label")
   slice_label.htmlFor = draw_context.id_prefix+"slicedcb";
   slice_label.appendChild(document.createTextNode("Sliced"));
   buttondiv.append(slice_label);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+
   buttondiv.appendChild(playbutton);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+
   buttondiv.appendChild(hierbutton);
+  buttondiv.appendChild(document.createElement("br"));
   buttondiv.appendChild(hidehierbutton);
-  buttondiv.appendChild(hiercheck);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(hiercheck); 
   var roots_low_label = document.createElement("label")
   roots_low_label.htmlFor = draw_context.id_prefix+"hierarchycb";
   roots_low_label.appendChild(document.createTextNode("Draw roots low"));
   buttondiv.append(roots_low_label);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
 
   // Tree stuff
   var treetext = document.createElement("textarea");
@@ -193,11 +214,11 @@ function add_buttons(draw_context) {
   treetext.onfocus=texton;
   treetext.onblur=textoff;
   buttondiv.appendChild(treebutton);
-  buttondiv.appendChild(treetext);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(treetext); buttondiv.appendChild(document.createElement("br"));
 
 
-  draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[1]);
-
+  draw_context.view_elem.children[0].appendChild(buttondiv);
 }
 
 function add_filter(draw_context, div, type, thing) {
@@ -227,11 +248,16 @@ function add_filter(draw_context, div, type, thing) {
 }
 
 function add_filters(draw_context) {
+  var sidebar = document.createElement("div");
+  sidebar.id = draw_context.id_prefix + "sidebardiv";
+  sidebar.classList.add("sidebar");
+  draw_context.view_elem.prepend(sidebar);
+
   var div = document.createElement("div");
   div.id = draw_context.id_prefix + "filterdiv";
   div.classList.add("filterdiv");
   div.innerHTML = "&#9776;<br/></br>"
-  draw_context.view_elem.prepend(div);
+  sidebar.prepend(div);
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));
   Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, "metarelation"));

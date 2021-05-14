@@ -471,9 +471,15 @@ function show_buttons() {
   $("#load_save")[0].classList.remove("hidden");
   $("#hidden_buttons")[0].classList.add("hidden");
 }
-function hide_buttons() {
-  $("#load_save")[0].classList.add("hidden");
-  $("#hidden_buttons")[0].classList.remove("hidden");
+
+function toggle_buttons() {
+  if (!$("#relations_panel").hasClass('collapsed')) {
+    $("#relations_panel").addClass('collapsed')
+    $("#relations_panel input").addClass('none');
+  } else {
+    $("#relations_panel").removeClass('collapsed')
+    $("#relations_panel input").removeClass('none');
+  }
 }
 
 function zoom_in(draw_context) {
@@ -518,4 +524,42 @@ function handle_hull_controller() {
   });
   draw_contexts.hullPadding = $("#hull_controller").val();
   draw_contexts.forEach(context => draw_graph(context));
+}
+
+
+function handle_relations_panel(el) {
+  var newX = 0, newY = 0, curX = 0, curY = 0;
+  if (document.getElementById(el.id + "_header")) {
+    document.getElementById(el.id + "_header").onmousedown = startDragging;
+  } else {
+    elmnt.onmousedown = startDragging;
+  }
+
+  function startDragging(e) {
+    e = e || window.event;
+    e.preventDefault();
+    curX = e.clientX;
+    curY = e.clientY;
+    document.onmouseup = stopDragging;
+    document.onmousemove = drag;
+  }
+
+  function drag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    newX = curX - e.clientX;
+    newY = curY - e.clientY;
+    curX = e.clientX;
+    curY = e.clientY;
+    // set the element's new position:
+    el.style.top = (el.offsetTop - newY) + "px";
+    el.style.left = (el.offsetLeft - newX) + "px";
+  }
+
+  function stopDragging() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
 }

@@ -62,6 +62,7 @@ $(document).ready(function() {
   $("#selected_things").hide();
 
   $("#hull_controller").on('change', handle_hull_controller);
+  handle_relations_panel(document.getElementById("relations_panel"));
 });
 
 

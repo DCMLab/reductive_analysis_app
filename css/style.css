@@ -616,3 +616,40 @@ background: darkgray;
 input[type="button"]:hover {
   border-color: blue;
 }
+
+.zoominbutton, .zoomoutbutton {
+  width: 3rem;
+  font-weight: bold;
+}
+
+#relations_panel {
+  position: fixed;
+  z-index: 9;
+  background-color: lightgray;
+  border: 1px solid #d3d3d3;
+  text-align: center;
+  top: 50vh;
+  left: 10vw;
+}
+
+#relations_panel_header {
+  height: 25px;
+  padding: 0;
+  text-align: left;
+  cursor: move;
+  z-index: 10;
+  background-color: #2196F3;
+  color: white;
+}
+
+#relations_panel_toggle {
+  width: min-content;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#relations_panel_toggle:hover {
+  color: lightgreen;
+  cursor: default;
+}
+

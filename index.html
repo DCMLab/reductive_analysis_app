@@ -80,7 +80,11 @@
 	  <div id="hull_controller_container">
 	  <input type="range" min="20" max="200" class="slider" id="hull_controller">
 	  </div>
-	  <div id="player"></div>
+	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
+	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
+	  <div id="player">
+	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
+	  </div>
 	  <div id="meta_buttons" class="none">
 	  <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >
 	  <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
@@ -100,9 +104,6 @@
 	  <input type="file" id="fileupload" value="Load" onchange="load()" >
 	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
 	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
-	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
-	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
 	</div>
 	<div id="metadata_input" class="metadata_input">
 	  <div id="metadata_input_title">
@@ -113,7 +114,6 @@
 	  <div id="optional_metadata_input">
 	  </div>
 	</div>
-
         <!--//////////////////////////////////////////////-->
         <!-- The div where we are going to insert the SVG -->
         <!--//////////////////////////////////////////////-->

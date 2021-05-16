@@ -606,15 +606,6 @@ input[type=text] {
   margin: 3px;
 }
 
-input[type=text] {
-  background-color: rgba(61, 61, 61, 0.5);
-  color: greenyellow;
-  border: none;
-  padding: 4px 4px 4px 12px;
-  box-sizing: border-box;
-  margin: 3px;
-}
-
 textarea {
   background-color: rgba(61, 61, 61, 0.5);
   color: greenyellow;
@@ -624,15 +615,23 @@ textarea {
   margin: 3px;
 }
 
-input[type="button"] {
-border: solid 1px;
-border-color: lightgray;
-padding: 2px;
-margin: 2px;
+input {
+  font-family: arial;
+}
+
+.main_buttons input, #relations_panel input {
+  font-size: 80%;
+}
+
+input[type="button"], input[type="fileupload"] {
+  border: solid 1px;
+  border-color: lightgray;
+  padding: 4px;
+  margin: 2px;
 }
 
 input[type="button"]:active {
-background: darkgray;
+  background: darkgray;
 }
 
 input[type="button"]:hover {

@@ -119,11 +119,20 @@ body {
   z-index: 1;
   backdrop-filter: blur(2px);
   background: lightgray;
+  font-size: 14px;
 }
 
 .filterdiv:hover {
   height: max-content;
   width: max-content;
+}
+
+.filterdiv label {
+margin-left: .5rem;
+}
+
+.view_buttons label {
+font-size: 12px;
 }
 
 @media screen and (min-width: 48em) {
@@ -636,6 +645,10 @@ input[type="button"]:active {
 
 input[type="button"]:hover {
   border-color: blue;
+}
+
+.zoom_buttons {
+margin-top: 0.5rem;
 }
 
 .zoominbutton, .zoomoutbutton {

@@ -83,10 +83,6 @@
 	    <div id="player">
 	      <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
 	    </div>
-	    <div id="meta_buttons" class="none">
-	      <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >
-	      <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
-	    </div>
 	    <input type="file" id="fileupload" value="Load" onchange="load()" >
 	    <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
 	    <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
@@ -112,6 +108,10 @@
 	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	  <input type="button" id="addnoteputton" value="Toggle adding a note" onclick="toggle_placing_note()"/>
 	  <div id="relation_buttons">
+	  </div>
+	  <div id="meta_buttons" class="none">
+	    <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >
+	    <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
 	  </div>
 	  <div id="combo_buttons">
 	  </div>

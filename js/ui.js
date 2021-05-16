@@ -547,14 +547,16 @@ function handle_relations_panel(el) {
   function drag(e) {
     e = e || window.event;
     e.preventDefault();
-    // calculate the new cursor position:
+    // Calculate the new cursor position:
     newX = curX - e.clientX;
     newY = curY - e.clientY;
     curX = e.clientX;
     curY = e.clientY;
-    // set the element's new position:
-    el.style.top = (el.offsetTop - newY) + "px";
-    el.style.left = (el.offsetLeft - newX) + "px";
+    // Set the element's new position:
+    if (curX >= 0 && curY >= 0) {
+      el.style.top = (el.offsetTop - newY) + "px";
+      el.style.left = (el.offsetLeft - newX) + "px";
+    } 
   }
 
   function stopDragging() {

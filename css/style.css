@@ -662,12 +662,49 @@ input[type="button"]:hover {
   z-index: 10;
   background-color: #2196F3;
   color: white;
+  display: flex;
+}
+
+#basic_buttons {
+  margin: 3px;
+  padding: 3px;
+}
+
+#relation_buttons, #meta_buttons, #combo_buttons {
+  background: #dfdfdf;
+  margin: 5px;
+  border-radius: 10px;
+  box-shadow: inset 1px 1px 1px grey;
+  padding: 5px;
 }
 
 #relations_panel_toggle {
   width: min-content;
+  align-items: center;
+  justify-content: left;
+  margin-left: 6px;
+  margin-top: 2px;
+}
+
+.collapsed #relations_panel_toggle {
   margin-left: 10px;
-  margin-right: 10px;
+  margin-top: -5px;
+}
+
+.collapsed #relations_panel_toggle {
+  font-size: 300%;
+}
+
+.collapsed #basic_buttons,
+.collapsed #relation_buttons,
+.collapsed #meta_buttons,
+.collapsed #combo_buttons {
+  display: none;
+}
+
+.collapsed #relations_panel_header {
+    width: 50px;
+    height: 50px;
 }
 
 #relations_panel_toggle:hover {
@@ -675,3 +712,6 @@ input[type="button"]:hover {
   cursor: default;
 }
 
+#relations_panel_toggle:active {
+  color: darkgreen;
+}

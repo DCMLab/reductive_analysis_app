@@ -481,7 +481,7 @@ stroke: black;
 .main_buttons {
   position: fixed;
   bottom: 0;
-  z-index: 2;
+  z-index: 10;
   width: 100vw;
   background: lightgray;
   color: black;
@@ -581,6 +581,7 @@ stroke: black;
 }
 
 #metadata_input_title {
+  width: max-content;
   transform: rotate(90deg);
   transform-origin: -2% 25%;
   color: black;

@@ -76,17 +76,17 @@
 	    <br>
 	  </div>
 	  <div id="main_buttons_content">
+	    <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
+	    <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
+	    <input type="file" id="fileupload" value="Load" onchange="load()" >
+	    <div id="player">
+	      <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
+	    </div>
 	    <div id="hull_controller_container">
 	      <input type="range" min="20" max="200" class="slider" id="hull_controller">
 	    </div>
 	    <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
 	    <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	    <div id="player">
-	      <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
-	    </div>
-	    <input type="file" id="fileupload" value="Load" onchange="load()" >
-	    <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
-	    <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
 	  </div>
 	</div>
 	<div id="metadata_input" class="metadata_input">

@@ -489,14 +489,19 @@ stroke: black;
   transition: left 0.2s;
   transition-delay: 1s;
   left: calc(-100% + 36px);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  align-content: center;
 }
 
 #player {
-  display: inline-block;
+  display: inline;
 }
 
 #midiPlayer_div {
   display: inline-block;
+  width: auto !important;
 }
 
 #hull_controller_container {
@@ -509,9 +514,17 @@ stroke: black;
   transition-delay: 0s;
 }
 
+#main_buttons_content {
+  order: 0;
+  flex-grow: 2;
+}
+
 #main_buttons_title {
- font-size: 48px;
- text-align: right;
+  order: 1;
+  font-size: 48px;
+  text-align: right;
+  overflow: hidden;
+  min-width: 3rem;
 }
 
 .view_buttons {

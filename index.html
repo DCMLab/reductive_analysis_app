@@ -71,30 +71,30 @@
 	<div id="selected_things"></div>
 	<div id="load_save" class="main_buttons">
 	  <div id="main_buttons_title">
-	  &#9881;
-	  <br>
+	    &#9881;
+	    <br>
 	  </div>
-	  <div id="hull_controller_container">
-	  <input type="range" min="20" max="200" class="slider" id="hull_controller">
+	  <div id="main_buttons_content">
+	    <div id="hull_controller_container">
+	      <input type="range" min="20" max="200" class="slider" id="hull_controller">
+	    </div>
+	    <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
+	    <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
+	    <div id="player">
+	      <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
+	    </div>
+	    <div id="meta_buttons" class="none">
+	      <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >
+	      <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
+	    </div>
+	    <input type="file" id="fileupload" value="Load" onchange="load()" >
+	    <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
+	    <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
 	  </div>
-	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
-	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	  <div id="player">
-	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
-	  </div>
-	  <div id="meta_buttons" class="none">
-	  <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >
-	  <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
-	  </div>
-
-
-	  <input type="file" id="fileupload" value="Load" onchange="load()" >
-	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
-	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
 	</div>
 	<div id="metadata_input" class="metadata_input">
 	  <div id="metadata_input_title">
-	  M E T A D A T A
+	    M E T A D A T A
 	  </div>
 	  Title: <input type="text" id="metadata_title" onfocus="texton()" onblur="update_metadata()"><br/>
 	  Composer: <input type="text" id="composer" onfocus="texton()" onblur="update_metadata()"><br/>

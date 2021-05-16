@@ -267,7 +267,7 @@ function add_filters(draw_context) {
   var zoomin = button("+");
   zoomin.classList.add("zoominbutton");
   zoomin.id = (draw_context.id_prefix+"zoominbutton");
-  var zoomout = button("—");
+  var zoomout = button("–");
   zoomout.classList.add("zoomoutbutton");
   zoomout.id = (draw_context.id_prefix+"zoomoutbutton");
   zoomin.onclick = () => { zoom_in(draw_context); };

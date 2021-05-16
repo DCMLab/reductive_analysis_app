@@ -487,6 +487,7 @@ stroke: black;
   color: black;
   backdrop-filter: blur(2px);
   transition: left 0.2s;
+  transition-delay: 1s;
   left: calc(-100% + 36px);
 }
 
@@ -505,6 +506,7 @@ stroke: black;
 .main_buttons:hover {
   transform: translateY(0);
   left: 0;
+  transition-delay: 0s;
 }
 
 #main_buttons_title {

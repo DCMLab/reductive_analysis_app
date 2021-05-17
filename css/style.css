@@ -24,6 +24,7 @@ body {
 #layers {
   width: fit-content;
   width: -moz-fit-content;
+  margin-bottom: 33vh;
 }
 
 .file-input {

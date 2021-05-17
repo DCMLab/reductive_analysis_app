@@ -24,7 +24,7 @@ var roundedHull1 = function (polyPoints, hullPadding) {
   // circle).
 
   var p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding];
-  var p2 = [polyPoints[0][0], polyPoints[0][1] + hullPadding];
+  var p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)];
 
   return 'M ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
     + ' A ' + [hullPadding, hullPadding, '0,0,0', p1].join(',');
@@ -84,7 +84,10 @@ var roundedHullN = function (polyPoints, hullPadding) {
 }
 
 
-function roundedHull(points, hullPadding=200) {
+function roundedHull(points) {
+
+  hullPadding = draw_contexts.hullPadding || 200;
+
   // Returns an SVG path for a rounded hull around the points
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking

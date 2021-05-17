@@ -115,7 +115,7 @@ function update_metadata() {
 
   // Get analyst element and set it to what's in the textfield
   var analyst = resps.querySelector("[role=analyst]");
-  analyst.innerHTML = document.getElementById("analyst").value;
+  analyst.innerHTML = document.getElementById("Analyst").value;
 
   // Get annotator element and set it to what's in the textfield
   var annotator = resps.querySelector("[role=annotator]");

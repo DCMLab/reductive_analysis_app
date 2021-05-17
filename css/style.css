@@ -665,6 +665,8 @@ margin-top: 0.5rem;
   text-align: center;
   top: 50vh;
   left: 10vw;
+  border: 1px solid;
+  border-color: white;
 }
 
 #relations_panel_header {

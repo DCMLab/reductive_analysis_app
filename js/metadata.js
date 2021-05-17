@@ -119,7 +119,7 @@ function update_metadata() {
 
   // Get annotator element and set it to what's in the textfield
   var annotator = resps.querySelector("[role=annotator]");
-  annotator.innerHTML = document.getElementById("annotator").value;
+  annotator.innerHTML = document.getElementById("Annotator").value;
 
   textoff();
 }

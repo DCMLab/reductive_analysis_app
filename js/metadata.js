@@ -17,7 +17,7 @@ function initialize_metadata() {
   // TODO: Try more places in the MEI
   var composer, resp, resps = titleStmt.getElementsByTagName("respStmt");
   if(resps.length == 0){
-    let resp = mei.createElement("respStmt");
+    resp = mei.createElement("respStmt");
     titleStmt.appendChild(resp);
   }else{
     resp = resps[0];

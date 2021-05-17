@@ -329,6 +329,19 @@ function handle_keyup(ev) {
     document.getElementById("custom_type").blur();
     document.getElementById("meta_custom_type").blur();
   }
+  if (ev.keyCode === 13) {
+    event.preventDefault();
+    if ($("#custom_type").is(":focus")) {
+      $("#customrelationbutton").click();
+      $("#customrelationbutton").addClass("button-checked");
+      window.setTimeout(()=>$("#customrelationbutton").removeClass("button-checked"), 1000);
+    }
+    if ($("#meta_custom_type").is(":focus")) {
+      $("#custommetarelationbutton").click();
+      $("#custommetarelationbutton").addClass("button-checked");
+      window.setTimeout(()=>$("#custommetarelationbutton").removeClass("button-checked"), 1000);
+    }
+  }
 }
 
 function handle_click(ev) {

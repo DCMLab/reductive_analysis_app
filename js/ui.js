@@ -364,7 +364,9 @@ function handle_keypress(ev) {
     do_metarelation(meta_keys[ev.key]);
   } else if (combo_keys[ev.key]) { // Add a relation
     do_comborelation(combo_keys[ev.key]);
-  }else {
+  } else if (ev.key == "-"){ // Toggle the relations palette
+    toggle_buttons();
+  } else {
     console.log(ev);
   }
 }

@@ -134,6 +134,7 @@ margin-left: .5rem;
 
 .view_buttons label {
 font-size: 12px;
+margin-left: 0.25rem;
 }
 
 @media screen and (min-width: 48em) {
@@ -615,6 +616,10 @@ input[type=text] {
   padding: 4px 4px 4px 12px;
   box-sizing: border-box;
   margin: 3px;
+}
+
+#sidebardiv input[type=checkbox] {
+  margin-left: 0.25rem;
 }
 
 textarea {

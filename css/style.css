@@ -575,7 +575,7 @@ stroke: black;
   color: black;
   position: fixed;
   top: 30px;
-  right: -452px;
+  right: -455px;
   padding: 1.5rem; 
   border-color: rgba(61, 61, 61, 0.5);
   border-right: none;
@@ -592,6 +592,7 @@ stroke: black;
 }
 
 #metadata_input_title {
+  margin: -5px;
   font-size: 16px;
   width: min-content;
   text-align: left;

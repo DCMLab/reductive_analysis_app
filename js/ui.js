@@ -333,9 +333,11 @@ function handle_keyup(ev) {
     event.preventDefault();
     if ($("#custom_type").is(":focus")) {
       $("#customrelationbutton").click();
+      document.getElementById("custom_type").blur();
     }
     if ($("#meta_custom_type").is(":focus")) {
       $("#custommetarelationbutton").click();
+      document.getElementById("meta_custom_type").blur();
     }
   }
 }

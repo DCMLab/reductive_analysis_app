@@ -99,6 +99,18 @@ function init_type(type) {
 }
 
 // Configured meta types need a button and a color each
+function combo_type(type) {
+  var elem = document.createElement("input");
+  elem.setAttribute("type","button");
+  elem.classList.add("comborelationbutton");
+  elem.setAttribute("id",type + "comborelationbutton");
+  elem.setAttribute("value","Add "+combo_conf[type].total+" comborelation " + "(" + combo_conf[type].key + ")");
+  elem.onclick = () => {do_comborelation(type);};
+  $("#combo_buttons")[0].appendChild(elem);
+  combo_keys[combo_conf[type].key] = type;
+}
+
+// Configured meta types need a button and a color each
 function meta_type(type) {
   console.debug("Using globals: document, shades_array, meta_shades, meta_keys, button_shades for conf");
   var elem = document.createElement("input");
@@ -121,6 +133,9 @@ function add_buttons(draw_context) {
   var newlayerbutton = button("Create new layer");
   newlayerbutton.classList.add("newlayerbutton");
   newlayerbutton.id = (draw_context.id_prefix+"newlayerbutton");
+  var slicecheck = checkbox("Sliced");
+  slicecheck.id = (draw_context.id_prefix+"slicedcb");
+  slicecheck.checked = false;
   var reducebutton = button("Reduce");
   reducebutton.classList.add("reducebutton");
   reducebutton.id = (draw_context.id_prefix+"reducebutton");
@@ -145,21 +160,65 @@ function add_buttons(draw_context) {
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
-  newlayerbutton.onclick = () =>{   create_new_layer(new_draw_context);}
+  newlayerbutton.onclick = () =>{ create_new_layer(new_draw_context,slicecheck.checked);}
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
   hidehierbutton.onclick = () =>{hide_hierarchy_graph(new_draw_context);}
-  buttondiv.appendChild(unreducebutton);
-  buttondiv.appendChild(reducebutton  );
-  buttondiv.appendChild(rerenderbutton);
-  buttondiv.appendChild(newlayerbutton);
-  buttondiv.appendChild(playbutton);
-  buttondiv.appendChild(hierbutton);
-  buttondiv.appendChild(hidehierbutton);
-  buttondiv.appendChild(hiercheck);
-  buttondiv.append("Draw roots low");
 
-  draw_context.view_elem.insertBefore(buttondiv, draw_context.view_elem.children[1]);
+  buttondiv.appendChild(document.createTextNode("\u25BC"));
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+
+  buttondiv.appendChild(unreducebutton);
+  buttondiv.appendChild(document.createElement("br"));
+
+  buttondiv.appendChild(reducebutton  );
+  buttondiv.appendChild(document.createElement("br"));
+
+  buttondiv.appendChild(rerenderbutton);
+  buttondiv.appendChild(document.createElement("br"));
+
+  buttondiv.appendChild(newlayerbutton);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(slicecheck);
+  var slice_label = document.createElement("label")
+  slice_label.htmlFor = draw_context.id_prefix+"slicedcb";
+  slice_label.appendChild(document.createTextNode("Sliced"));
+  buttondiv.append(slice_label);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+
+  buttondiv.appendChild(playbutton);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+
+  buttondiv.appendChild(hierbutton);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(hidehierbutton);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(hiercheck); 
+  var roots_low_label = document.createElement("label")
+  roots_low_label.htmlFor = draw_context.id_prefix+"hierarchycb";
+  roots_low_label.appendChild(document.createTextNode("Draw roots low"));
+  buttondiv.append(roots_low_label);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+
+  // Tree stuff
+  var treetext = document.createElement("textarea");
+  treetext.id = draw_context.id_prefix +"treeinput";
+  treetext.width="100px";
+  var treebutton = button("Align JSON tree: ");
+  treebutton.id = draw_context.id_prefix+"treebutton";
+  treebutton.onclick = () =>{draw_tree(new_draw_context);};
+  treetext.onfocus=texton;
+  treetext.onblur=textoff;
+  buttondiv.appendChild(treebutton);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(treetext); buttondiv.appendChild(document.createElement("br"));
+
+
+  draw_context.view_elem.children[0].appendChild(buttondiv);
 }
 
 function add_filter(draw_context, div, type, thing) {
@@ -189,11 +248,16 @@ function add_filter(draw_context, div, type, thing) {
 }
 
 function add_filters(draw_context) {
+  var sidebar = document.createElement("div");
+  sidebar.id = draw_context.id_prefix + "sidebardiv";
+  sidebar.classList.add("sidebar");
+  draw_context.view_elem.prepend(sidebar);
+
   var div = document.createElement("div");
   div.id = draw_context.id_prefix + "filterdiv";
   div.classList.add("filterdiv");
   div.innerHTML = "&#9776;<br/></br>"
-  draw_context.view_elem.prepend(div);
+  sidebar.prepend(div);
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));
   Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, "metarelation"));
@@ -298,6 +362,8 @@ function handle_keypress(ev) {
     do_relation(type_keys[ev.key]);
   } else if (meta_keys[ev.key]) { // Add a relation
     do_metarelation(meta_keys[ev.key]);
+  } else if (combo_keys[ev.key]) { // Add a relation
+    do_comborelation(combo_keys[ev.key]);
   }else {
     console.log(ev);
   }
@@ -405,9 +471,15 @@ function show_buttons() {
   $("#load_save")[0].classList.remove("hidden");
   $("#hidden_buttons")[0].classList.add("hidden");
 }
-function hide_buttons() {
-  $("#load_save")[0].classList.add("hidden");
-  $("#hidden_buttons")[0].classList.remove("hidden");
+
+function toggle_buttons() {
+  if (!$("#relations_panel").hasClass('collapsed')) {
+    $("#relations_panel").addClass('collapsed')
+    $("#relations_panel input").addClass('none');
+  } else {
+    $("#relations_panel").removeClass('collapsed')
+    $("#relations_panel input").removeClass('none');
+  }
 }
 
 function zoom_in(draw_context) {
@@ -438,3 +510,56 @@ function play_midi_reduction(draw_context=draw_contexts[0]) {
 
 }
 
+function handle_hull_controller() {
+  do_deselect();
+  $(".relation").remove();
+  $(".metarelation").remove(); 
+  var nodes_array = Array.from(mei_graph.getElementsByTagName("node"));
+  var relations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "relation";})
+  var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute("type") == "metarelation";})
+  draw_contexts.forEach(draw_context => {
+    relations_nodes.forEach((g_elem) => {
+      unmark_secondaries(draw_context,mei_graph,g_elem);
+    })
+  });
+  draw_contexts.hullPadding = $("#hull_controller").val();
+  draw_contexts.forEach(context => draw_graph(context));
+}
+
+
+function handle_relations_panel(el) {
+  var newX = 0, newY = 0, curX = 0, curY = 0;
+  if (document.getElementById(el.id + "_header")) {
+    document.getElementById(el.id + "_header").onmousedown = startDragging;
+  } else {
+    elmnt.onmousedown = startDragging;
+  }
+
+  function startDragging(e) {
+    e = e || window.event;
+    e.preventDefault();
+    curX = e.clientX;
+    curY = e.clientY;
+    document.onmouseup = stopDragging;
+    document.onmousemove = drag;
+  }
+
+  function drag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // calculate the new cursor position:
+    newX = curX - e.clientX;
+    newY = curY - e.clientY;
+    curX = e.clientX;
+    curY = e.clientY;
+    // set the element's new position:
+    el.style.top = (el.offsetTop - newY) + "px";
+    el.style.left = (el.offsetLeft - newX) + "px";
+  }
+
+  function stopDragging() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}

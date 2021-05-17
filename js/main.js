@@ -56,9 +56,13 @@ window.addEventListener("beforeunload", function (e) {
 $(document).ready(function() {
   Object.keys(type_conf).forEach(init_type);
   Object.keys(meta_conf).forEach(meta_type);
+  Object.keys(combo_conf).forEach(combo_type);
   toggle_shades();
   $("#player").midiPlayer({ color: "grey", width: 250 });
   $("#selected_things").hide();
+
+  $("#hull_controller").on('change', handle_hull_controller);
+  handle_relations_panel(document.getElementById("relations_panel"));
 });
 
 
@@ -103,6 +107,25 @@ function do_relation(type) {
     undo_actions.push(["relation",added.reverse(),selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select
   }
+}
+
+function do_comborelation(type) {
+  var all = selected.concat(extraselected);
+  if (all.length < 3 || extraselected.length > 2) { return;} 
+  all.sort((a,b) => {
+    var [ax,ay] = note_coords(a);
+    var [bx,by] = note_coords(b);
+    return ax - bx;
+  });
+  var fst = all.shift();
+  var snd = all.pop();
+  selected = selected.filter((e) => e == fst || e == snd);
+  do_relation(combo_conf[type].outer);
+  
+  extraselected = [fst,snd];
+  selected = all;
+  do_relation(combo_conf[type].total);
+
 }
 
 
@@ -342,6 +365,9 @@ function load_finish(e) {
   layer_contexts = [];
   document.getElementById("layers").innerHTML="";
 
+  $("#hull_controller").val(200);
+  draw_contexts.hullPadding = $("#hull_controller").val();
+
   // Segment existing layers
   var layers = Array.from(mei.getElementsByTagName("body")[0].getElementsByTagName("score"));
   for(let i in layers ){
@@ -433,8 +459,12 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
 
 }
 
-function create_new_layer(draw_context) {
-  var new_score_elem = new_layer(draw_context);
+function create_new_layer(draw_context,sliced =false) {
+  var new_score_elem;
+  if(sliced)
+    new_score_elem = new_sliced_layer(draw_context);
+  else
+    new_score_elem = new_layer(draw_context);
   let new_mei = mei_for_layer(mei, new_score_elem);
   var [new_data, new_svg] = render_mei(new_mei);
   if (!new_svg) {

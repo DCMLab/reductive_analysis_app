@@ -24,7 +24,7 @@ var roundedHull1 = function (polyPoints, hullPadding) {
   // circle).
 
   var p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding];
-  var p2 = [polyPoints[0][0], polyPoints[0][1] + hullPadding];
+  var p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)];
 
   return 'M ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
     + ' A ' + [hullPadding, hullPadding, '0,0,0', p1].join(',');
@@ -84,7 +84,10 @@ var roundedHullN = function (polyPoints, hullPadding) {
 }
 
 
-function roundedHull(points, hullPadding=200) {
+function roundedHull(points) {
+
+  hullPadding = draw_contexts.hullPadding || 200;
+
   // Returns an SVG path for a rounded hull around the points
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   newElement.setAttribute('fill', getRandomColor()); //TODO: Better colour picking
@@ -149,6 +152,19 @@ function circle(p,rad) {
   return newElement;
 }
 
+// Draw a rectangle at point p with width/height
+function rect(p,width, height) {
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+  newElement.setAttribute("x",p[0]);
+  newElement.setAttribute("y",p[1]);
+  newElement.setAttribute("width",width);
+  newElement.setAttribute("height",height);
+  newElement.style.stroke = "#000";
+  newElement.style.fill = "white";
+  newElement.style.strokeWidth = "15px"; 
+  return newElement;
+}
+
 // Draw a text at point p 
 function text(text,p) {
   var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'text');
@@ -193,9 +209,9 @@ function add_to_svg_fg(svg_elem,newElement) {
   parent.appendChild(newElement);
 }
 
-function g(svg_elem) {
+function g() {
   // Creates a new SVG g element
-  var newElement = svg_elem.getRootNode().createElementNS("http://www.w3.org/2000/svg", 'g');
+  var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'g');
   return newElement;
 }
 

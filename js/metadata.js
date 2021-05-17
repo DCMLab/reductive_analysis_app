@@ -44,7 +44,7 @@ function initialize_metadata() {
     analyst.setAttribute("role","analyst");
     analyst.setAttribute("xml:id","analyst");
     resp.appendChild(analyst);
-    add_resp_person_input("analyst");
+    add_resp_person_input("Analyst");
   }
   var annotator = resp.querySelector("[role=annotator]");
   if(annotator){
@@ -54,7 +54,7 @@ function initialize_metadata() {
     annotator.setAttribute("role","annotator");
     annotator.setAttribute("xml:id","annotator");
     resp.appendChild(annotator);
-    add_resp_person_input("annotator");
+    add_resp_person_input("Annotator");
   }
 }
 

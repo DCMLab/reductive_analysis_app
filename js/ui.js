@@ -333,13 +333,9 @@ function handle_keyup(ev) {
     event.preventDefault();
     if ($("#custom_type").is(":focus")) {
       $("#customrelationbutton").click();
-      $("#customrelationbutton").addClass("button-checked");
-      window.setTimeout(()=>$("#customrelationbutton").removeClass("button-checked"), 1000);
     }
     if ($("#meta_custom_type").is(":focus")) {
       $("#custommetarelationbutton").click();
-      $("#custommetarelationbutton").addClass("button-checked");
-      window.setTimeout(()=>$("#custommetarelationbutton").removeClass("button-checked"), 1000);
     }
   }
 }
@@ -590,3 +586,16 @@ function handle_relations_panel(el) {
     document.onmousemove = null;
   }
 }
+
+function enter_custom_relation() {
+  $("#customrelationbutton").addClass("button-checked");
+  window.setTimeout(()=>$("#customrelationbutton").removeClass("button-checked"), 1000);
+  do_relation($('#custom_type')[0].value);
+}
+
+function enter_custom_metarelation() {
+  $("#custommetarelationbutton").addClass("button-checked");
+  window.setTimeout(()=>$("#custommetarelationbutton").removeClass("button-checked"), 1000);
+  do_metarelation($("#meta_custom_type")[0].value);
+}
+

@@ -52,7 +52,7 @@ function toggle_selected(item,extra) {
         selected.push(item);
       }
     }
-  } else if(ci == "relation" || ci == "metarelation"){
+  } else if(ci == "relation" || ci == "metarelation") {
     //Relation selection
     if(selected.concat(extraselected).length == 0){
       // We're beginning to select relations
@@ -377,6 +377,10 @@ function handle_keypress(ev) {
     do_deselect();
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
+  } else if (ev.key == "R") {  // Custom relations.
+      document.getElementById("custom_type").focus({preventScroll: true});
+  } else if (ev.key == "M") {  // Custom meta-relations.
+      document.getElementById("meta_custom_type").focus({preventScroll: true});
   } else if (type_keys[ev.key]) { // Add a relation
     do_relation(type_keys[ev.key]);
   } else if (meta_keys[ev.key]) { // Add a relation
@@ -408,7 +412,7 @@ function toggle_he_selected(selecting) {
     document.getElementById("meta_buttons").classList.remove("none");
   else
     document.getElementById("meta_buttons").classList.add("none");
-}
+  }
 
 function update_text(){
   var primaries, secondaries;

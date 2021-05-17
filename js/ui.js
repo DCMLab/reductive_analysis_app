@@ -323,6 +323,12 @@ function handle_keyup(ev) {
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === "Shift")
     $('#layers').removeClass('shift-pressed')
+  // Use `Escape` to focus outside relations palette.
+  if (ev.key === "Escape") {
+    console.log('blur');
+    document.getElementById("custom_type").blur();
+    document.getElementById("meta_custom_type").blur();
+  }
 }
 
 function handle_click(ev) {

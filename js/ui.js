@@ -376,8 +376,12 @@ function handle_keypress(ev) {
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
   } else if (ev.key == "R") {  // Custom relations.
+      var was_collapsed = $("#relations_panel").hasClass("collapsed");
+      if (was_collapsed) toggle_buttons();
       document.getElementById("custom_type").focus({preventScroll: true});
   } else if (ev.key == "M") {  // Custom meta-relations.
+      var was_collapsed = $("#relations_panel").hasClass("collapsed");
+      if (was_collapsed) toggle_buttons();
       document.getElementById("meta_custom_type").focus({preventScroll: true});
   } else if (type_keys[ev.key]) { // Add a relation
     do_relation(type_keys[ev.key]);

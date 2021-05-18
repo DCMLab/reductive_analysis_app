@@ -52,7 +52,7 @@ function toggle_selected(item,extra) {
         selected.push(item);
       }
     }
-  } else if(ci == "relation" || ci == "metarelation"){
+  } else if(ci == "relation" || ci == "metarelation") {
     //Relation selection
     if(selected.concat(extraselected).length == 0){
       // We're beginning to select relations
@@ -336,6 +336,23 @@ function handle_keyup(ev) {
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === "Shift")
     $('#layers').removeClass('shift-pressed')
+  // Use `Escape` to focus outside relations palette.
+  if (ev.key === "Escape") {
+    console.log('blur');
+    document.getElementById("custom_type").blur();
+    document.getElementById("meta_custom_type").blur();
+  }
+  if (ev.keyCode === 13) {
+    event.preventDefault();
+    if ($("#custom_type").is(":focus")) {
+      $("#customrelationbutton").click();
+      document.getElementById("custom_type").blur();
+    }
+    if ($("#meta_custom_type").is(":focus")) {
+      $("#custommetarelationbutton").click();
+      document.getElementById("meta_custom_type").blur();
+    }
+  }
 }
 
 function handle_click(ev) {
@@ -371,6 +388,14 @@ function handle_keypress(ev) {
     do_deselect();
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
+  } else if (ev.key == "R") {  // Custom relations.
+      var was_collapsed = $("#relations_panel").hasClass("collapsed");
+      if (was_collapsed) toggle_buttons();
+      document.getElementById("custom_type").focus({preventScroll: true});
+  } else if (ev.key == "M") {  // Custom meta-relations.
+      var was_collapsed = $("#relations_panel").hasClass("collapsed");
+      if (was_collapsed) toggle_buttons();
+      document.getElementById("meta_custom_type").focus({preventScroll: true});
   } else if (type_keys[ev.key]) { // Add a relation
     do_relation(type_keys[ev.key]);
   } else if (meta_keys[ev.key]) { // Add a relation
@@ -402,7 +427,7 @@ function toggle_he_selected(selecting) {
     document.getElementById("meta_buttons").classList.remove("none");
   else
     document.getElementById("meta_buttons").classList.add("none");
-}
+  }
 
 function update_text(){
   var primaries, secondaries;
@@ -580,3 +605,16 @@ function handle_relations_panel(el) {
     document.onmousemove = null;
   }
 }
+
+function enter_custom_relation() {
+  $("#customrelationbutton").addClass("button-checked");
+  window.setTimeout(()=>$("#customrelationbutton").removeClass("button-checked"), 1000);
+  do_relation($('#custom_type')[0].value);
+}
+
+function enter_custom_metarelation() {
+  $("#custommetarelationbutton").addClass("button-checked");
+  window.setTimeout(()=>$("#custommetarelationbutton").removeClass("button-checked"), 1000);
+  do_metarelation($("#meta_custom_type")[0].value);
+}
+

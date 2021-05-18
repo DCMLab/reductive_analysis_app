@@ -101,7 +101,7 @@
 	</div>
 	<!-- Draggable relations panel -->
 	<div id="relations_panel">
-	  <div id="relations_panel_header"><div id="relations_panel_toggle" onclick="toggle_buttons()">&#9900;</div></div>
+	  <div id="relations_panel_header"><div id="relations_panel_toggle" title="Shortcut: '-'" onclick="toggle_buttons()">&#9900;</div></div>
 	  <div id="basic_buttons">
 	    <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
 	    <input type="button" id="deselectbutton" value="(d)eselect all" onclick="do_deselect()">
@@ -110,12 +110,12 @@
 	  </div>
 	  <div id="relation_buttons">
 	    <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("")" > 
-	    <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value)" >
+	    <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type (R):" onclick='enter_custom_relation()' >
 	    <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	    <br>
 	  </div>
 	  <div id="meta_buttons" class="none">
-	    <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >
+	    <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type (M):" onclick='enter_custom_metarelation()' >
 	    <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
 	  </div>
 	  <div id="combo_buttons">

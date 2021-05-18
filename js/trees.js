@@ -1,11 +1,11 @@
 
 
-function calculate_initial_y(node, min_dist) {
+function calculate_initial_y(node, baseline, min_dist) {
   if(node.children.length == 0){
-    node.y = 0;
+    node.y = baseline;
     return;
   }
-  node.children.forEach((n) => calculate_initial_y(n,min_dist));
+  node.children.forEach((n) => calculate_initial_y(n,baseline, min_dist));
   node.y = min_dist + (node.children.map((n) => n.y).reduce((a,b) => a>b ?  a:b));
 }
 
@@ -32,9 +32,9 @@ function calculate_x(node) {
   node.x = average(node.children.map((n) => n.x));
 }
 
-function align_tree(tree, min_dist = -500) {
+function place_tree(tree, baseline=0, min_dist = -500) {
   calculate_x(tree);
-  calculate_initial_y(tree, min_dist);
+  calculate_initial_y(tree, baseline, min_dist);
   adjust_y(tree, tree.y, min_dist);
 }
 
@@ -131,7 +131,7 @@ function find_x_tree(draw_context,tree){
 
 
 
-function draw_tree(draw_context, xmltree=undefined) {
+function draw_tree(draw_context, baseline=0, min_dist=-1000) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
 
@@ -182,8 +182,9 @@ function draw_tree(draw_context, xmltree=undefined) {
   }
 
 
-  align_tree(tree, min_dist);
-
+  if(!has_x_tree(tree))
+    find_x_tree(draw_context, tree);
+  place_tree(tree, baseline, min_dist);
 
   var tree_g = draw_node(tree);
 

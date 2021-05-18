@@ -223,53 +223,34 @@ function draw_tree(draw_context, baseline=0, min_dist=-1000) {
   // find top of system
   var svg_top = baseline;
 
-  var tree, tree_g = svg_elem.getRootNode().getElementById("tree"+id_prefix);
+  var tree_g = svg_elem.getRootNode().getElementById("tree"+id_prefix);
   var existing = tree_g ? true : false;
   if(existing)
     tree_g.parentNode.removeChild(tree_g);
 
-  if(!xmltree){
-    input = document.getElementById(id_prefix+"treeinput").value;
-    tree = JSON.parse(input);
-
-    // Extracting a list of x coordinates from a set of notes
-    var notelist = selected.concat(extraselected);
-    if(selected.length == 1){
-      if(selected[0].classList.contains("relation"))
-	notelist = relation_get_notes(selected[0]).map((n) => get_by_id(document,id_in_svg(draw_context,n.getAttribute("xml:id"))));
-    }else if (selected[0].classList.contains("metarelation")){
-      //Somehow calculate x-coordinates for relations and metarelations
-    }else if (selected.length > 1){
-      //Just use the selected notes
-    }else { //Test with all notes
-      notelist = Array.from(svg_elem.getElementsByClassName("note"));
-    } //TODO: once slicing is an option, try that.
-
-    var list = notelist.map((n) => [note_coords(n)[0],n]);
-
-
-    list.sort((a,b) => a[0] - b[0]);
-
-    var leaves = gather_leaves(tree);
-    if(leaves.length != list.length){
-      console.log("Wrong length of list, expected "+leaves.length+" got "+list.length);
+  var obj = get_tree_from_input(draw_context);
+  if(!obj){
+    console.log("No tree in input, attempting to load from XML");
+    load_tree(draw_context);
+    obj = get_tree_from_input(draw_context);
+    if(!obj)
       return;
-    }
-    for(i in leaves){
-      leaves[i].x = list[i][0];
-      leaves[i].note_id = list[i][1].getAttribute("xml:id");
-    }
-  }else{
-    tree = load_tree(xmltree);
-    find_x_tree(draw_context,tree);
   }
 
+  if(!is_aligned_tree(obj)){
+    //TODO: Allow non-aligned leaves
+    console.log("Tree not aligned, attempting to align to selection");
+    align_tree(draw_context);
+    obj = get_tree_from_input(draw_context);
+    if(!obj)
+      return;
+  }
 
-  if(!has_x_tree(tree))
-    find_x_tree(draw_context, tree);
-  place_tree(tree, baseline, min_dist);
+  if(!has_x_tree(obj))
+    find_x_tree(draw_context, obj);
+  place_tree(obj, baseline, min_dist);
 
-  var tree_g = draw_node(tree);
+  var tree_g = draw_node(obj);
 
   tree_g.id = "tree"+id_prefix;
 
@@ -281,7 +262,7 @@ function draw_tree(draw_context, baseline=0, min_dist=-1000) {
   // change viewport
   if(!existing){
     var [x,y,w,h] = svg_viewbox.split(" ");
-    var ydiff = -tree.y;
+    var ydiff = -obj.y;
     draw_context.old_viewbox = [x,y,w,h].join(" ");
     svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
    

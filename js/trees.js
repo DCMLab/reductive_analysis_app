@@ -131,7 +131,88 @@ function find_x_tree(draw_context,tree){
   tree.children.forEach((n) => find_x_tree(draw_context,n));
 }
 
+function load_tree(draw_context) {
+  var elem = mei.querySelector("eTree");
+  if(!elem){
+    console.log("No tree to load");
+    return;
+  }
+  var obj = xml_tree_to_obj(elem);
+  var str = JSON.stringify(obj);
+  var input = document.getElementById(draw_context.id_prefix+"treeinput");
+  input.value = str;
 
+}
+
+function get_tree_from_input(draw_context){
+  var input = document.getElementById(draw_context.id_prefix+"treeinput");
+  if(input.value == ""){
+    console.log("No tree to be parsed");
+    return;
+  }
+  var json = input.value;
+  var obj = JSON.parse(json);
+  if(!obj){
+    console.log("Failed to parse tree.");
+    return;
+  }
+  return obj;
+}
+
+function has_x_tree(obj) {
+  var leaves = gather_leaves(obj);
+  return leaves[0].hasOwnProperty("x");
+}
+
+function is_aligned_tree(obj) {
+  var leaves = gather_leaves(obj);
+  return leaves[0].hasOwnProperty("note_id");
+}
+
+function save_tree(draw_context) {
+  var obj = get_tree_from_input(draw_context);
+  if(!obj)
+    return;
+  var elem = obj_tree_to_xml(obj);
+  add_or_replace_tree(elem);
+}
+
+function align_tree(draw_context) {
+  var obj = get_tree_from_input(draw_context);
+  if(!obj)
+    return;
+
+  var input = document.getElementById(draw_context.id_prefix+"treeinput");
+  // Extracting a list of x coordinates from a set of notes
+  var notelist = selected.concat(extraselected);
+  if(selected.length == 0){
+    notelist = Array.from(draw_context.svg_elem.getElementsByClassName("note"));
+  }else if(selected.length == 1){
+    if(selected[0].classList.contains("relation"))
+      notelist = relation_get_notes(selected[0]).map((n) => get_by_id(document,id_in_svg(draw_context,n.getAttribute("xml:id"))));
+  }else if (selected[0].classList.contains("metarelation")){
+    //Somehow calculate x-coordinates for relations and metarelations
+  }else if (selected.length > 1){
+    //Just use the selected notes
+  }
+
+  var list = notelist.map((n) => [note_coords(n)[0],n]);
+
+
+  list.sort((a,b) => a[0] - b[0]);
+
+  var leaves = gather_leaves(obj);
+  if(leaves.length != list.length){
+    console.log("Wrong length of list, expected "+leaves.length+" got "+list.length);
+    return;
+  }
+  for(i in leaves){
+    leaves[i].x = list[i][0];
+    leaves[i].note_id = list[i][1].id;
+  }
+  var str = JSON.stringify(obj);
+  input.value = str;
+}
 
 function draw_tree(draw_context, baseline=0, min_dist=-1000) {
   var svg_elem = draw_context.svg_elem;

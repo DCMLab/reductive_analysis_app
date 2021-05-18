@@ -64,7 +64,7 @@ function draw_textbox(txt, padding=25) {
   txt.parentNode.insertBefore(text_rect,txt);
 }
 
-function get_subtree(json_tree) {
+function obj_tree_to_xml(json_tree) {
   var elem, elems;
 
   var lbl = mei.createElement("label");
@@ -80,7 +80,7 @@ function get_subtree(json_tree) {
     elem = mei.createElement("eLeaf");
   }else{
     elem = mei.createElement("eTree");
-    elems = json_tree.children.map(get_subtree);
+    elems = json_tree.children.map(obj_tree_to_xml);
   }
 
   elem.appendChild(lbl);
@@ -99,7 +99,7 @@ function add_tree(json_tree) {
   pNode.appendChild(tree);
 }
 
-function load_subtree(elem){
+function xml_subtree_to_obj(elem){
   var lbl = elem.children[0]; // The first child is the label
   var obj = {
     "label": lbl.textContent,
@@ -111,15 +111,15 @@ function load_subtree(elem){
   }
   var chlds = Array.from(elem.children);
   chlds.shift(); //Get rid of the label
-  obj.children = chlds.map(load_subtree);
+  obj.children = chlds.map(xml_subtree_to_obj);
   return obj;
 
 }
 
 
-function load_tree(elem) {
+function xml_tree_to_obj(elem) {
   //TODO: any preprocessing or checks
-  return load_subtree(elem);
+  return xml_subtree_to_obj(elem);
   // Return an Object with label, children, and x-align node IDs
 }
 

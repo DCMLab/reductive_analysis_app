@@ -92,11 +92,13 @@ function obj_tree_to_xml(json_tree) {
 }
 
 
-function add_tree(json_tree) {
+function add_or_replace_tree(elem) {
   var pNode = mei_graph.parentNode;
-  var tree = get_subtree(json_tree);
   // TODO: Add tree index/id/foo
-  pNode.appendChild(tree);
+  // For now, remove any previous tree
+  if(pNode.querySelector("eTree"))
+    pNode.removeChild(pNode.querySelector("eTree"));
+  pNode.appendChild(elem);
 }
 
 function xml_subtree_to_obj(elem){

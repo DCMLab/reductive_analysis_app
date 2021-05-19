@@ -212,6 +212,9 @@ function align_tree(draw_context) {
   }
   var str = JSON.stringify(obj);
   input.value = str;
+
+  if(draw_context.svg_elem.getRootNode().getElementById("tree"+draw_context.id_prefix))
+    draw_tree(draw_context);
 }
 
 function draw_tree(draw_context, baseline=0, min_dist=-1000) {

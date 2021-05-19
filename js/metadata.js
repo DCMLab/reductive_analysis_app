@@ -96,7 +96,7 @@ function update_metadata() {
   var meiHead = mei.getElementsByTagName("meiHead")[0];
   var fd = mei.getElementsByTagName("fileDesc")[0];
   var titleStmt = fd.getElementsByTagName("titleStmt")[0];
-  var resps = titleStmt.getElementsByTagName("respStmt")[0];
+  var resp = titleStmt.getElementsByTagName("respStmt")[0];
 
   // Get title element and set it to what's in the textfield
   var title, titles = titleStmt.getElementsByTagName("title");
@@ -104,16 +104,17 @@ function update_metadata() {
   title.innerHTML = document.getElementById("metadata_title").value;
 
   // Get composer element and set it to what's in the textfield
-  var composer = resps.querySelector("[role=composer]");
+  var composer = resp.querySelector("[role=composer]");
   composer.innerHTML = document.getElementById("composer").value;
 
-  // Get analyst element and set it to what's in the textfield
-  var analyst = resps.querySelector("[role=analyst]");
-  analyst.innerHTML = document.getElementById("Analyst").value;
+  var optionals =
+    document.getElementById("optional_metadata_input").querySelectorAll("[type=text]");
 
-  // Get annotator element and set it to what's in the textfield
-  var annotator = resps.querySelector("[role=annotator]");
-  annotator.innerHTML = document.getElementById("Annotator").value;
+  for(optional of optionals){
+    var mei_elem = get_by_id(mei,optional.id);
+    mei_elem.innerHTML = optional.value;
+  }
+
 
   textoff();
 }

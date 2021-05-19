@@ -1,11 +1,11 @@
 
 
-function calculate_initial_y(node, min_dist) {
+function calculate_initial_y(node, baseline, min_dist) {
   if(node.children.length == 0){
-    node.y = 0;
+    node.y = baseline;
     return;
   }
-  node.children.forEach((n) => calculate_initial_y(n,min_dist));
+  node.children.forEach((n) => calculate_initial_y(n,baseline, min_dist));
   node.y = min_dist + (node.children.map((n) => n.y).reduce((a,b) => a>b ?  a:b));
 }
 
@@ -32,9 +32,9 @@ function calculate_x(node) {
   node.x = average(node.children.map((n) => n.x));
 }
 
-function align_tree(tree, min_dist = -500) {
+function place_tree(tree, baseline=0, min_dist = -500) {
   calculate_x(tree);
-  calculate_initial_y(tree, min_dist);
+  calculate_initial_y(tree, baseline, min_dist);
   adjust_y(tree, tree.y, min_dist);
 }
 
@@ -64,7 +64,7 @@ function draw_textbox(txt, padding=25) {
   txt.parentNode.insertBefore(text_rect,txt);
 }
 
-function get_subtree(json_tree) {
+function obj_tree_to_xml(json_tree) {
   var elem, elems;
 
   var lbl = mei.createElement("label");
@@ -80,7 +80,7 @@ function get_subtree(json_tree) {
     elem = mei.createElement("eLeaf");
   }else{
     elem = mei.createElement("eTree");
-    elems = json_tree.children.map(get_subtree);
+    elems = json_tree.children.map(obj_tree_to_xml);
   }
 
   elem.appendChild(lbl);
@@ -92,14 +92,16 @@ function get_subtree(json_tree) {
 }
 
 
-function add_tree(json_tree) {
+function add_or_replace_tree(elem) {
   var pNode = mei_graph.parentNode;
-  var tree = get_subtree(json_tree);
   // TODO: Add tree index/id/foo
-  pNode.appendChild(tree);
+  // For now, remove any previous tree
+  if(pNode.querySelector("eTree"))
+    pNode.removeChild(pNode.querySelector("eTree"));
+  pNode.appendChild(elem);
 }
 
-function load_subtree(elem){
+function xml_subtree_to_obj(elem){
   var lbl = elem.children[0]; // The first child is the label
   var obj = {
     "label": lbl.textContent,
@@ -111,15 +113,15 @@ function load_subtree(elem){
   }
   var chlds = Array.from(elem.children);
   chlds.shift(); //Get rid of the label
-  obj.children = chlds.map(load_subtree);
+  obj.children = chlds.map(xml_subtree_to_obj);
   return obj;
 
 }
 
 
-function load_tree(elem) {
+function xml_tree_to_obj(elem) {
   //TODO: any preprocessing or checks
-  return load_subtree(elem);
+  return xml_subtree_to_obj(elem);
   // Return an Object with label, children, and x-align node IDs
 }
 
@@ -129,9 +131,93 @@ function find_x_tree(draw_context,tree){
   tree.children.forEach((n) => find_x_tree(draw_context,n));
 }
 
+function load_tree(draw_context) {
+  var elem = mei.querySelector("eTree");
+  if(!elem){
+    console.log("No tree to load");
+    return;
+  }
+  var obj = xml_tree_to_obj(elem);
+  var str = JSON.stringify(obj);
+  var input = document.getElementById(draw_context.id_prefix+"treeinput");
+  input.value = str;
+
+}
+
+function get_tree_from_input(draw_context){
+  var input = document.getElementById(draw_context.id_prefix+"treeinput");
+  if(input.value == ""){
+    console.log("No tree to be parsed");
+    return;
+  }
+  var json = input.value;
+  var obj = JSON.parse(json);
+  if(!obj){
+    console.log("Failed to parse tree.");
+    return;
+  }
+  return obj;
+}
+
+function has_x_tree(obj) {
+  var leaves = gather_leaves(obj);
+  return leaves[0].hasOwnProperty("x");
+}
+
+function is_aligned_tree(obj) {
+  var leaves = gather_leaves(obj);
+  return leaves[0].hasOwnProperty("note_id");
+}
+
+function save_tree(draw_context) {
+  var obj = get_tree_from_input(draw_context);
+  if(!obj)
+    return;
+  var elem = obj_tree_to_xml(obj);
+  add_or_replace_tree(elem);
+}
+
+function align_tree(draw_context) {
+  var obj = get_tree_from_input(draw_context);
+  if(!obj)
+    return;
+
+  var input = document.getElementById(draw_context.id_prefix+"treeinput");
+  // Extracting a list of x coordinates from a set of notes
+  var notelist = selected.concat(extraselected);
+  if(selected.length == 0){
+    notelist = Array.from(draw_context.svg_elem.getElementsByClassName("note"));
+  }else if(selected.length == 1){
+    if(selected[0].classList.contains("relation"))
+      notelist = relation_get_notes(selected[0]).map((n) => get_by_id(document,id_in_svg(draw_context,n.getAttribute("xml:id"))));
+  }else if (selected[0].classList.contains("metarelation")){
+    //Somehow calculate x-coordinates for relations and metarelations
+  }else if (selected.length > 1){
+    //Just use the selected notes
+  }
+
+  var list = notelist.map((n) => [note_coords(n)[0],n]);
 
 
-function draw_tree(draw_context, xmltree=undefined) {
+  list.sort((a,b) => a[0] - b[0]);
+
+  var leaves = gather_leaves(obj);
+  if(leaves.length != list.length){
+    console.log("Wrong length of list, expected "+leaves.length+" got "+list.length);
+    return;
+  }
+  for(i in leaves){
+    leaves[i].x = list[i][0];
+    leaves[i].note_id = list[i][1].id;
+  }
+  var str = JSON.stringify(obj);
+  input.value = str;
+
+  if(draw_context.svg_elem.getRootNode().getElementById("tree"+draw_context.id_prefix))
+    draw_tree(draw_context);
+}
+
+function draw_tree(draw_context, baseline=0, min_dist=-1000) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
 
@@ -140,52 +226,34 @@ function draw_tree(draw_context, xmltree=undefined) {
   // find top of system
   var svg_top = baseline;
 
-  var tree, tree_g = svg_elem.getRootNode().getElementById("tree"+id_prefix);
+  var tree_g = svg_elem.getRootNode().getElementById("tree"+id_prefix);
   var existing = tree_g ? true : false;
   if(existing)
     tree_g.parentNode.removeChild(tree_g);
 
-  if(!xmltree){
-    input = document.getElementById(id_prefix+"treeinput").value;
-    tree = JSON.parse(input);
-
-    // Extracting a list of x coordinates from a set of notes
-    var notelist = selected.concat(extraselected);
-    if(selected.length == 1){
-      if(selected[0].classList.contains("relation"))
-	notelist = relation_get_notes(selected[0]).map((n) => get_by_id(document,id_in_svg(draw_context,n.getAttribute("xml:id"))));
-    }else if (selected[0].classList.contains("metarelation")){
-      //Somehow calculate x-coordinates for relations and metarelations
-    }else if (selected.length > 1){
-      //Just use the selected notes
-    }else { //Test with all notes
-      notelist = Array.from(svg_elem.getElementsByClassName("note"));
-    } //TODO: once slicing is an option, try that.
-
-    var list = notelist.map((n) => [note_coords(n)[0],n]);
-
-
-    list.sort((a,b) => a[0] - b[0]);
-
-    var leaves = gather_leaves(tree);
-    if(leaves.length != list.length){
-      console.log("Wrong length of list, expected "+leaves.length+" got "+list.length);
+  var obj = get_tree_from_input(draw_context);
+  if(!obj){
+    console.log("No tree in input, attempting to load from XML");
+    load_tree(draw_context);
+    obj = get_tree_from_input(draw_context);
+    if(!obj)
       return;
-    }
-    for(i in leaves){
-      leaves[i].x = list[i][0];
-      leaves[i].note_id = list[i][1].getAttribute("xml:id");
-    }
-  }else{
-    tree = load_tree(xmltree);
-    find_x_tree(draw_context,tree);
   }
 
+  if(!is_aligned_tree(obj)){
+    //TODO: Allow non-aligned leaves
+    console.log("Tree not aligned, attempting to align to selection");
+    align_tree(draw_context);
+    obj = get_tree_from_input(draw_context);
+    if(!obj)
+      return;
+  }
 
-  align_tree(tree, min_dist);
+  if(!has_x_tree(obj))
+    find_x_tree(draw_context, obj);
+  place_tree(obj, baseline, min_dist);
 
-
-  var tree_g = draw_node(tree);
+  var tree_g = draw_node(obj);
 
   tree_g.id = "tree"+id_prefix;
 
@@ -197,7 +265,7 @@ function draw_tree(draw_context, xmltree=undefined) {
   // change viewport
   if(!existing){
     var [x,y,w,h] = svg_viewbox.split(" ");
-    var ydiff = -tree.y;
+    var ydiff = -obj.y;
     draw_context.old_viewbox = [x,y,w,h].join(" ");
     svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
    

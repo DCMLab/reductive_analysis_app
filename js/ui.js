@@ -208,14 +208,27 @@ function add_buttons(draw_context) {
   var treetext = document.createElement("textarea");
   treetext.id = draw_context.id_prefix +"treeinput";
   treetext.width="100px";
-  var treebutton = button("Align JSON tree: ");
-  treebutton.id = draw_context.id_prefix+"treebutton";
-  treebutton.onclick = () =>{draw_tree(new_draw_context);};
+  var loadtreebutton = button("Load tree");
+  loadtreebutton.id = draw_context.id_prefix+"treebutton";
+  loadtreebutton.onclick = () =>{load_tree(new_draw_context);};
+  var savetreebutton = button("Save tree");
+  savetreebutton.id = draw_context.id_prefix+"treebutton";
+  savetreebutton.onclick = () =>{save_tree(new_draw_context);};
+  var drawtreebutton = button("Draw tree: ");
+  drawtreebutton.id = draw_context.id_prefix+"treebutton";
+  drawtreebutton.onclick = () =>{draw_tree(new_draw_context);};
+  var aligntreebutton = button("Align tree to selection");
+  aligntreebutton.id = draw_context.id_prefix+"treebutton";
+  aligntreebutton.onclick = () =>{align_tree(new_draw_context);};
   treetext.onfocus=texton;
   treetext.onblur=textoff;
-  buttondiv.appendChild(treebutton);
+  buttondiv.appendChild(drawtreebutton);
   buttondiv.appendChild(document.createElement("br"));
   buttondiv.appendChild(treetext); buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(aligntreebutton);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(loadtreebutton);
+  buttondiv.appendChild(savetreebutton);
 
 
   draw_context.view_elem.children[0].appendChild(buttondiv);
@@ -376,10 +389,12 @@ function handle_keypress(ev) {
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
   } else if (ev.key == "R") {  // Custom relations.
+      ev.preventDefault();
       var was_collapsed = $("#relations_panel").hasClass("collapsed");
       if (was_collapsed) toggle_buttons();
       document.getElementById("custom_type").focus({preventScroll: true});
   } else if (ev.key == "M") {  // Custom meta-relations.
+      ev.preventDefault();
       var was_collapsed = $("#relations_panel").hasClass("collapsed");
       if (was_collapsed) toggle_buttons();
       document.getElementById("meta_custom_type").focus({preventScroll: true});

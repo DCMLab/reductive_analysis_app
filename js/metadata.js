@@ -58,10 +58,10 @@ function initialize_metadata() {
   }
 }
 
-function metadata_textinput(role){
+function metadata_textinput(role, id){
   var input = document.createElement("input");
   input.setAttribute("type","text");
-  input.setAttribute("id",role);
+  input.setAttribute("id",id);
   input.onfocus = texton;
   input.onblur = update_metadata;
   return input;
@@ -82,7 +82,7 @@ function add_resp_person_input(role,id="",value=""){
     id = role;
   var div = document.getElementById("optional_metadata_input");
   div.append(capitalize(role)+": ");
-  var ti = metadata_textinput(role);
+  var ti = metadata_textinput(role, id);
   ti.value = value;
   div.appendChild(ti);
   div.append(metadata_respassign(role,id));

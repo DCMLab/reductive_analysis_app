@@ -88,12 +88,6 @@ function add_resp_person_input(role,id="",value=""){
   div.append(metadata_respassign(role,id));
   div.appendChild(document.createElement("br"));
   
-/*
-	  Analyst: <input type="text" id="analyst" onfocus="texton()" onblur="update_metadata()">
-	           <input type="button" id="analyst_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"analyst\")" /><br/>
-	  Annotator: <input type="text" id="annotator" onfocus="texton()" onblur="update_metadata()">
-	           <input type="button" id="annotator_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"annotator\")" /><br/>
-*/
 }
 
 

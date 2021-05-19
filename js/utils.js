@@ -128,6 +128,10 @@ function getRandomShade(colour) {
   return shade+'88'; //Semitransparency
 }
 
+function capitalize(str) {
+  return str.charAt(0).toUpperCase()+str.slice(1);
+}
+
 
 // Draw a line between points p1 and p2
 function line(p1,p2) {

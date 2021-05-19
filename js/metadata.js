@@ -36,26 +36,27 @@ function initialize_metadata() {
   var optionals = document.getElementById("optional_metadata_input");
   optionals.innerHTML="";
 
-  var analyst = resp.querySelector("[role=analyst]");
-  if(analyst){
-    add_resp_person_input("analyst",analyst.getAttribute("xml:id"),analyst.innerHTML);
-  } else{
-    analyst = mei.createElement("persName");
-    analyst.setAttribute("role","analyst");
-    analyst.setAttribute("xml:id","analyst");
-    resp.appendChild(analyst);
-    add_resp_person_input("analyst");
+  var roles = resp.querySelectorAll("[role]");
+  var conf_roles = optional_resp_roles;
+
+  for(role of roles) {
+    var role_str = role.getAttribute("role");
+    if(role_str == "composer")
+      continue;
+    add_resp_person_input(role.getAttribute("role"),role.getAttribute("xml:id"),role.innerHTML);
+    // No need to add the same role twice
+    conf_roles = conf_roles.filter((s) => s != role_str);
   }
-  var annotator = resp.querySelector("[role=annotator]");
-  if(annotator){
-    add_resp_person_input("annotator",annotator.getAttribute("xml:id"),annotator.innerHTML);
-  } else{
-    annotator = mei.createElement("persName");
-    annotator.setAttribute("role","annotator");
-    annotator.setAttribute("xml:id","annotator");
-    resp.appendChild(annotator);
-    add_resp_person_input("annotator");
+  for(role of conf_roles) {
+    mei_role = mei.createElement("persName");
+    mei_role.setAttribute("role",role);
+    mei_role.setAttribute("xml:id",role);
+    resp.appendChild(mei_role);
+    add_resp_person_input(role);
   }
+
+
+
 }
 
 function metadata_textinput(role, id){

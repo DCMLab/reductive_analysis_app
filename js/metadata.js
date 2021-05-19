@@ -44,7 +44,7 @@ function initialize_metadata() {
     analyst.setAttribute("role","analyst");
     analyst.setAttribute("xml:id","analyst");
     resp.appendChild(analyst);
-    add_resp_person_input("Analyst");
+    add_resp_person_input("analyst");
   }
   var annotator = resp.querySelector("[role=annotator]");
   if(annotator){
@@ -54,7 +54,7 @@ function initialize_metadata() {
     annotator.setAttribute("role","annotator");
     annotator.setAttribute("xml:id","annotator");
     resp.appendChild(annotator);
-    add_resp_person_input("Annotator");
+    add_resp_person_input("annotator");
   }
 }
 
@@ -81,7 +81,7 @@ function add_resp_person_input(role,id="",value=""){
   if(!id)
     id = role;
   var div = document.getElementById("optional_metadata_input");
-  div.append(role+": ");
+  div.append(capitalize(role)+": ");
   var ti = metadata_textinput(role);
   ti.value = value;
   div.appendChild(ti);

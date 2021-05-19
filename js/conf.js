@@ -43,6 +43,10 @@ try {
   }
 
 
+  var optional_resp_roles = [
+    "analyst", "annotator"
+  ]
+
 
 
   var hide_classes = [

@@ -17,7 +17,7 @@ function initialize_metadata() {
   // TODO: Try more places in the MEI
   var composer, resp, resps = titleStmt.getElementsByTagName("respStmt");
   if(resps.length == 0){
-    let resp = mei.createElement("respStmt");
+    resp = mei.createElement("respStmt");
     titleStmt.appendChild(resp);
   }else{
     resp = resps[0];
@@ -36,32 +36,33 @@ function initialize_metadata() {
   var optionals = document.getElementById("optional_metadata_input");
   optionals.innerHTML="";
 
-  var analyst = resp.querySelector("[role=analyst]");
-  if(analyst){
-    add_resp_person_input("analyst",analyst.getAttribute("xml:id"),analyst.innerHTML);
-  } else{
-    analyst = mei.createElement("persName");
-    analyst.setAttribute("role","analyst");
-    analyst.setAttribute("xml:id","analyst");
-    resp.appendChild(analyst);
-    add_resp_person_input("Analyst");
+  var roles = resp.querySelectorAll("[role]");
+  var conf_roles = optional_resp_roles;
+
+  for(role of roles) {
+    var role_str = role.getAttribute("role");
+    if(role_str == "composer")
+      continue;
+    add_resp_person_input(role.getAttribute("role"),role.getAttribute("xml:id"),role.innerHTML);
+    // No need to add the same role twice
+    conf_roles = conf_roles.filter((s) => s != role_str);
   }
-  var annotator = resp.querySelector("[role=annotator]");
-  if(annotator){
-    add_resp_person_input("annotator",annotator.getAttribute("xml:id"),annotator.innerHTML);
-  } else{
-    annotator = mei.createElement("persName");
-    annotator.setAttribute("role","annotator");
-    annotator.setAttribute("xml:id","annotator");
-    resp.appendChild(annotator);
-    add_resp_person_input("Annotator");
+  for(role of conf_roles) {
+    mei_role = mei.createElement("persName");
+    mei_role.setAttribute("role",role);
+    mei_role.setAttribute("xml:id",role);
+    resp.appendChild(mei_role);
+    add_resp_person_input(role);
   }
+
+
+
 }
 
-function metadata_textinput(role){
+function metadata_textinput(role, id){
   var input = document.createElement("input");
   input.setAttribute("type","text");
-  input.setAttribute("id",role);
+  input.setAttribute("id",id);
   input.onfocus = texton;
   input.onblur = update_metadata;
   return input;
@@ -81,19 +82,13 @@ function add_resp_person_input(role,id="",value=""){
   if(!id)
     id = role;
   var div = document.getElementById("optional_metadata_input");
-  div.append(role+": ");
-  var ti = metadata_textinput(role);
+  div.append(capitalize(role)+": ");
+  var ti = metadata_textinput(role, id);
   ti.value = value;
   div.appendChild(ti);
   div.append(metadata_respassign(role,id));
   div.appendChild(document.createElement("br"));
   
-/*
-	  Analyst: <input type="text" id="analyst" onfocus="texton()" onblur="update_metadata()">
-	           <input type="button" id="analyst_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"analyst\")" /><br/>
-	  Annotator: <input type="text" id="annotator" onfocus="texton()" onblur="update_metadata()">
-	           <input type="button" id="annotator_respassign" value="Assign responsibility" onclick="assign_responsibility_selected(\"annotator\")" /><br/>
-*/
 }
 
 
@@ -102,7 +97,7 @@ function update_metadata() {
   var meiHead = mei.getElementsByTagName("meiHead")[0];
   var fd = mei.getElementsByTagName("fileDesc")[0];
   var titleStmt = fd.getElementsByTagName("titleStmt")[0];
-  var resps = titleStmt.getElementsByTagName("respStmt")[0];
+  var resp = titleStmt.getElementsByTagName("respStmt")[0];
 
   // Get title element and set it to what's in the textfield
   var title, titles = titleStmt.getElementsByTagName("title");
@@ -110,16 +105,17 @@ function update_metadata() {
   title.innerHTML = document.getElementById("metadata_title").value;
 
   // Get composer element and set it to what's in the textfield
-  var composer = resps.querySelector("[role=composer]");
+  var composer = resp.querySelector("[role=composer]");
   composer.innerHTML = document.getElementById("composer").value;
 
-  // Get analyst element and set it to what's in the textfield
-  var analyst = resps.querySelector("[role=analyst]");
-  analyst.innerHTML = document.getElementById("Analyst").value;
+  var optionals =
+    document.getElementById("optional_metadata_input").querySelectorAll("[type=text]");
 
-  // Get annotator element and set it to what's in the textfield
-  var annotator = resps.querySelector("[role=annotator]");
-  annotator.innerHTML = document.getElementById("annotator").value;
+  for(optional of optionals){
+    var mei_elem = get_by_id(mei,optional.id);
+    mei_elem.innerHTML = optional.value;
+  }
+
 
   textoff();
 }

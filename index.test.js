@@ -80,7 +80,6 @@ describe('reductive_analysis_test_suite', () => {
     button_test('customrelationbutton', {'class': 'relationbutton'});
     button_test('midibutton');
     button_test('midireducebutton');
-    button_test('hidebutton');
     button_test('downloadbutton');
     button_test('svgdownloadbutton');
     button_test('equalizebutton');
@@ -345,6 +344,10 @@ describe('reductive_analysis_test_suite', () => {
     log('Re-created test relation.')
 
     // Find and click the reduce button
+
+    // First we need to get the reducebutton to be shown
+    var buttons_id = "view_buttons";
+    await expect(page).toClick(`#${buttons_id}`);
     var reducebutton_id = "reducebutton";
     await expect(page).toClick(`#${reducebutton_id}`);
 

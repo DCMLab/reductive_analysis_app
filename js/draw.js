@@ -100,7 +100,7 @@ function draw_metarelation(draw_context, mei_graph, g_elem) {
 
   coords.push([x,y]);
   // We make a group
-  var g_elem = g(svg_elem);
+  var g_elem = g();
   g_elem.setAttribute("id",id);
   g_elem.classList.add("metarelation");
   //TODO: Use classlist for types

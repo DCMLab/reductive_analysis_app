@@ -22,10 +22,14 @@
 	<script src="js/delete.js" type="text/javascript"></script>
 	<script src="js/reductions.js" type="text/javascript"></script>
 	<script src="js/layers.js" type="text/javascript"></script>
+	<script src="js/trees.js" type="text/javascript"></script>
+	<script src="js/slicing.js" type="text/javascript"></script>
 	<script src="js/coordinates.js" type="text/javascript"></script>
 	<script src="js/visualizations.js" type="text/javascript"></script>
+	<script src="js/metadata.js" type="text/javascript"></script>
 	<script src="js/ui.js" type="text/javascript"></script>
 	<script src="js/conf.js" type="text/javascript"></script>
+	<link type="text/css" rel="stylesheet" href="css/normalize.css" >
 	<link type="text/css" rel="stylesheet" href="css/style.css" >
 	<link type="text/css" rel="stylesheet" href="css/midiplayer.css" >
     </head>
@@ -66,35 +70,57 @@
         <script src="js/main.js" type="text/javascript">
 	</script>
 	<div id="selected_things"></div>
-	<div id="hidden_buttons" class="main_buttons hidden">
-	<input type=button id="showbutton" value="Show" onclick="show_buttons()">
-	</div>
 	<div id="load_save" class="main_buttons">
-	  <div id="player"></div>
-	  <div id="meta_buttons" class="none">
-	  <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick="do_metarelation($('#meta_custom_type')[0].value)" >
-	  <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
+	  <div id="main_buttons_title">
+	    &#9881;
+	    <br>
 	  </div>
-	  <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
-	  <input type="button" id="deselectbutton" value="(d)eselect all" onclick="do_deselect()">
-	  <input type="button" id="deletebutton" value="(D)elete (meta)relations" onclick="delete_relations()" >
-	  <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("")" > 
-	  <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick="do_relation($('#custom_type')[0].value)" >
-	  <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
-	  <input type="button" id="addnoteputton" value="Toggle adding a note" onclick="toggle_placing_note()"/>
-	  <div id="relation_buttons">
+	  <div id="main_buttons_content">
+	    <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
+	    <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
+	    <input type="file" id="fileupload" value="Load" onchange="load()" >
+	    <div id="player">
+	      <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
+	    </div>
+	    <div id="hull_controller_container">
+	      <input type="range" min="20" max="200" class="slider" id="hull_controller">
+	    </div>
+	    <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
+	    <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
 	  </div>
-	  <input type="button" id="hidebutton" value="Hide" onclick="hide_buttons()">
-	  <input type="file" id="fileupload" value="Load" onchange="load()" >
-	  <input type="button" id="downloadbutton" value="Save" onclick="save_orig()" >
-	  <input type="button" id="svgdownloadbutton" value="Save SVG" onclick="savesvg()" >
-	  <input type="button" id="equalizebutton" value="Toggle (s)tems etc." onclick="toggle_equalize()" >
-	  <input type="button" id="shadesbutton" value="Toggle type s(h)ades." onclick="toggle_shades()" >
-	  <input type="button" id="midibutton" value="Play original" onclick="play_midi()" >
-
 	</div>
-
-
+	<div id="metadata_input" class="metadata_input">
+	  <div id="metadata_input_title">
+	    METADATA
+	  </div>
+	  <br>
+	  Title: <input type="text" id="metadata_title" onfocus="texton()" onblur="update_metadata()"><br/>
+	  Composer: <input type="text" id="composer" onfocus="texton()" onblur="update_metadata()"><br/>
+	  <div id="optional_metadata_input">
+	  </div>
+	</div>
+	<!-- Draggable relations panel -->
+	<div id="relations_panel">
+	  <div id="relations_panel_header"><div id="relations_panel_toggle" title="Shortcut: '-'" onclick="toggle_buttons()">&#9900;</div></div>
+	  <div id="basic_buttons">
+	    <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
+	    <input type="button" id="deselectbutton" value="(d)eselect all" onclick="do_deselect()">
+	    <input type="button" id="deletebutton" value="(D)elete (meta)relations" onclick="delete_relations()" >
+	    <input type="button" id="addnoteputton" value="Toggle adding a note" onclick="toggle_placing_note()"/>
+	  </div>
+	  <div id="relation_buttons">
+	    <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("")" > 
+	    <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type (R):" onclick='enter_custom_relation()' >
+	    <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
+	    <br>
+	  </div>
+	  <div id="meta_buttons" class="none">
+	    <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type (M):" onclick='enter_custom_metarelation()' >
+	    <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
+	  </div>
+	  <div id="combo_buttons">
+	  </div>
+	</div>
         <!--//////////////////////////////////////////////-->
         <!-- The div where we are going to insert the SVG -->
         <!--//////////////////////////////////////////////-->

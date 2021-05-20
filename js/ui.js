@@ -566,6 +566,10 @@ function handle_hull_controller() {
   });
   draw_contexts.hullPadding = $("#hull_controller").val();
   draw_contexts.forEach(context => draw_graph(context));
+  draw_contexts.forEach(context => {
+      if(context.svg_elem.getRootNode().getElementById("hier"+context.id_prefix))
+	draw_hierarchy_graph(context); 
+      });
 }
 
 

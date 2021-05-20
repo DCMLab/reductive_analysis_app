@@ -6,15 +6,21 @@ exports[`reductive_analysis_test_suite should produce a convincing <mei> object 
         <fileDesc>
             <titleStmt>
                 <title/>
-                <respStmt/>
+                <respStmt>
+                    <persName xmlns="" role="composer" xml:id="composer"/>
+                    <persName xmlns="" role="analyst" xml:id="analyst"/>
+                    <persName xmlns="" role="annotator" xml:id="annotator"/>
+                </respStmt>
             </titleStmt>
             <pubStmt>
-                <availability/>
+                <date isodate="2012-03-26" type="encoding-date">
+                    2012-03-26
+                </date>
             </pubStmt>
         </fileDesc>
         <encodingDesc>
             <appInfo>
-                <application version="3.0.2-52c6846">
+                <application version="3.3.0-e62c7d5">
                     <name>
                         Verovio
                     </name>
@@ -31,13 +37,23 @@ exports[`reductive_analysis_test_suite should produce a convincing <mei> object 
                 <score>
                     <scoreDef>
                         <staffGrp>
-                            <staffGrp symbol="brace" thru="true" channel="0" instrnum="0" m="0" volume="78.00%" n="1">
-                                <staffDef n="1" lines="5" ppq="2" shape="G" line="2" mode="major" sig="2s" count="3" t="3" unit="4" it="4"/>
-                                <staffDef n="2" lines="5" ppq="2" shape="F" line="4" mode="major" sig="2s" count="3" t="3" unit="4" it="4"/>
+                            <staffGrp xml:id="P1" thru="true" channel="0" instrnum="0" m="0" volume="78.00%" n="1">
+                                <staffDef n="1" lines="5" ppq="2">
+                                    <clef shape="G" line="2"/>
+                                    <keySig mode="major" sig="2s"/>
+                                    <meterSig count="3" unit="4"/>
+                                </staffDef>
+                                <staffDef n="2" lines="5" ppq="2">
+                                    <clef shape="F" line="4"/>
+                                    <keySig mode="major" sig="2s"/>
+                                    <meterSig count="3" unit="4"/>
+                                </staffDef>
+                                <grpSym symbol="brace"/>
                             </staffGrp>
                         </staffGrp>
                     </scoreDef>
                     <section>
+                        <pb/>
                         <measure n="0">
                             <mNum/>
                             <staff n="1">
@@ -101,9 +117,9 @@ exports[`reductive_analysis_test_suite should produce a convincing <mei> object 
 `;
 
 exports[`reductive_analysis_test_suite should produce a convincing SVG (using Jest snapshots) 1`] = `
-<svg width="957px" height="488px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mei="http://www.music-encoding.org/ns/mei" overflow="visible">
+<svg width="957px" height="584px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mei="http://www.music-encoding.org/ns/mei" overflow="visible">
     <desc>
-        Engraved by Verovio 3.0.2-52c6846
+        Engraved by Verovio 3.3.0-e62c7d5
     </desc>
     <defs>
         <symbol id="E050" viewBox="0 0 1000 1000" overflow="inherit">
@@ -134,16 +150,16 @@ exports[`reductive_analysis_test_suite should produce a convincing SVG (using Je
     <style type="text/css">
         g.page-margin{font-family:Times;} g.reh, g.tempo{font-weight:bold;} g.dir, g.dynam, g.mNum{font-style:italic;} g.label{font-weight:normal;}
     </style>
-    <svg class="definition-scale" color="black" viewBox="0 0 9570 4880">
+    <svg class="definition-scale" color="black" viewBox="0 0 9570 5840">
         <g class="page-margin" transform="translate(500, 500)">
             <g class="system">
-                <path d="M1298 1080 L1298 3600" stroke="currentColor" stroke-width="27"></path>
+                <path d="M1298 1436 L1298 3956" stroke="currentColor" stroke-width="27"></path>
                 <g class="grpSym">
-                    <path d="M1253,3582 C893,3042 1343,2520 1073,2340 C1406,2520 956,3042 1253,3582" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-                    <path d="M1253,1098 C956,1638 1406,2160 1073,2340 C1343,2160 893,1638 1253,1098" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                    <path d="M1213,3938 C853,3398 1303,2876 1033,2696 C1366,2876 916,3398 1213,3938" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                    <path d="M1213,1454 C916,1994 1366,2516 1033,2696 C1303,2516 853,1994 1213,1454" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
                 </g>
                 <g class="label">
-                    <text x="938" y="2430" text-anchor="end" font-size="0px">
+                    <text x="880" y="2786" text-anchor="end" font-size="0px">
                         <tspan class="text">
                             <tspan font-size="405px" class="text">
                                 Piano
@@ -152,123 +168,124 @@ exports[`reductive_analysis_test_suite should produce a convincing SVG (using Je
                     </text>
                 </g>
                 <g class="section boundaryStart"></g>
+                <g class="pb"></g>
                 <g class="measure">
                     <g class="mNum">
-                        <text x="1285" y="810" text-anchor="middle" font-size="0px"></text>
+                        <text x="1285" y="1193" text-anchor="middle" font-size="0px"></text>
                     </g>
                     <g class="staff">
-                        <path d="M1285 1080 L4016 1080" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 1260 L4016 1260" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 1440 L4016 1440" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 1620 L4016 1620" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 1800 L4016 1800" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 1436 L4016 1436" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 1616 L4016 1616" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 1796 L4016 1796" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 1976 L4016 1976" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 2156 L4016 2156" stroke="currentColor" stroke-width="13"></path>
                         <g class="clef">
-                            <use xlink:href="#E050" x="1375" y="1620" height="720px" width="720px"></use>
+                            <use xlink:href="#E050" x="1375" y="1976" height="720px" width="720px"></use>
                         </g>
                         <g class="keySig">
-                            <use xlink:href="#E262" x="2056" y="1080" height="720px" width="720px"></use>
-                            <use xlink:href="#E262" x="2234" y="1350" height="720px" width="720px"></use>
+                            <use xlink:href="#E262" x="2056" y="1436" height="720px" width="720px"></use>
+                            <use xlink:href="#E262" x="2234" y="1706" height="720px" width="720px"></use>
                         </g>
                         <g class="meterSig">
-                            <use xlink:href="#E083" x="2556" y="1260" height="720px" width="720px"></use>
-                            <use xlink:href="#E084" x="2555" y="1620" height="720px" width="720px"></use>
+                            <use xlink:href="#E083" x="2556" y="1616" height="720px" width="720px"></use>
+                            <use xlink:href="#E084" x="2555" y="1976" height="720px" width="720px"></use>
                         </g>
                         <g class="layer">
                             <g class="beam">
-                                <polygon points="3103,1800 3571,1845 3571,1755 3103,1710 "></polygon>
+                                <polygon points="3103,2156 3571,2201 3571,2111 3103,2066 "></polygon>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A4" x="3103" y="1080" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A4" x="3103" y="1436" height="720px" width="720px"></use>
                                     </g>
                                     <g class="stem">
-                                        <rect x="3103" y="1108" height="674" width="18"></rect>
+                                        <rect x="3103" y="1464" height="674" width="18"></rect>
                                     </g>
                                     <g class="accid"></g>
                                 </g>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A4" x="3553" y="1260" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A4" x="3553" y="1616" height="720px" width="720px"></use>
                                     </g>
                                     <g class="stem">
-                                        <rect x="3553" y="1288" height="539" width="18"></rect>
+                                        <rect x="3553" y="1644" height="539" width="18"></rect>
                                     </g>
                                 </g>
                             </g>
                         </g>
                     </g>
                     <g class="staff">
-                        <path d="M1285 2880 L4016 2880" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 3060 L4016 3060" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 3240 L4016 3240" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 3420 L4016 3420" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M1285 3600 L4016 3600" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 3236 L4016 3236" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 3416 L4016 3416" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 3596 L4016 3596" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 3776 L4016 3776" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M1285 3956 L4016 3956" stroke="currentColor" stroke-width="13"></path>
                         <g class="clef">
-                            <use xlink:href="#E062" x="1375" y="3060" height="720px" width="720px"></use>
+                            <use xlink:href="#E062" x="1375" y="3416" height="720px" width="720px"></use>
                         </g>
                         <g class="keySig">
-                            <use xlink:href="#E262" x="2056" y="3060" height="720px" width="720px"></use>
-                            <use xlink:href="#E262" x="2234" y="3330" height="720px" width="720px"></use>
+                            <use xlink:href="#E262" x="2056" y="3416" height="720px" width="720px"></use>
+                            <use xlink:href="#E262" x="2234" y="3686" height="720px" width="720px"></use>
                         </g>
                         <g class="meterSig">
-                            <use xlink:href="#E083" x="2556" y="3060" height="720px" width="720px"></use>
-                            <use xlink:href="#E084" x="2555" y="3420" height="720px" width="720px"></use>
+                            <use xlink:href="#E083" x="2556" y="3416" height="720px" width="720px"></use>
+                            <use xlink:href="#E084" x="2555" y="3776" height="720px" width="720px"></use>
                         </g>
                         <g class="layer">
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="3103" y="3240" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="3103" y="3596" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="3103" y="3268" height="572" width="18"></rect>
+                                    <rect x="3103" y="3624" height="572" width="18"></rect>
                                 </g>
                             </g>
                         </g>
                     </g>
                     <g class="barLineAttr">
-                        <path d="M4003 3600 L4003 1080" stroke="currentColor" stroke-width="27"></path>
+                        <path d="M4003 3956 L4003 1436" stroke="currentColor" stroke-width="27"></path>
                     </g>
                 </g>
                 <g class="measure">
                     <g class="staff">
-                        <path d="M4016 1080 L6279 1080" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 1260 L6279 1260" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 1440 L6279 1440" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 1620 L6279 1620" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 1800 L6279 1800" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 1436 L6279 1436" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 1616 L6279 1616" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 1796 L6279 1796" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 1976 L6279 1976" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 2156 L6279 2156" stroke="currentColor" stroke-width="13"></path>
                         <g class="layer">
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="4196" y="1170" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="4196" y="1526" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="4196" y="1198" height="602" width="18"></rect>
+                                    <rect x="4196" y="1554" height="602" width="18"></rect>
                                 </g>
                             </g>
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="4886" y="990" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="4886" y="1346" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="4886" y="1018" height="602" width="18"></rect>
+                                    <rect x="4886" y="1374" height="602" width="18"></rect>
                                 </g>
                             </g>
                             <g class="chord">
                                 <g class="stem">
-                                    <rect x="5784" y="780" height="992" width="18"></rect>
+                                    <rect x="5784" y="1136" height="992" width="18"></rect>
                                 </g>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A4" x="5576" y="1800" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A4" x="5576" y="2156" height="720px" width="720px"></use>
                                     </g>
                                 </g>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A4" x="5576" y="1530" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A4" x="5576" y="1886" height="720px" width="720px"></use>
                                     </g>
                                 </g>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A4" x="5576" y="1350" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A4" x="5576" y="1706" height="720px" width="720px"></use>
                                     </g>
                                     <g class="accid"></g>
                                 </g>
@@ -276,115 +293,126 @@ exports[`reductive_analysis_test_suite should produce a convincing SVG (using Je
                         </g>
                     </g>
                     <g class="staff">
-                        <path d="M4016 2880 L6279 2880" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 3060 L6279 3060" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 3240 L6279 3240" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 3420 L6279 3420" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M4016 3600 L6279 3600" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 3236 L6279 3236" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 3416 L6279 3416" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 3596 L6279 3596" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 3776 L6279 3776" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M4016 3956 L6279 3956" stroke="currentColor" stroke-width="13"></path>
                         <g class="layer">
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="4196" y="2970" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="4196" y="3326" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="4196" y="2998" height="602" width="18"></rect>
+                                    <rect x="4196" y="3354" height="602" width="18"></rect>
                                 </g>
                             </g>
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="4886" y="3150" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="4886" y="3506" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="4886" y="3178" height="602" width="18"></rect>
+                                    <rect x="4886" y="3534" height="602" width="18"></rect>
                                 </g>
                             </g>
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="5576" y="2880" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="5576" y="3236" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="5576" y="2908" height="602" width="18"></rect>
+                                    <rect x="5576" y="3264" height="602" width="18"></rect>
                                 </g>
                             </g>
                         </g>
                     </g>
                     <g class="barLineAttr">
-                        <path d="M6266 3600 L6266 1080" stroke="currentColor" stroke-width="27"></path>
+                        <path d="M6266 3956 L6266 1436" stroke="currentColor" stroke-width="27"></path>
                     </g>
                 </g>
                 <g class="measure">
                     <g class="staff">
-                        <path d="M6279 1080 L8574 1080" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 1260 L8574 1260" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 1440 L8574 1440" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 1620 L8574 1620" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 1800 L8574 1800" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 1436 L8574 1436" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 1616 L8574 1616" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 1796 L8574 1796" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 1976 L8574 1976" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 2156 L8574 2156" stroke="currentColor" stroke-width="13"></path>
                         <g class="layer">
                             <g class="chord">
                                 <g class="stem">
-                                    <rect x="6667" y="720" height="961" width="18"></rect>
+                                    <rect x="6667" y="1076" height="961" width="18"></rect>
                                 </g>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A3" x="6459" y="1710" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A3" x="6459" y="2066" height="720px" width="720px"></use>
                                     </g>
                                     <g class="accid"></g>
                                 </g>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A3" x="6459" y="1530" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A3" x="6459" y="1886" height="720px" width="720px"></use>
                                     </g>
                                 </g>
                                 <g class="note">
                                     <g class="notehead">
-                                        <use xlink:href="#E0A3" x="6459" y="1260" height="720px" width="720px"></use>
+                                        <use xlink:href="#E0A3" x="6459" y="1616" height="720px" width="720px"></use>
                                     </g>
                                 </g>
                             </g>
                             <g class="rest">
-                                <use xlink:href="#E4E5" x="7839" y="1440" height="720px" width="720px"></use>
+                                <use xlink:href="#E4E5" x="7839" y="1796" height="720px" width="720px"></use>
                             </g>
                         </g>
                     </g>
                     <g class="staff">
-                        <path d="M6279 2880 L8574 2880" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 3060 L8574 3060" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 3240 L8574 3240" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 3420 L8574 3420" stroke="currentColor" stroke-width="13"></path>
-                        <path d="M6279 3600 L8574 3600" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 3236 L8574 3236" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 3416 L8574 3416" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 3596 L8574 3596" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 3776 L8574 3776" stroke="currentColor" stroke-width="13"></path>
+                        <path d="M6279 3956 L8574 3956" stroke="currentColor" stroke-width="13"></path>
                         <g class="ledgerLines above">
-                            <path d="M7101 2700 L7423 2700" stroke="currentColor" stroke-width="22"></path>
+                            <path d="M7101 3056 L7423 3056" stroke="currentColor" stroke-width="22"></path>
                         </g>
                         <g class="layer">
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="6459" y="3240" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="6459" y="3596" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="6459" y="3268" height="572" width="18"></rect>
+                                    <rect x="6459" y="3624" height="572" width="18"></rect>
                                 </g>
                             </g>
                             <g class="note">
                                 <g class="notehead">
-                                    <use xlink:href="#E0A4" x="7149" y="2610" height="720px" width="720px"></use>
+                                    <use xlink:href="#E0A4" x="7149" y="2966" height="720px" width="720px"></use>
                                 </g>
                                 <g class="stem">
-                                    <rect x="7149" y="2638" height="602" width="18"></rect>
+                                    <rect x="7149" y="2994" height="602" width="18"></rect>
                                 </g>
                             </g>
                             <g class="rest">
-                                <use xlink:href="#E4E5" x="7839" y="3240" height="720px" width="720px"></use>
+                                <use xlink:href="#E4E5" x="7839" y="3596" height="720px" width="720px"></use>
                             </g>
                         </g>
                     </g>
                     <g class="barLineAttr">
-                        <path d="M8412 3600 L8412 1080" stroke="currentColor" stroke-width="27"></path>
-                        <path d="M8529 3600 L8529 1080" stroke="currentColor" stroke-width="90"></path>
+                        <path d="M8399 3956 L8399 1436" stroke="currentColor" stroke-width="27"></path>
+                        <path d="M8529 3956 L8529 1436" stroke="currentColor" stroke-width="90"></path>
                     </g>
                 </g>
                 <g class="boundaryEnd "></g>
             </g>
-            <g class="pgHead autogenerated"></g>
+            <g class="pgHead autogenerated">
+                <text x="0" y="0" font-size="0px">
+                    <tspan class="rend" x="199000" y="268" text-anchor="end">
+                        <title class="labelAttr">
+                            composer
+                        </title>
+                        <tspan class="text">
+                            <tspan font-size="405px" class="text"></tspan>
+                        </tspan>
+                    </tspan>
+                </text>
+            </g>
             <g class="pgFoot autogenerated">
                 <g class="fig">
                     <g class="svg" transform="translate(97250, 98399) scale(10, 10)">

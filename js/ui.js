@@ -130,6 +130,7 @@ function add_buttons(draw_context) {
   var new_draw_context = draw_context;
   var buttondiv = document.createElement("div");
   buttondiv.classList.add("view_buttons");
+  buttondiv.id  = (draw_context.id_prefix+"view_buttons");
   var newlayerbutton = button("Create new layer");
   newlayerbutton.classList.add("newlayerbutton");
   newlayerbutton.id = (draw_context.id_prefix+"newlayerbutton");

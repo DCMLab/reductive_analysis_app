@@ -150,7 +150,7 @@ function assign_responsibility_selected(resp) {
     if(mei_elem.tagName == "note"){
       mei_elem.setAttribute("resp",resp);
     }else{// Assume relation or metarelation
-      let lbl = mei_he.querySelector("label");
+      let lbl = mei_elem.querySelector("label");
       lbl.setAttribute("resp",resp);
     }
   }

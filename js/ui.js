@@ -152,9 +152,9 @@ function add_buttons(draw_context) {
   var hierbutton = button("Show/update hierarchy");
   hierbutton.classList.add("hierarchybutton");
   hierbutton.id = (draw_context.id_prefix+"hierarchybutton");
-  var hidehierbutton = button("Hide hierarchy");
-  hidehierbutton.classList.add("hidehierarchybutton");
-  hidehierbutton.id = (draw_context.id_prefix+"hidehierarchybutton");
+  var hidetopbutton = button("Hide tree/hierarchy");
+  hidetopbutton.classList.add("hidetopbutton");
+  hidetopbutton.id = (draw_context.id_prefix+"hidetopbutton");
   var hiercheck = checkbox("Roots low");
   hiercheck.id = (draw_context.id_prefix+"hierarchycb");
   hiercheck.checked = true;
@@ -164,7 +164,7 @@ function add_buttons(draw_context) {
   newlayerbutton.onclick = () =>{ create_new_layer(new_draw_context,slicecheck.checked);}
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
-  hidehierbutton.onclick = () =>{hide_hierarchy_graph(new_draw_context);}
+  hidetopbutton.onclick = () =>{hide_top(new_draw_context);}
 
   buttondiv.appendChild(document.createTextNode("\u25BC"));
   buttondiv.appendChild(document.createElement("br"));
@@ -195,13 +195,14 @@ function add_buttons(draw_context) {
 
   buttondiv.appendChild(hierbutton);
   buttondiv.appendChild(document.createElement("br"));
-  buttondiv.appendChild(hidehierbutton);
-  buttondiv.appendChild(document.createElement("br"));
   buttondiv.appendChild(hiercheck); 
   var roots_low_label = document.createElement("label")
   roots_low_label.htmlFor = draw_context.id_prefix+"hierarchycb";
   roots_low_label.appendChild(document.createTextNode("Draw roots low"));
   buttondiv.append(roots_low_label);
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(hidetopbutton);
   buttondiv.appendChild(document.createElement("br"));
   buttondiv.appendChild(document.createElement("br"));
 

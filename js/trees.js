@@ -220,16 +220,10 @@ function align_tree(draw_context) {
 function draw_tree(draw_context, baseline=0, min_dist=-1000) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
-
-  var svg_height = svg_elem.children[0].getAttribute("height");
-  var svg_viewbox = svg_elem.getElementsByClassName("definition-scale")[0].getAttribute("viewBox");
   // find top of system
   var svg_top = baseline;
 
-  var tree_g = svg_elem.getRootNode().getElementById("tree"+id_prefix);
-  var existing = tree_g ? true : false;
-  if(existing)
-    tree_g.parentNode.removeChild(tree_g);
+  var existing = clear_top(draw_context);
 
   var obj = get_tree_from_input(draw_context);
   if(!obj){
@@ -263,17 +257,7 @@ function draw_tree(draw_context, baseline=0, min_dist=-1000) {
 
   // Adjust height
   // change viewport
-  if(!existing){
-    var [x,y,w,h] = svg_viewbox.split(" ");
-    var ydiff = -obj.y;
-    draw_context.old_viewbox = [x,y,w,h].join(" ");
-    svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
-   
-    var svg_num_height = Number(svg_height.split("p")[0]); //Assume "XYZpx"
-    draw_context.old_height = svg_height;
-    // change height
-    svg_elem.children[0].setAttribute("height", (svg_num_height * ((h-(y-ydiff))/(h - y))) + "px");
-  }// Else do Smart Calculations on old_viewbox
+  adjust_top(draw_context,-obj.y);
 
 }
 

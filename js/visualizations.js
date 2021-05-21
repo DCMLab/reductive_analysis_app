@@ -25,12 +25,10 @@ function calc_hierarchy(notes, relations, roots_low=true) {
 function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
   var svg_elem = draw_context.svg_elem;
   var id_prefix = draw_context.id_prefix;
-  var g_elem = svg_elem.getRootNode().getElementById("hier"+id_prefix);
-  var existing = g_elem ? true : false;
-  if(!existing)
-    g_elem = g();
-  else
-    g_elem.innerHTML = "";
+  var existing = clear_top(draw_context);
+  var g_elem = g();
+  g_elem.id="hier"+id_prefix;
+
   // find layers
   var current_note_nodes = Array.from(svg_elem.
 					getElementsByClassName("note")).
@@ -43,8 +41,6 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
 					    map((id) => get_by_id(mei,id));
   var layers = calc_hierarchy(current_note_nodes,current_relation_nodes, roots_low);
   
-  var svg_height = svg_elem.children[0].getAttribute("height");
-  var svg_viewbox = svg_elem.getElementsByClassName("definition-scale")[0].getAttribute("viewBox");
   // find top of system
   var svg_top = 0;
   var layer_dist = 500;
@@ -133,33 +129,11 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
     g_elem.appendChild(elem);
 
   });
-  g_elem.id="hier"+id_prefix;
   add_to_svg_bg(svg_elem,g_elem);
 
   // change viewport
-  if(!existing){
-    var [x,y,w,h] = svg_viewbox.split(" ");
-    var ydiff = (layers.length*layer_dist);
-    draw_context.old_viewbox = [x,y,w,h].join(" ");
-    svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
-   
-    var svg_num_height = Number(svg_height.split("p")[0]); //Assume "XYZpx"
-    draw_context.old_height = svg_height;
-    // change height
-    svg_elem.children[0].setAttribute("height", (svg_num_height * ((h-(y-ydiff))/(h - y))) + "px");
-  }
-} 
+  adjust_top(draw_context,(layers.length*layer_dist));
 
-
-function hide_hierarchy_graph(draw_context) {
-  var svg_elem = draw_context.svg_elem;
-  var id_prefix = draw_context.id_prefix;
-  var g_elem = svg_elem.getRootNode().getElementById("hier"+id_prefix);
-  if(g_elem){
-    svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",draw_context.old_viewbox);
-    svg_elem.children[0].setAttribute("height", draw_context.old_height);
-    g_elem.parentElement.removeChild(g_elem);
-  }
 }
 
 

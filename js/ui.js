@@ -625,3 +625,50 @@ function enter_custom_metarelation() {
   do_metarelation($("#meta_custom_type")[0].value);
 }
 
+function clear_top(draw_context) {
+  var svg_elem = draw_context.svg_elem;
+  var id_prefix = draw_context.id_prefix;
+  var elem = svg_elem.getRootNode().getElementById("hier"+id_prefix);
+  if(elem){
+    elem.parentNode.removeChild(elem);
+    return true;
+  }
+  elem = svg_elem.getRootNode().getElementById("tree"+id_prefix);
+  if(elem){
+    elem.parentNode.removeChild(elem);
+    return true;
+  }
+  return false;
+}
+
+function adjust_top(draw_context, ydiff) {
+  var svg_elem = draw_context.svg_elem;
+  var svg_height = svg_elem.children[0].getAttribute("height");
+  var svg_viewbox = svg_elem.getElementsByClassName("definition-scale")[0].getAttribute("viewBox");
+  var x,y,w,h;
+
+  if(!draw_context.old_viewbox){
+    [x,y,w,h] = svg_viewbox.split(" ");
+    draw_context.old_viewbox = svg_viewbox;
+    draw_context.old_height = svg_height;
+  }else{
+    [x,y,w,h] = draw_context.old_viewbox.split(" ");
+    svg_height = draw_context.old_height;
+  }
+  svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",[x,Number(y)-ydiff,w,Number(h)+ydiff].join(" "));
+
+  var svg_num_height = Number(svg_height.split("p")[0]); //Assume "XYZpx"
+  // change height
+  svg_elem.children[0].setAttribute("height", (svg_num_height * ((h-(y-ydiff))/(h - y))) + "px");
+}
+
+function hide_top(draw_context) {
+  var svg_elem = draw_context.svg_elem;
+  var id_prefix = draw_context.id_prefix;
+  var something_to_clear = clear_top(draw_context);
+  if(something_to_clear){
+    svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",draw_context.old_viewbox);
+    svg_elem.children[0].setAttribute("height", draw_context.old_height);
+  }
+}
+

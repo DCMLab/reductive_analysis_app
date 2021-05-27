@@ -459,10 +459,10 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
 
 }
 
-function create_new_layer(draw_context,sliced =false) {
+function create_new_layer(draw_context,sliced =false, tied=false) {
   var new_score_elem;
   if(sliced)
-    new_score_elem = new_sliced_layer(draw_context);
+    new_score_elem = new_sliced_layer(draw_context, tied);
   else
     new_score_elem = new_layer(draw_context);
   let new_mei = mei_for_layer(mei, new_score_elem);

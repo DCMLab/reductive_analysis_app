@@ -13,7 +13,7 @@
 // Take care when adding to only add one "note" per pitch (use @sameas)
 // Optionally do verticalisations
 
-function slicify(draw_context, score_elem, filled=false) {
+function slicify(draw_context, score_elem, tied=false) {
   var mei2 = rerender_mei(true, draw_context);
   var data2 = new XMLSerializer().serializeToString(mei2);
   vrvToolkit.loadData(data2);
@@ -30,7 +30,7 @@ function slicify(draw_context, score_elem, filled=false) {
         time_id_map[t].push(id);
   });
 
-  if(filled){
+  if(tied){
     let ts = Object.keys(time_id_map);
     time_id_map = {};
     ts.forEach((t) => time_id_map[t] = vrvToolkit.getElementsAtTime(Number(t)+1).notes)
@@ -139,9 +139,9 @@ function slicify(draw_context, score_elem, filled=false) {
 }
 
 
-function new_sliced_layer(draw_context) {
+function new_sliced_layer(draw_context, tied=false) {
   var score_elem = draw_context.mei_score;
-  var new_score_elem = slicify(draw_context, score_elem);
+  var new_score_elem = slicify(draw_context, score_elem, tied);
   var n_layers = score_elem.parentElement.getElementsByTagName("score").length;
   var prefix = n_layers+"-"; //TODO: better prefix computation
                              //The - is there to not clash with view

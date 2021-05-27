@@ -13,7 +13,7 @@
 // Take care when adding to only add one "note" per pitch (use @sameas)
 // Optionally do verticalisations
 
-function slicify(draw_context, score_elem) {
+function slicify(draw_context, score_elem, filled=false) {
   var mei2 = rerender_mei(true, draw_context);
   var data2 = new XMLSerializer().serializeToString(mei2);
   vrvToolkit.loadData(data2);
@@ -30,6 +30,12 @@ function slicify(draw_context, score_elem) {
         time_id_map[t].push(id);
   });
 
+  if(filled){
+    let ts = Object.keys(time_id_map);
+    time_id_map = {};
+    ts.forEach((t) => time_id_map[t] = vrvToolkit.getElementsAtTime(Number(t)+1).notes)
+  }
+
   // Get a new score element, update scoreDef etc.
 
   var modified_scoreDef = score_elem.getElementsByTagName("scoreDef")[0].cloneNode(true);
@@ -40,7 +46,10 @@ function slicify(draw_context, score_elem) {
   new_section_elem.setAttribute("xml:id",score_elem.getAttribute("xml:id")+"-slicedsection");
   new_score_elem.appendChild(modified_scoreDef);
   new_score_elem.appendChild(new_section_elem);
-  Object.entries(time_id_map).forEach(([t,ids]) => {
+  var ts = Object.keys(time_id_map);
+  for(ix in ts){
+    let t = ts[ix];
+    let ids = time_id_map[t];
     let new_measure = mei.createElement("measure");
     new_measure.setAttribute("xml:id","measure-"+t);
     new_section_elem.appendChild(new_measure);
@@ -93,8 +102,39 @@ function slicify(draw_context, score_elem) {
 	new_note.setAttribute("dur.ppq",2);
 	layer.appendChild(new_note);
       }
+      // Is this a tied note?
+      if(ix > 0 && (time_id_map[ts[ix-1]]).includes(id)){
+	// Change the ID
+	new_note.setAttribute("xml:id",t+id);
+	let tie = mei.createElement("tie");
+	tie.setAttribute("xml:id","tie"+t+id);
+	tie.setAttribute("endid",t+id);
+	// Was the previous note also tied?
+	if(ix > 1 && time_id_map[ts[ix-2]].includes(id))
+	  tie.setAttribute("startid",ts[ix-1]+id);
+	else
+	  tie.setAttribute("startid",id);
+	new_measure.appendChild(tie);
+      }
+
     });
-  });
+    for(staff of new_measure.querySelectorAll("staff")){
+      if(!staff.querySelector("note")){
+	let layer = staff.querySelector("layer");
+	if(!layer){
+	  layer = mei.createElement("layer");
+	  //TODO: set ID
+	  staff.appendChild(layer);
+	}
+	let rest = mei.createElement('rest');
+	rest.setAttribute("dur",4);
+	rest.setAttribute("dur.ges",4);
+	rest.setAttribute("dur.ppq",2);
+	layer.appendChild(rest);
+      }
+    }
+
+  };
   return new_score_elem;
 }
 

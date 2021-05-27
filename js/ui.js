@@ -137,6 +137,9 @@ function add_buttons(draw_context) {
   var slicecheck = checkbox("Sliced");
   slicecheck.id = (draw_context.id_prefix+"slicedcb");
   slicecheck.checked = false;
+  var tiedcheck = checkbox("Tied");
+  tiedcheck.id = (draw_context.id_prefix+"tiedcb");
+  tiedcheck.checked = false;
   var reducebutton = button("Reduce");
   reducebutton.classList.add("reducebutton");
   reducebutton.id = (draw_context.id_prefix+"reducebutton");
@@ -161,7 +164,7 @@ function add_buttons(draw_context) {
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
-  newlayerbutton.onclick = () =>{ create_new_layer(new_draw_context,slicecheck.checked);}
+  newlayerbutton.onclick = () =>{ create_new_layer(new_draw_context,slicecheck.checked,tiedcheck.checked);}
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
   hidetopbutton.onclick = () =>{hide_top(new_draw_context);}
@@ -186,6 +189,11 @@ function add_buttons(draw_context) {
   slice_label.htmlFor = draw_context.id_prefix+"slicedcb";
   slice_label.appendChild(document.createTextNode("Sliced"));
   buttondiv.append(slice_label);
+  buttondiv.appendChild(tiedcheck);
+  var tied_label = document.createElement("label")
+  tied_label.htmlFor = draw_context.id_prefix+"tiedcb";
+  tied_label.appendChild(document.createTextNode("Tied"));
+  buttondiv.append(tied_label);
   buttondiv.appendChild(document.createElement("br"));
   buttondiv.appendChild(document.createElement("br"));
 

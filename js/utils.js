@@ -812,6 +812,10 @@ function prefix_ids(elem,prefix) {
     // copyof/sameas
     elem.setAttribute("xml:id", prefix+elem.getAttribute("xml:id"));
   }
+  if(elem.getAttribute("startid"))
+    elem.setAttribute("startid", prefix+elem.getAttribute("startid"));
+  if(elem.getAttribute("endid"))
+    elem.setAttribute("endid", prefix+elem.getAttribute("endid"));
   Array.from(elem.children).forEach((e) => prefix_ids(e,prefix));
 }
 

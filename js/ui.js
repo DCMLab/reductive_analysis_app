@@ -285,8 +285,10 @@ function add_filter(draw_context, div, type, thing) {
     var filtered = !cb.checked;
     Array.from(draw_context.svg_elem.getElementsByClassName(thing)).forEach((e) => {
       if(e.getAttribute("type") == type){
-        if(filtered)
+        if(filtered) {
+          if (e.classList.contains("selectedrelation")) toggle_selected(e);
 	  e.classList.add("filtered");
+	}
 	else
 	  e.classList.remove("filtered");
       }

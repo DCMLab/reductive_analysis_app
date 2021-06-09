@@ -634,12 +634,6 @@ function drag_selector_installer(svg_elem) {
     overflowTolerance: {x: 1, y: 1}
   });
 
-  drag_selector.subscribe('elementselect', ({items, item}) => {
-    if(!selected.find(x => x === item) && !extraselected.find(x => x === item) && !item.classList.contains('filtered')) { 
-      toggle_selected(item);
-    }
-  });
-
   drag_selector.subscribe('dragstart', ({items, event, isDragging}) => {
     $('.ds-selector-area').show();
   })
@@ -652,8 +646,8 @@ function drag_selector_installer(svg_elem) {
     }
     // Due to apparent bug in the external drag-select library, some SVG elements must be made selectable manually.
     document.elementsFromPoint(mouseX, mouseY)
-      .filter(x => x.classList.contains('relation'))
-      .forEach(x => drag_selector.addSelectables(x));
+      .filter(x => (x.classList.contains('relation') && !x.classList.contains('filtered') && !x.classList.contains('selectedrelation') && !x.classList.contains('extraselectedrelation')))
+      .forEach(x => toggle_selected(x));
   })
 
   drag_selector.subscribe('callback', ({items, event, isDragging}) => {

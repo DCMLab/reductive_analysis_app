@@ -635,7 +635,7 @@ function drag_selector_installer(svg_elem) {
   });
 
   drag_selector.subscribe('elementselect', ({items, item}) => {
-    if(!selected.find(x => x === item) && !extraselected.find(x => x === item)) { 
+    if(!selected.find(x => x === item) && !extraselected.find(x => x === item) && !item.classList.contains('filtered')) { 
       toggle_selected(item);
     }
   });

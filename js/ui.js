@@ -598,6 +598,7 @@ function handle_relations_panel(el) {
     curY = e.clientY;
     document.onmouseup = stopDragging;
     document.onmousemove = drag;
+    if (typeof(drag_selector) != "undefined") drag_selector.stop();
   }
 
   function drag(e) {
@@ -619,6 +620,7 @@ function handle_relations_panel(el) {
     // stop moving when mouse button is released:
     document.onmouseup = null;
     document.onmousemove = null;
+    if (typeof(drag_selector) != "undefined") drag_selector.start();
   }
 }
 

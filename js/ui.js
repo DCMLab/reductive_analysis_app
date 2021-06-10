@@ -631,7 +631,8 @@ function drag_selector_installer(svg_elem) {
     selectables: document.getElementsByClassName('relation'),
     area: document,
     draggability: false,
-    overflowTolerance: {x: 1, y: 1}
+    overflowTolerance: {x: 1, y: 1},
+    autoScrollSpeed: 0.0001
   });
 
   drag_selector.subscribe('dragstart', ({items, event, isDragging}) => {

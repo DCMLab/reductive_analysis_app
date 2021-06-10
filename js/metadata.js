@@ -7,7 +7,7 @@ function initialize_metadata() {
   var title, titles = titleStmt.getElementsByTagName("title");
   if(titles.length == 0){
     title = mei.createElement("title");
-    titles.appendChild(title);
+    titles[0] = title;
   }else{
     title = titles[0];
   }

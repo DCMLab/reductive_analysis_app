@@ -658,7 +658,7 @@ input[type="button"], input[type="fileupload"] {
   margin: 2px;
 }
 
-input[type="button"]:active {
+input[type="button"]:active, input[type="button"].active {
   background: darkgray;
 }
 

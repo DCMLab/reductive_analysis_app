@@ -81,6 +81,30 @@ function toggle_selected(item,extra) {
   update_text();
 }
 
+function select_visibles(draw_context) {
+  // Find all non-filtered relationships in the draw context.
+  var visibles = Array.from(draw_context.svg_elem.getElementsByClassName('relation')).filter(n => !n.classList.contains('filtered')  );
+
+  // Clear out any selections in other contexts.
+  if (visibles) {
+    var ci = get_class_from_classlist(visibles[0]);
+    var cd = visibles[0].closest("div");
+    if(selected.length > 0 || extraselected.length > 0) {
+      var csel = get_class_from_classlist(selected.concat(extraselected)[0]);
+      var cdsel = selected.concat(extraselected)[0].closest("div");
+      // Select only things of the same type for now - editing
+      // relations to add things means deleting and re-adding
+      if(csel != 'relation')
+        do_deselect();
+      if(cd != cdsel)
+        do_deselect();
+    }
+
+    // Add all visible yet still unselected relations to selection list.
+    visibles.forEach(n => { if (!n.classList.contains('selectedrelation')) toggle_selected(n); });
+  }
+}
+
 /* UI populater functions */ 
 
 // Configured types need a button and a color each
@@ -261,8 +285,10 @@ function add_filter(draw_context, div, type, thing) {
     var filtered = !cb.checked;
     Array.from(draw_context.svg_elem.getElementsByClassName(thing)).forEach((e) => {
       if(e.getAttribute("type") == type){
-        if(filtered)
+        if(filtered) {
+          if (e.classList.contains("selectedrelation")) toggle_selected(e);
 	  e.classList.add("filtered");
+	}
 	else
 	  e.classList.remove("filtered");
       }
@@ -284,6 +310,12 @@ function add_filters(draw_context) {
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));
   Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, "metarelation"));
+
+  var selectVisiblesButton = button("Select visible relations");
+  selectVisiblesButton.classList.add("select_visibles_button");
+  selectVisiblesButton.id = (draw_context.id_prefix+"selectvisiblesbutton");
+  selectVisiblesButton.onclick = () => { select_visibles(draw_context); }
+  div.appendChild(selectVisiblesButton);
 
   var zoomdiv = document.createElement("div");
   zoomdiv.classList.add("zoom_buttons");

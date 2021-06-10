@@ -66,6 +66,14 @@ $(document).ready(function() {
 });
 
 
+// Catch-all exception handler.
+window.onerror = function errorHandler(errorMsg, url, lineNumber) {
+    alert(`An error occured: ${errorMsg}
+ Please report the relevant console log as a GitHub issue.
+ The app will try to continue running nonetheless.`);
+    return false;
+}
+
 // OK we've selected stuff, let's make the selection into a
 // "relation".
 function do_relation(type) {
@@ -341,6 +349,9 @@ function load_finish(e) {
   // Parse the original document
   parser = new DOMParser();
   mei = parser.parseFromString(data,"text/xml");
+  if (mei.getElementsByTagName('parsererror').length > 0) {
+    alert('This is not a valid XML or MEI file.')
+  }
   vrvToolkit = new verovio.toolkit();
   if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
     // We didn't get a MEI? Try if it's a musicXML

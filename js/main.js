@@ -316,6 +316,7 @@ function load() {
       setTimeout(() => {
         load_finish();
         loaderModal.close();
+        music_tooltip_installer();
       }, 1000);
     }
     reader.readAsText(upload.files[0]);

@@ -303,6 +303,8 @@ function savesvg() {
 // Load a new MEI
 function load() {
   console.debug("Using globals: selected_extraselected, upload, reader, filenmae");
+  var loaderModal = new jBox('Modal', {title: 'Loading...', content: 'Please wait...'});
+  loaderModal.open();
   /* Cancel loading if changes are not saved? alert */
   selected = [];
   extraselected = [];
@@ -310,13 +312,18 @@ function load() {
   if(upload.files.length == 1){
     reader.onload = function (e) {
       data = reader.result;
-      load_finish();
+      // TODO: Understand why this setTimeout hack is necessary for the modal to appear.
+      setTimeout(() => {
+        load_finish();
+        loaderModal.close();
+      }, 1000);
     }
     reader.readAsText(upload.files[0]);
     filename = upload.files[0].name.split(".").slice(0,-1).join(".");
     if(filename == "")
       filename = upload.files[0].name;
   }else{
+    loaderModal.close();
     return;
   }
 }
@@ -355,21 +362,21 @@ function load_finish(e) {
     alert('This is not a valid XML or MEI file.')
   }
   vrvToolkit = new verovio.toolkit();
-  if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
-    // We didn't get a MEI? Try if it's a musicXML
-    let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
-      pageHeight: 10000, breaks: "none"});
-    if (!new_svg) {
-      console.log ('Verovio could not generate SVG from non-MEI file.');
-      return false;
-    }
-    // TODO: Detect failure and bail
-    data = vrvToolkit.getMEI();
-    parser = new DOMParser();
-    mei = parser.parseFromString(data,"text/xml");
-  }else{
-    mei = fix_synonyms(mei);
-  }
+   if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
+     // We didn't get a MEI? Try if it's a musicXML
+     let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+       pageHeight: 10000, breaks: "none"});
+     if (!new_svg) {
+       console.log ('Verovio could not generate SVG from non-MEI file.');
+       return false;
+     }
+     // TODO: Detect failure and bail
+     data = vrvToolkit.getMEI();
+     parser = new DOMParser();
+     mei = parser.parseFromString(data,"text/xml");
+   }else{
+     mei = fix_synonyms(mei);
+   }
 
   mei_graph = add_or_fetch_graph();
   initialize_metadata();

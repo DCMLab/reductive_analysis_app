@@ -1,6 +1,6 @@
 // GLOBALS
 // Load Verovio
-var vrvToolkit = new verovio.toolkit();
+var vrvToolkit;
 // And the underlying MEI
 var mei;
 // And the graph node in the MEI
@@ -63,15 +63,17 @@ $(document).ready(function() {
 
   $("#hull_controller").on('change', handle_hull_controller);
   handle_relations_panel(document.getElementById("relations_panel"));
+  document.getElementsByTagName('html')[0].classList.remove('loader');
 });
 
 
 // Catch-all exception handler.
 window.onerror = function errorHandler(errorMsg, url, lineNumber) {
-    alert(`An error occured: ${errorMsg}
+  document.getElementsByTagName('html')[0].classList.remove('loader');
+  alert(`An error occured: ${errorMsg}
  Please report the relevant console log as a GitHub issue.
  The app will try to continue running nonetheless.`);
-    return false;
+  return false;
 }
 
 // OK we've selected stuff, let's make the selection into a

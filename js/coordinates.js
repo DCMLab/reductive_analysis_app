@@ -301,12 +301,14 @@ function place_note() {
 }
 
 function start_placing_note() {
-  if(current_draw_context.layer.original_score)
-    return;
-  let [pname, oct, note] = note_params();
-  placing_note = "temp"+random_id();
-  if(pname)
-    show_note(pname, oct, note, true,placing_note);
+  if (typeof(current_draw_context) != "undefined") {
+    if(current_draw_context.layer.original_score)
+      return;
+    let [pname, oct, note] = note_params();
+    placing_note = "temp"+random_id();
+    if(pname)
+      show_note(pname, oct, note, true,placing_note);
+  }
 }
 
 function stop_placing_note() {

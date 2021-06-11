@@ -433,6 +433,10 @@ function load_finish(e) {
   document.onkeydown = handle_keydown;
   document.onkeyup = handle_keyup;
   document.getElementById("layers").onclick = handle_click;
+
+  // Install drag-select controller.
+  drag_selector_installer();
+
   return true;
 }
 
@@ -469,6 +473,7 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
   return mei2;
 
 }
+
 
 function create_new_layer(draw_context,sliced =false, tied=false) {
   var new_score_elem;

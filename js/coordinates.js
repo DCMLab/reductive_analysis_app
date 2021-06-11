@@ -317,10 +317,17 @@ function stop_placing_note() {
 }
 
 function toggle_placing_note() {
-  if(placing_note)
-    stop_placing_note();
-  else
-    start_placing_note();
+  if (!current_draw_context.layer.original_score) {
+    if(placing_note) {
+      stop_placing_note();
+      $("#addnoteputton").removeClass('active')
+      document.getElementById("layers").style.cursor = 'default';
+    } else {
+      start_placing_note();
+      $("#addnoteputton").addClass('active')
+      document.getElementById("layers").style.cursor = 'crosshair';
+    }
+  }  
 }
 
 function update_placing_note() {

@@ -412,7 +412,7 @@ function handle_keypress(ev) {
   } else if (ev.key == "z") { // Scroll through relations
     elem = document.elementFromPoint(mouseX, mouseY);
     flip_to_bg(elem);
-    elem.onmouseout();
+    if (elem.onmouseout) elem.onmouseout();
   } else if (ev.key == "U") { // UNDO
     do_undo();
   } else if (ev.key == "r") { // Reduce relations

@@ -794,5 +794,14 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 
 .jBox-Mouse {
   white-space: nowrap;
+}
+
+.jBox-container {
   font-family: sans-serif;
+  font-weight: bold;
+}
+
+.jBox-Mouse .jBox-container {
+  background: rgba(1,1,1,0.2);
+  color: white;
 }

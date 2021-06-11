@@ -86,7 +86,7 @@ function select_visibles(draw_context) {
   var visibles = Array.from(draw_context.svg_elem.getElementsByClassName('relation')).filter(n => !n.classList.contains('filtered')  );
 
   // Clear out any selections in other contexts.
-  if (visibles) {
+  if (visibles.length > 0) {
     var ci = get_class_from_classlist(visibles[0]);
     var cd = visibles[0].closest("div");
     if(selected.length > 0 || extraselected.length > 0) {

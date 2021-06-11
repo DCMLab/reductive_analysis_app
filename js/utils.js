@@ -643,14 +643,19 @@ function getBoundingBoxTop (elem) {
 // Get the Interesting class from a classlist
 function get_class_from_classlist(elem){
   // TODO: If more things can be selected etc., it should be reflected here
-  var ci = "";
-  if(elem.classList.contains("note"))
-    ci = "note";
-  else if(elem.classList.contains("relation"))
-    ci = "relation";
-  else if(elem.classList.contains("metarelation"))
-    ci = "metarelation";
-  return ci;
+  if (typeof(elem) != "undefined") {
+    var ci = "";
+    if(elem.classList.contains("note"))
+      ci = "note";
+    else if(elem.classList.contains("relation"))
+      ci = "relation";
+    else if(elem.classList.contains("metarelation"))
+      ci = "metarelation";
+    return ci;
+  }
+  else {
+    return false;
+  } 
 }
 
 // Get the center of the bounding box

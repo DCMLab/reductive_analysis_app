@@ -641,7 +641,7 @@ input {
   font-size: 80%;
 }
 
-input[type="button"], input[type="fileupload"] {
+input[type="button"] {
   border: solid 1px;
   border-color: lightgray;
   padding: 4px;

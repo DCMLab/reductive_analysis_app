@@ -196,6 +196,7 @@ function flip_to_bg(elem) {
   var paren = elem.parentElement;
   paren.removeChild(elem);
   paren.insertBefore(elem,paren.children[0]);
+  tooltip.close(); tooltip.open(); // Refresh the tooltip.
 }
 
 

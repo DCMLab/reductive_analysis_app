@@ -42,6 +42,9 @@ var draw_contexts = [];
 //  canonical representative
 var layer_contexts = [];
 
+// A tooltip for displaying relationship and meta-relationship types.
+var tooltip;
+
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
 window.addEventListener("beforeunload", function (e) {

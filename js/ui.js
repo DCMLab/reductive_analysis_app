@@ -711,7 +711,7 @@ function drag_selector_installer(svg_elem) {
 
 function music_tooltip_installer() {
 
-  var tooltip = new jBox('Mouse', {
+  tooltip = new jBox('Mouse', {
     attach: "#layers",
     trigger: "mouseenter",
     onPosition: function () {

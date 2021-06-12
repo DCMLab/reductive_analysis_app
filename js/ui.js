@@ -807,15 +807,16 @@ function hide_top(draw_context) {
 }
 
 function minimap() {
+  document.getElementById('minimap').width = 100;
   pagemap(document.querySelector('#minimap'), {
     viewport: null,
     styles: {
-      '.svg_container': 'green',
-      '.layer': 'red'
+      '.svg_container': 'rgba(0,0,0,0.30)',
+      '.layer': 'rgba(0,0,0,0.00)'
     },
     back: 'rgba(0,0,0,0.30)',
-    view: 'lightblue',
-    drag: 'yellow',
+    view: 'rgba(0,0,0,0.20)',
+    drag: 'rgba(0,0,0,0.30)',
     interval: null
   });
 }

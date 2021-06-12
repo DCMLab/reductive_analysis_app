@@ -806,8 +806,8 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 #minimap {
     position: fixed;
     bottom: 50;
-    right: 50;
-    width: 200px;
+    right: 10;
+    width: 100px;
     height: 100%;
     z-index: 100;
 }

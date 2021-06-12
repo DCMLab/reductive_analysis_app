@@ -693,7 +693,6 @@ margin-top: 0.5rem;
   text-align: left;
   cursor: move;
   z-index: 10;
-  background-color: #2196F3;
   color: white;
   display: flex;
 }
@@ -704,10 +703,8 @@ margin-top: 0.5rem;
 }
 
 #relation_buttons, #meta_buttons, #combo_buttons {
-  background: #dfdfdf;
   margin: 5px;
   border-radius: 10px;
-  box-shadow: inset 1px 1px 1px grey;
   padding: 5px;
 }
 

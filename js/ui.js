@@ -617,11 +617,7 @@ function handle_hull_controller() {
 
 function handle_relations_panel(el) {
   var newX = 0, newY = 0, curX = 0, curY = 0;
-  if (document.getElementById(el.id + "_header")) {
-    document.getElementById(el.id + "_header").onmousedown = startDragging;
-  } else {
-    elmnt.onmousedown = startDragging;
-  }
+  el.onmousedown = startDragging;
 
   function startDragging(e) {
     e = e || window.event;

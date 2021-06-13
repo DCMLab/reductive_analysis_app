@@ -675,7 +675,7 @@ margin-top: 0.5rem;
   font-weight: bold;
 }
 
-#relations_panel {
+#relations_panel:not(input) {
   position: fixed;
   z-index: 9;
   background-color: rgba(0,0,0,0.5);
@@ -685,13 +685,13 @@ margin-top: 0.5rem;
   left: 10vw;
   border: 1px solid;
   border-color: white;
+  cursor: move;
 }
 
 #relations_panel_header {
   height: 25px;
   padding: 0;
   text-align: left;
-  cursor: move;
   z-index: 10;
   color: white;
   display: flex;

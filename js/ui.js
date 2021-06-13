@@ -620,13 +620,15 @@ function handle_relations_panel(el) {
   el.onmousedown = startDragging;
 
   function startDragging(e) {
-    e = e || window.event;
-    e.preventDefault();
-    curX = e.clientX;
-    curY = e.clientY;
-    document.onmouseup = stopDragging;
-    document.onmousemove = drag;
-    if (typeof(drag_selector) != "undefined") drag_selector.stop();
+    if (e.target.tagName !== "INPUT") {
+      e = e || window.event;
+      e.preventDefault();
+      curX = e.clientX;
+      curY = e.clientY;
+      document.onmouseup = stopDragging;
+      document.onmousemove = drag;
+      if (typeof(drag_selector) != "undefined") drag_selector.stop();
+    }
   }
 
   function drag(e) {

@@ -305,7 +305,7 @@ function add_filters(draw_context) {
   var div = document.createElement("div");
   div.id = draw_context.id_prefix + "filterdiv";
   div.classList.add("filterdiv");
-  div.innerHTML = "&#9776;<br/></br>"
+  div.innerHTML = `&#9776;&nbsp;L${draw_context.layer_number}&nbsp;V${draw_context.view_number}<br/></br>`
   sidebar.prepend(div);
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, "relation"));

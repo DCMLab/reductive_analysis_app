@@ -409,10 +409,13 @@ function load_finish(e) {
     var layer_context = {
       "mei"        : new_mei,
       "layer_elem" : layer_element,
+      "layer_number": 0,
       "score_elem" : score_elem,
       "id_mapping" : get_id_pairs(score_elem),
-      "original_score" : i == 0 // The first layer is assumed to be the original score
+      "original_score" : i == 0, // The first layer is assumed to be the original score
+      "number_of_views": 1
     }
+
     layer_contexts.push(layer_context);
     var draw_context = {
                       // TODO: One draw context per existing score element
@@ -421,9 +424,12 @@ function load_finish(e) {
                       "svg_elem" : svg_element,
                       "view_elem" : view_element,
                       "layer" : layer_context,
+                      "layer_number": 0,
+                      "view_number": 0,
                       "id_prefix" : "",
                       "zoom" : 1,
                       "reductions" : []};
+
     if(i == 0){
       midi = vrvToolkit.renderToMIDI();
       orig_midi = midi;
@@ -507,9 +513,11 @@ function create_new_layer(draw_context,sliced =false, tied=false) {
   var layer_context = {
     "mei"        : new_mei,
     "layer_elem" : layer_element,
+    "layer_number": layer_contexts.length,
     "score_elem" : new_score_elem,
     "id_mapping" : get_id_pairs(new_score_elem),
-    "original_score" : false
+    "original_score" : false,
+    "number_of_views": 1,
   }
   layer_contexts.push(layer_context);
   var new_draw_context = {
@@ -519,6 +527,8 @@ function create_new_layer(draw_context,sliced =false, tied=false) {
                     "svg_elem" : new_svg_elem,
                     "view_elem" : new_view_elem,
                     "layer" : layer_context,
+                    "layer_number": layer_context.layer_number,
+                    "view_number": 0,
                     "id_prefix" : "",
                     "zoom" : 1,
                     "reductions" : []};
@@ -532,10 +542,10 @@ function create_new_layer(draw_context,sliced =false, tied=false) {
 function finalize_draw_context(new_draw_context) {
 
   new_draw_context.measure_map = compute_measure_map(new_draw_context);
-  add_buttons(new_draw_context)
   draw_contexts.reverse();
   draw_contexts.push(new_draw_context);
   draw_contexts.reverse();
+  add_buttons(new_draw_context)
   for (let n of new_draw_context.svg_elem.getElementsByClassName("note")) {
     n.onclick= function(ev) {toggle_selected(n,ev.shiftKey) };
   }
@@ -570,6 +580,7 @@ function rerender(draw_context) {
   }
   
   new_svg_elem.innerHTML = new_svg;
+  draw_context.layer.number_of_views += 1;
   var new_draw_context = {
                     // TODO: One draw context per existing score element
                     // already on load.
@@ -577,6 +588,8 @@ function rerender(draw_context) {
                     "svg_elem" : new_svg_elem,
                     "view_elem" : new_view_elem,
                     "layer" : draw_context.layer,
+                    "layer_number": draw_context.layer.layer_number,
+                    "view_number": draw_context.layer.number_of_views - 1,
                     "id_prefix" : "",
                     "zoom" : 1,
                     "reductions" : []};

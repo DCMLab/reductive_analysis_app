@@ -57,6 +57,7 @@ window.addEventListener("beforeunload", function (e) {
 
 // Once things are loaded, do configuration stuff
 $(document).ready(function() {
+  document.getElementsByTagName('html')[0].classList.remove('loader');
   Object.keys(type_conf).forEach(init_type);
   Object.keys(meta_conf).forEach(meta_type);
   Object.keys(combo_conf).forEach(combo_type);
@@ -66,7 +67,7 @@ $(document).ready(function() {
 
   $("#hull_controller").on('change', handle_hull_controller);
   handle_relations_panel(document.getElementById("relations_panel"));
-  document.getElementsByTagName('html')[0].classList.remove('loader');
+  minimap();
 });
 
 
@@ -556,6 +557,7 @@ function finalize_draw_context(new_draw_context) {
     s.p_to_y = p_to_y;
   }
   draw_graph(new_draw_context);
+  minimap();
 }
 
 function render_mei(mei) {

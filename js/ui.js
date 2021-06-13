@@ -426,6 +426,10 @@ function handle_keypress(ev) {
     do_relation("repeat");
   } else if (ev.key == "x") { // Select same notes in the measure
     toggle_placing_note();
+  } else if (ev.key == "[") { // Pan left.
+    pan(0);
+  } else if (ev.key == "]") { // Pan right.
+    pan(1);
   } else if (ev.key == "d") { // Deselect all.
     do_deselect();
   } else if (ev.key == "D") { // Delete relations.
@@ -806,6 +810,14 @@ function hide_top(draw_context) {
     svg_elem.getElementsByClassName("definition-scale")[0].setAttribute("viewBox",draw_context.old_viewbox);
     svg_elem.children[0].setAttribute("height", draw_context.old_height);
   }
+}
+
+function pan(direction = 1) {
+  if (direction == 1)
+    $('html, body').animate({scrollLeft: $(window).scrollLeft() + window.innerWidth}, 300)
+  else if (direction == 0)
+    $('html, body').animate({scrollLeft: $(window).scrollLeft() - window.innerWidth}, 300);
+  else return false;
 }
 
 function minimap() {

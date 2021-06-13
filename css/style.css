@@ -811,3 +811,9 @@ body:not(.mousedown) #relations_panel_toggle:hover {
     height: 100%;
     z-index: 100;
 }
+
+.bookmark {
+  fill: rgba(255, 0, 0, 0.65);
+  stroke: red;
+  stroke-width: 5
+}

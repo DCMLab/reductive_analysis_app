@@ -434,6 +434,8 @@ function handle_keypress(ev) {
     do_deselect();
   } else if (ev.key == "D") { // Delete relations.
     delete_relations();
+  } else if (ev.key == "^") { // Add bookmark.
+    add_bookmark();
   } else if (ev.key == "R") {  // Custom relations.
       ev.preventDefault();
       var was_collapsed = $("#relations_panel").hasClass("collapsed");
@@ -446,9 +448,9 @@ function handle_keypress(ev) {
       document.getElementById("meta_custom_type").focus({preventScroll: true});
   } else if (type_keys[ev.key]) { // Add a relation
     do_relation(type_keys[ev.key]);
-  } else if (meta_keys[ev.key]) { // Add a relation
+  } else if (meta_keys[ev.key]) { // Add a metarelation
     do_metarelation(meta_keys[ev.key]);
-  } else if (combo_keys[ev.key]) { // Add a relation
+  } else if (combo_keys[ev.key]) { // Add a comborelation
     do_comborelation(combo_keys[ev.key]);
   } else if (ev.key == "-"){ // Toggle the relations palette
     toggle_buttons();
@@ -833,4 +835,35 @@ function minimap() {
     drag: 'rgba(0,0,0,0.30)',
     interval: null
   });
+}
+
+function add_bookmark() {
+  // Get selection.
+  if (selected.length == 0) {
+    return false;
+  } else if (!selected[0].classList.contains('note')) {
+    return false;
+  } else {
+    var note = selected[selected.length - 1];
+    var bookmark = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bookmark.classList.add('bookmark');
+    bookmark.setAttribute('fill', 'red');
+    bookmark.setAttribute('width', '500px');
+    bookmark.setAttribute('height', '1500px');
+    bookmark.setAttribute('transform', 'translate(-120 -750)');
+    bookmark.setAttribute('x', note.children[0].children[0].getAttribute('x'));
+    bookmark.setAttribute('y', note.children[0].children[0].getAttribute('y'));
+    $(current_draw_context.svg_elem).find('.page-margin')[0].prepend(bookmark);
+    bookmarks.push(bookmark);
+    bookmarks.sort(function(a, b){
+      if (a.getAttribute('x') < b.getAttribute('x')) return -1
+        else return +1;
+    })
+  }
+}
+
+function move_to_bookmark() {
+  // Get current position.
+  // Find nearest bookmark.
+  // Move to that bookmark.
 }

@@ -688,7 +688,7 @@ function drag_selector_installer(svg_elem) {
            }
         })
         .filter(x => {
-           if (typeof(x.classList) == "undefined") return false;
+           if (typeof(x) == "undefined" || typeof(x.classList) == "undefined") return false;
            var shiftKey = event.shiftKey;
            return (x.classList.contains('relation') && !x.classList.contains('filtered') && !x.classList.contains('selectedrelation') && !x.classList.contains('extraselectedrelation') && !shiftKey)
            || (x.classList.contains('note') && !x.classList.contains('selectednote') && !x.classList.contains('extraselectednote'))

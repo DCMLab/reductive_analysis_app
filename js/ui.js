@@ -727,7 +727,7 @@ function music_tooltip_installer() {
         }
       })
       .filter(x => {
-         if (typeof(x.classList) == "undefined") return false;
+         if (typeof(x) == "undefined" || typeof(x.classList) == "undefined") return false;
          return (x.classList.contains('relation') && !x.classList.contains('filtered'))
          || (x.classList.contains('metarelation'))
       })[0]

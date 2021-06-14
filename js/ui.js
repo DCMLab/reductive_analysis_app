@@ -20,6 +20,8 @@ var mouseY;
 var selected = [];
 // Shift-clicking extra selects
 var extraselected = [];
+// Last-selected entity in the current selection.
+var last_selected = null;
 
 // Toggle if a thing (for now: note or relation) is selected or not.
 function toggle_selected(item,extra) { 
@@ -47,9 +49,11 @@ function toggle_selected(item,extra) {
       if(extra) {
         item.classList.add("extraselectednote");
         extraselected.push(item);
+        last_selected = item;
       }else {
         item.classList.add("selectednote");
         selected.push(item);
+        last_selected = item;
       }
     }
   } else if(ci == "relation" || ci == "metarelation") {
@@ -67,14 +71,17 @@ function toggle_selected(item,extra) {
       if(extra){
         item.classList.add("extraselectedrelation");
         extraselected.push(item);
+        last_selected = item;
       }else{
         item.classList.add("selectedrelation");
         selected.push(item);
+        last_selected = item;
       }
     }
     if(selected.concat(extraselected).length == 0){
       // We're finished selecting relations
       toggle_he_selected(false);
+      last_selected = null;
     }
   }
 
@@ -356,6 +363,17 @@ window.onmousemove = (e) => {
   var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem));
   if(dc)
     current_draw_context = dc;
+    // Visually indicate the current context. This cannot be done in CSS alone
+    // because the relations palette is not a child of .view elements.
+    // TODO: Find a more economical solution. This is becoming a hefty `onmousemove`.
+    if (!(typeof(current_draw_context) == "undefined")) {
+      // Lighten the background of the current context.
+      $('.view').removeClass('view_active');
+      current_draw_context.view_elem.classList.add('view_active');
+      // Mark the sidebar of the current context.
+      $('.sidebar').removeClass('sidebar_active');
+      current_draw_context.view_elem.children[0].classList.add('sidebar_active');
+    }
   if(placing_note!=""){
     update_placing_note();
   }
@@ -430,6 +448,14 @@ function handle_keypress(ev) {
     pan(0);
   } else if (ev.key == "]") { // Pan right.
     pan(1);
+  } else if (ev.key == "{") { // Jump to previous bookmark in current context.
+    jump_to_adjacent_bookmark(-1);
+  } else if (ev.key == "}") { // Jump to next bookmark in current context.
+    jump_to_adjacent_bookmark(+1);
+  } else if (ev.key == ",") { // Jump to next context.
+    jump_to_adjacent_context(+1);
+  } else if (ev.key == ".") { // Jump to previous context.
+    jump_to_adjacent_context(-1);
   } else if (ev.key == "d") { // Deselect all.
     do_deselect();
   } else if (ev.key == "D") { // Delete relations.
@@ -839,13 +865,15 @@ function minimap() {
 
 function add_bookmark() {
   // Get selection.
-  if (selected.length == 0) {
+  if (!last_selected) {
     return false;
-  } else if (!selected[0].classList.contains('note')) {
+  } else if (!last_selected.classList.contains('note')) {
     return false;
   } else {
-    var note = selected[selected.length - 1];
+    var note = last_selected;
     var bookmark = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    var context = current_draw_context.id_prefix ? current_draw_context.id_prefix : "0";
+    bookmark.dataset.draw_context = context;
     bookmark.classList.add('bookmark');
     bookmark.setAttribute('fill', 'red');
     bookmark.setAttribute('width', '500px');
@@ -856,14 +884,57 @@ function add_bookmark() {
     $(current_draw_context.svg_elem).find('.page-margin')[0].prepend(bookmark);
     bookmarks.push(bookmark);
     bookmarks.sort(function(a, b){
-      if (a.getAttribute('x') < b.getAttribute('x')) return -1
-        else return +1;
+      return a.getAttribute('x') - b.getAttribute('x');
     })
   }
 }
 
-function move_to_bookmark() {
-  // Get current position.
-  // Find nearest bookmark.
-  // Move to that bookmark.
+function jump_to_adjacent_bookmark(direction = 1) {
+
+  function moveTo(el) {
+    el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
+  }
+
+  // TODO: Remove or adapt the following line once the initial draw context has a defined id_prefix.
+  var context = current_draw_context.id_prefix ? current_draw_context.id_prefix : "0";
+
+  var context_bookmarks = bookmarks.filter(b => b.dataset.draw_context == context);
+
+  var context_bookmarks_map_x = context_bookmarks
+      .map(b => b.getBoundingClientRect().x);
+
+  var next_bookmark_index = context_bookmarks_map_x.findIndex(x => x>= window.innerWidth);
+  var previous_bookmark_index = context_bookmarks_map_x.filter(x => x <= 0).length - 1;
+
+  if (direction == 1 && next_bookmark_index != -1) {
+    var element = context_bookmarks[next_bookmark_index];
+  } else if (direction == -1 && previous_bookmark_index != -1) {
+    var element = context_bookmarks[previous_bookmark_index];
+  } else {
+    return false;
+  }
+
+  moveTo(element);
+
 }
+
+function jump_to_adjacent_context(direction = 1) {
+
+  function moveTo(el) {
+    el.scrollIntoView({behavior: 'smooth', block: 'start', inline: 'nearest'});
+  }
+
+  var contexts = draw_contexts 
+    .sort((a, b) => a.view_elem.getBoundingClientRect().y - b.view_elem.getBoundingClientRect().y);
+
+  var contexts_map_y = contexts.map(c => c.view_elem.getBoundingClientRect().y);
+  var contexts_map_bottom = contexts.map(c => c.view_elem.getBoundingClientRect().bottom);
+
+  if (direction == 1) {
+    element_index = contexts_map_bottom.findIndex(c => c > window.innerHeight);
+  } else if (direction == -1) {
+    element_index = contexts_map_y.findIndex(c => c < 0);
+  } else return false;
+  if (element_index != -1) moveTo(contexts[element_index].view_elem);
+}
+

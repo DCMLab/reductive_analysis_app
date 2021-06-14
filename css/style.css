@@ -115,6 +115,10 @@ body {
   z-index: 2;
 }
 
+.sidebar_active {
+  outline: 5px solid blue;
+}
+
 .filterdiv {
   width: 60px;
   top: 0;
@@ -499,6 +503,11 @@ body:not(.mousedown) .extraselectedrelation:hover {
 .view {
   position: relative;
   min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
+  background: rgb(240,240,240);
+}
+
+.view_active {
+  background: white;
 }
 
 .main_buttons {

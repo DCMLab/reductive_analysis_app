@@ -42,6 +42,9 @@ var draw_contexts = [];
 //  canonical representative
 var layer_contexts = [];
 
+//  Bookmarks.
+var bookmarks = [];
+
 // A tooltip for displaying relationship and meta-relationship types.
 var tooltip;
 

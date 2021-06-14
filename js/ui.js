@@ -895,26 +895,28 @@ function jump_to_adjacent_bookmark(direction = 1) {
     el.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'center'});
   }
 
-  // TODO: Remove or adapt the following line once the initial draw context has a defined id_prefix.
-  var context = current_draw_context.id_prefix ? current_draw_context.id_prefix : "0";
+  if (current_draw_context) {
+    // TODO: Remove or adapt the following line once the initial draw context has a defined id_prefix.
+    var context = current_draw_context.id_prefix ? current_draw_context.id_prefix : "0";
 
-  var context_bookmarks = bookmarks.filter(b => b.dataset.draw_context == context);
+    var context_bookmarks = bookmarks.filter(b => b.dataset.draw_context == context);
 
-  var context_bookmarks_map_x = context_bookmarks
-      .map(b => b.getBoundingClientRect().x);
+    var context_bookmarks_map_x = context_bookmarks
+        .map(b => b.getBoundingClientRect().x);
 
-  var next_bookmark_index = context_bookmarks_map_x.findIndex(x => x>= window.innerWidth);
-  var previous_bookmark_index = context_bookmarks_map_x.filter(x => x <= 0).length - 1;
+    var next_bookmark_index = context_bookmarks_map_x.findIndex(x => x>= window.innerWidth);
+    var previous_bookmark_index = context_bookmarks_map_x.filter(x => x <= 0).length - 1;
 
-  if (direction == 1 && next_bookmark_index != -1) {
-    var element = context_bookmarks[next_bookmark_index];
-  } else if (direction == -1 && previous_bookmark_index != -1) {
-    var element = context_bookmarks[previous_bookmark_index];
-  } else {
-    return false;
+    if (direction == 1 && next_bookmark_index != -1) {
+      var element = context_bookmarks[next_bookmark_index];
+    } else if (direction == -1 && previous_bookmark_index != -1) {
+      var element = context_bookmarks[previous_bookmark_index];
+    } else {
+      return false;
+    }
+
+    moveTo(element);
   }
-
-  moveTo(element);
 
 }
 

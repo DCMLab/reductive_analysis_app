@@ -310,8 +310,14 @@ function savesvg() {
 // Load a new MEI
 function load() {
   console.debug("Using globals: selected_extraselected, upload, reader, filenmae");
-  var loaderModal = new jBox('Modal', {title: 'Loading...', content: 'Please wait...'});
-  loaderModal.open();
+  var loaderModal = new jBox('Modal',{
+    id: 'loader-modal',
+    title: 'Loading...',
+    content: 'Please wait...',
+    closeOnEsc: false,
+    closeOnClick: false,
+    closeButton: false
+  });
   /* Cancel loading if changes are not saved? alert */
   selected = [];
   extraselected = [];

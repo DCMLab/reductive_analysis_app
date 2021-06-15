@@ -3,7 +3,9 @@ function initialize_metadata() {
   // Create title/composer if they don't exist
   var meiHead = mei.getElementsByTagName("meiHead")[0];
   var fd = mei.getElementsByTagName("fileDesc")[0];
+  if (typeof(fd) == "undefined") return;
   var titleStmt = fd.getElementsByTagName("titleStmt")[0];
+  if (typeof(titileStmt) == "undefined") return;
   var title, titles = titleStmt.getElementsByTagName("title");
   if(titles.length == 0){
     title = mei.createElement("title");

@@ -327,9 +327,12 @@ function load() {
       data = reader.result;
       // TODO: Understand why this setTimeout hack is necessary for the modal to appear.
       setTimeout(() => {
-        load_finish();
-        loaderModal.close();
-        music_tooltip_installer();
+        loaderModal.open();
+        setTimeout(() => {
+          load_finish(loaderModal);
+          loaderModal.close(loaderModal);
+          music_tooltip_installer();
+        }, 1000);
       }, 1000);
     }
     reader.readAsText(upload.files[0]);
@@ -366,33 +369,60 @@ function draw_graph(draw_context) {
 
 
 // Do all of this when we have the MEI in memory
-function load_finish(e) {
+function load_finish(loader_modal) {
   console.debug("Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades");
 
   // Parse the original document
   parser = new DOMParser();
-  mei = parser.parseFromString(data,"text/xml");
-  if (mei.getElementsByTagName('parsererror').length > 0) {
-    alert('This is not a valid XML or MEI file.')
+  try {
+    mei = parser.parseFromString(data,"text/xml");
+    if (mei.getElementsByTagName('parsererror').length > 0) {
+      alert('This is not a valid XML or MEI file.')
+      loader_modal.close();
+      return false;
+    }
+  } catch {
+    loader_modal.close();
+    $('#fileupload').val('');
+    return false;
   }
   vrvToolkit = new verovio.toolkit();
    if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
      // We didn't get a MEI? Try if it's a musicXML
-     let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+     try {
+       let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
        pageHeight: 10000, breaks: "none"});
-     if (!new_svg) {
-       console.log ('Verovio could not generate SVG from non-MEI file.');
-       return false;
+     } catch {
+       if (!new_svg) {
+         console.log ('Verovio could not generate SVG from non-MEI file.');
+         loader_modal.close();
+         $('#fileupload').val('');
+         return false;
+       }
      }
      // TODO: Detect failure and bail
      data = vrvToolkit.getMEI();
      parser = new DOMParser();
-     mei = parser.parseFromString(data,"text/xml");
+     try {
+       mei = parser.parseFromString(data,"text/xml");
+     } catch {
+       alert('Cannot parse this XML file as valid MEI.')
+       loader_modal.close();
+       $('#fileupload').val('');
+       return false;
+     }
    }else{
      mei = fix_synonyms(mei);
    }
 
-  mei_graph = add_or_fetch_graph();
+  try {
+    mei_graph = add_or_fetch_graph();
+  } catch {
+    alert('Cannot parse this XML file as valid MEI.')
+    loader_modal.close();
+    $('#fileupload').val('');
+    return false;
+  }
   initialize_metadata();
   // Clear the old (if any)
   draw_contexts = [];

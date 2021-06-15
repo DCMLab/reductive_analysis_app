@@ -5,7 +5,7 @@ function initialize_metadata() {
   var fd = mei.getElementsByTagName("fileDesc")[0];
   if (typeof(fd) == "undefined") return;
   var titleStmt = fd.getElementsByTagName("titleStmt")[0];
-  if (typeof(titileStmt) == "undefined") return;
+  if (typeof(titleStmt) == "undefined") return;
   var title, titles = titleStmt.getElementsByTagName("title");
   if(titles.length == 0){
     title = mei.createElement("title");

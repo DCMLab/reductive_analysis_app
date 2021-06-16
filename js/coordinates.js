@@ -306,6 +306,8 @@ function start_placing_note() {
       return;
     let [pname, oct, note] = note_params();
     placing_note = "temp"+random_id();
+    $("#addnoteputton").addClass('active')
+    document.getElementById("layers").style.cursor = 'crosshair';
     if(pname)
       show_note(pname, oct, note, true,placing_note);
   }
@@ -316,18 +318,16 @@ function stop_placing_note() {
   if(elem)
     elem.parentElement.removeChild(elem);
   placing_note="";
+  $("#addnoteputton").removeClass('active')
+  document.getElementById("layers").style.cursor = 'default';
 }
 
 function toggle_placing_note() {
   if (!current_draw_context.layer.original_score) {
     if(placing_note) {
       stop_placing_note();
-      $("#addnoteputton").removeClass('active')
-      document.getElementById("layers").style.cursor = 'default';
     } else {
       start_placing_note();
-      $("#addnoteputton").addClass('active')
-      document.getElementById("layers").style.cursor = 'crosshair';
     }
   }  
 }

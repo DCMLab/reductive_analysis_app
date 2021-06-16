@@ -13,6 +13,40 @@ try {
 
   var button_shades = {};
 
+  // General action shortcuts.
+  var action_conf = {
+    "undo":                    "U",
+    "deselect_all":            "d",
+    "delete_all":              "D",
+    "add_bookmark":            "^",
+    "move_relation_to_front":  "z",
+    "reduce_relations":        "r",
+    "show_hide_notation":      "s",
+    "toggle_type_shades":      "h",
+    "select_same_notes":       "+",
+    "toggle_add_note":         "x"
+  }
+
+  // Navigation shortcuts.
+  var navigation_conf = {
+    "pan_left":                   "[",
+    "pan_right":                  "]",
+    "jump_to_next_bookmark":      "{",
+    "jump_to_previous_bookmark":  "}",
+    "jump_to_context_below":      ",",
+    "jump_to_context_above":      ".",
+    "toggle_palette":             "-",
+    "zoom_out":                   "(",
+    "zoom_in":                    ")"
+  }
+
+  // Custon (meta-)relation shortcuts.
+  custom_conf = {
+    "relation":            "R",
+    "meta_relation":       "M"
+  }
+
+  // Meta-relation types and shortcuts.
   var meta_conf = {
   "context"      :{key: "c", colour: 0},
   "layer"     :{key: "l", colour: 6},
@@ -20,6 +54,7 @@ try {
   "section"    :{key: "t", colour: 3},
   }
 
+  // Relation types and shortcuts.
   var type_conf = {
   "repeat"      :{key: "e", colour: 0},
   "passing"     :{key: "p", colour: 6},
@@ -30,6 +65,7 @@ try {
   "bassbrechung":{key: "b", colour: 5} 
   }
 
+  // Composite ("combo") relation types and shortcuts.
   var combo_conf = {
     "passing_comb" : {key: "P", total: "passing", outer: "arpeggio"},
     "neighbour_comb" : {key: "N", total: "neighbour", outer: "repeat"},
@@ -43,12 +79,14 @@ try {
   }
 
 
+  // Authorship meta-data fields.
   var optional_resp_roles = [
     "analyst", "annotator"
   ]
 
 
 
+  // MEI classes not to be rendered.
   var hide_classes = [
     "fermata",
     "rest",
@@ -72,5 +110,6 @@ try {
 
   console.log('[Reductive Analysis App] Error loading configuration file (', e, ')');
   console.log('[Reductive Analysis App] Attempting to proceed nonetheless, but expect malfunction.');
+  alert('Error loading configuration file (', e, ').\nAttempting to proceed nonetheless, but expect malfunction.');
 
 }

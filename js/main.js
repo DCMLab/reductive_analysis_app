@@ -71,6 +71,7 @@ $(document).ready(function() {
   $("#hull_controller").on('change', handle_hull_controller);
   handle_relations_panel(document.getElementById("relations_panel"));
   minimap();
+  initialize_panel();
 });
 
 
@@ -644,6 +645,32 @@ function rerender(draw_context) {
   finalize_draw_context(new_draw_context);
 }
 
+function initialize_panel() {
+  // Add shortcut tooltips to the panel buttons.
 
+  const buttons = [
+    // conf.js label    ->        <input> element id
+    ["undo",                       "undobutton"],
+    ["deselect_all",               "deselectbutton"],
+    ["delete_all",                 "deletebutton"],
+    ["add_bookmark",               "addbookmarkbutton"],
+    ["show_hide_notation",         "equalizebutton"],
+    ["toggle_type_shades",         "shadesbutton"],
+    ["toggle_add_note",            "addnoteputton"],
+    ["pan_left",                   "panleftbutton"],
+    ["pan_right",                  "panrightbutton"],
+    ["jump_to_next_bookmark",      "previousbookmarkbutton"],
+    ["jump_to_previous_bookmark",  "nextbookmarkbutton"],
+    ["jump_to_context_below",      "previouscontextbutton"],
+    ["jump_to_context_above",      "nextcontextbutton"],
+    ["relation",                   "customrelationbutton"],
+    ["meta_relation",              "custommetarelationbutton"]
+  ]
+
+  buttons.forEach(b => document.getElementById(b[1]) .setAttribute('title',
+    custom_conf[b[0]] || navigation_conf[b[0]] || action_conf[b[0]])
+  );
+
+}
 
 console.log("Main webapp library is loaded");

@@ -398,7 +398,6 @@ function handle_keyup(ev) {
     $('#layers').removeClass('shift-pressed')
   // Use `Escape` to focus outside relations palette.
   if (ev.key === "Escape") {
-    console.log('blur');
     document.getElementById("custom_type").blur();
     document.getElementById("meta_custom_type").blur();
   }
@@ -427,47 +426,52 @@ function handle_keypress(ev) {
     return;
   if (ev.key == "Enter"){
     do_edges();
-  } else if (ev.key == "z") { // Scroll through relations
+  } else if (ev.key == action_conf.move_relation_to_front) { // Scroll through relations
     elem = document.elementFromPoint(mouseX, mouseY);
     flip_to_bg(elem);
     if (elem.onmouseout) elem.onmouseout();
-  } else if (ev.key == "U") { // UNDO
+  } else if (ev.key == action_conf.undo) { // UNDO
     do_undo();
-  } else if (ev.key == "r") { // Reduce relations
+  } else if (ev.key == action_conf.reduce_relations) { // Reduce relations
     do_reduce_pre(current_draw_context);
-  } else if (ev.key == "s") { // Show/hide ties etc.
+  } else if (ev.key == action_conf.show_hide_notation) { // Show/hide ties etc.
     toggle_equalize();
-  } else if (ev.key == "h") { // Toggle type-dependent shades
+  } else if (ev.key == action_conf.toggle_type_shades) { // Toggle type-dependent shades
     toggle_shades();
-  } else if (ev.key == "+") { // Select same notes in the measure
+  } else if (ev.key == action_conf.select_same_notes) { // Select same notes in the measure
     select_samenote();
     do_relation("repeat");
-  } else if (ev.key == "x") { // Select same notes in the measure
+  } else if (ev.key == action_conf.toggle_add_note) { // Toggle note creation.
     toggle_placing_note();
-  } else if (ev.key == "[") { // Pan left.
+  } else if (ev.key == navigation_conf.pan_left) { // Pan left.
     pan(0);
-  } else if (ev.key == "]") { // Pan right.
+  } else if (ev.key == navigation_conf.pan_right) { // Pan right.
     pan(1);
-  } else if (ev.key == "{") { // Jump to previous bookmark in current context.
+  } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
+    console.log(current_draw_context);
+    zoom_out(current_draw_context);
+  } else if (ev.key == navigation_conf.zoom_in) { // Zoom in.
+    zoom_in(current_draw_context);
+  } else if (ev.key == navigation_conf.jump_to_next_bookmark) { // Jump to previous bookmark in current context.
     jump_to_adjacent_bookmark(-1);
-  } else if (ev.key == "}") { // Jump to next bookmark in current context.
+  } else if (ev.key == navigation_conf.jump_to_previous_bookmark) { // Jump to next bookmark in current context.
     jump_to_adjacent_bookmark(+1);
-  } else if (ev.key == ",") { // Jump to next context.
+  } else if (ev.key == navigation_conf.jump_to_context_below) { // Jump to next context.
     jump_to_adjacent_context(+1);
-  } else if (ev.key == ".") { // Jump to previous context.
+  } else if (ev.key == navigation_conf.jump_to_context_above) { // Jump to previous context.
     jump_to_adjacent_context(-1);
-  } else if (ev.key == "d") { // Deselect all.
+  } else if (ev.key == action_conf.deselect_all) { // Deselect all.
     do_deselect();
-  } else if (ev.key == "D") { // Delete relations.
+  } else if (ev.key == action_conf.delete_all) { // Delete relations.
     delete_relations();
-  } else if (ev.key == "^") { // Add bookmark.
+  } else if (ev.key == action_conf.add_bookmark) { // Add bookmark.
     add_bookmark();
-  } else if (ev.key == "R") {  // Custom relations.
+  } else if (ev.key == custom_conf.relation) {  // Custom relations.
       ev.preventDefault();
       var was_collapsed = $("#relations_panel").hasClass("collapsed");
       if (was_collapsed) toggle_buttons();
       document.getElementById("custom_type").focus({preventScroll: true});
-  } else if (ev.key == "M") {  // Custom meta-relations.
+  } else if (ev.key == custom_conf.meta_relation) {  // Custom meta-relations.
       ev.preventDefault();
       var was_collapsed = $("#relations_panel").hasClass("collapsed");
       if (was_collapsed) toggle_buttons();
@@ -478,7 +482,7 @@ function handle_keypress(ev) {
     do_metarelation(meta_keys[ev.key]);
   } else if (combo_keys[ev.key]) { // Add a comborelation
     do_comborelation(combo_keys[ev.key]);
-  } else if (ev.key == "-"){ // Toggle the relations palette
+  } else if (ev.key == navigation_conf.toggle_palette){ // Toggle the relations palette
     toggle_buttons();
   } else {
     console.log(ev);
@@ -599,12 +603,16 @@ function toggle_buttons() {
 }
 
 function zoom_in(draw_context) {
-  draw_context.zoom = draw_context.zoom * 1.1;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  if (typeof(draw_context) != "undefined") {
+    draw_context.zoom = draw_context.zoom * 1.1;
+    draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  }
 }
 function zoom_out(draw_context) {
-  draw_context.zoom = draw_context.zoom * 0.90909090909090;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  if (typeof(draw_context) != "undefined") {
+    draw_context.zoom = draw_context.zoom * 0.90909090909090;
+    draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  }
 }
 
 

@@ -108,29 +108,31 @@
 	<div id="relations_panel">
 	  <div id="relations_panel_header"><div id="relations_panel_toggle" title="Shortcut: '-'" onclick="toggle_buttons()">&#9900;</div></div>
 	  <div id="navigation_buttons">
-	    <input type="button" id="panleftbutton" value="Left [" onclick="pan(0)">
-	    <input type="button" id="panrightbutton" value="Right ]" onclick="pan(1)">
-	    <input type="button" id="previousbookmarkbutton" value="Next {" onclick="jump_to_adjacent_bookmark(-1)">
-	    <input type="button" id="nextbookmarkbutton" value="Previous }" onclick="jump_to_adjacent_bookmark(+1)">
-	    <input type="button" id="previouscontextbutton" value="Down ," onclick="jump_to_adjacent_context(-1)">
-	    <input type="button" id="nextcontextbutton" value="Up ." onclick="jump_to_adjacent_context(+1)">
+	    <input type="button" id="panleftbutton" value="Left" onclick="pan(0)">
+	    <input type="button" id="panrightbutton" value="Right" onclick="pan(1)">
+	    <input type="button" id="previousbookmarkbutton" value="Previous" onclick="jump_to_adjacent_bookmark(-1)">
+	    <input type="button" id="nextbookmarkbutton" value="Next" onclick="jump_to_adjacent_bookmark(+1)">
+	    <input type="button" id="previouscontextbutton" value="Up" onclick="jump_to_adjacent_context(-1)">
+	    <input type="button" id="nextcontextbutton" value="Down" onclick="jump_to_adjacent_context(+1)">
+	    <input type="button" id="zoomoutbutton" value="Zoom out" onclick="zoom_out(current_draw_context)">
+	    <input type="button" id="zoominbutton" value="Zoom in" onclick="zoom_in(current_draw_context)">
 	  </div>
 	  <div id="basic_buttons">
-	    <input type="button" id="undobutton" value="(U)ndo" onclick="do_undo()">
+	    <input type="button" id="undobutton" value="Undo" onclick="do_undo()">
 	    <input type="button" id="selectvisiblesaltbutton" value="Select visible relations" onclick="select_visibles(current_draw_context)">
-	    <input type="button" id="deselectbutton" value="(d)eselect all" onclick="do_deselect()">
-	    <input type="button" id="deletebutton" value="(D)elete (meta)relations" onclick="delete_relations()" >
-	    <input type="button" id="addnoteputton" value="Toggle adding a note (x)" onclick="toggle_placing_note()"/>
-	    <input type="button" id="addbookmarkbutton" value="Bookmark note (^)" onclick="add_bookmark()"/>
+	    <input type="button" id="deselectbutton" value="Deselect all" onclick="do_deselect()">
+	    <input type="button" id="deletebutton" value="Delete meta-relations" onclick="delete_relations()" >
+	    <input type="button" id="addnoteputton" value="Toggle adding a note" onclick="toggle_placing_note()"/>
+	    <input type="button" id="addbookmarkbutton" value="Bookmark note" onclick="add_bookmark()"/>
 	  </div>
 	  <div id="relation_buttons">
-	    <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation("")" > 
-	    <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type (R):" onclick='enter_custom_relation()' >
+	    <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation" onclick="do_relation()" > 
+	    <input type="button" class="relationbutton" id="customrelationbutton" value="Add relation with custom type:" onclick='enter_custom_relation()' >
 	    <input type="text" id="custom_type" onfocus="texton()" onblur="textoff()">
 	    <br>
 	  </div>
 	  <div id="meta_buttons" class="none">
-	    <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type (M):" onclick='enter_custom_metarelation()' >
+	    <input type="button" class="metarelationbutton" id="custommetarelationbutton" value="Add metarelation with custom type:" onclick='enter_custom_metarelation()' >
 	    <input type="text" id="meta_custom_type" onfocus="texton()" onblur="textoff()">
 	  </div>
 	  <div id="combo_buttons">

@@ -37,6 +37,7 @@ function delete_relation(elem) {
       return elems;
     });
 
+  tooltip_update();
   return action_removed;
 }
 

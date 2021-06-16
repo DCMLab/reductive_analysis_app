@@ -386,7 +386,7 @@ function handle_keydown(ev) {
   }
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === "Shift")
-    $('#layers').addClass('shift-pressed')
+    $('#layers').addClass('shift-pressed');
 }
 
 function handle_keyup(ev) {
@@ -744,40 +744,41 @@ function drag_selector_installer(svg_elem) {
   })
 }
 
-function music_tooltip_installer() {
+function tooltip_update() {
+  var update = [document.elementFromPoint(mouseX, mouseY)]
+  .map(x => {
+    if (x) {
+      switch (x.tagName) {
+        case "path":
+           return x;
+        case "use":
+           return x.parentElement.parentElement;
+        case "circle":
+           return x.parentElement;
+        default:
+           return false;
+      }
+    }
+  })
+  .filter(x => {
+     if (typeof(x) == "undefined" || typeof(x.classList) == "undefined") return false;
+     return (x.classList.contains('relation') && !x.classList.contains('filtered'))
+     || (x.classList.contains('metarelation'))
+  })[0]
+  update = update ? update.getAttribute('type') : '';
+  if (update) {
+    $(".jBox-Mouse").show();
+    tooltip.setContent(update);
+  } else {
+    $(".jBox-Mouse").hide();
+  }
+}
 
+function music_tooltip_installer() {
   tooltip = new jBox('Mouse', {
     attach: "#layers",
     trigger: "mouseenter",
-    onPosition: function () {
-      var update = [document.elementFromPoint(mouseX, mouseY)]
-      .map(x => {
-        if (x) {
-          switch (x.tagName) {
-            case "path":
-               return x;
-            case "use":
-               return x.parentElement.parentElement;
-            case "circle":
-               return x.parentElement;
-            default:
-               return false;
-          }
-        }
-      })
-      .filter(x => {
-         if (typeof(x) == "undefined" || typeof(x.classList) == "undefined") return false;
-         return (x.classList.contains('relation') && !x.classList.contains('filtered'))
-         || (x.classList.contains('metarelation'))
-      })[0]
-      update = update ? update.getAttribute('type') : '';
-      if (update) {
-        $(".jBox-Mouse").show();
-        tooltip.setContent(update);
-      } else {
-        $(".jBox-Mouse").hide();
-      }
-    }
+    onPosition: tooltip_update
   });
 }
 

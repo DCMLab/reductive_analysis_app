@@ -124,6 +124,7 @@ function do_relation(type) {
     undo_actions.push(["relation",added.reverse(),selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select
   }
+  tooltip_update();
 }
 
 function do_comborelation(type) {
@@ -142,7 +143,7 @@ function do_comborelation(type) {
   extraselected = [fst,snd];
   selected = all;
   do_relation(combo_conf[type].total);
-
+  tooltip_update();
 }
 
 
@@ -168,6 +169,7 @@ function do_metarelation(type) {
 
   undo_actions.push(["metarelation",added,selected,extraselected]);
   selected.concat(extraselected).forEach(toggle_selected); // De-select
+  tooltip_update();
 }
 
 
@@ -251,6 +253,7 @@ function do_undo() {
       c.parentNode.removeChild(c);
     }
   }
+  tooltip_update();
 }
 
 // Function to download data to a file

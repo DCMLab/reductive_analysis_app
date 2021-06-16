@@ -355,25 +355,23 @@ function onclick_select_functions(draw_context) {
 
 /* Keypress/mouse handler functions */
 
+window.onmousedown = (e) => {
+  var elem = document.elementFromPoint(mouseX, mouseY);
+  var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem));
+  if (!navigation_conf.switch_context_on_hover && dc) current_draw_context = dc;
+
+  indicate_current_context();
+}
+
 window.onmousemove = (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
   // Not sure if this is the best way...
   var elem = document.elementFromPoint(mouseX, mouseY);
   var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem));
-  if(dc)
-    current_draw_context = dc;
-    // Visually indicate the current context. This cannot be done in CSS alone
-    // because the relations palette is not a child of .view elements.
-    // TODO: Find a more economical solution. This is becoming a hefty `onmousemove`.
-    if (!(typeof(current_draw_context) == "undefined")) {
-      // Lighten the background of the current context.
-      $('.view').removeClass('view_active');
-      current_draw_context.view_elem.classList.add('view_active');
-      // Mark the sidebar of the current context.
-      $('.sidebar').removeClass('sidebar_active');
-      current_draw_context.view_elem.children[0].classList.add('sidebar_active');
-    }
+  if (navigation_conf.switch_context_on_hover && dc) current_draw_context = dc;
+
+  indicate_current_context();
   if(placing_note!=""){
     update_placing_note();
   }

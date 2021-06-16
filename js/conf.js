@@ -18,7 +18,6 @@ try {
     "undo":                    "U",
     "deselect_all":            "d",
     "delete_all":              "D",
-    "toggle_add":              "x",
     "add_bookmark":            "^",
     "move_relation_to_front":  "z",
     "reduce_relations":        "r",

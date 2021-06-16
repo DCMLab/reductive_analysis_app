@@ -942,7 +942,7 @@ function jump_to_adjacent_context(direction = 1) {
   if (direction == 1) {
     element_index = contexts_map_bottom.findIndex(c => c > window.innerHeight);
   } else if (direction == -1) {
-    element_index = contexts_map_y.findIndex(c => c < 0);
+    element_index = contexts_map_y.filter(c => c < 0).length - 1;
   } else return false;
   if (element_index != -1) moveTo(contexts[element_index].view_elem);
 }

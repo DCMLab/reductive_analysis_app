@@ -86,7 +86,7 @@ window.onerror = function errorHandler(errorMsg, url, lineNumber) {
 // OK we've selected stuff, let's make the selection into a
 // "relation".
 function do_relation(type) {
-  console.debug("Using globals: selected, extraselected, mei, orig_mei, undo_actions");
+  console.debug("Using globals: selected, extraselected, mei, undo_actions");
   if (selected.length == 0 && extraselected == 0) {
     return;}
   changes = true;
@@ -147,7 +147,7 @@ function do_comborelation(type) {
 
 
 function do_metarelation(type) {
-  console.debug("Using globals: orig_mei, mei_graph, selected, extraselected");
+  console.debug("Using globals:  mei_graph, selected, extraselected");
   if (selected.length == 0 && extraselected == 0) {
     return;}
   var ci = get_class_from_classlist(selected.concat(extraselected)[0]); 
@@ -181,6 +181,7 @@ function do_undo() {
   }
   if(undo_actions.length == rerendered_after_action){
     console.log("Cannot undo past a rerender");
+    alert("Cannot undo past a rerender.");
     return;
   }
   // Deselect the current selection, if any
@@ -229,7 +230,7 @@ function do_undo() {
       var id = id_or_oldid(he);
       var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
       hes.forEach((he) => he.setAttribute("type",from));
-      var mei_he = get_by_id(orig_mei,id);
+      var mei_he = get_by_id(mei,id);
       mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
       hes.forEach(toggle_shade);
     });
@@ -296,7 +297,7 @@ function save() {
   download(saved, filename+".mei", "text/xml");
 }
 function save_orig() {
-  console.debug("Using globals: orig_mei");
+  console.debug("Using globals: mei");
   var saved = new XMLSerializer().serializeToString(mei);
   download(saved, filename+".mei", "text/xml");
 }

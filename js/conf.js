@@ -35,7 +35,9 @@ try {
     "jump_to_previous_bookmark":  "}",
     "jump_to_context_below":      ",",
     "jump_to_context_above":      ".",
-    "toggle_palette":             "-"
+    "toggle_palette":             "-",
+    "zoom_out":                   "(",
+    "zoom_in":                    ")"
   }
 
   // Custon (meta-)relation shortcuts.

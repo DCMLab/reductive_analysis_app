@@ -447,6 +447,11 @@ function handle_keypress(ev) {
     pan(0);
   } else if (ev.key == navigation_conf.pan_right) { // Pan right.
     pan(1);
+  } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
+    console.log(current_draw_context);
+    zoom_out(current_draw_context);
+  } else if (ev.key == navigation_conf.zoom_in) { // Zoom in.
+    zoom_in(current_draw_context);
   } else if (ev.key == navigation_conf.jump_to_next_bookmark) { // Jump to previous bookmark in current context.
     jump_to_adjacent_bookmark(-1);
   } else if (ev.key == navigation_conf.jump_to_previous_bookmark) { // Jump to next bookmark in current context.
@@ -598,12 +603,16 @@ function toggle_buttons() {
 }
 
 function zoom_in(draw_context) {
-  draw_context.zoom = draw_context.zoom * 1.1;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  if (typeof(draw_context) != "undefined") {
+    draw_context.zoom = draw_context.zoom * 1.1;
+    draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  }
 }
 function zoom_out(draw_context) {
-  draw_context.zoom = draw_context.zoom * 0.90909090909090;
-  draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  if (typeof(draw_context) != "undefined") {
+    draw_context.zoom = draw_context.zoom * 0.90909090909090;
+    draw_context.svg_elem.style.transform="scale("+draw_context.zoom+")";
+  }
 }
 
 

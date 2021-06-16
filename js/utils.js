@@ -890,4 +890,16 @@ function button(value) {
   return button;
 }
 
-
+function indicate_current_context() {
+  // Visually indicate the current context. This cannot be done in CSS alone
+  // because the relations palette is not a child of .view elements.
+  // TODO: Find a more economical solution. This is becoming a hefty `onmousemove`.
+  if (!(typeof(current_draw_context) == "undefined")) {
+    // Lighten the background of the current context.
+    $('.view').removeClass('view_active');
+    current_draw_context.view_elem.classList.add('view_active');
+    // Mark the sidebar of the current context.
+    $('.sidebar').removeClass('sidebar_active');
+    current_draw_context.view_elem.children[0].classList.add('sidebar_active');
+  }
+}

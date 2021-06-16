@@ -337,6 +337,7 @@ function load() {
           load_finish(loaderModal);
           loaderModal.close(loaderModal);
           music_tooltip_installer();
+          indicate_current_context();
         }, 1000);
       }, 1000);
     }

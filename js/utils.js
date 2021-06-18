@@ -903,3 +903,16 @@ function indicate_current_context() {
     current_draw_context.view_elem.children[0].classList.add('sidebar_active');
   }
 }
+
+function fifths_to_diatonic(c) {
+  var accidental = "";
+  while(c > 5){
+    accidental = accidental + "s"
+    c = c - 7;
+  }
+  while(c < -1){
+    accidental = accidental + "f"
+    c = c + 7;
+  }
+  return [diatonics[mod(c*4, 7)], accidental]
+}

@@ -47,6 +47,8 @@ try {
     "meta_relation":       "M"
   }
 
+  var diatonics = "cdefgab";
+
   // Meta-relation types and shortcuts.
   var meta_conf = {
   "context"      :{key: "c", colour: 0},

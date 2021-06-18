@@ -903,3 +903,58 @@ function indicate_current_context() {
     current_draw_context.view_elem.children[0].classList.add('sidebar_active');
   }
 }
+
+// Fuzzy search algorithm for <select> controls.
+// See https://github.com/bevacqua/fuzzysearch
+function fuzzysearch(needle, haystack) {
+  var hlen = haystack.length;
+  var nlen = needle.length;
+  if (nlen > hlen) {
+    return false;
+  }
+  if (nlen === hlen) {
+    return needle === haystack;
+  }
+  outer: for (var i = 0, j = 0; i < nlen; i++) {
+  var nch = needle.charCodeAt(i);
+  while (j < hlen) {
+      if (haystack.charCodeAt(j++) === nch) {
+        continue outer;
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+// Select2 matcher call back for fuzzy searching.
+function matcher(params, data) {
+  // If there are no search terms, return all of the data
+  if ($.trim(params.term) === '') {
+    return data;
+  }
+
+  // Do not display the item if there is no 'text' property
+  if (typeof data.text === 'undefined') {
+    return null;
+  }
+
+  // `params.term` should be the term that is used for searching
+  // `data.text` is the text that is displayed for the data object
+  if (fuzzysearch(params.term.toUpperCase(), data.text.toUpperCase())) {
+    var modifiedData = $.extend({}, data, true);
+
+    // You can return modified objects from here
+    // This includes matching the `children` how you want in nested data sets
+    return modifiedData;
+  }
+
+  // Return `null` if the term should not be displayed
+  return null;
+}
+
+// Converting plain arrays of <select> options into the type required by Select2.
+// See https://select2.org/data-sources/formats for the specification.
+function arrayToSelect2(plain_array) {
+  return (plain_array.map(e => ({"id": e, "text": e})));
+}

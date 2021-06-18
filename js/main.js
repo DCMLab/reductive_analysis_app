@@ -72,6 +72,7 @@ $(document).ready(function() {
   handle_relations_panel(document.getElementById("relations_panel"));
   minimap();
   initialize_panel();
+  initialize_select_controls();
 });
 
 
@@ -663,15 +664,38 @@ function initialize_panel() {
     ["jump_to_next_bookmark",      "previousbookmarkbutton"],
     ["jump_to_previous_bookmark",  "nextbookmarkbutton"],
     ["jump_to_context_below",      "previouscontextbutton"],
-    ["jump_to_context_above",      "nextcontextbutton"],
-    ["relation",                   "customrelationbutton"],
-    ["meta_relation",              "custommetarelationbutton"]
+    ["jump_to_context_above",      "nextcontextbutton"]
   ]
 
   buttons.forEach(b => document.getElementById(b[1]) .setAttribute('title',
     custom_conf[b[0]] || navigation_conf[b[0]] || action_conf[b[0]])
   );
 
+  $("#custom_type").select2({
+    data: arrayToSelect2(type_full_conf),
+    width: '300px',
+    tags: true,
+    insertTag: function (data, tag) {
+      data.push(tag);
+    },
+    placeholder: 'Select relation type',
+    allowClear: true,
+    matcher: matcher
+  });
+  $("#custom_type").val(null).trigger("change");
+
+  $("#meta_custom_type").select2({
+    data: arrayToSelect2(meta_full_conf),
+    width: '300px',
+    tags: true,
+    insertTag: function (data, tag) {
+      data.push(tag);
+    },
+    placeholder: 'Select metarelation type',
+    allowClear: true,
+    matcher: matcher
+  });
+  $("#meta_custom_type").val(null).trigger("change");
 }
 
 console.log("Main webapp library is loaded");

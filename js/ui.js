@@ -33,9 +33,14 @@ function toggle_selected(item,extra) {
     var cdsel = selected.concat(extraselected)[0].closest("div");
     // Select only things of the same type for now - editing
     // relations to add things means deleting and re-adding
-    if(ci != csel)
-      return;
     if(cd != cdsel)
+      return;
+    if(ci != csel)
+      // if csel == relation and selection.length == 1 and ci == note then
+      //   process given note in given relation
+      //   continue
+      // else
+      //   return
       return;
   }
   if(ci == "note"){

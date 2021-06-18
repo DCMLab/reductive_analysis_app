@@ -782,9 +782,6 @@ function initialize_select_controls() {
   });
 
   $("#custom_type, #meta_custom_type").on("select2:closing", function() {
-    window.setTimeout(function() {
-      $("#custom_type, #meta_custom_type").val(null).trigger("change");
-    }, 1000);
     textoff();
   });
 

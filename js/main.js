@@ -678,6 +678,7 @@ function initialize_panel() {
     insertTag: function (data, tag) {
       data.push(tag);
     },
+    selectOnClose: true,
     placeholder: 'Select relation type',
     allowClear: true,
     matcher: matcher
@@ -691,6 +692,7 @@ function initialize_panel() {
     insertTag: function (data, tag) {
       data.push(tag);
     },
+    selectOnClose: true,
     placeholder: 'Select metarelation type',
     allowClear: true,
     matcher: matcher

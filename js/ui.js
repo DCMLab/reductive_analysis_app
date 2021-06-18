@@ -781,19 +781,14 @@ function initialize_select_controls() {
     texton();
   });
 
-  $("#custom_type, #meta_custom_type").on("select2:closing", function() {
-    window.setTimeout(function() {
-      $("#custom_type, #meta_custom_type").val(null).trigger("change");
-    }, 1000);
+  $("#custom_type").on("select2:close", function() {
+    do_relation($("#custom_type :selected").text());
     textoff();
   });
 
-  $("#custom_type").on("select2:select", function(e) {
-    do_relation($("#custom_type :selected").text());
-  });
-
-  $("#meta_custom_type").on("select2:select", function(e) {
+  $("#meta_custom_type").on("select2:close", function() {
     do_metarelation($("#meta_custom_type :selected").text());
+    textoff();
   });
 }
 

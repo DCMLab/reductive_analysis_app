@@ -399,17 +399,6 @@ function handle_keyup(ev) {
     document.getElementById("custom_type").blur();
     document.getElementById("meta_custom_type").blur();
   }
-  if (ev.keyCode === 13) {
-    event.preventDefault();
-    if ($("#custom_type").is(":focus")) {
-      $("#customrelationbutton").click();
-      document.getElementById("custom_type").blur();
-    }
-    if ($("#meta_custom_type").is(":focus")) {
-      $("#custommetarelationbutton").click();
-      document.getElementById("meta_custom_type").blur();
-    }
-  }
 }
 
 function handle_click(ev) {
@@ -446,7 +435,6 @@ function handle_keypress(ev) {
   } else if (ev.key == navigation_conf.pan_right) { // Pan right.
     pan(1);
   } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
-    console.log(current_draw_context);
     zoom_out(current_draw_context);
   } else if (ev.key == navigation_conf.zoom_in) { // Zoom in.
     zoom_in(current_draw_context);
@@ -468,12 +456,12 @@ function handle_keypress(ev) {
       ev.preventDefault();
       var was_collapsed = $("#relations_panel").hasClass("collapsed");
       if (was_collapsed) toggle_buttons();
-      document.getElementById("custom_type").focus({preventScroll: true});
+      $("#custom_type").select2("open");
   } else if (ev.key == custom_conf.meta_relation) {  // Custom meta-relations.
       ev.preventDefault();
       var was_collapsed = $("#relations_panel").hasClass("collapsed");
       if (was_collapsed) toggle_buttons();
-      document.getElementById("meta_custom_type").focus({preventScroll: true});
+      $("#meta_custom_type").select2("open");
   } else if (type_keys[ev.key]) { // Add a relation
     do_relation(type_keys[ev.key]);
   } else if (meta_keys[ev.key]) { // Add a metarelation
@@ -788,16 +776,25 @@ function music_tooltip_installer() {
   });
 }
 
-function enter_custom_relation() {
-  $("#customrelationbutton").addClass("button-checked");
-  window.setTimeout(()=>$("#customrelationbutton").removeClass("button-checked"), 1000);
-  do_relation($('#custom_type')[0].value);
-}
+function initialize_select_controls() {
+  $("#custom_type, #meta_custom_type").on("select2:opening", function() {
+    texton();
+  });
 
-function enter_custom_metarelation() {
-  $("#custommetarelationbutton").addClass("button-checked");
-  window.setTimeout(()=>$("#custommetarelationbutton").removeClass("button-checked"), 1000);
-  do_metarelation($("#meta_custom_type")[0].value);
+  $("#custom_type, #meta_custom_type").on("select2:closing", function() {
+    window.setTimeout(function() {
+      $("#custom_type, #meta_custom_type").val(null).trigger("change");
+    }, 1000);
+    textoff();
+  });
+
+  $("#custom_type").on("select2:select", function(e) {
+    do_relation($("#custom_type :selected").text());
+  });
+
+  $("#meta_custom_type").on("select2:select", function(e) {
+    do_metarelation($("#meta_custom_type :selected").text());
+  });
 }
 
 function clear_top(draw_context) {

@@ -57,6 +57,8 @@ function toggle_selected(item,extra) {
           arc.setAttribute("type", new_type);
           // Delete and redraw the hull.
           selected.concat(extraselected)[0].parentElement.removeChild(selected.concat(extraselected)[0]);
+          selected.shift();
+          extraselected.shift();
           redrawn = draw_relation(current_draw_context, mei_graph, mei_relation)[0];
           if (isExtraSelected) {
             redrawn.classList.add('extraselectedrelation')

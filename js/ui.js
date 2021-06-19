@@ -31,17 +31,50 @@ function toggle_selected(item,extra) {
   if(selected.length > 0 || extraselected.length > 0) {
     var csel = get_class_from_classlist(selected.concat(extraselected)[0]);
     var cdsel = selected.concat(extraselected)[0].closest("div");
-    // Select only things of the same type for now - editing
-    // relations to add things means deleting and re-adding
     if(cd != cdsel)
       return;
-    if(ci != csel)
-      // if csel == relation and selection.length == 1 and ci == note then
-      //   process given note in given relation
-      //   continue
-      // else
-      //   return
+    // The attempted selection is a note on top of a single already selected relation.
+    if(ci != csel) {
+      if (csel == "relation" && selected.length + extraselected.length == 1 && ci == "note") {
+        // Obtain the relevant relation and note id's from the SVG.
+        var note_id = item.id;
+        var isExtraSelected = (extraselected.length == 1);
+        var relation_id = selected.concat(extraselected)[0].getAttribute("id");
+        // Search for the MEI arc linking said relation and note.
+        var arcs = Array.from(mei_graph.getElementsByTagName("arc"))
+                  .filter((x) => {
+                    return (x.getAttribute("to") == ("#gn-" + note_id) &&
+                            x.getAttribute("from") == ("#" + relation_id));
+                  })
+        // If the arc is found (as it should), edit the arc.
+        if (arcs.length == 1) {
+          console.log("We can change this relation.")
+          var arc = arcs[0];
+          var mei_relation = Array
+                  .from(mei_graph.getElementsByTagName("node"))
+                  .filter((x) => x.getAttribute("xml:id") == relation_id)
+                  [0];
+          var new_type = extra ? "primary" : "secondary";
+          arc.setAttribute("type", new_type);
+          // Delete and redraw the hull.
+          // Delete selected[0] from the SVG.
+          selected.concat(extraselected)[0].parentElement.removeChild(selected.concat(extraselected)[0]);
+          redrawn = draw_relation(current_draw_context, mei_graph, mei_relation)[0];
+          if (isExtraSelected) {
+            redrawn.classList.add('extraselectedrelation')
+            extraselected.push(redrawn);
+          } else  {
+            redrawn.classList.add('selectedrelation');
+            selected.push(redrawn);
+          }
+        } else {
+          let message = "Inconsistent data. Please report this error."
+          console.log(message);
+          alert(message);
+        }
+      }
       return;
+  }
   }
   if(ci == "note"){
     // We're selecting notes.

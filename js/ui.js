@@ -48,7 +48,6 @@ function toggle_selected(item,extra) {
                   })
         // If the arc is found (as it should), edit the arc.
         if (arcs.length == 1) {
-          console.log("We can change this relation.")
           var arc = arcs[0];
           var mei_relation = Array
                   .from(mei_graph.getElementsByTagName("node"))
@@ -57,7 +56,6 @@ function toggle_selected(item,extra) {
           var new_type = extra ? "primary" : "secondary";
           arc.setAttribute("type", new_type);
           // Delete and redraw the hull.
-          // Delete selected[0] from the SVG.
           selected.concat(extraselected)[0].parentElement.removeChild(selected.concat(extraselected)[0]);
           redrawn = draw_relation(current_draw_context, mei_graph, mei_relation)[0];
           if (isExtraSelected) {
@@ -74,7 +72,7 @@ function toggle_selected(item,extra) {
         }
       }
       return;
-  }
+    }
   }
   if(ci == "note"){
     // We're selecting notes.

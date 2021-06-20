@@ -23,6 +23,9 @@ var extraselected = [];
 // Last-selected entity in the current selection.
 var last_selected = null;
 
+// Show non-related ("orphan") notes by default.
+var show_orphans = true;
+
 // Toggle if a thing (for now: note or relation) is selected or not.
 function toggle_selected(item,extra) { 
   console.debug("Using globals: selected, extraselected for adding/removing selected items. JQuery for changing displayed text of selected items");
@@ -942,3 +945,24 @@ function jump_to_adjacent_context(direction = 1) {
   if (element_index != -1) moveTo(contexts[element_index].view_elem);
 }
 
+function hide_orphan_notes() {
+  var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id);
+  var gn_ids = Array.from(mei_graph.getElementsByTagName('arc')).map(e => e.getAttribute("to"));
+console.log(ids); console.log(gn_ids)
+  ids.forEach(i => {
+    if (!gn_ids.includes(`#gn-${i}`))
+      document.getElementById(i).classList.add('hidden')
+    else
+      console.log(i)
+  })
+
+}
+
+function show_all_notes() {
+  Array.from(document.querySelectorAll('g.note')).forEach(e => e.classList.remove('hidden'));
+}
+
+function toggle_orphan_notes() {
+  show_orphans = !show_orphans;
+  show_orphans ? show_all_notes() : hide_orphan_notes();
+}

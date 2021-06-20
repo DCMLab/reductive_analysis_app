@@ -948,14 +948,10 @@ function jump_to_adjacent_context(direction = 1) {
 function hide_orphan_notes() {
   var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id);
   var gn_ids = Array.from(mei_graph.getElementsByTagName('arc')).map(e => e.getAttribute("to"));
-console.log(ids); console.log(gn_ids)
   ids.forEach(i => {
     if (!gn_ids.includes(`#gn-${i}`))
       document.getElementById(i).classList.add('hidden')
-    else
-      console.log(i)
   })
-
 }
 
 function show_all_notes() {

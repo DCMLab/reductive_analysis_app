@@ -949,7 +949,8 @@ function hide_orphan_notes() {
   var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id);
   var gn_ids = Array.from(mei_graph.getElementsByTagName('arc')).map(e => e.getAttribute("to"));
   ids.forEach(i => {
-    if (!gn_ids.includes(`#gn-${i}`))
+    var ii = i.replace(/(^\d+-?)/, '');  // Replace layer or view prefixes.
+    if (!gn_ids.includes(`#gn-${ii}`))
       document.getElementById(i).classList.add('hidden')
   })
 }

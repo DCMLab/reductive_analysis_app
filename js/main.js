@@ -393,6 +393,9 @@ function load_finish(loader_modal) {
     $('#fileupload').val('');
     return false;
   }
+
+  sanitize_mei();
+
   vrvToolkit = new verovio.toolkit();
    if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
      // We didn't get a MEI? Try if it's a musicXML

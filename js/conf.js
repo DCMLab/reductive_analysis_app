@@ -141,8 +141,9 @@ var meta_full_conf = [
 
 
 
-  // MEI classes not to be rendered.
+  // MEI classes to be hidden after rendering.
   var hide_classes = [
+    "barLineAttr",
     "fermata",
     "rest",
     "stem",
@@ -154,6 +155,13 @@ var meta_full_conf = [
     "tempo",
     "tupletNum",
     "dir"
+  ]
+
+  // MEI tags to be stripped before rendering.
+  var strip_tags = [
+    "label",
+    "labelAbbr",
+    "tempo"
   ]
 
   // THIS MUST STAY AT THE END OF THE try {...} SCOPE.

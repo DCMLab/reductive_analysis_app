@@ -958,3 +958,14 @@ function matcher(params, data) {
 function arrayToSelect2(plain_array) {
   return (plain_array.map(e => ({"id": e, "text": e})));
 }
+
+function sanitize_mei() {
+
+  var mdiv = Array.from(mei.getElementsByTagName("mdiv"))[0];
+
+  strip_tags.forEach(tag => {
+    Array.from(mdiv.getElementsByTagName(tag)).forEach(e => {
+        e.parentNode.removeChild(e)
+    });
+  });
+}

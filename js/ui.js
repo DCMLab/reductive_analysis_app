@@ -769,6 +769,7 @@ function tooltip_update() {
 }
 
 function music_tooltip_installer() {
+  if (typeof(tooltip) != "undefined") tooltip.destroy();
   tooltip = new jBox('Mouse', {
     attach: "#layers",
     trigger: "mouseenter",

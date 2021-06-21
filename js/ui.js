@@ -786,15 +786,13 @@ function initialize_select_controls() {
     texton();
   });
 
-  $("#custom_type, #meta_custom_type").on("select2:closing", function() {
+  $("#custom_type").on("select2:closing", function() {
     textoff();
-  });
-
-  $("#custom_type").on("select2:select", function(e) {
     do_relation($("#custom_type :selected").text());
   });
 
-  $("#meta_custom_type").on("select2:select", function(e) {
+  $("#meta_custom_type").on("select2:closing", function(e) {
+    textoff();
     do_metarelation($("#meta_custom_type :selected").text());
   });
 }

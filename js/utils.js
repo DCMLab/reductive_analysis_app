@@ -958,3 +958,34 @@ function matcher(params, data) {
 function arrayToSelect2(plain_array) {
   return (plain_array.map(e => ({"id": e, "text": e})));
 }
+
+function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+
+  var primaries = prospective_primaries
+                    .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+                    .sort ((a, b) => a < b);
+  var secondaries = prospective_secondaries
+                    .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+                    .sort ((a, b) => a < b);
+
+  var same_type_relations = Array
+        .from(mei_graph.querySelectorAll("[type='relation']"))
+        .filter(n => n.children[0].getAttribute("type") == type);
+
+  same_type_relations.forEach(r => {
+    var p_s = relation_get_notes_separated(r);
+    var p = p_s[0];
+    var s = p_s[1];
+    p = p.map(i => i.getAttribute('xml:id'))
+          .sort((a, b) => a < b);
+    s = s.map(i => i.getAttribute('xml:id'))
+          .sort((a, b) => a < b);
+    if (JSON.stringify(primaries) == JSON.stringify(p)
+          && JSON.stringify(secondaries) == JSON.stringify(s)) {
+      alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
+      return false;
+    }
+  });
+  return true;
+}
+

@@ -109,6 +109,7 @@ function do_relation(type) {
     update_text();
     undo_actions.push(["change relation type",types.reverse(),selected,extraselected]);
   }else if(selected.concat(extraselected)[0].classList.contains("note")){
+    check_for_duplicate_relations(type, extraselected, selected);
     var added = [];
     // Add new nodes for all notes
     var primaries = extraselected.map((e) => add_mei_node_for(mei_graph,e));

@@ -515,6 +515,7 @@ function toggle_equalize() {
   console.debug("Using globals: non_notes_hidden");
   non_notes_hidden = !non_notes_hidden;
   set_non_note_visibility(non_notes_hidden);
+  if (!non_notes_hidden) show_all_notes();
 }
 
 function set_non_note_visibility(hidden) {
@@ -953,6 +954,7 @@ function hide_orphan_notes() {
     if (!gn_ids.includes(`#gn-${ii}`))
       document.getElementById(i).classList.add('hidden')
   })
+  if (!non_notes_hidden) toggle_equalize();
 }
 
 function show_all_notes() {

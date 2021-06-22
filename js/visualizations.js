@@ -33,6 +33,8 @@ function draw_hierarchy_graph(draw_context, hullPadding=200, roots_low=true) {
   var current_note_nodes = Array.from(svg_elem.
 					getElementsByClassName("note")).
 					map(get_id).
+					map((id) => get_by_id(mei,id)).
+					map(get_id).
 					map((id) => get_by_id(mei,"gn-"+id)).
 					filter((x) => x != undefined);
   var current_relation_nodes = Array.from(svg_elem.

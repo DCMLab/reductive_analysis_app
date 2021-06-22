@@ -23,6 +23,9 @@ var extraselected = [];
 // Last-selected entity in the current selection.
 var last_selected = null;
 
+// Show non-related ("orphan") notes by default.
+var show_orphans = true;
+
 // Toggle if a thing (for now: note or relation) is selected or not.
 function toggle_selected(item,extra) { 
   console.debug("Using globals: selected, extraselected for adding/removing selected items. JQuery for changing displayed text of selected items");
@@ -512,6 +515,7 @@ function toggle_equalize() {
   console.debug("Using globals: non_notes_hidden");
   non_notes_hidden = !non_notes_hidden;
   set_non_note_visibility(non_notes_hidden);
+  if (!non_notes_hidden) show_all_notes();
 }
 
 function set_non_note_visibility(hidden) {
@@ -769,6 +773,7 @@ function tooltip_update() {
 }
 
 function music_tooltip_installer() {
+  if (typeof(tooltip) != "undefined") tooltip.destroy();
   tooltip = new jBox('Mouse', {
     attach: "#layers",
     trigger: "mouseenter",
@@ -781,15 +786,13 @@ function initialize_select_controls() {
     texton();
   });
 
-  $("#custom_type, #meta_custom_type").on("select2:closing", function() {
+  $("#custom_type").on("select2:closing", function() {
     textoff();
-  });
-
-  $("#custom_type").on("select2:select", function(e) {
     do_relation($("#custom_type :selected").text());
   });
 
-  $("#meta_custom_type").on("select2:select", function(e) {
+  $("#meta_custom_type").on("select2:closing", function(e) {
+    textoff();
     do_metarelation($("#meta_custom_type :selected").text());
   });
 }
@@ -941,3 +944,22 @@ function jump_to_adjacent_context(direction = 1) {
   if (element_index != -1) moveTo(contexts[element_index].view_elem);
 }
 
+function hide_orphan_notes() {
+  var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id);
+  var gn_ids = Array.from(mei_graph.getElementsByTagName('arc')).map(e => e.getAttribute("to"));
+  ids.forEach(i => {
+    var ii = i.replace(/(^\d+-?)/, '');  // Replace layer or view prefixes.
+    if (!gn_ids.includes(`#gn-${ii}`))
+      document.getElementById(i).classList.add('hidden')
+  })
+  if (!non_notes_hidden) toggle_equalize();
+}
+
+function show_all_notes() {
+  Array.from(document.querySelectorAll('g.note')).forEach(e => e.classList.remove('hidden'));
+}
+
+function toggle_orphan_notes() {
+  show_orphans = !show_orphans;
+  show_orphans ? show_all_notes() : hide_orphan_notes();
+}

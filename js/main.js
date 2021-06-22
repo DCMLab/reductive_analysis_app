@@ -398,7 +398,10 @@ function load_finish(loader_modal) {
    if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
      // We didn't get a MEI? Try if it's a musicXML
      try {
-       let new_svg = vrvToolkit.renderData(data, {pageWidth: 20000,
+       var xml_data = sanitize_xml(mei);
+       var xml_data_serialized = new XMLSerializer().serializeToString(xml_data);
+
+       let new_svg = vrvToolkit.renderData(xml_data_serialized, {pageWidth: 20000,
        pageHeight: 10000, breaks: "none"});
      } catch {
        if (!new_svg) {

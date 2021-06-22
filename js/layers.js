@@ -10,8 +10,9 @@
 function layer_clone_element(changes, elem, new_children) {
   // No need to copy over empty beams and measures.
   if((elem.tagName == "beam" || elem.tagName == "measure") &&
-      new_children.findIndex((e) => e.tagName == "note" || 
-	                            e.getElementsByTagName("note").length > 0
+      new_children.findIndex((e) => e.nodeType == Node.ELEMENT_NODE && 
+	                            (e.tagName == "note" || 
+	                            e.getElementsByTagName("note").length > 0)
 			    ) == -1)
     return null;
   var new_elem = elem.cloneNode();
@@ -25,12 +26,14 @@ function layer_clone_element(changes, elem, new_children) {
 }
 
 function layerify(draw_context, elem) {
+  if(elem.nodeType != Node.ELEMENT_NODE)
+    return [elem.cloneNode(),false]
   var svg_elem = document.getElementById(id_in_svg(draw_context,get_id(elem)));
   if(elem.tagName == "note" && (!svg_elem || svg_elem.classList.contains("hidden"))) // This elem has been reduced away
     return [note_to_space(mei,elem), true]; //It may be that we should replace it with a space instead
-  var results = Array.from(elem.children).map((e) => layerify(draw_context, e));
+  var results = Array.from(elem.childNodes).map((e) => layerify(draw_context, e));
   var new_children = results.map((p) => p[0]).filter((x) => x != null);
-  var changes = (new_children.length != elem.children.length) || // Something directly below was reduced
+  var changes = (new_children.length != elem.childNodes.length) || // Something directly below was reduced
                  results.find((p) => p[1]) != undefined // Something further down changed
   return [layer_clone_element(changes,elem,new_children), changes];
 }

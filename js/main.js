@@ -394,8 +394,6 @@ function load_finish(loader_modal) {
     return false;
   }
 
-  sanitize_mei();
-
   vrvToolkit = new verovio.toolkit();
    if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
      // We didn't get a MEI? Try if it's a musicXML
@@ -610,7 +608,7 @@ function finalize_draw_context(new_draw_context) {
 }
 
 function render_mei(mei) {
-  var data = new XMLSerializer().serializeToString(mei);
+  var data = new XMLSerializer().serializeToString(sanitize_xml(mei));
 
   var svg = vrvToolkit.renderData(data, {
                   pageWidth: 20000,

@@ -959,13 +959,15 @@ function arrayToSelect2(plain_array) {
   return (plain_array.map(e => ({"id": e, "text": e})));
 }
 
-function sanitize_mei() {
+function sanitize_xml(xml) {
 
-  var mdiv = Array.from(mei.getElementsByTagName("mdiv"))[0];
+  var sanitized_xml = xml;
 
   strip_tags.forEach(tag => {
-    Array.from(mdiv.getElementsByTagName(tag)).forEach(e => {
+    Array.from(xml.getElementsByTagName(tag)).forEach(e => {
         e.parentNode.removeChild(e)
     });
   });
+
+  return sanitized_xml;
 }

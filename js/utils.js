@@ -959,11 +959,24 @@ function arrayToSelect2(plain_array) {
   return (plain_array.map(e => ({"id": e, "text": e})));
 }
 
+function sanitize_mei(mei) {
+
+  var sanitized_mei = mei;
+
+  strip_mei_tags.forEach(tag => {
+    Array.from(mei.getElementsByTagName(tag)).forEach(e => {
+        e.parentNode.removeChild(e)
+    });
+  });
+
+  return sanitized_mei;
+}
+
 function sanitize_xml(xml) {
 
   var sanitized_xml = xml;
 
-  strip_tags.forEach(tag => {
+  strip_xml_tags.forEach(tag => {
     Array.from(xml.getElementsByTagName(tag)).forEach(e => {
         e.parentNode.removeChild(e)
     });

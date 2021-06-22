@@ -385,14 +385,12 @@ function load_finish(loader_modal) {
   try {
     mei = parser.parseFromString(data,"text/xml");
     if (mei.getElementsByTagName('parsererror').length > 0) {
-      alert('This is not a valid XML or MEI file.')
+      console.log('This is not a valid XML or MEI file. However it could be ABC or Humdrum, for instance')
       loader_modal.close();
-      return false;
     }
   } catch {
     loader_modal.close();
     $('#fileupload').val('');
-    return false;
   }
 
   vrvToolkit = new verovio.toolkit();

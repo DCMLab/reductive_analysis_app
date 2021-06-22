@@ -158,10 +158,13 @@ var meta_full_conf = [
   ]
 
   // MEI and MusicXML tags to be stripped before rendering.
-  var strip_tags = [
+  var strip_mei_tags = [
     "label",
     "labelAbbr",
     "tempo"
+  ]
+
+  var strip_xml_tags = [
   ]
 
   // THIS MUST STAY AT THE END OF THE try {...} SCOPE.

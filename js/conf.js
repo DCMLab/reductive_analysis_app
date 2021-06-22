@@ -157,7 +157,7 @@ var meta_full_conf = [
     "dir"
   ]
 
-  // MEI tags to be stripped before rendering.
+  // MEI and MusicXML tags to be stripped before rendering.
   var strip_tags = [
     "label",
     "labelAbbr",

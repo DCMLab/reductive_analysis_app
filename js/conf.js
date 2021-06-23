@@ -154,7 +154,8 @@ var meta_full_conf = [
     "dynam",
     "tempo",
     "tupletNum",
-    "dir"
+    "dir",
+    "verse"
   ]
 
   // MEI and MusicXML tags to be stripped before rendering.

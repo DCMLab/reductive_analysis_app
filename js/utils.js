@@ -1020,3 +1020,12 @@ function check_for_duplicate_relations(type, prospective_primaries, prospective_
   return true;
 }
 
+function draw_context_of(elem) {
+  var dc = draw_contexts.filter((dc) => dc.svg_elem.contains(elem));
+  if(dc.length == 0)
+    return null;
+  else
+    return dc[0];
+}
+
+

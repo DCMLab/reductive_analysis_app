@@ -385,15 +385,14 @@ function load_finish(loader_modal) {
   try {
     mei = parser.parseFromString(data,"text/xml");
     if (mei.getElementsByTagName('parsererror').length > 0) {
-      alert('This is not a valid XML or MEI file.')
+      console.log('This is not a valid XML or MEI file. However it could be ABC or Humdrum, for instance')
       loader_modal.close();
-      return false;
     }
   } catch {
     loader_modal.close();
     $('#fileupload').val('');
-    return false;
   }
+
   vrvToolkit = new verovio.toolkit();
    if(mei.documentElement.namespaceURI != "http://www.music-encoding.org/ns/mei") {
      // We didn't get a MEI? Try if it's a musicXML
@@ -608,7 +607,7 @@ function finalize_draw_context(new_draw_context) {
 }
 
 function render_mei(mei) {
-  var data = new XMLSerializer().serializeToString(mei);
+  var data = new XMLSerializer().serializeToString(sanitize_xml(mei));
 
   var svg = vrvToolkit.renderData(data, {
                   pageWidth: 20000,

@@ -39,10 +39,13 @@ function toggle_selected(item,extra) {
     // The attempted selection is a note on top of a single already selected relation.
     if(ci != csel) {
       if (csel == "relation" && selected.length + extraselected.length == 1 && ci == "note") {
-        // Obtain the relevant relation and note id's from the SVG.
-        var note_id = item.id;
+        // Obtain the relevant relation and note id's from the SVG, passing
+	// through all the indirections using get_id.
+        var note_id = get_id(get_by_id(mei,get_id(item)));
         var isExtraSelected = (extraselected.length == 1);
-        var relation_id = selected.concat(extraselected)[0].getAttribute("id");
+	var svg_g_elem = selected.concat(extraselected)[0]; 
+        var relation_id = get_id(svg_g_elem);
+	let g_elem = get_by_id(mei, relation_id);
         // Search for the MEI arc linking said relation and note.
         var arcs = Array.from(mei_graph.getElementsByTagName("arc"))
                   .filter((x) => {
@@ -58,19 +61,22 @@ function toggle_selected(item,extra) {
                   [0];
           var new_type = extra ? "primary" : "secondary";
           arc.setAttribute("type", new_type);
+	  // Deselect
+	  toggle_selected(svg_g_elem);
           // Delete and redraw the hull.
-          selected.concat(extraselected)[0].parentElement.removeChild(selected.concat(extraselected)[0]);
-          selected.shift();
-          extraselected.shift();
-          redrawn = draw_relation(current_draw_context, mei_graph, mei_relation)[0];
-          if (isExtraSelected) {
-            redrawn.classList.add('extraselectedrelation')
-            extraselected.push(redrawn);
-          } else  {
-            redrawn.classList.add('selectedrelation');
-            selected.push(redrawn);
-          }
-        } else {
+	  let draw_context = draw_context_of(svg_g_elem);
+	  for(dc of draw_contexts)
+	    if(dc == draw_context)
+	      svg_g_elem = redraw_relation(dc,g_elem);
+	    else
+	      redraw_relation(dc,get_by_id(mei, relation_id));
+	  // Reselect the new element
+	  toggle_selected(svg_g_elem, isExtraSelected);
+        } else if(arcs.length == 0){
+	  // The clicked note is not part of this relation
+	  return;
+	} else {
+
           let message = "Inconsistent data. Please report this error."
           console.log(message);
           alert(message);

@@ -40,12 +40,12 @@ function toggle_selected(item,extra) {
     if(ci != csel) {
       if (csel == "relation" && selected.length + extraselected.length == 1 && ci == "note") {
         // Obtain the relevant relation and note id's from the SVG, passing
-	// through all the indirections using get_id.
+        // through all the indirections using get_id.
         var note_id = get_id(get_by_id(mei,get_id(item)));
         var isExtraSelected = (extraselected.length == 1);
-	var svg_g_elem = selected.concat(extraselected)[0]; 
+        var svg_g_elem = selected.concat(extraselected)[0]; 
         var relation_id = get_id(svg_g_elem);
-	let g_elem = get_by_id(mei, relation_id);
+        let g_elem = get_by_id(mei, relation_id);
         // Search for the MEI arc linking said relation and note.
         var arcs = Array.from(mei_graph.getElementsByTagName("arc"))
                   .filter((x) => {
@@ -61,21 +61,21 @@ function toggle_selected(item,extra) {
                   [0];
           var new_type = extra ? "primary" : "secondary";
           arc.setAttribute("type", new_type);
-	  // Deselect
-	  toggle_selected(svg_g_elem);
+          // Deselect
+          toggle_selected(svg_g_elem);
           // Delete and redraw the hull.
-	  let draw_context = draw_context_of(svg_g_elem);
-	  for(dc of draw_contexts)
-	    if(dc == draw_context)
-	      svg_g_elem = redraw_relation(dc,g_elem);
-	    else
-	      redraw_relation(dc,get_by_id(mei, relation_id));
-	  // Reselect the new element
-	  toggle_selected(svg_g_elem, isExtraSelected);
+          let draw_context = draw_context_of(svg_g_elem);
+          for(dc of draw_contexts)
+            if(dc == draw_context)
+              svg_g_elem = redraw_relation(dc,g_elem);
+            else
+              redraw_relation(dc,get_by_id(mei, relation_id));
+          // Reselect the new element
+          toggle_selected(svg_g_elem, isExtraSelected);
         } else if(arcs.length == 0){
-	  // The clicked note is not part of this relation
-	  return;
-	} else {
+          // The clicked note is not part of this relation
+          return;
+        } else {
 
           let message = "Inconsistent data. Please report this error."
           console.log(message);
@@ -341,10 +341,10 @@ function add_filter(draw_context, div, type, thing) {
       if(e.getAttribute("type") == type){
         if(filtered) {
           if (e.classList.contains("selectedrelation")) toggle_selected(e);
-	  e.classList.add("filtered");
-	}
-	else
-	  e.classList.remove("filtered");
+          e.classList.add("filtered");
+        }
+        else
+          e.classList.remove("filtered");
       }
     });
   };
@@ -684,7 +684,7 @@ function handle_hull_controller() {
   draw_contexts.forEach(context => draw_graph(context));
   draw_contexts.forEach(context => {
       if(context.svg_elem.getRootNode().getElementById("hier"+context.id_prefix))
-	draw_hierarchy_graph(context); 
+        draw_hierarchy_graph(context); 
       });
 }
 

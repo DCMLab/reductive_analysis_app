@@ -38,7 +38,7 @@ try {
     "toggle_palette":             "-",
     "zoom_out":                   "(",
     "zoom_in":                    ")",
-    "switch_context_on_hover":    true
+    "switch_context_on_hover":    false
   }
 
   // Custon (meta-)relation shortcuts.
@@ -80,6 +80,60 @@ try {
   }
 
 
+// The full list of pre-defined relations.
+// Should sufficiently represent the analytical technique(s) at hand.
+// These values will populate the relations drop-down menu.
+var type_full_conf = [
+  "neighbour",
+  "repetition",
+  "arpeggiation",
+  "passing",
+  "back_relating_dominant",
+  "displacement",
+  "register_transfer",
+  "56_shift",
+  "added_root",
+  "initial_ascent",
+  "arpeggiated_ascent",
+  "urlinie",
+  "urlinie_transference",
+  "bassbrechung_component",
+  "coupling",
+  "voice_exchange_component",
+  "voice_exchange_component_chromaticized",
+  "mixture",
+  "phrygian_ii"
+];
+
+// The full list of pre-defined meta-relations.
+// Should sufficiently represent the analytical technique(s) at hand.
+// These labels will populate the meta-relations drop-down menu.
+var meta_full_conf = [
+  "auxiliary_cadence",
+  "superposition",
+  "reaching_over",
+  "urlinie_meta",
+  "ursatz",
+  "bassbrechung",
+  "bassbrechung_transference",
+  "ursatz_transference",
+  "unfolding",
+  "motion_into_the_inner_voice",
+  "motion_from_the_inner_voice",
+  "linear_intervallic_progression",
+  "linear_intervallic_progression_module",
+  "interruption",
+  "interruption_branch_1",
+  "interruption_branch_2",
+  "voice_exchange",
+  "motivic_parallelism",
+  "motive",
+  "contradiction",
+  "indeterminacy",
+  "parallel_fifths",
+  "parallel_octaves"
+]
+
   // Authorship meta-data fields.
   var optional_resp_roles = [
     "analyst", "annotator"
@@ -87,8 +141,9 @@ try {
 
 
 
-  // MEI classes not to be rendered.
+  // MEI classes to be hidden after rendering.
   var hide_classes = [
+    "barLineAttr",
     "fermata",
     "rest",
     "stem",
@@ -99,7 +154,18 @@ try {
     "dynam",
     "tempo",
     "tupletNum",
-    "dir"
+    "dir",
+    "verse"
+  ]
+
+  // MEI and MusicXML tags to be stripped before rendering.
+  var strip_mei_tags = [
+    "label",
+    "labelAbbr",
+    "tempo"
+  ]
+
+  var strip_xml_tags = [
   ]
 
   // THIS MUST STAY AT THE END OF THE try {...} SCOPE.

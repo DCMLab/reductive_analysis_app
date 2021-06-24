@@ -908,3 +908,115 @@ function indicate_current_context() {
     current_draw_context.view_elem.children[0].classList.add('sidebar_active');
   }
 }
+
+// Fuzzy search algorithm for <select> controls.
+// See https://github.com/bevacqua/fuzzysearch
+function fuzzysearch(needle, haystack) {
+  var hlen = haystack.length;
+  var nlen = needle.length;
+  if (nlen > hlen) {
+    return false;
+  }
+  if (nlen === hlen) {
+    return needle === haystack;
+  }
+  outer: for (var i = 0, j = 0; i < nlen; i++) {
+  var nch = needle.charCodeAt(i);
+  while (j < hlen) {
+      if (haystack.charCodeAt(j++) === nch) {
+        continue outer;
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+// Select2 matcher call back for fuzzy searching.
+function matcher(params, data) {
+  // If there are no search terms, return all of the data
+  if ($.trim(params.term) === '') {
+    return data;
+  }
+
+  // Do not display the item if there is no 'text' property
+  if (typeof data.text === 'undefined') {
+    return null;
+  }
+
+  // `params.term` should be the term that is used for searching
+  // `data.text` is the text that is displayed for the data object
+  if (fuzzysearch(params.term.toUpperCase(), data.text.toUpperCase())) {
+    var modifiedData = $.extend({}, data, true);
+
+    // You can return modified objects from here
+    // This includes matching the `children` how you want in nested data sets
+    return modifiedData;
+  }
+
+  // Return `null` if the term should not be displayed
+  return null;
+}
+
+// Converting plain arrays of <select> options into the type required by Select2.
+// See https://select2.org/data-sources/formats for the specification.
+function arrayToSelect2(plain_array) {
+  return (plain_array.map(e => ({"id": e, "text": e})));
+}
+
+function sanitize_mei(mei) {
+
+  var sanitized_mei = mei;
+
+  strip_mei_tags.forEach(tag => {
+    Array.from(mei.getElementsByTagName(tag)).forEach(e => {
+        e.parentNode.removeChild(e)
+    });
+  });
+
+  return sanitized_mei;
+}
+
+function sanitize_xml(xml) {
+
+  var sanitized_xml = xml;
+
+  strip_xml_tags.forEach(tag => {
+    Array.from(xml.getElementsByTagName(tag)).forEach(e => {
+        e.parentNode.removeChild(e)
+    });
+  });
+
+  return sanitized_xml;
+}
+
+function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+
+  var primaries = prospective_primaries
+                    .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+                    .sort ((a, b) => a < b);
+  var secondaries = prospective_secondaries
+                    .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+                    .sort ((a, b) => a < b);
+
+  var same_type_relations = Array
+        .from(mei_graph.querySelectorAll("[type='relation']"))
+        .filter(n => n.children[0].getAttribute("type") == type);
+
+  same_type_relations.forEach(r => {
+    var p_s = relation_get_notes_separated(r);
+    var p = p_s[0];
+    var s = p_s[1];
+    p = p.map(i => i.getAttribute('xml:id'))
+          .sort((a, b) => a < b);
+    s = s.map(i => i.getAttribute('xml:id'))
+          .sort((a, b) => a < b);
+    if (JSON.stringify(primaries) == JSON.stringify(p)
+          && JSON.stringify(secondaries) == JSON.stringify(s)) {
+      alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
+      return false;
+    }
+  });
+  return true;
+}
+

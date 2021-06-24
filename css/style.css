@@ -826,3 +826,16 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   stroke: red;
   stroke-width: 5
 }
+
+.select2-container {
+  background: rgba(255,255,255,0.5) !important;
+}
+
+.select2-container--default .select2-selection--single {
+  background-color: rgba(0,0,0,0.5) !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: lightgray !important;
+}
+

@@ -303,6 +303,11 @@ function id_in_svg(draw_context,id) {
     return layer_id;
   if(layer_id)
     return draw_context.id_prefix + layer_id;
+  // No luck yet, let's try without the layer detour
+  layer_id = draw_context.id_prefix + id;
+  svg_note = document.getElementById(layer_id)
+  if(draw_context.svg_elem.contains(svg_note))
+    return layer_id;
 }
 
 function id_in_layer(layer_context, id) {

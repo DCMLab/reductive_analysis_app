@@ -116,8 +116,8 @@ function draw_metarelation(draw_context, mei_graph, g_elem) {
   // We can scroll among metarelations as well
   g_elem.onwheel = (e) => {
     var elem1 = e.target;
-    flip_to_bg(elem1);
-    elem.onmouseout();
+    flip_to_bg(elem1.closest("g"));
+    g_elem.onmouseout();
     return false;
   };
 

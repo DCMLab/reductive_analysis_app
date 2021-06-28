@@ -418,6 +418,8 @@ function handle_keypress(ev) {
     do_edges();
   } else if (ev.key == action_conf.move_relation_to_front) { // Scroll through relations
     elem = document.elementFromPoint(mouseX, mouseY);
+    if(elem.tagName == "circle")
+      elem = elem.closest("g");
     flip_to_bg(elem);
     if (elem.onmouseout) elem.onmouseout();
   } else if (ev.key == action_conf.undo) { // UNDO

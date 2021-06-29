@@ -34,12 +34,56 @@ function toggle_selected(item,extra) {
   if(selected.length > 0 || extraselected.length > 0) {
     var csel = get_class_from_classlist(selected.concat(extraselected)[0]);
     var cdsel = selected.concat(extraselected)[0].closest("div");
-    // Select only things of the same type for now - editing
-    // relations to add things means deleting and re-adding
-    if(ci != csel)
-      return;
     if(cd != cdsel)
       return;
+    // The attempted selection is a note on top of a single already selected relation.
+    if(ci != csel) {
+      if (csel == "relation" && selected.length + extraselected.length == 1 && ci == "note") {
+        // Obtain the relevant relation and note id's from the SVG, passing
+        // through all the indirections using get_id.
+        var note_id = get_id(get_by_id(mei,get_id(item)));
+        var isExtraSelected = (extraselected.length == 1);
+        var svg_g_elem = selected.concat(extraselected)[0]; 
+        var relation_id = get_id(svg_g_elem);
+        let g_elem = get_by_id(mei, relation_id);
+        // Search for the MEI arc linking said relation and note.
+        var arcs = Array.from(mei_graph.getElementsByTagName("arc"))
+                  .filter((x) => {
+                    return (x.getAttribute("to") == ("#gn-" + note_id) &&
+                            x.getAttribute("from") == ("#" + relation_id));
+                  })
+        // If the arc is found (as it should), edit the arc.
+        if (arcs.length == 1) {
+          var arc = arcs[0];
+          var mei_relation = Array
+                  .from(mei_graph.getElementsByTagName("node"))
+                  .filter((x) => x.getAttribute("xml:id") == relation_id)
+                  [0];
+          var new_type = extra ? "primary" : "secondary";
+          arc.setAttribute("type", new_type);
+          // Deselect
+          toggle_selected(svg_g_elem);
+          // Delete and redraw the hull.
+          let draw_context = draw_context_of(svg_g_elem);
+          for(dc of draw_contexts)
+            if(dc == draw_context)
+              svg_g_elem = redraw_relation(dc,g_elem);
+            else
+              redraw_relation(dc,get_by_id(mei, relation_id));
+          // Reselect the new element
+          toggle_selected(svg_g_elem, isExtraSelected);
+        } else if(arcs.length == 0){
+          // The clicked note is not part of this relation
+          return;
+        } else {
+
+          let message = "Inconsistent data. Please report this error."
+          console.log(message);
+          alert(message);
+        }
+      }
+      return;
+    }
   }
   if(ci == "note"){
     // We're selecting notes.
@@ -297,10 +341,10 @@ function add_filter(draw_context, div, type, thing) {
       if(e.getAttribute("type") == type){
         if(filtered) {
           if (e.classList.contains("selectedrelation")) toggle_selected(e);
-	  e.classList.add("filtered");
-	}
-	else
-	  e.classList.remove("filtered");
+          e.classList.add("filtered");
+        }
+        else
+          e.classList.remove("filtered");
       }
     });
   };
@@ -642,7 +686,7 @@ function handle_hull_controller() {
   draw_contexts.forEach(context => draw_graph(context));
   draw_contexts.forEach(context => {
       if(context.svg_elem.getRootNode().getElementById("hier"+context.id_prefix))
-	draw_hierarchy_graph(context); 
+        draw_hierarchy_graph(context); 
       });
 }
 

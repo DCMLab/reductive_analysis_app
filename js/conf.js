@@ -24,7 +24,8 @@ try {
     "show_hide_notation":      "s",
     "toggle_type_shades":      "h",
     "select_same_notes":       "+",
-    "toggle_add_note":         "x"
+    "toggle_add_note":         "x",
+    "naturalize_note":         "Z"
   }
 
   // Navigation shortcuts.

@@ -92,3 +92,47 @@ function do_undo() {
   tooltip_update();
 }
 
+// Actually, let's redo that.
+function do_redo() {
+  // Get latest undo_actions
+  if(redo_actions.length == 0) {
+    console.log("Nothing to redo");
+    return;
+  }
+  // Deselect the current selection, if any
+  selected.forEach(toggle_selected);
+  extraselected.forEach((x) => {toggle_selected(x,true);});
+
+  [what,params,sel,extra] = redo_actions.pop();
+
+  // Select the same things that were selected previously
+  sel.forEach((x) => toggle_selected(document.getElementById(x.id)));
+  extra.forEach((x) => {toggle_selected(document.getElementById(x.id),true);});
+
+  let type, id;
+  switch(what){
+    case "relation":
+      [type, id] = params;
+      do_relation(type, id);
+      break;
+    case "metarelation":
+      [type, id] = params;
+      do_metarelation(type, id);
+      break;
+    case "change relation type":
+      type = params;
+      do_relation(type);
+      break;
+    case "delete relation":
+      delete_relations();
+      break;
+    case "add note":
+      let [pname, oct, note, nid] = params; 
+      do_note(pname, oct, note, nid);
+      toggle_selected(sel[0]);
+      break;
+  }
+}
+
+
+

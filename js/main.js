@@ -87,7 +87,7 @@ window.onerror = function errorHandler(errorMsg, url, lineNumber) {
 
 // OK we've selected stuff, let's make the selection into a
 // "relation".
-function do_relation(type) {
+function do_relation(type, id) {
   console.debug("Using globals: selected, extraselected, mei, undo_actions");
   if (selected.length == 0 && extraselected == 0) {
     return;}
@@ -115,7 +115,7 @@ function do_relation(type) {
     var primaries = extraselected.map((e) => add_mei_node_for(mei_graph,e));
     var secondaries = selected.map((e) => add_mei_node_for(mei_graph,e));
     added.push(primaries.concat(secondaries));
-    [he_id,mei_elems] = add_relation(mei_graph,primaries, secondaries, type);
+    [he_id,mei_elems] = add_relation(mei_graph,primaries, secondaries, type, id);
     added.push(mei_elems);
     for(var i = 0; i < draw_contexts.length; i++) {
       let g_elem =draw_relation(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id));
@@ -150,7 +150,7 @@ function do_comborelation(type) {
 }
 
 
-function do_metarelation(type) {
+function do_metarelation(type, id) {
   console.debug("Using globals:  mei_graph, selected, extraselected");
   if (selected.length == 0 && extraselected == 0) {
     return;}
@@ -165,7 +165,7 @@ function do_metarelation(type) {
       get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
   var secondaries = selected.map((e) =>
       get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
-  var [he_id,mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type);
+  var [he_id,mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type, id);
   added.push(mei_elems);
   for(var i = 0; i< draw_contexts.length; i++)
     added.push(draw_metarelation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge

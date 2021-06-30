@@ -264,7 +264,6 @@ function add_note(layer_context, pname, oct, note, sim=true, id="") {
       c = l.closest("chord");
     else{
       c = note_to_chord(mei,l);
-      console.log(c);
       l.parentElement.insertBefore(c,l);
       l.parentElement.removeChild(l);
       c.appendChild(l);

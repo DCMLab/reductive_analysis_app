@@ -87,7 +87,7 @@ window.onerror = function errorHandler(errorMsg, url, lineNumber) {
 
 // OK we've selected stuff, let's make the selection into a
 // "relation".
-function do_relation(type, id) {
+function do_relation(type, id, redoing=false) {
   console.debug("Using globals: selected, extraselected, mei, undo_actions");
   if (selected.length == 0 && extraselected == 0) {
     return;}
@@ -127,6 +127,8 @@ function do_relation(type, id) {
     undo_actions.push(["relation",added.reverse(),selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select
   }
+  if(!redoing)
+    flush_redo();
   tooltip_update();
 }
 
@@ -150,7 +152,7 @@ function do_comborelation(type) {
 }
 
 
-function do_metarelation(type, id) {
+function do_metarelation(type, id, redoing=false) {
   console.debug("Using globals:  mei_graph, selected, extraselected");
   if (selected.length == 0 && extraselected == 0) {
     return;}
@@ -173,6 +175,8 @@ function do_metarelation(type, id) {
   undo_actions.push(["metarelation",added,selected,extraselected]);
   selected.concat(extraselected).forEach(toggle_selected); // De-select
   tooltip_update();
+  if(!redoing)
+    flush_redo();
 }
 
 

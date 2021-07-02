@@ -92,6 +92,11 @@ function do_undo() {
   tooltip_update();
 }
 
+function flush_redo(){
+  redo_actions = [];
+}
+
+
 // Actually, let's redo that.
 function do_redo() {
   // Get latest undo_actions
@@ -113,22 +118,22 @@ function do_redo() {
   switch(what){
     case "relation":
       [type, id] = params;
-      do_relation(type, id);
+      do_relation(type, id, true);
       break;
     case "metarelation":
       [type, id] = params;
-      do_metarelation(type, id);
+      do_metarelation(type, id, true);
       break;
     case "change relation type":
       type = params;
-      do_relation(type);
+      do_relation(type,"", true);
       break;
     case "delete relation":
-      delete_relations();
+      delete_relations(true);
       break;
     case "add note":
       let [pname, oct, note, nid] = params; 
-      do_note(pname, oct, note, nid);
+      do_note(pname, oct, note, nid, true);
       toggle_selected(sel[0]);
       break;
   }

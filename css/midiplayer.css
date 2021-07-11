@@ -1,3 +1,5 @@
+/* https://github.com/rism-digital/midi-player/blob/master/player/midiplayer.css */
+
 #midiPlayer_div{width:700px;height:36px;background:#999;}
 #midiPlayer_bar{height:12px;width:500px;background:#ccc;cursor:pointer;display:inline-block;}
 #midiPlayer_progress{margin:0;background:#555;width:0;height:100%;}

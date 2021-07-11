@@ -1,5 +1,7 @@
 .env
 /node_modules
 
+/public/*
+!/public/index.html
 
 tags*

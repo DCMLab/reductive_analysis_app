@@ -1,4 +1,3 @@
-import * as $ from 'jquery'
 import pagemap from 'pagemap'
 import jBox from 'jbox'
 import DragSelect from 'dragselect'

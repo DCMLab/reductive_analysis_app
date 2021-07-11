@@ -1,4 +1,3 @@
-import * as $ from 'jquery'
 import jBox from 'jbox'
 
 import {

@@ -1,4 +1,3 @@
-import * as $ from 'jquery'
 
 import { draw_contexts } from './app'
 

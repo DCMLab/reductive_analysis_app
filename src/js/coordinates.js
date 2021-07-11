@@ -1,4 +1,3 @@
-import * as $ from 'jquery'
 
 // The functions in this file are all about converting clicks and mouse
 // positions to musically salient information (pitch and time) given a

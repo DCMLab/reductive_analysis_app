@@ -1,3 +1,5 @@
+const webpack = require('webpack')
+
 // env
 const env = require('dotenv').config().parsed
 const isProd = process.env.NODE_ENV === 'production'
@@ -19,7 +21,7 @@ const NotifierPlugin = require('webpack-build-notifier')
 
 // plugins: CSS & JS
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const EsLintPlugin = require('eslint-webpack-plugin');
+const EsLintPlugin = require('eslint-webpack-plugin')
 
 // Notifications options
 const notifierPluginOptions = {
@@ -98,6 +100,11 @@ configJs = {
   },
 
   plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      jquery: 'jquery',
+    }),
     new EsLintPlugin(esLintPluginOptions),
     new FriendlyErrorsPlugin(),
     new NotifierPlugin({ title: 'JS', ...notifierPluginOptions }),
@@ -198,11 +205,12 @@ configCSS = {
 /* Others without entry point, so we push them to the previous config. */
 
 configCSS.plugins.push(
-  // new CopyPlugin({ patterns: [
-  //   { from: `${assets}/fonts/`, to: thePath('public/fonts') },
-  //   { from: `${assets}/manifest/`, to: thePath('public') },
-  //   { from: `${assets}/sfx/`, to: thePath('public/sfx') },
-  // ]}),
+  new CopyPlugin({ patterns: [
+    { from: `${assets}/js/vendor/`, to: thePath('public/js/vendor/') },
+    // { from: `${assets}/fonts/`, to: thePath('public/fonts') },
+    // { from: `${assets}/manifest/`, to: thePath('public') },
+    // { from: `${assets}/sfx/`, to: thePath('public/sfx') },
+  ]}),
   new BrowserSyncPlugin({
     https: browserSyncHttps,
     host: env.MIX_BS_HOST,

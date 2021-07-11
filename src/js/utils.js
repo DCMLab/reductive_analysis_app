@@ -1,4 +1,3 @@
-import * as $ from 'jquery'
 import { polygonHull } from 'd3'
 
 import { draw_contexts } from './app'

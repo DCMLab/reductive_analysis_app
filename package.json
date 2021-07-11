@@ -1,6 +1,5 @@
 {
-  "name": "reductive_analysis_app",
-  "version": "0.2.0",
+  "private": true,
   "description": "This is an app to facilitate analysing scores using a reductive paradigm.",
   "main": "index.html",
   "engines": {

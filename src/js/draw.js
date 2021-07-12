@@ -1,6 +1,9 @@
+import { getShades, toggle_selected, toggle_shade } from './ui'
+import { add_to_svg_bg, id_in_svg, node_to_note_id, note_coords, relation_primaries, relation_secondaries, relation_type, roundedHull } from './utils'
+
 // Given a draw context and a graph node representing a relation, draw the
 // relation in the draw context.
-function draw_relation(draw_context, mei_graph, g_elem) {
+export function draw_relation(draw_context, mei_graph, g_elem) {
   var added = []
   // Where are we drawing, and with what prefix?
   var svg_elem = draw_context.svg_elem
@@ -16,7 +19,7 @@ function draw_relation(draw_context, mei_graph, g_elem) {
     (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
   )
   var notes = primaries.concat(secondaries)
-  notes.sort((a, b) => { 
+  notes.sort((a, b) => {
     if (!a) return -1
     if (!b) return 1
     var p1 = note_coords(a)
@@ -38,6 +41,8 @@ function draw_relation(draw_context, mei_graph, g_elem) {
     elem.setAttribute('oldid', g_elem.getAttribute('xml:id'))
   elem.classList.add('relation')
   elem.setAttribute('type', type)
+
+  var shades = getShades()
 
   // Are we running with type-specific shades?
   if (shades)
@@ -73,14 +78,14 @@ function draw_relation(draw_context, mei_graph, g_elem) {
 }
 
 // Essentially the same procedure as above, but for metarelations
-function draw_metarelation(draw_context, mei_graph, g_elem) {
+export function draw_metarelation(draw_context, mei_graph, g_elem) {
   var added = []
   // Draw target, prefix, ID and type
   var svg_elem = draw_context.svg_elem
   var id_prefix = draw_context.id_prefix
   var id = id_prefix + g_elem.getAttribute('xml:id')
   var type = relation_type(g_elem)
-  // Get the targets - we don't differentiate primaries and secondaries in 
+  // Get the targets - we don't differentiate primaries and secondaries in
   // this drawing style.
   var targets = relation_allnodes(mei_graph, g_elem).map(
     (e) => document.getElementById(draw_context.id_prefix + get_id(e)))
@@ -89,7 +94,7 @@ function draw_metarelation(draw_context, mei_graph, g_elem) {
     console.log('Missing relation, not drawing metarelation')
     return []
   }
-  
+
   // Where are our targets
   var coords = targets.map(get_metarelation_target)
   // What's midpoint above them?

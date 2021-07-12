@@ -1,7 +1,10 @@
+import { getMei } from './app'
+import { random_id } from './utils'
 
 // Add a "relation" to the MEI graph element. We model this
 // with a new node.
-function add_relation(mei_graph, primaries, secondaries, type, he_id_param) {
+export function add_relation(mei_graph, primaries, secondaries, type, he_id_param) {
+  var mei = getMei()
   var added = []
   // Add a new node for the relation
   var he_elem = mei_graph.getRootNode().createElement('node')
@@ -78,4 +81,3 @@ function add_metarelation(mei_graph, primaries, secondaries, type, he_id_param) 
   }
   return [he_id, added.reverse()]
 }
-

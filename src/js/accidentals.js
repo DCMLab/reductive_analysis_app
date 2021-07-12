@@ -1,4 +1,6 @@
 import { draw_contexts } from './app'
+import { toggle_selected } from './ui'
+import { get_by_id, get_id, note_coords } from './utils'
 
 export function naturalize_notes() {
   if (!selected[0].classList.contains('note')) {

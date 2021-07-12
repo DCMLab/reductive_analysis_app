@@ -3,9 +3,11 @@ import jBox from 'jbox'
 import DragSelect from 'dragselect'
 
 import {
+  action_conf,
   button_shades,
   combo_conf,
   combo_keys,
+  custom_conf,
   hide_classes,
   meta_conf,
   meta_keys,
@@ -14,13 +16,15 @@ import {
   shades_array,
   type_conf,
   type_keys,
-  type_shades
+  type_shades,
+  type_synonym
 } from './conf'
 
-import { draw_contexts, do_relation, do_undo } from './app'
+import { draw_contexts, do_relation, do_undo, do_comborelation, do_metarelation, getMeiGraph, getMei, getOrigMidi, draw_graph } from './app'
+import { do_reduce_pre, undo_reduce } from './reductions'
 
-import { indicate_current_context } from './utils'
-import { toggle_placing_note } from './coordinates'
+import { button, checkbox, get_class_from_classlist, indicate_current_context, to_text, unmark_secondaries } from './utils'
+import { place_note, toggle_placing_note } from './coordinates'
 import { update_metadata } from './metadata'
 
 /* UI globals */
@@ -39,6 +43,8 @@ var current_draw_context
 var mouseX
 var mouseY
 
+var tooltip
+
 /* Select stuff */
 
 // Clicking selects
@@ -52,7 +58,7 @@ var last_selected = null
 var show_orphans = true
 
 // Toggle if a thing (for now: note or relation) is selected or not.
-function toggle_selected(item, extra) {
+export function toggle_selected(item, extra) {
   console.debug('Using globals: selected, extraselected for adding/removing selected items. JQuery for changing displayed text of selected items')
   var ci = get_class_from_classlist(item)
   var cd = item.closest('div')
@@ -187,7 +193,7 @@ export function meta_type(type) {
   button_shades[type + 'metarelationbutton'] = shades_array[meta_conf[type].colour]
 }
 
-function add_buttons(draw_context) {
+export function add_buttons(draw_context) {
   add_filters(draw_context)
   var new_draw_context = draw_context
   var buttondiv = document.createElement('div')
@@ -403,7 +409,7 @@ window.onmousemove = (e) => {
   }
 }
 
-function handle_keydown(ev) {
+export function handle_keydown(ev) {
   if (ev.key == 'Control') {
     start_placing_note()
   }
@@ -412,7 +418,7 @@ function handle_keydown(ev) {
     $('#layers').addClass('shift-pressed')
 }
 
-function handle_keyup(ev) {
+export function handle_keyup(ev) {
   if (ev.key == 'Control') {
     stop_placing_note()
   }
@@ -426,12 +432,12 @@ function handle_keyup(ev) {
   }
 }
 
-function handle_click(ev) {
+export function handle_click(ev) {
   place_note()
 }
 
 // We have keyboard commands!
-function handle_keypress(ev) {
+export function handle_keypress(ev) {
   console.debug('Using globals: text_input, meta_keys, type_keys')
   if (text_input)
     return
@@ -521,6 +527,7 @@ function toggle_he_selected(selecting) {
 }
 
 function update_text() {
+  var mei_graph = getMeiGraph()
   var primaries, secondaries
   primaries = to_text(draw_contexts, mei_graph, extraselected)
   secondaries = to_text(draw_contexts, mei_graph, selected)
@@ -657,6 +664,7 @@ const unselectButton = document.getElementById('deselectbutton')
 unselectButton.addEventListener('click', do_deselect)
 
 export function play_midi() {
+  var orig_midi = getOrigMidi()
   $('#player').midiPlayer.play('data:audio/midi;base64,' + orig_midi)
 }
 
@@ -673,6 +681,7 @@ function play_midi_reduction(draw_context = draw_contexts[0]) {
 }
 
 export function handle_hull_controller() {
+  var mei_graph = getMeiGraph()
   do_deselect()
   $('.relation').remove()
   $('.metarelation').remove()
@@ -731,7 +740,7 @@ export function handle_relations_panel(el) {
   }
 }
 
-function drag_selector_installer(svg_elem) {
+export function drag_selector_installer(svg_elem) {
   // See https://github.com/ThibaultJanBeyer/DragSelect for API documentation.
 
   window.drag_selector = new DragSelect({
@@ -789,7 +798,7 @@ function drag_selector_installer(svg_elem) {
   })
 }
 
-function tooltip_update() {
+export function tooltip_update() {
   var update = [document.elementFromPoint(mouseX, mouseY)]
     .map(x => {
       if (x) {
@@ -819,7 +828,8 @@ function tooltip_update() {
   }
 }
 
-function music_tooltip_installer() {
+// A tooltip for displaying relationship and meta-relationship types.
+export function music_tooltip_installer() {
   if (typeof (tooltip) != 'undefined') tooltip.destroy()
   tooltip = new jBox('Mouse', {
     attach: '#layers',
@@ -920,6 +930,9 @@ export function minimap() {
   })
 }
 
+//  Bookmarks.
+var bookmarks = []
+
 export function add_bookmark() {
   // Get selection.
   if (!last_selected) {
@@ -987,17 +1000,16 @@ const nextBookmarkButton = document.getElementById('nextbookmarkbutton')
 nextBookmarkButton.addEventListener('click', () => jump_to_adjacent_bookmark(1))
 
 export function jump_to_adjacent_context(direction = 1) {
-
   function moveTo(el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
   }
 
-  var contexts = draw_contexts
-    .sort((a, b) => a.view_elem.getBoundingClientRect().y - b.view_elem.getBoundingClientRect().y)
+  var contexts = draw_contexts.sort((a, b) => a.view_elem.getBoundingClientRect().y - b.view_elem.getBoundingClientRect().y)
 
   var contexts_map_y = contexts.map(c => c.view_elem.getBoundingClientRect().y)
   var contexts_map_bottom = contexts.map(c => c.view_elem.getBoundingClientRect().bottom)
 
+  var element_index
   if (direction == 1) {
     element_index = contexts_map_bottom.findIndex(c => c > window.innerHeight)
   } else if (direction == -1) {
@@ -1013,6 +1025,7 @@ const nextContextButton = document.getElementById('nextcontextbutton')
 nextContextButton.addEventListener('click', () => jump_to_adjacent_context(1))
 
 function hide_orphan_notes() {
+  var mei_graph = getMeiGraph()
   var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id)
   var gn_ids = Array.from(mei_graph.getElementsByTagName('arc')).map(e => e.getAttribute('to'))
   ids.forEach(i => {
@@ -1035,5 +1048,20 @@ function toggle_orphan_notes() {
 const orphanNotesButton = document.getElementById('orphannotesbutton')
 orphanNotesButton.addEventListener('click', toggle_orphan_notes)
 
-// This one is not writable once imported in another file, so it must be handled in another way.
-export var selected = []
+// Functions helping to interact with variable declared here from other files.
+export const getSelected = () => selected
+export const setSelected = (value) => selected = value
+
+export const getExtraSelected = () => extraselected
+export const setExtraSelected = (value) => extraselected = value
+
+export const getShades = () => shades
+export const setShades = (value) => shades = value
+
+export const getTooltip = () => tooltip
+
+export const getPlacingNote = () => placing_note
+export const setPlacingNote = (value) => placing_note = value
+
+export const getCurrentDrawContext = () => current_draw_context
+export const setCurrentDrawContext = (value) => current_draw_context = value

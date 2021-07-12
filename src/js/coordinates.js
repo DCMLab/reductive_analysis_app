@@ -1,3 +1,6 @@
+import { getMei } from './app'
+import { getCurrentDrawContext, getPlacingNote, setPlacingNote } from './ui'
+import { get_by_id, get_id, note_coords, random_id } from './utils'
 
 // The functions in this file are all about converting clicks and mouse
 // positions to musically salient information (pitch and time) given a
@@ -6,6 +9,7 @@
 var pnames = 'cdefgab'
 
 function getPointerSVGCoords() {
+  var current_draw_context = getCurrentDrawContext()
   // Find the system within the current draw context, and compute the local
   // SVG coordinates from its transformation matrix.
   var svg = current_draw_context.svg_elem.children[0]
@@ -16,7 +20,7 @@ function getPointerSVGCoords() {
   return pt.matrixTransform(system.parentElement.getScreenCTM().inverse())
 }
 
-function compute_measure_map(draw_context) {
+export function compute_measure_map(draw_context) {
   // We compute the right edges of each measure so we can easily map into
   // which measure we are through a simple find() later
   let svg = draw_context.svg_elem
@@ -86,6 +90,7 @@ function coord_staff(dc, pt, measure) {
 }
 
 function diatonic_note_n(note) {
+  var mei = getMei()
   // Given an SVG note, what is its signed interval in diatonic steps from C0
   var mei_note = get_by_id(mei, get_id(note))
   var pname = mei_note.getAttribute('pname')
@@ -94,7 +99,7 @@ function diatonic_note_n(note) {
   return oct * 7 + (pnames.indexOf(pname))
 }
 
-function pitch_grid(staff) {
+export function pitch_grid(staff) {
   // Given a staff and a reference note in that staff, give a function that
   // computes a pitch name and octave for a given y coordinate
   const mid = staff_midpoint(staff)
@@ -167,6 +172,7 @@ function note_params() {
   // Return the pitch parameters (diatonic pitch name and octave) and the
   // event relative to which the note should be placed in the MEI
   // (simultaneous to or before - null for last)
+  var current_draw_context = getCurrentDrawContext()
   var dc = current_draw_context
   const pt = getPointerSVGCoords()
   const measure = coord_measure(dc, pt)
@@ -192,6 +198,7 @@ function note_params_coords_sim(pname, oct, note) {
 }
 
 function show_note(pname, oct, note, sim = true, id = '') {
+  var current_draw_context = getCurrentDrawContext()
   var dc = current_draw_context
   var curr_elem = document.getElementById(id)
   if (curr_elem)
@@ -213,6 +220,7 @@ function show_note(pname, oct, note, sim = true, id = '') {
 }
 
 function draw_note(pname, oct, note, sim = true, id = '') {
+  var current_draw_context = getCurrentDrawContext()
   var dc = current_draw_context
   var curr_elem = document.getElementById(id)
   var added = []
@@ -280,7 +288,9 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
   return added.reverse()
 }
 
-function place_note() {
+export function place_note() {
+  var current_draw_context = getCurrentDrawContext()
+  var placing_note = getPlacingNote()
   if (placing_note != '' && !current_draw_context.layer.original_score) {
     let [pname, oct, note] = note_params()
     if (!pname)
@@ -297,11 +307,14 @@ function place_note() {
 }
 
 function start_placing_note() {
+  var current_draw_context = getCurrentDrawContext()
+  var placing_note = getPlacingNote()
   if (typeof (current_draw_context) != 'undefined') {
     if (current_draw_context.layer.original_score)
       return
     let [pname, oct, note] = note_params()
     placing_note = 'temp' + random_id()
+    setPlacingNote(placing_note)
     $('#addnotebutton').addClass('active')
     document.getElementById('layers').style.cursor = 'crosshair'
     if (pname)
@@ -310,16 +323,20 @@ function start_placing_note() {
 }
 
 function stop_placing_note() {
+  var placing_note = getPlacingNote()
   let elem = document.getElementById(placing_note)
   if (elem)
     elem.parentElement.removeChild(elem)
   placing_note = ''
+  setPlacingNote(placing_note)
   $('#addnotebutton').removeClass('active')
   document.getElementById('layers').style.cursor = 'default'
 }
 
 export function toggle_placing_note() {
-  if (!current_draw_context.layer.original_score) {
+  var current_draw_context = getCurrentDrawContext()
+  var placing_note = getPlacingNote()
+  if (!current_draw_context?.layer.original_score) {
     if (placing_note) {
       stop_placing_note()
     } else {
@@ -332,6 +349,7 @@ const addNoteButton = document.getElementById('addnotebutton')
 addNoteButton.addEventListener('click', toggle_placing_note)
 
 function update_placing_note() {
+  var current_draw_context = getCurrentDrawContext()
   if (current_draw_context.layer.original_score)
     return
   let [pname, oct, note] = note_params()

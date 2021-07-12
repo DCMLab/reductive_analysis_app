@@ -1,5 +1,9 @@
 import jBox from 'jbox'
 
+import { add_relation } from './graph'
+import { mei_for_layer } from './layers'
+import { draw_relation, draw_metarelation } from './draw'
+
 import {
   shades_array,
   type_keys,
@@ -25,27 +29,57 @@ import {
 } from './conf'
 
 import {
-  selected,
   init_type,
   combo_type,
   handle_hull_controller,
+  handle_click,
+  handle_keydown,
+  handle_keyup,
   handle_relations_panel,
   initialize_select_controls,
   meta_type,
   minimap,
   toggle_shade,
-  toggle_shades
+  toggle_shades,
+  getSelected,
+  setSelected,
+  getExtraSelected,
+  setExtraSelected,
+  add_buttons,
+  getShades,
+  drag_selector_installer,
+  music_tooltip_installer,
+  tooltip_update,
+  toggle_selected,
+  handle_keypress
 } from './ui'
 
+import { initialize_metadata } from './metadata'
+
 import {
+  add_mei_node_for,
   arrayToSelect2,
+  check_for_duplicate_relations,
+  fix_synonyms,
+  get_by_id,
+  get_class_from_classlist,
+  get_id_pairs,
+  id_in_svg,
+  id_or_oldid,
   indicate_current_context,
+  mark_secondaries,
   matcher,
+  new_layer_element,
+  new_view_elements,
+  note_coords,
+  sanitize_xml,
+  unmark_secondaries,
 } from './utils'
+import { compute_measure_map, pitch_grid } from './coordinates'
 
 require('select2/dist/js/select2')
-require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
-require('./vendor/midiplayer')
+// require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
+require('./vendor/midiplayer-changed')
 
 // GLOBALS
 // Load Verovio
@@ -93,12 +127,6 @@ export var draw_contexts
 //  canonical representative
 var layer_contexts = []
 
-//  Bookmarks.
-var bookmarks = []
-
-// A tooltip for displaying relationship and meta-relationship types.
-var tooltip
-
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
 window.addEventListener('beforeunload', function (e) {
@@ -138,6 +166,10 @@ window.onerror = function errorHandler(errorMsg, url, lineNumber) {
 // OK we've selected stuff, let's make the selection into a
 // "relation".
 export function do_relation(type) {
+
+  var selected = getSelected()
+  var extraselected = getExtraSelected()
+
   console.debug('Using globals: selected, extraselected, mei, undo_actions')
   if (selected.length == 0 && extraselected == 0) {
     return
@@ -184,7 +216,10 @@ export function do_relation(type) {
 const relationButton = document.getElementById('relationbutton')
 relationButton.addEventListener('click', do_relation)
 
-function do_comborelation(type) {
+export function do_comborelation(type) {
+  var selected = getSelected()
+  var extraselected = getExtraSelected()
+
   var all = selected.concat(extraselected)
   if (all.length < 3 || extraselected.length > 2) { return }
   all.sort((a, b) => {
@@ -199,12 +234,17 @@ function do_comborelation(type) {
 
   extraselected = [fst, snd]
   selected = all
+  setSelected(selected)
+  setExtraSelected(extraselected)
+
   do_relation(combo_conf[type].total)
   tooltip_update()
 }
 
-function do_metarelation(type) {
+export function do_metarelation(type) {
   console.debug('Using globals:  mei_graph, selected, extraselected')
+  var selected = getSelected()
+  var extraselected = getExtraSelected()
   if (selected.length == 0 && extraselected == 0) {
     return
   }
@@ -230,6 +270,8 @@ function do_metarelation(type) {
   tooltip_update()
 }
 
+var rerendered_after_action
+
 // Oops, undo whatever we did last.
 export function do_undo() {
   console.debug('Using globals: undo_actions, selected, extraselected, mei, rerendered_after_action')
@@ -244,6 +286,8 @@ export function do_undo() {
     return
   }
   // Deselect the current selection, if any
+  var selected = getSelected()
+  var extraselected = getExtraSelected()
   selected.forEach(toggle_selected)
   extraselected.forEach((x) => { toggle_selected(x, true) });
 
@@ -390,9 +434,9 @@ export function load() {
     closeButton: false
   })
   /* Cancel loading if changes are not saved? alert */
-  selected = []
-  extraselected = []
-  upload = document.getElementById('fileupload')
+  setSelected([])
+  setExtraSelected([])
+  var upload = document.getElementById('fileupload')
   if (upload.files.length == 1) {
     reader.onload = function (e) {
       data = reader.result
@@ -420,9 +464,8 @@ export function load() {
 const loadButton = document.getElementById('fileupload')
 loadButton.addEventListener('change', load)
 
-
 // Draw the existing graph
-function draw_graph(draw_context) {
+export function draw_graph(draw_context) {
   console.debug('Using globals: mei_graph, mei, selected, extraselected, document')
   // var mei = draw_context.mei;
   // var mei_graph = mei.getElementsByTagName("graph")[0];
@@ -445,7 +488,7 @@ function load_finish(loader_modal) {
   console.debug('Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades')
 
   // Parse the original document
-  parser = new DOMParser()
+  var parser = new DOMParser()
   try {
     mei = parser.parseFromString(data, 'text/xml')
     if (mei.getElementsByTagName('parsererror').length > 0) {
@@ -552,9 +595,11 @@ function load_finish(loader_modal) {
   changes = false
   undo_actions = []
   redo_actions = [] // TODO, maybe?
-  reduce_actions = []
+  var reduce_actions = []
 
   rerendered_after_action = 0
+
+  var shades = getShades()
 
   if (!shades)
     toggle_shades()
@@ -757,3 +802,7 @@ function initialize_panel() {
 }
 
 console.log('Main webapp library is loaded')
+
+export const getMei = () => mei
+export const getMeiGraph = () => mei_graph
+export const getOrigMidi = () => orig_midi

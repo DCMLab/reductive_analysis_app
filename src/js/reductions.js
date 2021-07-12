@@ -1,3 +1,7 @@
+import { getMei, getMeiGraph } from './app'
+import { toggle_selected } from './ui'
+import { get_by_id, get_id, note_coords, relation_primaries, relation_secondaries } from './utils'
+
 function calc_reduce(mei_graph, remaining_relations, target_relations) {
   // No primary of a remaining relation is removed in this
   // reduction
@@ -14,8 +18,8 @@ function calc_reduce(mei_graph, remaining_relations, target_relations) {
   ).flat())
 
   do {
-    // We want to find more relations that we know need to stay 
-    var more_remains = target_relations.filter((he) => { 
+    // We want to find more relations that we know need to stay
+    var more_remains = target_relations.filter((he) => {
       // That is, relations that have, as secondaries, nodes
       // we know need to stay
       return (relation_secondaries(mei_graph, he).findIndex((x) => { return remaining_nodes.includes(x) }) > -1)
@@ -34,14 +38,17 @@ function calc_reduce(mei_graph, remaining_relations, target_relations) {
   // Any relations that remain after this loop, we can remove,
   // including their secondaries
 
-  return [target_relations, 
+  return [target_relations,
     [...new Set(target_relations.flatMap(
       (he) => relation_secondaries(mei_graph, he)
     ))]]
 
 }
 
-function do_reduce_pre(draw_context) { do_reduce(draw_context, mei_graph, selected, extraselected) }
+export function do_reduce_pre(draw_context) {
+  var mei_graph = getMeiGraph()
+  do_reduce(draw_context, mei_graph, selected, extraselected)
+}
 
 // Do a reduction in the context, using the given graph and the
 // (optional) selected hyperedges from this context.
@@ -63,8 +70,8 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
 
   // The removed notes we get are _nodes in the graph_, but
   // hide_note is built with that in mind.
-  var [removed_relations, removed_notes] = calc_reduce(mei_graph, 
-						       remaining_relations, 
+  var [removed_relations, removed_notes] = calc_reduce(mei_graph,
+						       remaining_relations,
 						       target_relations)
   var graphicals = []
   graphicals.push(removed_relations.map(
@@ -84,9 +91,9 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
   draw_context['reductions'].push(['reduce', undo, sel, extra])
 }
 
-function undo_reduce(draw_context) {
+export function undo_reduce(draw_context) {
   console.log('Using globals: selected/extraselected')
-  unreduce_actions = draw_context['reductions']
+  var unreduce_actions = draw_context['reductions']
   // Get latest unreduce_actions
   if (unreduce_actions.length == 0) {
     console.log('Nothing to unreduce')
@@ -101,4 +108,3 @@ function undo_reduce(draw_context) {
   sel.forEach((x) => { toggle_selected(x) })
   extra.forEach((x) => { toggle_selected(x, true) })
 }
-

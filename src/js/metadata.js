@@ -1,6 +1,12 @@
-import { texton } from './ui'
+import { getMei } from './app'
+import { texton } from './ui'
+import {
+  optional_resp_roles,
+} from './conf'
+import { capitalize, get_by_id } from './utils'
 
-function initialize_metadata() {
+export function initialize_metadata() {
+  var mei = getMei()
   // Runs on load, initializes the metadata div
   // Create title/composer if they don't exist
   var meiHead = mei.getElementsByTagName('meiHead')[0]
@@ -43,7 +49,7 @@ function initialize_metadata() {
   var roles = resp.querySelectorAll('[role]')
   var conf_roles = optional_resp_roles
 
-  for (role of roles) {
+  for (let role of roles) {
     var role_str = role.getAttribute('role')
     if (role_str == 'composer')
       continue
@@ -51,8 +57,8 @@ function initialize_metadata() {
     // No need to add the same role twice
     conf_roles = conf_roles.filter((s) => s != role_str)
   }
-  for (role of conf_roles) {
-    mei_role = mei.createElement('persName')
+  for (let role of conf_roles) {
+    var mei_role = mei.createElement('persName')
     mei_role.setAttribute('role', role)
     mei_role.setAttribute('xml:id', role)
     resp.appendChild(mei_role)
@@ -93,6 +99,7 @@ function add_resp_person_input(role, id = '', value = '') {
 }
 
 export function update_metadata() {
+  var mei = getMei()
   // Runs after focus leaves one of the metadata text fields
   var meiHead = mei.getElementsByTagName('meiHead')[0]
   var fd = mei.getElementsByTagName('fileDesc')[0]
@@ -120,6 +127,7 @@ export function update_metadata() {
 }
 
 function from_musicxml_metadata() {
+  var mei = getMei()
   // Runs on load from MusicXML
   var meiHead = mei.getElementsByTagName('meiHead')[0]
   var fd = mei.getElementsByTagName('fileDesc')[0]
@@ -136,6 +144,7 @@ function from_mei_metadata() {
 }
 
 function assign_responsibility_selected(resp) {
+  var mei = getMei()
   // Loops through the selected (SVG) relations and notes and assigns @resp
   // to the argument xml:id
   // Make this undoable

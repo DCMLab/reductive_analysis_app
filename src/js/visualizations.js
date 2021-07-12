@@ -1,6 +1,11 @@
+import { getMeiGraph } from './app'
+import { add_to_svg_bg, note_coords, roundedHull } from './utils'
+import { getShades, toggle_selected, toggle_shade } from './ui'
+import { get_by_id, get_id, id_in_svg, node_to_note_id, note_coords, note_to_text, relation_type } from './utils'
 
 // Returns a list of list of IDs
 function calc_hierarchy(notes, relations, roots_low = true) {
+  var mei_graph = getMeiGraph()
   var ret = []
   var rels = relations
   var ns = notes.filter((x) => x != undefined)
@@ -8,8 +13,8 @@ function calc_hierarchy(notes, relations, roots_low = true) {
     let ret_notes = []
     if (roots_low)
       ret_notes = ns.filter((n) => !(rels.find((r) => relation_allnodes(mei_graph, r).includes(n))))
-    var [removed_relations, removed_notes] = calc_reduce(mei_graph, 
-							 rels, 
+    var [removed_relations, removed_notes] = calc_reduce(mei_graph,
+							 rels,
 							 rels)
     ret_notes = ret_notes.concat(removed_notes.filter((n) => ns.includes(n)))
     ret.push(ret_notes)
@@ -40,7 +45,7 @@ function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true)
 					    map(get_id).
 					    map((id) => get_by_id(mei, id))
   var layers = calc_hierarchy(current_note_nodes, current_relation_nodes, roots_low)
-  
+
   // find top of system
   var svg_top = 0
   var layer_dist = 500
@@ -102,6 +107,8 @@ function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true)
 
     elem.setAttribute('type', type)
 
+    var shades = getShades()
+
     // Are we running with type-specific shades?
     if (shades)
       toggle_shade(elem)
@@ -134,4 +141,3 @@ function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true)
   adjust_top(draw_context, (layers.length * layer_dist))
 
 }
-

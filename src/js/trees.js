@@ -1,3 +1,5 @@
+import { getMei, getMeiGraph } from './app'
+import { add_to_svg_bg, get_by_id, get_id, id_in_svg, note_coords } from './utils'
 
 function calculate_initial_y(node, baseline, min_dist) {
   if (node.children.length == 0) {
@@ -62,6 +64,7 @@ function draw_textbox(txt, padding = 25) {
 }
 
 function obj_tree_to_xml(json_tree) {
+  var mei = getMei()
   var elem, elems
 
   var lbl = mei.createElement('label')
@@ -89,6 +92,7 @@ function obj_tree_to_xml(json_tree) {
 }
 
 function add_or_replace_tree(elem) {
+  var mei_graph = getMeiGraph()
   var pNode = mei_graph.parentNode
   // TODO: Add tree index/id/foo
   // For now, remove any previous tree
@@ -127,6 +131,7 @@ function find_x_tree(draw_context, tree) {
 }
 
 function load_tree(draw_context) {
+  var mei = getMei()
   var elem = mei.querySelector('eTree')
   if (!elem) {
     console.log('No tree to load')
@@ -254,4 +259,3 @@ function draw_tree(draw_context, baseline = 0, min_dist = -1000) {
   adjust_top(draw_context, -obj.y)
 
 }
-

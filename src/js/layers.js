@@ -1,4 +1,5 @@
 import { draw_contexts } from './app'
+import { clone_mei, get_by_id, id_in_svg } from './utils'
 
 // This is code relating to the addition of new layers in analyses.
 
@@ -77,7 +78,7 @@ function new_layer(draw_context = draw_contexts[0]) {
   return new_score_elem
 }
 
-function mei_for_layer(mei, score_elem) {
+export function mei_for_layer(mei, score_elem) {
   if (!mei.contains(score_elem)) {
     console.log('Score element not in MEI, aborting')
     return null

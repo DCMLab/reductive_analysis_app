@@ -1,6 +1,8 @@
 import { polygonHull } from 'd3'
 
-import { draw_contexts } from './app'
+import { draw_contexts, getMei, getMeiGraph } from './app'
+import { strip_xml_tags } from './conf'
+import { getCurrentDrawContext, getTooltip, toggle_selected } from './ui'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
@@ -86,9 +88,8 @@ var roundedHullN = function (polyPoints, hullPadding) {
   return segments.join(' ')
 }
 
-function roundedHull(points) {
-
-  hullPadding = draw_contexts.hullPadding || 200
+export function roundedHull(points) {
+  var hullPadding = draw_contexts.hullPadding || 200
 
   // Returns an SVG path for a rounded hull around the points
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'path')
@@ -130,7 +131,7 @@ function getRandomShade(colour) {
   return shade + '88' // Semitransparency
 }
 
-function capitalize(str) {
+export function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
@@ -192,6 +193,7 @@ function tspan(text, p, dy, dx = 0) {
 }
 
 function flip_to_bg(elem) {
+  var tooltip = getTooltip()
   // Shifts the SVG element to be drawn first (e.g. in the background)
   var paren = elem.parentElement
   paren.removeChild(elem)
@@ -199,7 +201,7 @@ function flip_to_bg(elem) {
   tooltip.close(); tooltip.open() // Refresh the tooltip.
 }
 
-function add_to_svg_bg(svg_elem, newElement) {
+export function add_to_svg_bg(svg_elem, newElement) {
   // Adds newElement in the background of the system element
   var sibling = svg_elem.getElementsByClassName('system')[0]
   var parent = sibling.parentNode
@@ -219,12 +221,12 @@ function g() {
   return newElement
 }
 
-function random_id(n = 5) {
+export function random_id(n = 5) {
   return Math.floor(Math.random() * (1 << (n * 4))).toString(16)
 }
 
 // Note coordinates are off center by a bit
-function note_coords(note) {
+export function note_coords(note) {
   // Computes useful coordinates of a note
   return [note.getElementsByTagName('use')[0].x.animVal.value + 100,
     note.getElementsByTagName('use')[0].y.animVal.value]
@@ -244,7 +246,7 @@ function get_by_oldid(doc, id) {
 }
 
 // From id string to element, looking in the document doc
-function get_by_id(doc, id) {
+export function get_by_id(doc, id) {
   if (!id)
     return null
   if (id[0] == '#') { id = id.slice(1) }
@@ -257,7 +259,7 @@ function get_by_id(doc, id) {
 }
 
 // Simple utility to get oldid if available.
-function id_or_oldid(elem) {
+export function id_or_oldid(elem) {
   if (elem.hasAttribute('oldid'))
     return elem.getAttribute('oldid')
   else
@@ -267,7 +269,7 @@ function id_or_oldid(elem) {
 // More complex utility to fully search until we find the "basic" ID, in
 // either the MEI or the document.
 // Takes an element, gives an ID string
-function get_id(elem) {
+export function get_id(elem) {
   if (document.contains(elem)) {
     // SVG traversal
     if (!elem.hasAttribute('oldid'))
@@ -287,7 +289,7 @@ function get_id(elem) {
   }
 }
 
-function id_in_svg(draw_context, id) {
+export function id_in_svg(draw_context, id) {
   if (!id)
     return undefined
   // Computes the relevant ID string for the element in the draw
@@ -363,7 +365,7 @@ function node_to_note_id_prefix(prefix, note) {
 }
 
 // From MEI graph node to the ID string for its referred note.
-function node_to_note_id(note) {
+export function node_to_note_id(note) {
   return note.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
     getAttribute('sameas').replace('#', '')
@@ -413,6 +415,7 @@ function get_time(note) {
 
 // From any relation element to list of MEI note elements
 function relation_get_notes(he) {
+  var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var note_nodes = relation_allnodes(mei_graph, he)
   var notes = note_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
@@ -421,6 +424,7 @@ function relation_get_notes(he) {
 }
 // From any relation element to list of MEI note elements
 function relation_get_notes_separated(he) {
+  var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var prim_nodes = relation_primaries(mei_graph, he)
   var prims = prim_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
@@ -442,7 +446,7 @@ function relation_allnodes(mei_graph, he) {
 }
 
 // Get the MEI-graph nodes that are adjacent and primary to a relation
-function relation_primaries(mei_graph, he) {
+export function relation_primaries(mei_graph, he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
   var nodes = []
   arcs_array.forEach((a) => {
@@ -454,7 +458,7 @@ function relation_primaries(mei_graph, he) {
   return nodes
 }
 // Get the MEI-graph nodes that are adjacent and secondary to a relation
-function relation_secondaries(mei_graph, he) {
+export function relation_secondaries(mei_graph, he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
   var nodes = []
   arcs_array.forEach((a) => {
@@ -467,7 +471,7 @@ function relation_secondaries(mei_graph, he) {
 }
 
 // Get te type string of the MEI relation node
-function relation_type(he) {
+export function relation_type(he) {
   // TODO: Sanity checks
   if (he.children.length == 0) {
     return ''
@@ -477,7 +481,8 @@ function relation_type(he) {
 }
 
 // Set up new graph node for a note
-function add_mei_node_for(mei_graph, note) {
+export function add_mei_node_for(mei_graph, note) {
+  var mei = getMei()
   var svg_id = get_id(note)
   var id = get_id(get_by_id(mei, svg_id))
   var elem = get_by_id(mei_graph.getRootNode(), 'gn-' + id)
@@ -558,7 +563,7 @@ function unmark_secondary(item) {
 
 // For a certain MEI relation node, find its secondaries and mark them as
 // secondary in the draw context
-function mark_secondaries(draw_context, mei_graph, he) {
+export function mark_secondaries(draw_context, mei_graph, he) {
   var svg_elem = draw_context.svg_elem
   if (he.tagName != 'node') // TODO: Probably bad, but shouldn't happen from do_relation
     he = get_by_id(mei_graph.getRootNode(), he.id)
@@ -571,7 +576,7 @@ function mark_secondaries(draw_context, mei_graph, he) {
 
 // For a certain MEI relation node, find its secondaries and unmark them as
 // secondary in the draw context
-function unmark_secondaries(draw_context, mei_graph, he) {
+export function unmark_secondaries(draw_context, mei_graph, he) {
   var svg_elem = draw_context.svg_elem
   if (he.tagName != 'node')
     he = get_by_id(mei_graph.getRootNode(), he.id)
@@ -637,7 +642,7 @@ function getBoundingBoxTop (elem) {
 }
 
 // Get the Interesting class from a classlist
-function get_class_from_classlist(elem) {
+export function get_class_from_classlist(elem) {
   // TODO: If more things can be selected etc., it should be reflected here
   if (typeof (elem) != 'undefined') {
     var ci = ''
@@ -709,7 +714,8 @@ function remove_empty_relations(graph) {
 // Average over a list of values
 function average(l) { return l.reduce((a, b) => a + b, 0) / l.length }
 
-function note_to_text(id) {
+export function note_to_text(id) {
+  var mei = getMei()
   var mei_elem = get_by_id(mei, id)
   var accid = note_get_accid(mei_elem)
   accid = accid.replace(/s/g, '#')
@@ -719,7 +725,7 @@ function note_to_text(id) {
 }
 
 // Compute a text to represent the elements
-function to_text(draw_contexts, mei_graph, elems) {
+export function to_text(draw_contexts, mei_graph, elems) {
   // TODO: Detect and warn for selections spanning several drawing contexts
   if (elems.length == 0)
     return ''
@@ -738,7 +744,7 @@ function to_text(draw_contexts, mei_graph, elems) {
 }
 
 // Translate deprecated names
-function fix_synonyms(mei) {
+export function fix_synonyms(mei) {
   Array.from(mei.getElementsByTagName('node')).forEach((elem) => {
     if (elem.getAttribute('type') == 'hyperedge')
       elem.setAttribute('type', 'relation')
@@ -770,6 +776,7 @@ var attributes = ['dur',
 
 // Make a rest of the same properties as the given note.
 function note_to_rest(mei, note) {
+  var mei = getMei()
   var rest = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'rest')
   rest.setAttribute('xml:id', 'rest-' + note.getAttribute('xml:id'))
   for (a of attributes)
@@ -779,6 +786,7 @@ function note_to_rest(mei, note) {
 }
 // Make a space of the same properties as the given note.
 function note_to_space(mei, note) {
+  var mei = getMei()
   var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
   space.setAttribute('xml:id', 'space-' + note.getAttribute('xml:id'))
   for (a of attributes)
@@ -788,6 +796,7 @@ function note_to_space(mei, note) {
 }
 // Make a chord of the same properties as the given note.
 function note_to_chord(mei, note) {
+  var mei = getMei()
   var chord = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'chord')
   chord.setAttribute('xml:id', 'chord-' + note.getAttribute('xml:id'))
   for (a of attributes)
@@ -818,7 +827,8 @@ function prefix_ids(elem, prefix) {
 }
 
 // Clone an MEI into a new XMLDocument
-function clone_mei(mei) {
+export function clone_mei(mei) {
+  var mei = getMei()
   var new_mei = mei.implementation.createDocument(
     mei.namespaceURI, // namespace to use
     null, // name of the root element (or for empty document)
@@ -834,7 +844,7 @@ function clone_mei(mei) {
 
 // Recursively compute a mapping between element IDs and their
 // corresponding get_id strings, i.e. what the element represents
-function get_id_pairs(elem) {
+export function get_id_pairs(elem) {
   var item
   if (elem.id)
     item = [elem.id, get_id(elem)]
@@ -846,7 +856,7 @@ function get_id_pairs(elem) {
     return Array.from(elem.children).flatMap(get_id_pairs)
 }
 
-function new_layer_element() {
+export function new_layer_element() {
   var layers_element = document.getElementById('layers')
   var new_layer = document.createElement('div')
   new_layer.id = 'layer' + layers_element.children.length
@@ -855,7 +865,7 @@ function new_layer_element() {
   return new_layer
 }
 
-function new_view_elements(layer_element) {
+export function new_view_elements(layer_element) {
   var new_view = document.createElement('div')
   new_view.id = 'view' + draw_contexts.length
   new_view.classList.add('view')
@@ -867,14 +877,14 @@ function new_view_elements(layer_element) {
   return [new_view, new_svg]
 }
 
-function checkbox(value) {
+export function checkbox(value) {
   var checkbox = document.createElement('input')
   checkbox.setAttribute('type', 'checkbox')
   checkbox.setAttribute('value', value)
   return checkbox
 }
 
-function button(value) {
+export function button(value) {
   var button = document.createElement('input')
   button.setAttribute('type', 'button')
   button.setAttribute('value', value)
@@ -885,6 +895,7 @@ export function indicate_current_context() {
   // Visually indicate the current context. This cannot be done in CSS alone
   // because the relations palette is not a child of .view elements.
   // TODO: Find a more economical solution. This is becoming a hefty `onmousemove`.
+  var current_draw_context = getCurrentDrawContext()
   if (!(typeof (current_draw_context) == 'undefined')) {
     // Lighten the background of the current context.
     $('.view').removeClass('view_active')
@@ -951,6 +962,7 @@ export function arrayToSelect2(plain_array) {
 }
 
 function sanitize_mei(mei) {
+  var mei = getMei()
 
   var sanitized_mei = mei
 
@@ -963,7 +975,7 @@ function sanitize_mei(mei) {
   return sanitized_mei
 }
 
-function sanitize_xml(xml) {
+export function sanitize_xml(xml) {
 
   var sanitized_xml = xml
 
@@ -976,7 +988,8 @@ function sanitize_xml(xml) {
   return sanitized_xml
 }
 
-function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+  var mei_graph = getMeiGraph()
 
   var primaries = prospective_primaries
     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))

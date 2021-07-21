@@ -99,6 +99,15 @@ configJs = {
     splitChunks: false,
   },
 
+  // Needed for wildwebmidi: this ignores non-reachable (in browser) code.
+  resolve: {
+    fallback: {
+      crypto: false,
+      path: false,
+      fs: false,
+    },
+  },
+
   plugins: [
     new webpack.ProvidePlugin({
       $: 'jquery',

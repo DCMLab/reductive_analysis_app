@@ -39,8 +39,8 @@ import {
 
 import { do_reduce_pre, undo_reduce } from './reductions'
 
-import { button, checkbox, get_class_from_classlist, indicate_current_context, to_text, unmark_secondaries } from './utils'
-import { place_note, stop_placing_note, toggle_placing_note } from './coordinates'
+import { button, checkbox, flip_to_bg, get_class_from_classlist, indicate_current_context, to_text, unmark_secondaries } from './utils'
+import { place_note, start_placing_note, stop_placing_note, toggle_placing_note } from './coordinates'
 import { update_metadata } from './metadata'
 
 /* UI globals */

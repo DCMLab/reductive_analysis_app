@@ -306,7 +306,7 @@ export function place_note() {
   }
 }
 
-function start_placing_note() {
+export function start_placing_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
   if (typeof (current_draw_context) != 'undefined') {

@@ -192,7 +192,7 @@ function tspan(text, p, dy, dx = 0) {
   return newElement
 }
 
-function flip_to_bg(elem) {
+export function flip_to_bg(elem) {
   var tooltip = getTooltip()
   // Shifts the SVG element to be drawn first (e.g. in the background)
   var paren = elem.parentElement

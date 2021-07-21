@@ -1,5 +1,5 @@
 import { getShades, toggle_selected, toggle_shade } from './ui'
-import { add_to_svg_bg, id_in_svg, node_to_note_id, note_coords, relation_primaries, relation_secondaries, relation_type, roundedHull } from './utils'
+import { add_to_svg_bg, flip_to_bg, id_in_svg, node_to_note_id, note_coords, relation_primaries, relation_secondaries, relation_type, roundedHull } from './utils'
 
 // Given a draw context and a graph node representing a relation, draw the
 // relation in the draw context.

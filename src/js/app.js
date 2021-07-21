@@ -1,7 +1,7 @@
 import jBox from 'jbox'
 
 import { add_relation } from './graph'
-import { mei_for_layer } from './layers'
+import { mei_for_layer, new_layer } from './layers'
 import { draw_relation, draw_metarelation } from './draw'
 
 import {
@@ -62,7 +62,9 @@ import {
   check_for_duplicate_relations,
   fix_synonyms,
   get_by_id,
+  get_by_oldid,
   get_class_from_classlist,
+  get_id,
   get_id_pairs,
   id_in_svg,
   id_or_oldid,
@@ -71,7 +73,10 @@ import {
   matcher,
   new_layer_element,
   new_view_elements,
+  node_referred_to,
   note_coords,
+  note_to_rest,
+  prefix_ids,
   sanitize_xml,
   unmark_secondaries,
 } from './utils'
@@ -289,9 +294,9 @@ export function do_undo() {
   var selected = getSelected()
   var extraselected = getExtraSelected()
   selected.forEach(toggle_selected)
-  extraselected.forEach((x) => { toggle_selected(x, true) });
+  extraselected.forEach((x) => { toggle_selected(x, true) })
 
-  [what, elems, sel, extra] = undo_actions.pop()
+  var [what, elems, sel, extra] = undo_actions.pop()
   if (what == 'edges' || what == 'relation' || what == 'metarelation') {
     var added = elems
     if (what == 'relation')
@@ -614,7 +619,7 @@ function load_finish(loader_modal) {
   return true
 }
 
-function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
+export function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
 //  var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem
   var mei2 = mei_for_layer(mei, draw_context.layer.score_elem)
@@ -646,7 +651,7 @@ function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0
 
 }
 
-function create_new_layer(draw_context, sliced = false, tied = false) {
+export function create_new_layer(draw_context, sliced = false, tied = false) {
   var new_score_elem
   if (sliced)
     new_score_elem = new_sliced_layer(draw_context, tied)
@@ -721,7 +726,7 @@ function render_mei(mei) {
   return [data, svg]
 }
 
-function rerender(draw_context) {
+export function rerender(draw_context) {
   var [new_view_elem, new_svg_elem] = new_view_elements(draw_context.layer.layer_elem)
   var new_mei = rerender_mei(false, draw_context)
   var [new_data, new_svg] = render_mei(new_mei)
@@ -806,3 +811,5 @@ console.log('Main webapp library is loaded')
 export const getMei = () => mei
 export const getMeiGraph = () => mei_graph
 export const getOrigMidi = () => orig_midi
+export const getVerovioToolkit = () => vrvToolkit
+export const getData = () => data

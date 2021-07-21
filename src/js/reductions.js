@@ -1,8 +1,18 @@
 import { getMei, getMeiGraph } from './app'
-import { toggle_selected } from './ui'
-import { get_by_id, get_id, note_coords, relation_primaries, relation_secondaries } from './utils'
+import { getExtraSelected, getSelected, toggle_selected } from './ui'
+import {
+  get_by_id,
+  get_id,
+  hide_he_hier,
+  hide_he,
+  hide_note_hier,
+  hide_note,
+  note_coords,
+  relation_primaries,
+  relation_secondaries
+} from './utils'
 
-function calc_reduce(mei_graph, remaining_relations, target_relations) {
+export function calc_reduce(mei_graph, remaining_relations, target_relations) {
   // No primary of a remaining relation is removed in this
   // reduction
   var remaining_nodes = remaining_relations.map(
@@ -32,8 +42,8 @@ function calc_reduce(mei_graph, remaining_relations, target_relations) {
     remaining_nodes = remaining_nodes.concat(more_remains.map(
       (he) => relation_secondaries(mei_graph, he)
     ).flat())
-  // Until we reach a pass where we don't find any more
-  // relations that need to stay
+    // Until we reach a pass where we don't find any more
+    // relations that need to stay
   } while (more_remains.length > 0)
   // Any relations that remain after this loop, we can remove,
   // including their secondaries
@@ -47,6 +57,8 @@ function calc_reduce(mei_graph, remaining_relations, target_relations) {
 
 export function do_reduce_pre(draw_context) {
   var mei_graph = getMeiGraph()
+  var selected = getSelected()
+  var extraselected = getExtraSelected()
   do_reduce(draw_context, mei_graph, selected, extraselected)
 }
 
@@ -61,8 +73,8 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
   var all_relations_nodes = Array.from(mei_graph.getElementsByTagName('node')).filter((x) => { return x.getAttribute('type') == 'relation' })
 
   var remaining_relations = all_relations_nodes.filter((n) => {
-	 var g = get_by_id(document, draw_context.id_prefix + n.getAttribute('xml:id'))
-	 return g != undefined && !g.classList.contains('hidden')
+    var g = get_by_id(document, draw_context.id_prefix + n.getAttribute('xml:id'))
+    return g != undefined && !g.classList.contains('hidden')
   })
 
   if (target_relations.length == 0)
@@ -71,15 +83,15 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
   // The removed notes we get are _nodes in the graph_, but
   // hide_note is built with that in mind.
   var [removed_relations, removed_notes] = calc_reduce(mei_graph,
-						       remaining_relations,
-						       target_relations)
+    remaining_relations,
+    target_relations)
   var graphicals = []
   graphicals.push(removed_relations.map(
     (r) => hide_he(draw_context, r)
   ))
 
   graphicals.push(removed_notes.map(
-		    (n) => hide_note(draw_context, n)
+    (n) => hide_note(draw_context, n)
   ))
   graphicals.push(removed_relations.map(
     (r) => hide_he_hier(draw_context, r)
@@ -92,6 +104,8 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
 }
 
 export function undo_reduce(draw_context) {
+  var selected = getSelected()
+  var extraselected = getExtraSelected()
   console.log('Using globals: selected/extraselected')
   var unreduce_actions = draw_context['reductions']
   // Get latest unreduce_actions
@@ -101,8 +115,8 @@ export function undo_reduce(draw_context) {
   }
   // Deselect the current selection, if any
   selected.forEach(toggle_selected)
-  extraselected.forEach((x) => { toggle_selected(x, true) });
-  [what, elems, sel, extra] = unreduce_actions.pop()
+  extraselected.forEach((x) => { toggle_selected(x, true) })
+  var [what, elems, sel, extra] = unreduce_actions.pop()
   var [relations, notes, graphicals] = elems
   graphicals.flat().forEach((x) => { if (x) x.classList.remove('hidden') })
   sel.forEach((x) => { toggle_selected(x) })

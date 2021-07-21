@@ -20,11 +20,27 @@ import {
   type_synonym
 } from './conf'
 
-import { draw_contexts, do_relation, do_undo, do_comborelation, do_metarelation, getMeiGraph, getMei, getOrigMidi, draw_graph } from './app'
+import {
+  draw_contexts,
+  do_relation,
+  do_undo,
+  do_comborelation,
+  do_metarelation,
+  getMeiGraph,
+  getMei,
+  getOrigMidi,
+  draw_graph,
+  rerender_mei,
+  getVerovioToolkit,
+  getData,
+  rerender,
+  create_new_layer,
+} from './app'
+
 import { do_reduce_pre, undo_reduce } from './reductions'
 
 import { button, checkbox, get_class_from_classlist, indicate_current_context, to_text, unmark_secondaries } from './utils'
-import { place_note, toggle_placing_note } from './coordinates'
+import { place_note, stop_placing_note, toggle_placing_note } from './coordinates'
 import { update_metadata } from './metadata'
 
 /* UI globals */
@@ -672,12 +688,13 @@ const playMidiButton = document.getElementById('midibutton')
 playMidiButton.addEventListener('click', play_midi)
 
 function play_midi_reduction(draw_context = draw_contexts[0]) {
+  var vrvToolkit = getVerovioToolkit()
   var mei2 = rerender_mei(true, draw_context)
   var data2 = new XMLSerializer().serializeToString(mei2)
   vrvToolkit.loadData(data2)
   $('#player').midiPlayer.play('data:audio/midi;base64,' + vrvToolkit.renderToMIDI())
+  var data = getData()
   vrvToolkit.loadData(data)
-
 }
 
 export function handle_hull_controller() {

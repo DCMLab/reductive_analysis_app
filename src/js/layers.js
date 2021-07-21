@@ -1,5 +1,5 @@
 import { draw_contexts } from './app'
-import { clone_mei, get_by_id, id_in_svg } from './utils'
+import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids } from './utils'
 
 // This is code relating to the addition of new layers in analyses.
 
@@ -41,7 +41,7 @@ function layerify(draw_context, elem) {
   return [layer_clone_element(changes, elem, new_children), changes]
 }
 
-function new_layer(draw_context = draw_contexts[0]) {
+export function new_layer(draw_context = draw_contexts[0]) {
   var score_elem = draw_context.mei_score
   var [new_score_elem, changed] = layerify(draw_context, score_elem)
   var n_layers = score_elem.parentElement.getElementsByTagName('score').length

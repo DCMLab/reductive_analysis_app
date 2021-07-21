@@ -1,6 +1,6 @@
 import { polygonHull } from 'd3'
 
-import { draw_contexts, getMei, getMeiGraph } from './app'
+import { draw_contexts, getMei, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
 import { getCurrentDrawContext, getTooltip, toggle_selected } from './ui'
 
@@ -235,7 +235,7 @@ export function note_coords(note) {
 function get_by_oldid_elem(doc, elem) { return get_by_id(doc, get_id(elem)) }
 
 // Gets all elements from the doc with the oldid
-function get_by_oldid(doc, id) {
+export function get_by_oldid(doc, id) {
   if (id[0] == '#') { id = id.slice(1) }
   var elems = doc.querySelectorAll('[*|oldid=\'' + id + '\']')
   if (elems) {
@@ -270,6 +270,7 @@ export function id_or_oldid(elem) {
 // either the MEI or the document.
 // Takes an element, gives an ID string
 export function get_id(elem) {
+  var mei = getMei()
   if (document.contains(elem)) {
     // SVG traversal
     if (!elem.hasAttribute('oldid'))
@@ -327,7 +328,7 @@ function arcs_where_node_referred_to(mei_graph, id) {
 }
 
 // From graph node to list of all arcs that refer to it
-function node_referred_to(id) {
+export function node_referred_to(id) {
   console.debug('Using global: mei to find element')
   return Array.from(mei.getElementsByTagName('arc'))
     .filter((x) => {
@@ -407,6 +408,7 @@ function note_get_accid(note) {
 
 // Get the timestamp for a note
 function get_time(note) {
+  var vrvToolkit = getVerovioToolkit()
   console.debug('Using globals: document, mei to find element')
   if (document.contains(note))
     note = get_by_id(mei, get_id(note))
@@ -503,7 +505,7 @@ export function add_mei_node_for(mei_graph, note) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_note(draw_context, note) {
+export function hide_note(draw_context, note) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), id_in_svg(draw_context, node_to_note_id(note)))
   if (elem && draw_context.svg_elem.contains(elem))
     elem.classList.add('hidden')
@@ -511,7 +513,7 @@ function hide_note(draw_context, note) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_note_hier(draw_context, note) {
+export function hide_note_hier(draw_context, note) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + id_in_svg(draw_context, node_to_note_id(note)))
   if (elem && draw_context.svg_elem.contains(elem))
     elem.classList.add('hidden')
@@ -519,7 +521,7 @@ function hide_note_hier(draw_context, note) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_he(draw_context, he) {
+export function hide_he(draw_context, he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), draw_context.id_prefix + he.getAttribute('xml:id'))
   if (elem && draw_context.svg_elem.contains(elem))
     elem.classList.add('hidden')
@@ -527,7 +529,7 @@ function hide_he(draw_context, he) {
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
-function hide_he_hier(draw_context, he) {
+export function hide_he_hier(draw_context, he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + draw_context.id_prefix + he.getAttribute('xml:id'))
   if (elem && draw_context.svg_elem.contains(elem))
     elem.classList.add('hidden')
@@ -775,11 +777,11 @@ var attributes = ['dur',
   'tuplet']
 
 // Make a rest of the same properties as the given note.
-function note_to_rest(mei, note) {
+export function note_to_rest(mei, note) {
   var mei = getMei()
   var rest = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'rest')
   rest.setAttribute('xml:id', 'rest-' + note.getAttribute('xml:id'))
-  for (a of attributes)
+  for (let a of attributes)
     if (note.hasAttribute(a))
       rest.setAttribute(a, note.getAttribute(a))
   return rest
@@ -807,7 +809,7 @@ function note_to_chord(mei, note) {
 
 // Traverse the XML tree and add on a prefix to the start of each ID. If
 // it's an SVG, we also save the old id in the oldid attribute
-function prefix_ids(elem, prefix) {
+export function prefix_ids(elem, prefix) {
   if (elem.id) {
     // SVG modification
     elem.setAttribute('oldid', elem.id)

@@ -25,7 +25,7 @@ export function compute_measure_map(draw_context) {
   // which measure we are through a simple find() later
   let svg = draw_context.svg_elem
   var measures = Array.from(svg.getElementsByClassName('measure'))
-  var staves = Array.from(measures[0].getElementsByClassName('staff')) // Just look at one measure for now
+  var staves = measures.length ? Array.from(measures[0].getElementsByClassName('staff')) : null // Just look at one measure for now
   var notes = Array.from(svg.getElementsByClassName('note'))
   // We let the right edge of each measure make up the grid lines
   var measure_map = measures.map((msr) => [msr.getBBox().x + msr.getBBox().width, msr])
@@ -322,7 +322,7 @@ function start_placing_note() {
   }
 }
 
-function stop_placing_note() {
+export function stop_placing_note() {
   var placing_note = getPlacingNote()
   let elem = document.getElementById(placing_note)
   if (elem)

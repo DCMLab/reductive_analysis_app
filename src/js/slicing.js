@@ -1,4 +1,5 @@
-import { get_by_id, get_id, note_coords } from './utils'
+import { getVerovioToolkit, rerender_mei } from './app'
+import { get_by_id, get_id, note_coords, prefix_ids } from './utils'
 
 // TODO:
 // Render to MIDI :check:
@@ -15,6 +16,7 @@ import { get_by_id, get_id, note_coords } from './utils'
 // Take care when adding to only add one "note" per pitch (use @sameas)
 // Optionally do verticalisations
 function slicify(draw_context, score_elem, tied = false) {
+  var vrvToolkit = getVerovioToolkit()
   var mei = getMei()
   var mei2 = rerender_mei(true, draw_context)
   var data2 = new XMLSerializer().serializeToString(mei2)

@@ -99,21 +99,13 @@ configJs = {
     splitChunks: false,
   },
 
-  // Needed for wildwebmidi: this ignores non-reachable (in browser) code.
-  resolve: {
-    fallback: {
-      crypto: false,
-      path: false,
-      fs: false,
-    },
+
+  externals: {
+    jquery: 'jQuery',
+    verovio: 'verovio',
   },
 
   plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      jquery: 'jquery',
-    }),
     new EsLintPlugin(esLintPluginOptions),
     new FriendlyErrorsPlugin(),
     new NotifierPlugin({ title: 'JS', ...notifierPluginOptions }),
@@ -214,12 +206,11 @@ configCSS = {
 /* Others without entry point, so we push them to the previous config. */
 
 configCSS.plugins.push(
-  new CopyPlugin({ patterns: [
-    { from: `${assets}/js/vendor/`, to: thePath('public/js/vendor/') },
-    // { from: `${assets}/fonts/`, to: thePath('public/fonts') },
-    // { from: `${assets}/manifest/`, to: thePath('public') },
-    // { from: `${assets}/sfx/`, to: thePath('public/sfx') },
-  ]}),
+  // new CopyPlugin({ patterns: [
+  //   // { from: `${assets}/fonts/`, to: thePath('public/fonts') },
+  //   // { from: `${assets}/manifest/`, to: thePath('public') },
+  //   // { from: `${assets}/sfx/`, to: thePath('public/sfx') },
+  // ]}),
   new BrowserSyncPlugin({
     https: browserSyncHttps,
     host: env.MIX_BS_HOST,

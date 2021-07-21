@@ -679,9 +679,25 @@ export function do_deselect() {
 const unselectButton = document.getElementById('deselectbutton')
 unselectButton.addEventListener('click', do_deselect)
 
+import MidiPlayer from 'midi-player-js'
+import Soundfont from 'soundfont-player'
+var Player
+var audioContext = new AudioContext()
+Soundfont.instrument(audioContext, 'acoustic_grand_piano').then(function (instrument) {
+  Player = new MidiPlayer.Player(function(event) {
+    if (event.name == 'Note on' && event.velocity > 0) {
+      instrument.play(event.noteName, audioContext.currentTime, { gain: event.velocity / 100 })
+      // document.querySelector('#track-' + event.track + ' code').innerHTML = JSON.stringify(event);
+    }
+  })
+})
+
+const { decode } = require('base64-arraybuffer')
+
 export function play_midi() {
   var orig_midi = getOrigMidi()
-  $('#player').midiPlayer.play('data:audio/midi;base64,' + orig_midi)
+  Player.loadArrayBuffer(decode(orig_midi))
+  Player.play()
 }
 
 const playMidiButton = document.getElementById('midibutton')
@@ -692,7 +708,9 @@ function play_midi_reduction(draw_context = draw_contexts[0]) {
   var mei2 = rerender_mei(true, draw_context)
   var data2 = new XMLSerializer().serializeToString(mei2)
   vrvToolkit.loadData(data2)
-  $('#player').midiPlayer.play('data:audio/midi;base64,' + vrvToolkit.renderToMIDI())
+  // $('#player').midiPlayer.play('data:audio/midi;base64,' + vrvToolkit.renderToMIDI())
+  Player.loadArrayBuffer(decode(vrvToolkit.renderToMIDI()))
+  Player.play()
   var data = getData()
   vrvToolkit.loadData(data)
 }

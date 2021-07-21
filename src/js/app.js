@@ -84,7 +84,7 @@ import { compute_measure_map, pitch_grid } from './coordinates'
 
 require('select2/dist/js/select2')
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
-require('./vendor/midiplayer-changed')
+// require('./vendor/midiplayer-changed')
 
 // GLOBALS
 // Load Verovio
@@ -149,7 +149,7 @@ $(document).ready(function() {
   Object.keys(meta_conf).forEach(meta_type)
   Object.keys(combo_conf).forEach(combo_type)
   toggle_shades()
-  $('#player').midiPlayer({ color: 'grey', width: 250 })
+  // $('#player').midiPlayer({ color: 'grey', width: 250 })
   $('#selected_things').hide()
 
   $('#hull_controller').on('change', handle_hull_controller)

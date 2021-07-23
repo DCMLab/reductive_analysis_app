@@ -219,11 +219,12 @@ configCSS = {
 /* Others without entry point, so we push them to the previous config. */
 
 configCSS.plugins.push(
-  // new CopyPlugin({ patterns: [
-  //   // { from: `${assets}/fonts/`, to: thePath('public/fonts') },
-  //   // { from: `${assets}/manifest/`, to: thePath('public') },
-  //   // { from: `${assets}/sfx/`, to: thePath('public/sfx') },
-  // ]}),
+  new CopyPlugin({ patterns: [
+    { from: `${assets}/other-css/`, to: thePath('public/css') },
+    // { from: `${assets}/fonts/`, to: thePath('public/fonts') },
+    // { from: `${assets}/manifest/`, to: thePath('public') },
+    // { from: `${assets}/sfx/`, to: thePath('public/sfx') },
+  ]}),
   new BrowserSyncPlugin({
     https: browserSyncHttps,
     host: env.MIX_BS_HOST,

@@ -4,6 +4,19 @@ This is an app to facilitate analysing scores using a reductive paradigm.
 
 It is currently very much under construction, but can be tested [here](https://dcmlab.github.io/reductive_analysis_app/index.html)
 
+## Table of contents
+
+- [The basics](#the-basics)
+- [A short example](#a-short-example)
+- [Hierarchical analysis](#hierarchical-analysis)
+  - [Showcase: Schenkerian analysis](#showcase-schenkerian-analysis)
+  - [Showcase: GTTM Tree](#showcase-gttm-Tree)
+  - [Showcase: MOP annotation](#showcase-mop-annotation)
+- [Funding and publications](#funding-and-publications)
+- [Development](#development)
+
+## The basics
+
 The basics are as follows:
  
  * Clicking selects notes. Shift-click selects them as _primary_
@@ -121,8 +134,6 @@ illustrative gifs were produced, showcasing some more advanced ideas:
 
 ![](images/gttm.gif?raw=true)
 
-
-
 ### Showcase: MOP annotation
 
 ![](images/mop.gif?raw=true)
@@ -142,3 +153,16 @@ Musicology. Additionally, the members of the Digital and Cognitive
 Musicology Lab (DCML) have contributed valuable insights through
 discussions and user testing.
 
+## Development
+
+(To be completed.)
+
+The app is in `/public/index.html`. Assets called by the app needs to be compiled using some front-end tooling.
+
+1. duplicate `.env.example` to `.env` and (optionally) edit it.
+2. `npm install` (Node > 12.13) to install all the required packages and tools.
+3. `npm run prod` to compile assets with optimizations. Alternatively:
+    - (recommended for development) `npm run watch` to compile assets and automatically reload your browser while developing;
+    - `npm run dev` to compile assets without optimizations.
+
+You can also enforce JavaScript syntax using `npm run lint` to check it or `npm run lint-fix` to directly fix it.

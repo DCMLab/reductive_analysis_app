@@ -683,7 +683,7 @@ import MidiPlayer from 'midi-player-js'
 import Soundfont from 'soundfont-player'
 var Player
 var audioContext = new AudioContext()
-Soundfont.instrument(audioContext, 'acoustic_grand_piano').then(function (instrument) {
+Soundfont.instrument(audioContext, '/instruments/acoustic-grand-piano-mp3.js').then(function (instrument) {
   Player = new MidiPlayer.Player(function(event) {
     if (event.name == 'Note on' && event.velocity > 0) {
       instrument.play(event.noteName, audioContext.currentTime, { gain: event.velocity / 100 })

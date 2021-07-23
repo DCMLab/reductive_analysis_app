@@ -43,7 +43,7 @@ export function add_relation(mei_graph, primaries, secondaries, type, he_id_para
   return [he_id, added.reverse()]
 }
 
-function add_metarelation(mei_graph, primaries, secondaries, type, he_id_param) {
+export function add_metarelation(mei_graph, primaries, secondaries, type, he_id_param) {
   var added = []
   // Add a new node for the relation
   var he_elem = mei_graph.getRootNode().createElement('node')

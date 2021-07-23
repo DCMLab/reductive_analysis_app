@@ -1,5 +1,5 @@
 import { getMei, getMeiGraph } from './app'
-import { add_to_svg_bg, get_by_id, get_id, id_in_svg, note_coords } from './utils'
+import { add_to_svg_bg, average, g, get_by_id, get_id, id_in_svg, line, note_coords, rect } from './utils'
 
 function calculate_initial_y(node, baseline, min_dist) {
   if (node.children.length == 0) {

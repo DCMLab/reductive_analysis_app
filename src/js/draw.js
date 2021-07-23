@@ -1,5 +1,22 @@
 import { getShades, toggle_selected, toggle_shade } from './ui'
-import { add_to_svg_bg, flip_to_bg, id_in_svg, node_to_note_id, note_coords, relation_primaries, relation_secondaries, relation_type, roundedHull } from './utils'
+import {
+  add_to_svg_bg,
+  average,
+  circle,
+  flip_to_bg,
+  g,
+  get_id,
+  get_metarelation_target,
+  id_in_svg,
+  line,
+  node_to_note_id,
+  note_coords,
+  relation_allnodes,
+  relation_primaries,
+  relation_secondaries,
+  relation_type,
+  roundedHull
+} from './utils'
 
 // Given a draw context and a graph node representing a relation, draw the
 // relation in the draw context.
@@ -117,7 +134,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     g_elem.appendChild(line_elem)
   })
   // Type-dependent shades
-  if (shades)
+  if (getShades())
     toggle_shade(g_elem)
   // We can scroll among metarelations as well
   g_elem.onwheel = (e) => {

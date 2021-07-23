@@ -136,7 +136,7 @@ export function capitalize(str) {
 }
 
 // Draw a line between points p1 and p2
-function line(p1, p2) {
+export function line(p1, p2) {
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'line')
   newElement.setAttribute('x1', p1[0])
   newElement.setAttribute('y1', p1[1])
@@ -148,7 +148,7 @@ function line(p1, p2) {
 }
 
 // Draw a circle at point p with radius rad
-function circle(p, rad) {
+export function circle(p, rad) {
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
   newElement.setAttribute('cx', p[0])
   newElement.setAttribute('cy', p[1])
@@ -159,7 +159,7 @@ function circle(p, rad) {
 }
 
 // Draw a rectangle at point p with width/height
-function rect(p, width, height) {
+export function rect(p, width, height) {
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
   newElement.setAttribute('x', p[0])
   newElement.setAttribute('y', p[1])
@@ -215,7 +215,7 @@ function add_to_svg_fg(svg_elem, newElement) {
   parent.appendChild(newElement)
 }
 
-function g() {
+export function g() {
   // Creates a new SVG g element
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'g')
   return newElement
@@ -436,7 +436,7 @@ function relation_get_notes_separated(he) {
 }
 
 // Get the MEI-graph nodes that are adjacent to a relation
-function relation_allnodes(mei_graph, he) {
+export function relation_allnodes(mei_graph, he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
   var nodes = []
   arcs_array.forEach((a) => {
@@ -680,7 +680,7 @@ function getBoundingBoxOffCenter (elem) {
 }
 
 // Get the correct coordinates for where to aim the metarelation
-function get_metarelation_target(elem) {
+export function get_metarelation_target(elem) {
   if (elem.classList.contains('metarelation')) {
     var circ = elem.getElementsByTagName('circle')[0]
     return [circ.cx.baseVal.value, circ.cy.baseVal.value]
@@ -714,7 +714,7 @@ function remove_empty_relations(graph) {
 }
 
 // Average over a list of values
-function average(l) { return l.reduce((a, b) => a + b, 0) / l.length }
+export function average(l) { return l.reduce((a, b) => a + b, 0) / l.length }
 
 export function note_to_text(id) {
   var mei = getMei()

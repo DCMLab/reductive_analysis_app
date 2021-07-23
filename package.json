@@ -43,7 +43,7 @@
     "css-loader": "^5",
     "cssnano": "^5",
     "dotenv": "^8",
-    "double-dash.scss": "^0.7.1",
+    "double-dash.scss": "^0.8",
     "easings.scss": "^0.3",
     "eslint": "^7.30.0",
     "eslint-webpack-plugin": "^2.5.4",
@@ -72,7 +72,7 @@
     "webpack-nano": "^1.1.1"
   },
   "dependencies": {
-    "base64-arraybuffer": "^0.1.4",
+    "base64-arraybuffer": "^0.2",
     "d3": "^5.14.2",
     "dragselect": "^2.1.1",
     "expect-puppeteer": "^4.4.0",

@@ -186,7 +186,11 @@ configCSS = {
   plugins: [
     new MiniCssExtractPlugin({ filename: '[name].css?id=[fullhash]' }),
     new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['**/*', '!index.html'],
+      cleanOnceBeforeBuildPatterns: [
+        '**/*',
+        '!css/vendor/*',
+        '!index.html',
+      ],
     }),
     new FriendlyErrorsPlugin(),
     new NotifierPlugin({ title: 'CSS', ...notifierPluginOptions }),
@@ -220,7 +224,7 @@ configCSS = {
 
 configCSS.plugins.push(
   new CopyPlugin({ patterns: [
-    { from: `${assets}/other-css/`, to: thePath('public/css') },
+    { from: `${assets}/other-css/`, to: thePath('public/css/vendor') },
     // { from: `${assets}/fonts/`, to: thePath('public/fonts') },
     // { from: `${assets}/manifest/`, to: thePath('public') },
     // { from: `${assets}/sfx/`, to: thePath('public/sfx') },

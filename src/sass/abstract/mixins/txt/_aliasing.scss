@@ -1,0 +1,21 @@
+/*
+ * FONT-SMOOTHING
+ *
+ * Use:
+ * @include font-smoothing()
+ * @include font-smoothing(on)
+ * @include font-smoothing(off)
+ *
+ * Parameters:
+ *  $aa ('on' by default)
+ */
+
+@mixin font-smoothing($aa: on) {
+  @if $aa == on {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  } @else {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
+}

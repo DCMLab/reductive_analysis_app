@@ -14,7 +14,7 @@ body {
 * {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-} 
+}
 
 #app {
     margin-left: auto;
@@ -231,7 +231,7 @@ body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
 /* .verovio-cmp.loading { */
 /*     height: 100vh;   */
 /*     position: relative; */
-    
+
 /* } */
 
 .loading {
@@ -390,7 +390,7 @@ stroke: black;
 .extrahover {
       transform: translate3d(0,0,0);
        filter: url("#extraFilter");
-      fill: red; 
+      fill: red;
 }
 .selecthover {
       transform: translate3d(0,0,0);
@@ -575,7 +575,7 @@ body:not(.mousedown) .main_buttons:hover {
 
 body:not(.mousedown) .view_buttons:hover {
   height: max-content;
-  width: max-content; 
+  width: max-content;
 }
 
 .view_buttons input {
@@ -599,7 +599,7 @@ body:not(.mousedown) .view_buttons:hover {
   position: fixed;
   top: 30px;
   right: -455px;
-  padding: 1.5rem; 
+  padding: 1.5rem;
   border-color: rgba(61, 61, 61, 0.5);
   border-right: none;
   font-family: Arial;
@@ -838,4 +838,3 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 .select2-container--default .select2-selection--single .select2-selection__rendered {
   color: lightgray !important;
 }
-

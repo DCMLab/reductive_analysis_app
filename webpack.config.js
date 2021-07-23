@@ -40,7 +40,20 @@ const esLintPluginOptions = {
   formatter: env.ES_LINT_FORMATTER,
 }
 
-/* BrowserSync HTTPS with Laravel Valet
+/**
+ * Browsersync `server` or `proxy` properties.
+ * Use one or the other depending on if app served through localhost or not.
+ */
+let browserSyncServerOrProxy = {}
+
+if (env.MIX_BS_HOST == 'localhost' || '127.0.0.1') {
+  browserSyncServerOrProxy.server = { baseDir: ['public'] }
+} else {
+  browserSyncServerOrProxy.proxy = env.MIX_BS_LOCAL_URL
+}
+
+/**
+ * BrowserSync HTTPS with Laravel Valet
  *
  * BrowserSync HTTPS: https://www.browsersync.io/docs/options#option-https
  * Laravel Valet HTTPS: https://laravel.com/docs/5.7/valet#securing-sites
@@ -214,7 +227,7 @@ configCSS.plugins.push(
   new BrowserSyncPlugin({
     https: browserSyncHttps,
     host: env.MIX_BS_HOST,
-    proxy: env.MIX_BS_LOCAL_URL,
+    ...browserSyncServerOrProxy,
     browser: env.MIX_BS_BROWSER,
     open: env.MIX_BS_OPEN,
     logPrefix: env.APP_NAME,

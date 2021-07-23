@@ -172,7 +172,7 @@ export function rect(p, width, height) {
 }
 
 // Draw a text at point p
-function text(text, p) {
+export function text(text, p) {
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'text')
   if (p) {
     newElement.setAttribute('x', p[0])
@@ -183,7 +183,7 @@ function text(text, p) {
 }
 
 // Make a tspan with dx,dy
-function tspan(text, p, dy, dx = 0) {
+export function tspan(text, p, dy, dx = 0) {
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
   newElement.setAttribute('x', p[0])
   newElement.setAttribute('dx', dx)

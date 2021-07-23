@@ -1,5 +1,6 @@
 import { getMei, getMeiGraph } from './app'
-import { add_to_svg_bg, average, g, get_by_id, get_id, id_in_svg, line, note_coords, rect } from './utils'
+import { clear_top } from './ui'
+import { add_to_svg_bg, average, g, get_by_id, get_id, id_in_svg, line, note_coords, rect, text } from './utils'
 
 function calculate_initial_y(node, baseline, min_dist) {
   if (node.children.length == 0) {
@@ -130,7 +131,7 @@ function find_x_tree(draw_context, tree) {
   tree.children.forEach((n) => find_x_tree(draw_context, n))
 }
 
-function load_tree(draw_context) {
+export function load_tree(draw_context) {
   var mei = getMei()
   var elem = mei.querySelector('eTree')
   if (!elem) {
@@ -169,7 +170,7 @@ function is_aligned_tree(obj) {
   return leaves[0].hasOwnProperty('note_id')
 }
 
-function save_tree(draw_context) {
+export function save_tree(draw_context) {
   var obj = get_tree_from_input(draw_context)
   if (!obj)
     return
@@ -177,7 +178,7 @@ function save_tree(draw_context) {
   add_or_replace_tree(elem)
 }
 
-function align_tree(draw_context) {
+export function align_tree(draw_context) {
   var obj = get_tree_from_input(draw_context)
   if (!obj)
     return
@@ -216,7 +217,7 @@ function align_tree(draw_context) {
     draw_tree(draw_context)
 }
 
-function draw_tree(draw_context, baseline = 0, min_dist = -1000) {
+export function draw_tree(draw_context, baseline = 0, min_dist = -1000) {
   var svg_elem = draw_context.svg_elem
   var id_prefix = draw_context.id_prefix
   // find top of system

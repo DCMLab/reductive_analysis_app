@@ -1,7 +1,8 @@
-import { getMeiGraph } from './app'
-import { getShades, toggle_selected, toggle_shade } from './ui'
+import { getMei, getMeiGraph } from './app'
+import { adjust_top, clear_top, getShades, toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
+  circle,
   flip_to_bg,
   g,
   get_by_id,
@@ -13,6 +14,8 @@ import {
   relation_allnodes,
   relation_type,
   roundedHull,
+  text,
+  tspan,
 } from './utils'
 import { calc_reduce } from './reductions'
 
@@ -38,12 +41,14 @@ function calc_hierarchy(notes, relations, roots_low = true) {
   return ret
 }
 
-function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true) {
+export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true) {
   var svg_elem = draw_context.svg_elem
   var id_prefix = draw_context.id_prefix
   var existing = clear_top(draw_context)
   var g_elem = g()
   g_elem.id = 'hier' + id_prefix
+
+  var mei = getMei()
 
   // find layers
   var current_note_nodes = Array.from(svg_elem.
@@ -109,7 +114,7 @@ function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true)
     let type = relation_type(r)
     let elem_in_score = document.getElementById(id)
 
-    let nodes = relation_allnodes(mei_graph, r)
+    let nodes = relation_allnodes(getMeiGraph(), r)
     let node_coords = nodes.map((n) => layers_coords.find((x) => x[0] == n)[1])
 
     let elem = roundedHull(node_coords, hullPadding)

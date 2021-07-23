@@ -38,6 +38,9 @@ import {
 } from './app'
 
 import { do_reduce_pre, undo_reduce } from './reductions'
+import { draw_hierarchy_graph } from './visualizations'
+
+import { align_tree, draw_tree, load_tree, save_tree } from './trees'
 
 import { button, checkbox, flip_to_bg, get_class_from_classlist, indicate_current_context, to_text, unmark_secondaries } from './utils'
 import { place_note, start_placing_note, stop_placing_note, toggle_placing_note } from './coordinates'
@@ -683,6 +686,8 @@ import MidiPlayer from 'midi-player-js'
 import Soundfont from 'soundfont-player'
 var Player
 var audioContext = new AudioContext()
+
+// https://github.com/danigb/soundfont-player
 Soundfont.instrument(audioContext, '/instruments/acoustic-grand-piano-mp3.js').then(function (instrument) {
   Player = new MidiPlayer.Player(function(event) {
     if (event.name == 'Note on' && event.velocity > 0) {
@@ -889,7 +894,7 @@ export function initialize_select_controls() {
   })
 }
 
-function clear_top(draw_context) {
+export function clear_top(draw_context) {
   var svg_elem = draw_context.svg_elem
   var id_prefix = draw_context.id_prefix
   var elem = svg_elem.getRootNode().getElementById('hier' + id_prefix)
@@ -905,7 +910,7 @@ function clear_top(draw_context) {
   return false
 }
 
-function adjust_top(draw_context, ydiff) {
+export function adjust_top(draw_context, ydiff) {
   var svg_elem = draw_context.svg_elem
   var svg_height = svg_elem.children[0].getAttribute('height')
   var svg_viewbox = svg_elem.getElementsByClassName('definition-scale')[0].getAttribute('viewBox')

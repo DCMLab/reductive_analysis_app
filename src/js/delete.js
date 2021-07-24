@@ -1,5 +1,5 @@
 
-import { draw_contexts, getMeiGraph } from './app'
+import { getDrawContexts, getMeiGraph } from './app'
 import { toggle_selected } from './ui'
 import { get_class_from_classlist, unmark_secondaries } from './utils'
 
@@ -12,6 +12,7 @@ function delete_relation(elem) {
   var svg_hes = []
   var metarel = get_class_from_classlist(elem)
   var mei_graph = getMeiGraph()
+  var draw_contexts = getDrawContexts()
   for (draw_context of draw_contexts) {
     let svg_he = get_by_id(document, draw_context.id_prefix + mei_id)
     if (svg_he) {

@@ -21,7 +21,6 @@ import {
 } from './conf'
 
 import {
-  draw_contexts,
   do_relation,
   do_undo,
   do_comborelation,
@@ -35,6 +34,7 @@ import {
   getData,
   rerender,
   create_new_layer,
+  getDrawContexts,
 } from './app'
 
 import { do_reduce_pre, undo_reduce } from './reductions'
@@ -408,7 +408,7 @@ function onclick_select_functions(draw_context) {
 
 window.onmousedown = (e) => {
   var elem = document.elementFromPoint(mouseX, mouseY)
-  var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem))
+  var dc = getDrawContexts().find((dc) => dc.view_elem.contains(elem))
   if (!navigation_conf.switch_context_on_hover && dc) current_draw_context = dc
 
   indicate_current_context()
@@ -419,7 +419,7 @@ window.onmousemove = (e) => {
   mouseY = e.clientY
   // Not sure if this is the best way...
   var elem = document.elementFromPoint(mouseX, mouseY)
-  var dc = draw_contexts.find((dc) => dc.view_elem.contains(elem))
+  var dc = getDrawContexts().find((dc) => dc.view_elem.contains(elem))
   if (navigation_conf.switch_context_on_hover && dc) current_draw_context = dc
 
   indicate_current_context()
@@ -548,6 +548,7 @@ function toggle_he_selected(selecting) {
 function update_text() {
   var mei_graph = getMeiGraph()
   var primaries, secondaries
+  var draw_contexts = getDrawContexts()
   primaries = to_text(draw_contexts, mei_graph, extraselected)
   secondaries = to_text(draw_contexts, mei_graph, selected)
   if (primaries || secondaries) {
@@ -722,6 +723,7 @@ function play_midi_reduction(draw_context = draw_contexts[0]) {
 
 export function handle_hull_controller() {
   var mei_graph = getMeiGraph()
+  var draw_contexts = getDrawContexts()
   do_deselect()
   $('.relation').remove()
   $('.metarelation').remove()
@@ -1044,7 +1046,7 @@ export function jump_to_adjacent_context(direction = 1) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
   }
 
-  var contexts = draw_contexts.sort((a, b) => a.view_elem.getBoundingClientRect().y - b.view_elem.getBoundingClientRect().y)
+  var contexts = getDrawContexts().sort((a, b) => a.view_elem.getBoundingClientRect().y - b.view_elem.getBoundingClientRect().y)
 
   var contexts_map_y = contexts.map(c => c.view_elem.getBoundingClientRect().y)
   var contexts_map_bottom = contexts.map(c => c.view_elem.getBoundingClientRect().bottom)

@@ -1,6 +1,6 @@
 import { polygonHull } from 'd3'
 
-import { draw_contexts, getMei, getMeiGraph, getVerovioToolkit } from './app'
+import { getDrawContexts, getMei, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
 import { getCurrentDrawContext, getTooltip, toggle_selected } from './ui'
 
@@ -89,6 +89,7 @@ var roundedHullN = function (polyPoints, hullPadding) {
 }
 
 export function roundedHull(points) {
+  var draw_contexts = getDrawContexts()
   var hullPadding = draw_contexts.hullPadding || 200
 
   // Returns an SVG path for a rounded hull around the points
@@ -868,6 +869,7 @@ export function new_layer_element() {
 }
 
 export function new_view_elements(layer_element) {
+  var draw_contexts = getDrawContexts()
   var new_view = document.createElement('div')
   new_view.id = 'view' + draw_contexts.length
   new_view.classList.add('view')
@@ -1022,7 +1024,7 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
 }
 
 function draw_context_of(elem) {
-  var dc = draw_contexts.filter((dc) => dc.svg_elem.contains(elem))
+  var dc = getDrawContexts().filter((dc) => dc.svg_elem.contains(elem))
   if (dc.length == 0)
     return null
   else

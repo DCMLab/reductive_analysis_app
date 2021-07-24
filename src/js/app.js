@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import jBox from 'jbox'
 
 import { add_metarelation, add_relation } from './graph'
@@ -84,7 +85,6 @@ import { compute_measure_map, pitch_grid } from './coordinates'
 
 require('select2/dist/js/select2')
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
-// require('./vendor/midiplayer-changed')
 
 // GLOBALS
 // Load Verovio
@@ -121,8 +121,6 @@ var redo_actions = [] // TODO, maybe?
 //    to the MEI)
 // The first element is the latest
 var draw_contexts = []
-
-export var draw_contexts
 
 // Each layer context contains information relevant to the layer, such as
 //  * The rendered MEI
@@ -585,7 +583,7 @@ function load_finish(loader_modal) {
       'layer': layer_context,
       'layer_number': 0,
       'view_number': 0,
-      'id_prefix': '',
+      'id_prefix': nanoid(6),
       'zoom': 1,
       'reductions': [] }
 
@@ -686,7 +684,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     'layer': layer_context,
     'layer_number': layer_context.layer_number,
     'view_number': 0,
-    'id_prefix': '',
+    'id_prefix': nanoid(6),
     'zoom': 1,
     'reductions': [] }
 
@@ -746,7 +744,7 @@ export function rerender(draw_context) {
     'layer': draw_context.layer,
     'layer_number': draw_context.layer.layer_number,
     'view_number': draw_context.layer.number_of_views - 1,
-    'id_prefix': '',
+    'id_prefix': nanoid(6),
     'zoom': 1,
     'reductions': [] }
 
@@ -808,6 +806,7 @@ function initialize_panel() {
 
 console.log('Main webapp library is loaded')
 
+export const getDrawContexts = () => draw_contexts
 export const getMei = () => mei
 export const getMeiGraph = () => mei_graph
 export const getOrigMidi = () => orig_midi

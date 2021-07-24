@@ -1,4 +1,4 @@
-import { draw_contexts } from './app'
+import { getDrawContexts } from './app'
 import { toggle_selected } from './ui'
 import { get_by_id, get_id, note_coords } from './utils'
 
@@ -29,6 +29,7 @@ function naturalize_note(elem) {
   remove_accidental(svg_accid)
   svg_accid.classList.add('hidden')
   let accid_id = get_id(svg_accid)
+  var draw_contexts = getDrawContexts()
   for (dc of draw_contexts) {
     let dc_id = dc.id_prefix + accid_id
     let svg_dc_elem = document.getElementById(dc_id)

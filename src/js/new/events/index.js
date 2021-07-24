@@ -11,10 +11,15 @@ class EventsManager {
     // add :hover support in iOS ¯\_(ツ)_/¯
     document.addEventListener('touchstart', () => {})
 
+    document.addEventListener('change', this.onChange.bind(this), captureEvent)
   }
 
   onTap(e) {
     this.app.player?.onTap(e)
+  }
+
+  onChange(e) {
+    this.app.player?.onChange(e)
   }
 }
 

@@ -1,0 +1,39 @@
+.progress {
+  position: relative;
+}
+
+.progress__inner {
+  &:indeterminate {
+    & + .progress__bar,
+    & ~ .progress__label {
+      opacity: 0;
+    }
+  }
+}
+
+.progress__label {
+  position: relative;
+  transition: opacity 1s $in-out-quad;
+}
+
+.progress__bar {
+  position: absolute;
+  inset: 0;
+
+  transform: scaleX(v(progress, 0));
+  transform-origin: left;
+
+  background: v(accent);
+
+  // transition: .3s $in-out-quad;
+  // transition-property: opacity, transform;
+}
+
+
+
+.progress__range {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+}

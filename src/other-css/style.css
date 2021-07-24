@@ -527,15 +527,6 @@ body:not(.mousedown) .extraselectedrelation:hover {
   align-content: center;
 }
 
-#player {
-  display: inline;
-}
-
-#midiPlayer_div {
-  display: inline-block;
-  width: auto !important;
-}
-
 #hull_controller_container {
   display: inline-block;
 }

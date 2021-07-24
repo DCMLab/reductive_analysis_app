@@ -7,7 +7,7 @@
     <link type="text/css" rel="stylesheet" href="css/vendor/jBox.all.min.css">
     <link type="text/css" rel="stylesheet" href="css/vendor/select2.min.css">
     <link type="text/css" rel="stylesheet" href="css/vendor/style.css">
-    <!-- <link type="text/css" rel="stylesheet" href="css/app.css"> -->
+    <link type="text/css" rel="stylesheet" href="css/app.css">
     <script type="text/javascript" src="/js/vendor/jquery-3.1.1.min.js" defer></script>
     <script type="text/javascript" src="/js/vendor/verovio-toolkit.js" defer></script>
     <script type="text/javascript" src="/js/app.js" defer></script>
@@ -58,10 +58,31 @@
             <input type="button" id="downloadbutton" value="Save">
             <input type="button" id="svgdownloadbutton" value="Save SVG">
             <input type="file" id="fileupload" value="Load">
-            <div id="player">
-                <button type="button" id="play-button">Play original</button>
-                <button type="button" id="pause-button">Pause</button>
-                <button type="button" id="stop-button">Stop</button>
+            <div id="player" class="player">
+                <button type="button" id="player-play">Play original</button>
+                <button type="button" id="player-pause">Pause</button>
+                <button type="button" id="player-stop">Stop</button>
+
+                <!-- Progress bar -->
+                <div class="progress" id="player-progress-ctn">
+
+                    <!-- Semantic progress bar -->
+                    <progress class="progress__inner | visually-hidden--always" id="player-progress"></progress>
+
+                    <!-- Visual progress bar -->
+                    <div class="progress__bar"></div>
+
+                    <!-- Label (done / left) -->
+                    <label class="progress__label" for="player-progress">
+                        <span class="visually-hidden">Time progress</span>
+                        <span id="player-progress-done"></span> /
+                        <span id="player-progress-max"></span>
+                    </label>
+
+                    <!-- Manipulate the timeline -->
+                    <input class="progress__range" id="player-timeline-input" type="range" min="0" value="0" step="1">
+                </div>
+
             </div>
             <div id="hull_controller_container">
                 <input type="range" min="20" max="200" class="slider" id="hull_controller">

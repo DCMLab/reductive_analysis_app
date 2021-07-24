@@ -4,6 +4,7 @@
 import MidiPlayer from 'midi-player-js'
 import Soundfont from 'soundfont-player'
 import { getOrigMidi } from '../../../app'
+import ProgressBar from './progress'
 
 const audioContext = new AudioContext()
 let midiPlayer
@@ -11,12 +12,13 @@ let midiPlayer
 class Player {
   constructor() {
     this.midiId = null // active track
-    this.playbackPosition = 0
+    this.playhead = 0 // playback position, not in seconds but in “ticks”
 
     // DOM elements
-    this.playBtn = document.getElementById('play-button')
-    this.pauseBtn = document.getElementById('pause-button')
-    this.stopBtn = document.getElementById('stop-button')
+    this.playBtn = document.getElementById('player-play')
+    this.pauseBtn = document.getElementById('player-pause')
+    this.stopBtn = document.getElementById('player-stop')
+    this.timelineRange = document.getElementById('player-timeline-input')
 
     this.init()
   }
@@ -40,26 +42,6 @@ class Player {
     // midiPlayer.loadArrayBuffer(decode(midi))
   }
 
-  // Playback control
-
-  play() {
-    if (this.playbackPosition) {
-      midiPlayer.skipToTick(this.playbackPosition) // resume playback
-    }
-
-    midiPlayer.play()
-  }
-
-  stop() {
-    midiPlayer.stop()
-    this.playbackPosition = 0
-  }
-
-  pause() {
-    this.playbackPosition = midiPlayer.getCurrentTick()
-    midiPlayer.pause()
-  }
-
   // Events
 
   onTap({ target }) {
@@ -67,10 +49,11 @@ class Player {
     // Play button
 
     if (target == this.playBtn && !midiPlayer.isPlaying()) {
-      const base64Midi = getOrigMidi() // maybe should only be done once by music score load
+      const base64Midi = getOrigMidi()
       if (this.midiId != 'original') {
         this.loadSound(base64Midi, 'original')
       }
+
       this.play()
       return
     }
@@ -89,6 +72,61 @@ class Player {
     }
   }
 
+  onChange({ target }) {
+
+    // Timeline control
+
+    if (target == this.timelineRange) {
+      midiPlayer.skipToSeconds(target.value).play()
+    }
+  }
+
+  // Update progress bar
+
+  updateProgress() {
+
+    /**
+     * Duration and remaining time are `NaN` between the moment play is clicked
+     * and the first tick, hence the additional checks.
+     */
+    let duration = midiPlayer.getSongTime()
+    let remainingTime = midiPlayer.getSongTimeRemaining()
+
+    if (isNaN(duration) || isNaN(remainingTime)) {
+      duration = 0
+      remainingTime = 0
+    }
+
+    const elapsedTime = duration - remainingTime
+
+    this.progressBar.update(elapsedTime, duration)
+
+    // Update range input attributes.
+    this.timelineRange.setAttribute('max', duration)
+    this.timelineRange.setAttribute('value', elapsedTime)
+  }
+
+  // Playback control
+
+  play() {
+    if (this.playhead) {
+      midiPlayer.skipToTick(this.playhead) // resume playback
+    }
+
+    midiPlayer.play()
+  }
+
+  stop() {
+    midiPlayer.stop()
+    this.updateProgress()
+    this.playhead = 0
+  }
+
+  pause() {
+    this.playhead = midiPlayer.getCurrentTick()
+    midiPlayer.pause()
+  }
+
   init() {
     Soundfont.instrument(audioContext, '/instruments/acoustic-grand-piano-mp3.js')
       .then(instrument => {
@@ -98,8 +136,14 @@ class Player {
               gain: event.velocity / 100
             })
           }
+
+          this.updateProgress()
         })
+
+        midiPlayer.on('endOfFile', () => this.stop())
       })
+
+    this.progressBar = new ProgressBar('player')
   }
 }
 

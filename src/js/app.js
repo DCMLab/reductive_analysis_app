@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import newApp from './new/app'
 import jBox from 'jbox'
 
 import { add_metarelation, add_relation } from './graph'

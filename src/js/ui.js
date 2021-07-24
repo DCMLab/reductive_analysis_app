@@ -1,6 +1,7 @@
 import pagemap from 'pagemap'
 import jBox from 'jbox'
 import DragSelect from 'dragselect'
+import newApp from './new/app'
 
 import {
   action_conf,
@@ -252,7 +253,14 @@ export function add_buttons(draw_context) {
   reducebutton.onclick = () => { do_reduce_pre(new_draw_context) }
   rerenderbutton.onclick = () => { rerender(new_draw_context) }
   newlayerbutton.onclick = () => { create_new_layer(new_draw_context, slicecheck.checked, tiedcheck.checked) }
-  playbutton.onclick = () => { play_midi_reduction(new_draw_context) }
+
+  playbutton.onclick = () => {
+    newApp.player.loadSound(
+      getReducedMidi(new_draw_context), new_draw_context.id_prefix
+    )
+    newApp.player.play()
+  }
+
   hierbutton.onclick = () => { draw_hierarchy_graph(new_draw_context, 50, hiercheck.checked) }
   hidetopbutton.onclick = () => { hide_top(new_draw_context) }
 
@@ -683,42 +691,18 @@ export function do_deselect() {
 const unselectButton = document.getElementById('deselectbutton')
 unselectButton.addEventListener('click', do_deselect)
 
-import MidiPlayer from 'midi-player-js'
-import Soundfont from 'soundfont-player'
-var Player
-var audioContext = new AudioContext()
-
-// https://github.com/danigb/soundfont-player
-Soundfont.instrument(audioContext, '/instruments/acoustic-grand-piano-mp3.js').then(function (instrument) {
-  Player = new MidiPlayer.Player(function(event) {
-    if (event.name == 'Note on' && event.velocity > 0) {
-      instrument.play(event.noteName, audioContext.currentTime, { gain: event.velocity / 100 })
-      // document.querySelector('#track-' + event.track + ' code').innerHTML = JSON.stringify(event);
-    }
-  })
-})
-
-const { decode } = require('base64-arraybuffer')
-
-export function play_midi() {
-  var orig_midi = getOrigMidi()
-  Player.loadArrayBuffer(decode(orig_midi))
-  Player.play()
-}
-
-const playMidiButton = document.getElementById('midibutton')
-playMidiButton.addEventListener('click', play_midi)
-
-function play_midi_reduction(draw_context = draw_contexts[0]) {
+function getReducedMidi(draw_context = null) {
+  if (!draw_context) {
+    draw_context = getDrawContexts()[0]
+  }
   var vrvToolkit = getVerovioToolkit()
   var mei2 = rerender_mei(true, draw_context)
   var data2 = new XMLSerializer().serializeToString(mei2)
   vrvToolkit.loadData(data2)
-  // $('#player').midiPlayer.play('data:audio/midi;base64,' + vrvToolkit.renderToMIDI())
-  Player.loadArrayBuffer(decode(vrvToolkit.renderToMIDI()))
-  Player.play()
+  const midi = vrvToolkit.renderToMIDI()
   var data = getData()
   vrvToolkit.loadData(data)
+  return midi
 }
 
 export function handle_hull_controller() {

@@ -19,26 +19,29 @@ function do_undo() {
   [what,elems,sel,extra] = undo_actions.pop();
   if(what == "edges" || what == "relation" || what == "metarelation") {
     var added = elems;
+    let id, type, g_elem = added.flat().find((e) => e.tagName == "node" && e.getAttribute("type") == what);
+    if(g_elem){
+      id = g_elem.getAttribute("xml:id");
+      if(g_elem.children.length > 0)
+	type = g_elem.children[0].getAttribute("type");
+    }else{
+      console.log("Could not find graph element of (meta)relation to undo: ", elems);
+      return;
+    }
+    // Replace below with delete_relation()?
     if(what == "relation")
-      added.flat().forEach((x) => { 
-        if(mei_graph.contains(x) && x.getAttribute("type") == "relation")
-          for(var i = 0; i < draw_contexts.length; i++) 
-            unmark_secondaries(draw_contexts[i],mei_graph,x)
-      });
+      for(dc of draw_contexts) 
+	unmark_secondaries(dc,mei_graph,g_elem)
     // Remove added elements
     added.flat().forEach((x) => {
       if(!node_referred_to(x.getAttribute("xml:id")))
         x.parentNode.removeChild(x);
     });
-    let id, type, g_elem = added.find((e) => e.tagName == "node" && e.getAttribute("type") == what);
-    if(g_elem){
-      id = g_elem.getAttribute("xml:id");
-      if(g_elem.children.length > 0)
-	type = g_elem.children[0].getAttribute("type");
-    }
+    // Find and remove any leftover graphical elements
+    Array.from(document.querySelectorAll('[oldid="'+id+'"]')).forEach((x) => x.parentNode.removeChild(x));
     // Select last selection
-    sel.forEach((x) => {toggle_selected(x);});
-    extra.forEach((x) => {toggle_selected(x,true);});
+    sel.forEach((x) => {toggle_selected(document.getElementById(x.id));});
+    extra.forEach((x) => {toggle_selected(document.getElementById(x.id),true);});
     redo_actions.push([what,[type,id],sel, extra]); 
   }else if( what == "delete relation" ) {
     var removed = elems;

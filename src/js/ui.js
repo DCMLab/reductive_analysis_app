@@ -825,6 +825,8 @@ export function drag_selector_installer(svg_elem) {
 }
 
 export function tooltip_update() {
+  if (mouseX == undefined)
+    return
   var update = [document.elementFromPoint(mouseX, mouseY)]
     .map(x => {
       if (x) {

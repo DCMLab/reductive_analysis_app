@@ -94,6 +94,19 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
 
 }
 
+function redraw_relation(draw_context, g_elem) {
+  var svg_g_elem = get_by_id(document, id_in_svg(draw_context, get_id(g_elem)))
+  if (!svg_g_elem) {
+    console.log('Unable to redraw relation: ', g_elem, ' in draw context ', draw_context)
+    return
+  }
+  unmark_secondaries(draw_context, mei_graph, g_elem)
+  svg_g_elem.parentElement.removeChild(svg_g_elem)
+  svg_g_elem = draw_relation(draw_context, mei_graph, g_elem)
+  mark_secondaries(draw_context, mei_graph, g_elem)
+  return svg_g_elem[0]
+}
+
 // Essentially the same procedure as above, but for metarelations
 export function draw_metarelation(draw_context, mei_graph, g_elem) {
   var added = []

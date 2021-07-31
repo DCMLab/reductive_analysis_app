@@ -4,7 +4,7 @@
   align-items: center;
   gap: 1.5rem;
 
-  background: v(btn-bg, transparent);
+  background: v(btn-bg, bg, transparent);
   border: solid .2rem v(btn-border, inherit);
   border-radius: 1rem;
   color: v(btn-color, primary);
@@ -30,7 +30,7 @@
 }
 
 .btn--small {
-  padding: .9rem;
+  padding: .8rem;
 }
 
 .btn--small-icon {

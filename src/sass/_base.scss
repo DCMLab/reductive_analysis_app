@@ -44,7 +44,7 @@
 html {
   size: 100%;
 
-  font: 50% / #{$body-lh} $body-font-static;
+  font: 500 50% / #{$body-lh} $body-font-static;
   @include font-smoothing(on);
 
   background: v(bg);
@@ -54,7 +54,7 @@ html {
     font-family: $body-font;
   }
 
-  @media (--mobile) {
+  @media (--tablet-9) {
     font-size: 62.5%;
   }
 }
@@ -162,6 +162,8 @@ button {
   cursor: pointer;
   user-select: none;
   -webkit-touch-callout: none;
+
+  font-weight: inherit;
 
   * { pointer-events: none; }
 }

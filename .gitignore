@@ -2,7 +2,7 @@
 /node_modules
 
 /public/*
-!/public/index.html
+!/public/*.html
 /public/js/*
 !/public/js/vendor/
 

@@ -1,12 +1,24 @@
 :root {
-  --primary: #{$black};
-  --bg: #{$white};
+  --black: #{$black};
+  --white: #{$white};
+
+  --primary: var(--black);
+  --bg: var(--white);
+
   --accent: #{$san-marino};
 
   --safe-top: var(--safe-area-top, 0);
   --safe-right: var(--safe-area-right, 0);
   --safe-bottom: var(--safe-area-bottom, 0);
   --safe-left: var(--safe-area-left, 0);
+
+  --relation-1: #{$san-marino};
+  --relation-2: #{$seance};
+  --relation-3: #{$pomegranate};
+  --relation-4: #{$persian-green};
+  --relation-5: #{$pear};
+  --relation-6: #{$gorse};
+  --relation-7: #{$amber};
 
   @supports (top: env(safe-area-inset-top, 0)) {
     --safe-area-top: env(safe-area-inset-top, 0);

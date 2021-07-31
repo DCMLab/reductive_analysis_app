@@ -62,6 +62,32 @@
     <!-- UI -->
 
     <div id="ui" class="ui">
+
+        <!-- Zoom -->
+
+        <div id="zoom" class="zoom">
+            <button id="zoom-reset" class="btn btn--plain zoom__reset" type="button">
+                <span class="visually-hidden">Reset zoom</span>
+
+                <!-- @todo: Check semantic of button > label + output -->
+                <label for="zoom-level" class="visually-hidden">Current zoom level:</label>
+                <output id="zoom-level" for="zoom-in zoom-out">100%</output>
+            </button>
+
+            <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
+                <svg class="btn__icon" width="12" height="12">
+                    <use xlink:href="#plus-path"/>
+                </svg>
+                <span class="visually-hidden">Zoom in</span>
+            </button>
+
+            <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
+                <svg class="btn__icon" width="12" height="12">
+                    <use xlink:href="#minus-path"/>
+                </svg>
+                <span class="visually-hidden">Zoom out</span>
+            </button>
+        </div>
     </div>
 
     <div id="selected_things"></div>
@@ -130,8 +156,8 @@
             <input type="button" id="nextbookmarkbutton" value="Next">
             <input type="button" id="previouscontextbutton" value="Up">
             <input type="button" id="nextcontextbutton" value="Down">
-            <input type="button" id="zoomoutbutton" value="Zoom out">
-            <input type="button" id="zoominbutton" value="Zoom in">
+            <!-- <input type="button" id="zoomoutbutton" value="Zoom out"> -->
+            <!-- <input type="button" id="zoominbutton" value="Zoom in"> -->
         </div>
         <div id="basic_buttons">
             <input type="button" id="undobutton" value="Undo">

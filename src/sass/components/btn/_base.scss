@@ -1,0 +1,38 @@
+.btn {
+  padding: 1rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  background: v(btn-bg, transparent);
+  border: solid .2rem v(btn-border, inherit);
+  border-radius: 1rem;
+  color: v(btn-color, primary);
+
+  &:hover,
+  &:focus {
+    --btn-bg: var(--bg);
+    --btn-color: var(--primary);
+    --btn-border: var(--primary);
+
+    outline: none;
+  }
+}
+
+.btn--hollow {
+  --btn-border: #{$alto};
+}
+
+.btn--plain {
+  --btn-bg: var(--primary);
+  --btn-color: var(--bg);
+  --btn-border: var(--primary);
+}
+
+.btn--small {
+  padding: .9rem;
+}
+
+.btn--small-icon {
+  gap: 1rem;
+}

@@ -30,18 +30,37 @@
 
 <body>
 
+    <div class="fly-out fly-out--dark">
+        <div class="btn-group">
+            <button class="btn btn--hollow btn--relation btn--relation-repeat" type="button">Repeat</button>
+            <button class="btn btn--hollow btn--relation btn--relation-passing" type="button">Passing</button>
+            <button class="btn btn--hollow btn--relation btn--relation-neighbour" type="button">Neighbour</button>
+            <button class="btn btn--hollow btn--relation btn--relation-harmonic" type="button">Harmonic</button>
+            <button class="btn btn--hollow btn--relation btn--relation-arpeggio" type="button">Arpeggio</button>
+            <button class="btn btn--hollow btn--relation btn--relation-urlinie" type="button">Urlinie</button>
+            <button class="btn btn--hollow btn--relation btn--relation-bassbrechung" type="button">Bassbrechung</button>
+            <button class="btn btn--hollow" type="button">
+                <span class="visually-hidden">view more relations</span>
+                &hellip;
+            </button>
+            <svg class="fly-out__notch notch" width="40" height="13">
+                <use xlink:href="#notch-path"/>
+            </svg>
+        </div>
+    </div>
+
     <button class="btn btn--hollow" type="button">Save file</button>
     <button class="btn btn--hollow" type="button"><span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span></button>
 
     <button class="btn btn--small btn--hollow" type="button">
-        <svg class="btn__icon" viewBox="0 0 80 80" width="12" height="12">
+        <svg class="btn__icon" width="12" height="12">
             <use xlink:href="#plus-path"/>
         </svg>
         <span class="visually-hidden">Zoom in</span>
     </button>
 
     <button class="btn btn--small btn--hollow" type="button">
-        <svg class="btn__icon" viewBox="0 0 80 80" width="12" height="12">
+        <svg class="btn__icon" width="12" height="12">
             <use xlink:href="#minus-path"/>
         </svg>
         <span class="visually-hidden">Zoom out</span>
@@ -49,41 +68,41 @@
 
     <button class="btn btn--plain" type="button">
         Menu
-        <svg class="btn__icon" viewBox="0 0 15 10" width="15" height="10">
+        <svg class="btn__icon" width="15" height="10">
             <use xlink:href="#menu-path"/>
         </svg>
     </button>
 
     <button class="btn btn--plain btn--small-icon" type="button">
         Metadata
-        <svg class="btn__icon" viewBox="0 0 10 8" width="10" height="8">
+        <svg class="btn__icon" width="10" height="8">
             <use xlink:href="#triangle-path"/>
         </svg>
     </button>
 
     <button class="btn btn--plain" type="button">
         Filter
-        <svg class="btn__icon" viewBox="0 0 20 10" width="20" height="10">
+        <svg class="btn__icon" width="20" height="10">
             <use xlink:href="#filter-path"/>
         </svg>
     </button>
 
     <button class="btn btn--plain btn--small-icon" type="button">
-        <svg class="btn__icon" viewBox="0 0 143 150" width="14" height="15">
+        <svg class="btn__icon" width="14" height="15">
             <use xlink:href="#add-note-path"/>
         </svg>
         Add a new note
     </button>
 
     <button class="btn btn--hollow btn--small-icon" type="button">
-        <svg class="btn__icon" viewBox="0 0 12 16" width="12" height="16">
+        <svg class="btn__icon" width="12" height="16">
             <use xlink:href="#bookmark-path"/>
         </svg>
         Bookmark note
     </button>
 
     <button class="btn btn--hollow btn--small-icon" type="button">
-        <svg class="btn__icon" viewBox="0 0 15 15" width="15" height="15">
+        <svg class="btn__icon" width="15" height="15">
             <use xlink:href="#note-purple-bg-path"/>
         </svg>
         Naturalize note
@@ -132,6 +151,10 @@
 
         <symbol id="triangle-path" viewBox="0 0 10 8" fill="currentColor">
             <path d="M9.207 6.437A1 1 0 018.38 8H1.256a1 1 0 01-.827-1.563l3.563-5.225a1 1 0 011.652 0l3.563 5.225z"/>
+        </symbol>
+
+        <symbol id="notch-path" viewBox="0 0 936 302" fill="currentColor">
+            <path d="M541 272c-39 40-106 40-145-1C296 168 118 0 0 0h936C821 0 641 168 541 272z"/>
         </symbol>
 
     </svg>

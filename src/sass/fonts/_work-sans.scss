@@ -1,0 +1,57 @@
+/**
+ * Work Sans in its variable version.
+ *
+ * Three characters subsets have been created, because file size matters:
+ * - work-sans-variable.woff2 (143 KB): all languages
+ * - work-sans-variable-subset-latin.woff2 (84 KB): only Latin characters
+ * - work-sans-variable-subset-us-ascii.woff2 (57 KB): only English characters
+ *
+ * Learn more about variable fonts, their optimization and subsetting:
+ * - http://clagnut.com/blog/2390
+ * - https://www.sarasoueidan.com/blog/glyphhanger
+ * - https://henry.codes/writing/how-to-convert-variable-ttf-font-files-to-woff2
+ * - https://www.zachleat.com/web/glyphhanger
+ */
+@font-face {
+  font-family: 'Work Sans';
+  src: url('../../fonts/work-sans-variable-subset-us-ascii.woff2') format('woff2');
+  // src: url('../../fonts/work-sans-variable-subset-latin.woff2') format('woff2');
+  // src: url('../../fonts/work-sans-variable.woff2') format('woff2');
+  font-weight: 100 900;
+  // font-style: normal;
+  font-display: swap;
+}
+
+/**
+ * Fallbacks for browsers not supporting variable fonts.
+ */
+
+ // Work Sans regular (400)
+
+ @font-face {
+  font-family: 'Work Sans static';
+  src: url('../../fonts/work-sans-static-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+ // Work Sans medium (500)
+
+ @font-face {
+  font-family: 'Work Sans static';
+  src: url('../../fonts/work-sans-static-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Work Sans semibold (600)
+
+ @font-face {
+  font-family: 'Work Sans static';
+  src: url('../../fonts/work-sans-static-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}

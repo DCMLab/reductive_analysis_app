@@ -44,11 +44,15 @@
 html {
   size: 100%;
 
-  font: 50% / #{$body-lh} $body-font;
+  font: 50% / #{$body-lh} $body-font-static;
   @include font-smoothing(on);
 
   background: v(bg);
   color: v(primary);
+
+  @supports (font-variation-settings: normal) {
+    font-family: $body-font;
+  }
 
   @media (--mobile) {
     font-size: 62.5%;

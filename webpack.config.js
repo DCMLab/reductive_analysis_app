@@ -226,7 +226,7 @@ configCSS.plugins.push(
   new CopyPlugin({ patterns: [
     { from: `${assets}/other-css/`, to: thePath('public/css/vendor') },
     { from: `${assets}/instruments/`, to: thePath('public/instruments') },
-    // { from: `${assets}/fonts/`, to: thePath('public/fonts') },
+    { from: `${assets}/fonts/`, to: thePath('public/fonts') },
     // { from: `${assets}/manifest/`, to: thePath('public') },
   ]}),
   new BrowserSyncPlugin({

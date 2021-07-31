@@ -1,5 +1,13 @@
-$system: system-ui, -apple-system, sans-serif;
-$body-font: $system;
+// Font fallbacks defined using https://meowni.ca/font-style-matcher
+// OS font data: https://www.cssfontstack.com
 
-$body-size: 1.8rem;
-$body-lh: 1.4;
+$system: system-ui, -apple-system, sans-serif;
+
+$work-sans: 'Work Sans', 'Lucida Grande', Verdana, $system;
+$work-sans-static: 'Work Sans static', 'Lucida Grande', Verdana, $system;
+
+$body-font: $work-sans;
+$body-font-static: $work-sans-static;
+
+$body-size: 1.4rem;
+$body-lh: 1;

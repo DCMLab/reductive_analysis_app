@@ -1,0 +1,25 @@
+.btn--relation {
+  --btn-border: var(--relation);
+
+  &.btn--selected,
+  &:hover,
+  &:focus {
+    --btn-bg: var(--relation);
+    --btn-color: var(--white);
+    --btn-border: var(--relation);
+  }
+}
+
+.btn--relation-repeat {--relation: var(--relation-1) }
+.btn--relation-passing {--relation: var(--relation-2) }
+.btn--relation-neighbour {--relation: var(--relation-3) }
+.btn--relation-harmonic {--relation: var(--relation-4) }
+.btn--relation-arpeggio {--relation: var(--relation-5) }
+.btn--relation-urlinie {--relation: var(--relation-6) }
+.btn--relation-bassbrechung {--relation: var(--relation-7) }
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}

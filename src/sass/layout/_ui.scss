@@ -1,0 +1,23 @@
+.ui {
+  position: fixed;
+  z-index: 1;
+  inset: 2rem;
+
+  pointer-events: none;
+
+  transition: .4s $in-out-quad;
+  transition-property: opacity, visibility;
+
+  // Hide UI while app is loading.
+
+  html:not(.ready) & {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  // Re-enable pointer-events for children elements.
+
+  > * {
+    pointer-events: auto;
+  }
+}

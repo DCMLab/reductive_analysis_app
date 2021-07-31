@@ -24,6 +24,8 @@
 
 <body>
 
+    <!-- Filters used on the score (?) -->
+
     <svg width="0" height="0" style="display:block;">
         <filter id="glowFilter">
             <feFlood result="flood" flood-color="#444444" />
@@ -56,6 +58,11 @@
             </feMerge>
         </filter>
     </svg>
+
+    <!-- UI -->
+
+    <div id="ui" class="ui">
+    </div>
 
     <div id="selected_things"></div>
     <div id="load_save" class="main_buttons">
@@ -148,12 +155,13 @@
         <div id="combo_buttons">
         </div>
     </div>
-    <!--//////////////////////////////////////////////-->
-    <!-- The div where we are going to insert the SVG -->
-    <!--//////////////////////////////////////////////-->
-    <div id="layers">
-    </div>
-    <!-- The minimap canvas. -->
+
+    <!-- Layers and views -->
+
+    <div id="layers"></div>
+
+    <!-- Minimap -->
+
     <canvas id="minimap"></canvas>
 </body>
 

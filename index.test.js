@@ -77,7 +77,6 @@ describe('reductive_analysis_test_suite', () => {
     button_test('deselectbutton');
     button_test('deletebutton');
     button_test('relationbutton', {'class': 'relationbutton'});
-    button_test('customrelationbutton', {'class': 'relationbutton'});
     button_test('midibutton');
     button_test('midireducebutton');
     button_test('downloadbutton');
@@ -104,7 +103,7 @@ describe('reductive_analysis_test_suite', () => {
 
 
   it('should produce a directed <graph> within <mei>', async function () {
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(3300);
     await expect(page.evaluate(`$(window.mei).find('graph').attr('type')`)).resolves
       .toMatch(/^directed$/);
   });

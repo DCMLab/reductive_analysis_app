@@ -94,6 +94,7 @@ function undraw_meta_or_relation(draw_context, g_elem) {
   return true;
 }
 
+
 function redraw_relation(draw_context,g_elem) {
   var svg_g_elem = get_by_id(document, id_in_svg(draw_context, get_id(g_elem)));
   if(!svg_g_elem){

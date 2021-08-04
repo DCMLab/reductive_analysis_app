@@ -87,7 +87,7 @@ window.onerror = function errorHandler(errorMsg, url, lineNumber) {
 
 // OK we've selected stuff, let's make the selection into a
 // "relation".
-function do_relation(type) {
+function do_relation(type, id, redoing=false) {
   console.debug("Using globals: selected, extraselected, mei, undo_actions");
   if (selected.length == 0 && extraselected == 0) {
     return;}
@@ -115,7 +115,7 @@ function do_relation(type) {
     var primaries = extraselected.map((e) => add_mei_node_for(mei_graph,e));
     var secondaries = selected.map((e) => add_mei_node_for(mei_graph,e));
     added.push(primaries.concat(secondaries));
-    [he_id,mei_elems] = add_relation(mei_graph,primaries, secondaries, type);
+    [he_id,mei_elems] = add_relation(mei_graph,primaries, secondaries, type, id);
     added.push(mei_elems);
     for(var i = 0; i < draw_contexts.length; i++) {
       let g_elem =draw_relation(draw_contexts[i],mei_graph,get_by_id(mei_graph.getRootNode(), he_id));
@@ -127,6 +127,8 @@ function do_relation(type) {
     undo_actions.push(["relation",added.reverse(),selected,extraselected]);
     selected.concat(extraselected).forEach(toggle_selected); // De-select
   }
+  if(!redoing)
+    flush_redo();
   tooltip_update();
 }
 
@@ -150,7 +152,7 @@ function do_comborelation(type) {
 }
 
 
-function do_metarelation(type) {
+function do_metarelation(type, id, redoing=false) {
   console.debug("Using globals:  mei_graph, selected, extraselected");
   if (selected.length == 0 && extraselected == 0) {
     return;}
@@ -165,7 +167,7 @@ function do_metarelation(type) {
       get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
   var secondaries = selected.map((e) =>
       get_by_id(mei_graph.getRootNode(), id_or_oldid(e)));
-  var [he_id,mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type);
+  var [he_id,mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type, id);
   added.push(mei_elems);
   for(var i = 0; i< draw_contexts.length; i++)
     added.push(draw_metarelation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(),he_id))); // Draw the edge
@@ -173,91 +175,10 @@ function do_metarelation(type) {
   undo_actions.push(["metarelation",added,selected,extraselected]);
   selected.concat(extraselected).forEach(toggle_selected); // De-select
   tooltip_update();
+  if(!redoing)
+    flush_redo();
 }
 
-
-// Oops, undo whatever we did last.
-function do_undo() {
-  console.debug("Using globals: undo_actions, selected, extraselected, mei, rerendered_after_action");
-  // Get latest undo_actions
-  if(undo_actions.length == 0) {
-    console.log("Nothing to undo");
-    return;
-  }
-  if(undo_actions.length == rerendered_after_action){
-    console.log("Cannot undo past a rerender");
-    alert("Cannot undo past a rerender.");
-    return;
-  }
-  // Deselect the current selection, if any
-  selected.forEach(toggle_selected);
-  extraselected.forEach((x) => {toggle_selected(x,true);});
-
-  [what,elems,sel,extra] = undo_actions.pop();
-  if(what == "edges" || what == "relation" || what == "metarelation") {
-    var added = elems;
-    if(what == "relation")
-      added.flat().forEach((x) => { 
-        if(mei_graph.contains(x) && x.getAttribute("type") == "relation")
-          for(var i = 0; i < draw_contexts.length; i++) 
-            unmark_secondaries(draw_contexts[i],mei_graph,x)
-      });
-    // Remove added elements
-    added.flat().forEach((x) => {
-      if(!node_referred_to(x.getAttribute("xml:id")))
-        x.parentNode.removeChild(x);
-    });
-    // Select last selection
-    sel.forEach((x) => {toggle_selected(x);});
-    extra.forEach((x) => {toggle_selected(x,true);});
-  }else if( what == "delete relation" ) {
-    var removed = elems;
-    removed.forEach((x) => {
-      x[1].insertBefore(x[0],x[2])
-      let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]));
-      let rel = get_class_from_classlist(x[0]) == "relation";
-      if(dc && rel){
-        let mei_id = get_id(x[0]);
-        let mei_he = get_by_id(mei,mei_id);
-        mark_secondaries(dc, mei_graph, mei_he)
-      }
-    });
-    // Select last selection
-    sel.forEach((x) => {toggle_selected(x);});
-    extra.forEach((x) => {toggle_selected(x,true);});
-
-  }else if (what == "change relation type") {
-    var types = elems;
-    sel.concat(extra).forEach((he) => {
-      //TODO: move type_synonym application so that this
-      //is the right type == the one from the MEI
-      var [from,to] = types.pop();
-      var id = id_or_oldid(he);
-      var hes = [get_by_id(document,id)].concat(get_by_oldid(document,id));
-      hes.forEach((he) => he.setAttribute("type",from));
-      var mei_he = get_by_id(mei,id);
-      mei_he.getElementsByTagName("label")[0].setAttribute("type",from);
-      hes.forEach(toggle_shade);
-    });
-    sel.forEach((x) => {toggle_selected(x);});
-    extra.forEach((x) => {toggle_selected(x,true);});
-  }else if (what == "reduce") {
-    var [relations,notes,graphicals] = elems;
-    graphicals.flat().forEach((x) => { if(x) x.classList.remove("hidden");});
-    sel.forEach((x) => {toggle_selected(x);});
-    extra.forEach((x) => {toggle_selected(x,true);});
-  }else if (what == "add note") {
-    var [mei_elems,graphicals] = elems;
-    graphicals.forEach((x) => x.parentNode.removeChild(x));
-    mei_elems[0].parentNode.removeChild(mei_elems[0]);
-    if(mei_elems.length > 1){
-      var c = mei_elems[1];
-      c.parentNode.insertBefore(c.children[0],c);
-      c.parentNode.removeChild(c);
-    }
-  }
-  tooltip_update();
-}
 
 // Function to download data to a file
 // Taken from StackOverflow answer by Kanchu at

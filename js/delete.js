@@ -6,7 +6,7 @@ function delete_relation(elem) {
   var mei_id = get_id(elem);
   var mei_he = get_by_id(mei,mei_id);
   var svg_hes = [];
-  var metarel = get_class_from_classlist(elem);
+  var metarel = get_class_from_classlist(elem) == "metarelation";
   for(draw_context of draw_contexts){
     let svg_he = get_by_id(document,draw_context.id_prefix + mei_id);
     if(svg_he){
@@ -41,7 +41,7 @@ function delete_relation(elem) {
   return action_removed;
 }
 
-function delete_relations() {
+function delete_relations(redoing=false) {
   console.debug("Using globals: selected for element selection, undo_actions for storing the action");
   //Assume no meta-edges for now, meaning we only have to
   var sel = selected.concat(extraselected);
@@ -53,6 +53,8 @@ function delete_relations() {
   var removed = sel.flatMap(delete_relation);
   undo_actions.push(["delete relation",removed.reverse(),selected,extraselected]);
   sel.forEach(toggle_selected);
+  if(!redoing)
+    flush_redo();
 }
 
 

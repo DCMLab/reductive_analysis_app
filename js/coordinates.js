@@ -264,7 +264,6 @@ function add_note(layer_context, pname, oct, note, sim=true, id="") {
       c = l.closest("chord");
     else{
       c = note_to_chord(mei,l);
-      console.log(c);
       l.parentElement.insertBefore(c,l);
       l.parentElement.removeChild(l);
       c.appendChild(l);
@@ -283,20 +282,30 @@ function add_note(layer_context, pname, oct, note, sim=true, id="") {
   return added.reverse();
 }
 
+function do_note(pname, oct, note, offset, id, redoing=false) {
+  var new_element_id = "new-"+random_id();
+  let n = note;
+  if(typeof(id) != "undefined")
+    new_element_id = id;
+  var added = [];
+  // Draw it temporarily
+  console.log(note);
+  added.push(draw_note(pname, oct, note, offset, new_element_id));
+  // Add it to the current layer
+  added.push(add_note(current_draw_context.layer, pname, oct, note, offset, new_element_id));
+  toggle_placing_note();
+  if(!redoing)
+    flush_redo();
+  undo_actions.push(["add note",added.reverse(),[n],[]]);
+}
+
 
 function place_note() {
   if(placing_note!="" && !current_draw_context.layer.original_score){
     let [pname, oct, note] = note_params();
     if(!pname)
       return;
-    var new_element_id = "new-"+random_id();
-    var added = [];
-    // Draw it temporarily
-    added.push(draw_note(pname, oct, note, true, new_element_id));
-    // Add it to the current layer
-    added.push(add_note(current_draw_context.layer, pname, oct, note, true, new_element_id));
-    toggle_placing_note();
-    undo_actions.push(["add note",added.reverse(),[],[]]);
+    do_note(pname, oct, note, true);
   }
 }
 

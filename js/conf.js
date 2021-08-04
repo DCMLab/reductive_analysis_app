@@ -16,6 +16,7 @@ try {
   // General action shortcuts.
   var action_conf = {
     "undo":                    "U",
+    "redo":                    "I",
     "deselect_all":            "d",
     "delete_all":              "D",
     "add_bookmark":            "^",

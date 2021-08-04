@@ -424,6 +424,8 @@ function handle_keypress(ev) {
     if (elem.onmouseout) elem.onmouseout();
   } else if (ev.key == action_conf.undo) { // UNDO
     do_undo();
+  } else if (ev.key == action_conf.redo) { // UNDO
+    do_redo();
   } else if (ev.key == action_conf.reduce_relations) { // Reduce relations
     do_reduce_pre(current_draw_context);
   } else if (ev.key == action_conf.show_hide_notation) { // Show/hide ties etc.

@@ -1,5 +1,6 @@
-import { getMei } from './app'
+import { getMei, getUndoActions } from './app'
 import { getCurrentDrawContext, getPlacingNote, setPlacingNote } from './ui'
+import { flush_redo } from './undo_redo'
 import { get_by_id, get_id, note_coords, random_id } from './utils'
 
 // The functions in this file are all about converting clicks and mouse
@@ -269,7 +270,6 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
       c = l.closest('chord')
     else {
       c = note_to_chord(mei, l)
-      console.log(c)
       l.parentElement.insertBefore(c, l)
       l.parentElement.removeChild(l)
       c.appendChild(l)
@@ -288,6 +288,24 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
   return added.reverse()
 }
 
+function do_note(pname, oct, note, offset, id, redoing = false) {
+  var new_element_id = 'new-' + random_id()
+  let n = note
+  if (typeof (id) != 'undefined')
+    new_element_id = id
+  var added = []
+  // Draw it temporarily
+  console.log(note)
+  added.push(draw_note(pname, oct, note, offset, new_element_id))
+  // Add it to the current layer
+  added.push(add_note(current_draw_context.layer, pname, oct, note, offset, new_element_id))
+  toggle_placing_note()
+  if (!redoing)
+    flush_redo()
+  var undo_actions = getUndoActions()
+  undo_actions.push(['add note', added.reverse(), [n], []])
+}
+
 export function place_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
@@ -295,14 +313,7 @@ export function place_note() {
     let [pname, oct, note] = note_params()
     if (!pname)
       return
-    var new_element_id = 'new-' + random_id()
-    var added = []
-    // Draw it temporarily
-    added.push(draw_note(pname, oct, note, true, new_element_id))
-    // Add it to the current layer
-    added.push(add_note(current_draw_context.layer, pname, oct, note, true, new_element_id))
-    toggle_placing_note()
-    undo_actions.push(['add note', added.reverse(), [], []])
+    do_note(pname, oct, note, true)
   }
 }
 

@@ -17,6 +17,7 @@ export const button_shades = {}
 // General action shortcuts.
 export const action_conf = {
   'undo':                    'U',
+  'redo':                    'I',
   'deselect_all':            'd',
   'delete_all':              'D',
   'add_bookmark':            '^',

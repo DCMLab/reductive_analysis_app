@@ -1,6 +1,6 @@
-
-import { getDrawContexts, getMeiGraph } from './app'
-import { toggle_selected } from './ui'
+import { getDrawContexts, getMeiGraph, getUndoActions } from './app'
+import { getExtraSelected, getSelected, toggle_selected, tooltip_update } from './ui'
+import { flush_redo } from './undo_redo'
 import { get_class_from_classlist, unmark_secondaries } from './utils'
 
 function delete_relation(elem) {
@@ -10,7 +10,7 @@ function delete_relation(elem) {
   var mei_id = get_id(elem)
   var mei_he = get_by_id(mei, mei_id)
   var svg_hes = []
-  var metarel = get_class_from_classlist(elem)
+  var metarel = get_class_from_classlist(elem) == 'metarelation'
   var mei_graph = getMeiGraph()
   var draw_contexts = getDrawContexts()
   for (draw_context of draw_contexts) {
@@ -45,9 +45,11 @@ function delete_relation(elem) {
   return action_removed
 }
 
-export function delete_relations() {
+export function delete_relations(redoing = false) {
   console.debug('Using globals: selected for element selection, undo_actions for storing the action')
   // Assume no meta-edges for now, meaning we only have to
+  var selected = getSelected()
+  var extraselected = getExtraSelected()
   var sel = selected.concat(extraselected)
   if (sel.length == 0 || !(get_class_from_classlist(sel[0]) == 'relation' ||
 	                  get_class_from_classlist(sel[0]) == 'metarelation')) {
@@ -55,8 +57,12 @@ export function delete_relations() {
     return
   }
   var removed = sel.flatMap(delete_relation)
+
+  var undo_actions = getUndoActions()
   undo_actions.push(['delete relation', removed.reverse(), selected, extraselected])
   sel.forEach(toggle_selected)
+  if (!redoing)
+    flush_redo()
 }
 
 const deleteRelationsButtons = document.getElementById('deletebutton')

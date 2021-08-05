@@ -1,3 +1,4 @@
+import { getMeiGraph } from './app'
 import { getShades, toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
@@ -71,6 +72,29 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
     flip_to_bg(elem1)
     elem.onmouseout()
     return false
+  }
+
+  function undraw_meta_or_relation(draw_context, g_elem) {
+    let mei_id = get_id(g_elem)
+    let svg_id = draw_context.id_prefix + mei_id
+    let svg_he = get_by_id(document, svg_id)
+    if (!svg_he) {
+      console.debug('Could not undraw relation in draw context', g_elem, draw_context)
+      return false
+    }
+    const mei_graph = getMeiGraph()
+    if (g_elem.getAttribute('type') == 'relation')
+      unmark_secondaries(draw_context, mei_graph, mei_he) // @todo: Where does mei_he come from?
+    var primaries = relation_primaries(mei_graph, g_elem).map(
+      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+    )
+    var secondaries = relation_secondaries(mei_graph, g_elem).map(
+      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+    )
+    primaries.forEach((item) => { item.classList.remove('extrahover') })
+    secondaries.forEach((item) => { item.classList.remove('selecthover') })
+    svg_he.parentNode.removeChild(svg_he)
+    return true
   }
 
   // Decorate with onclick and onmouseover handlers

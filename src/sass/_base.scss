@@ -197,15 +197,15 @@ h6 {
   }
 }
 
-svg {
-  pointer-events: none;
+// svg {
+//   pointer-events: none;
 
-  * { transform-origin: 50% 50%; }
+//   * { transform-origin: 50% 50%; }
 
-  // Score container. We need initial behaviour here.
-  .svg_container & {
-    pointer-events: initial;
+//   // Score container. We need initial behaviour here.
+//   .svg_container & {
+//     pointer-events: initial;
 
-    * { transform-origin: 0 0; }
-  }
-}
+//     * { transform-origin: 0 0; }
+//   }
+// }

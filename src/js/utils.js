@@ -374,7 +374,7 @@ export function node_to_note_id(note) {
 }
 
 // Always-positive modulo
-function mod(n, m) {
+export function mod(n, m) {
   return ((n % m) + m) % m
 }
 
@@ -383,7 +383,7 @@ function div(n, m) {
   Math.floor(n / m)
 }
 
-function average2(x, y) { return (x + y) / 2 }
+export function average2(x, y) { return (x + y) / 2 }
 
 // What's the accidentals for the given (SVG or MEI) note?
 function note_get_accid(note) {
@@ -799,11 +799,11 @@ function note_to_space(mei, note) {
   return space
 }
 // Make a chord of the same properties as the given note.
-function note_to_chord(mei, note) {
+export function note_to_chord(mei, note) {
   var mei = getMei()
   var chord = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'chord')
   chord.setAttribute('xml:id', 'chord-' + note.getAttribute('xml:id'))
-  for (a of attributes)
+  for (const a of attributes)
     if (note.hasAttribute(a))
       chord.setAttribute(a, note.getAttribute(a))
   return chord

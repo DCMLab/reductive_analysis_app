@@ -1,7 +1,7 @@
 import { getMei, getUndoActions } from './app'
-import { getCurrentDrawContext, getPlacingNote, setPlacingNote } from './ui'
+import { getCurrentDrawContext, getMouseX, getMouseY, getPlacingNote, setPlacingNote, toggle_selected } from './ui'
 import { flush_redo } from './undo_redo'
-import { get_by_id, get_id, note_coords, random_id } from './utils'
+import { average2, get_by_id, get_id, mod, note_coords, note_to_chord, random_id } from './utils'
 
 // The functions in this file are all about converting clicks and mouse
 // positions to musically salient information (pitch and time) given a
@@ -16,8 +16,8 @@ function getPointerSVGCoords() {
   var svg = current_draw_context.svg_elem.children[0]
   var system = current_draw_context.svg_elem.getElementsByClassName('system')[0]
   var pt = svg.createSVGPoint()
-  pt.x = mouseX
-  pt.y = mouseY
+  pt.x = getMouseX()
+  pt.y = getMouseY()
   return pt.matrixTransform(system.parentElement.getScreenCTM().inverse())
 }
 
@@ -256,6 +256,7 @@ function draw_note(pname, oct, note, sim = true, id = '') {
 }
 
 function add_note(layer_context, pname, oct, note, sim = true, id = '') {
+  var mei = getMei()
   var l = get_by_id(mei, get_id(note))
   if (!layer_context.score_elem.contains(l)) {
     console.log('Note not in layer?')
@@ -288,7 +289,7 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
   return added.reverse()
 }
 
-function do_note(pname, oct, note, offset, id, redoing = false) {
+export function do_note(pname, oct, note, offset, id, redoing = false) {
   var new_element_id = 'new-' + random_id()
   let n = note
   if (typeof (id) != 'undefined')
@@ -298,6 +299,7 @@ function do_note(pname, oct, note, offset, id, redoing = false) {
   console.log(note)
   added.push(draw_note(pname, oct, note, offset, new_element_id))
   // Add it to the current layer
+  var current_draw_context = getCurrentDrawContext()
   added.push(add_note(current_draw_context.layer, pname, oct, note, offset, new_element_id))
   toggle_placing_note()
   if (!redoing)
@@ -359,11 +361,12 @@ export function toggle_placing_note() {
 const addNoteButton = document.getElementById('addnotebutton')
 addNoteButton.addEventListener('click', toggle_placing_note)
 
-function update_placing_note() {
+export function update_placing_note() {
   var current_draw_context = getCurrentDrawContext()
   if (current_draw_context.layer.original_score)
     return
   let [pname, oct, note] = note_params()
-  if (pname)
-    show_note(pname, oct, note, true, placing_note)
+  if (pname) {
+    show_note(pname, oct, note, true, getPlacingNote())
+  }
 }

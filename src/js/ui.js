@@ -42,8 +42,24 @@ import { draw_hierarchy_graph } from './visualizations'
 
 import { align_tree, draw_tree, load_tree, save_tree } from './trees'
 
-import { button, checkbox, flip_to_bg, get_class_from_classlist, indicate_current_context, to_text, unmark_secondaries } from './utils'
-import { place_note, start_placing_note, stop_placing_note, toggle_placing_note } from './coordinates'
+import {
+  button,
+  checkbox,
+  flip_to_bg,
+  get_class_from_classlist,
+  indicate_current_context,
+  to_text,
+  unmark_secondaries
+} from './utils'
+
+import {
+  place_note,
+  start_placing_note,
+  stop_placing_note,
+  toggle_placing_note,
+  update_placing_note
+} from './coordinates'
+
 import { update_metadata } from './metadata'
 import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
@@ -63,6 +79,9 @@ var current_draw_context
 
 var mouseX
 var mouseY
+
+export const getMouseX = () => mouseX
+export const getMouseY = () => mouseY
 
 var tooltip
 

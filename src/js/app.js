@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import newApp from './new/app'
 import jBox from 'jbox'
 
@@ -584,7 +583,7 @@ function load_finish(loader_modal) {
       'layer': layer_context,
       'layer_number': 0,
       'view_number': 0,
-      'id_prefix': nanoid(6),
+      'id_prefix': '',
       'zoom': 1,
       'reductions': [] }
 
@@ -685,7 +684,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     'layer': layer_context,
     'layer_number': layer_context.layer_number,
     'view_number': 0,
-    'id_prefix': nanoid(6),
+    'id_prefix': '',
     'zoom': 1,
     'reductions': [] }
 
@@ -745,7 +744,7 @@ export function rerender(draw_context) {
     'layer': draw_context.layer,
     'layer_number': draw_context.layer.layer_number,
     'view_number': draw_context.layer.number_of_views - 1,
-    'id_prefix': nanoid(6),
+    'id_prefix': '',
     'zoom': 1,
     'reductions': [] }
 

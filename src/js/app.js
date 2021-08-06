@@ -681,8 +681,6 @@ function initialize_panel() {
     ['show_hide_notation', 'equalizebutton'],
     ['toggle_type_shades', 'shadesbutton'],
     ['toggle_add_note', 'addnotebutton'],
-    ['pan_left', 'panleftbutton'],
-    ['pan_right', 'panrightbutton'],
     ['jump_to_next_bookmark', 'previousbookmarkbutton'],
     ['jump_to_previous_bookmark', 'nextbookmarkbutton'],
     ['jump_to_context_below', 'previouscontextbutton'],

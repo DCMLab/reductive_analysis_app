@@ -1,3 +1,5 @@
+import { isFieldFocused } from '../utils/forms'
+import { isKey, isModifier, shortcutMeta } from './keyCodes'
 import { captureEvent } from './options'
 import debounceResize from './resize'
 
@@ -10,7 +12,10 @@ class EventsManager {
 
   init() {
     window.addEventListener('resize', this.onResize.bind(this))
+
+    // input
     document.addEventListener('click', this.onTap.bind(this), captureEvent)
+    document.addEventListener('keydown', this.onKeyDown.bind(this))
 
     // add :hover support in iOS ¯\_(ツ)_/¯
     document.addEventListener('touchstart', () => {})
@@ -40,6 +45,37 @@ class EventsManager {
 
   onUndoRedo(e) {
     this.app.history?.onUndoRedo(e)
+  }
+
+  onKeyDown(e) {
+
+    // Ignore keyboard shortcuts if a field is focused.
+    if (isFieldFocused()) { return }
+
+    /**
+     * Undo (Cmd/Ctrl + Z)
+     * Redo (Cmd/Ctrl + Shift + Z)
+     */
+
+    if (isKey(e, 'z')) {
+      if (isModifier(e, shortcutMeta)) {
+        return this.app.history.undo()
+      }
+
+      if (isModifier(e, [shortcutMeta, 'shift'])) {
+        return this.app.history.redo()
+      }
+    }
+
+    /**
+     * Select all visible relations (Cmd/Ctrl + A)
+     */
+
+    if (isKey(e, 'a')) {
+      if (isModifier(e, shortcutMeta)) {
+        return this.app.ui.selection.selectAll()
+      }
+    }
   }
 }
 

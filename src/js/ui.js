@@ -502,10 +502,6 @@ export function handle_keypress(ev) {
     do_relation('repeat')
   } else if (ev.key == action_conf.toggle_add_note) { // Toggle note creation.
     toggle_placing_note()
-  } else if (ev.key == navigation_conf.pan_left) { // Pan left.
-    pan(0)
-  } else if (ev.key == navigation_conf.pan_right) { // Pan right.
-    pan(1)
   } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
     zoom_out(current_draw_context)
   } else if (ev.key == navigation_conf.zoom_in) { // Zoom in.
@@ -932,20 +928,6 @@ function hide_top(draw_context) {
     svg_elem.children[0].setAttribute('height', draw_context.old_height)
   }
 }
-
-function pan(direction = 1) {
-  if (direction == 1)
-    $('html, body').animate({ scrollLeft: $(window).scrollLeft() + window.innerWidth }, 300)
-  else if (direction == 0)
-    $('html, body').animate({ scrollLeft: $(window).scrollLeft() - window.innerWidth }, 300)
-  else return false
-}
-
-const panLeftButton = document.getElementById('panleftbutton')
-panLeftButton.addEventListener('click', () => pan(0))
-
-const panRightButton = document.getElementById('panrightbutton')
-panRightButton.addEventListener('click', () => pan(1))
 
 export function minimap() {
   document.getElementById('minimap').width = 100

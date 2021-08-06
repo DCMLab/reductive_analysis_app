@@ -186,9 +186,6 @@ export function select_visibles(draw_context) {
   }
 }
 
-const selectVisiblesAltButton = document.getElementById('selectvisiblesaltbutton')
-selectVisiblesAltButton.addEventListener('click', () => select_visibles(current_draw_context))
-
 /* UI populater functions */
 
 // Configured types need a button and a color each
@@ -399,12 +396,6 @@ function add_filters(draw_context) {
 
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, 'relation'))
   Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, 'metarelation'))
-
-  var selectVisiblesButton = button('Select visible relations')
-  selectVisiblesButton.classList.add('select_visibles_button')
-  selectVisiblesButton.id = (draw_context.id_prefix + 'selectvisiblesbutton')
-  selectVisiblesButton.onclick = () => { select_visibles(draw_context) }
-  div.appendChild(selectVisiblesButton)
 
   var zoomdiv = document.createElement('div')
   zoomdiv.classList.add('zoom_buttons')
@@ -703,9 +694,6 @@ export function do_deselect() {
   selected.forEach((x) => toggle_selected(x))
   extraselected.forEach((x) => toggle_selected(x, true))
 }
-
-const unselectButton = document.getElementById('deselectbutton')
-unselectButton.addEventListener('click', do_deselect)
 
 function getReducedMidi(draw_context = null) {
   if (!draw_context) {

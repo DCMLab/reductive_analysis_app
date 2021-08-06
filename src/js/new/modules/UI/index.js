@@ -1,4 +1,5 @@
 import zoom from './Zoom'
+import selection from './Selection'
 
 class UI {
   constructor() {
@@ -10,10 +11,12 @@ class UI {
     if (!e.composedPath().includes(this.ctn)) { return }
 
     this.zoom?.onTap(e)
+    this.selection?.onTap(e)
   }
 
   init() {
     this.zoom = zoom
+    this.selection = selection
   }
 }
 

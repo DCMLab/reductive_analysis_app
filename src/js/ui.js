@@ -491,7 +491,7 @@ export function handle_keypress(ev) {
   if (ev.key == 'Enter') {
     do_edges()
   } else if (ev.key == action_conf.move_relation_to_front) { // Scroll through relations
-    elem = document.elementFromPoint(mouseX, mouseY)
+    var elem = document.elementFromPoint(mouseX, mouseY)
     if (elem.tagName == 'circle')
       elem = elem.closest('g')
     flip_to_bg(elem)

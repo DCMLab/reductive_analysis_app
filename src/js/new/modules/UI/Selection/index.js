@@ -12,30 +12,18 @@ class Selection {
 
   selectAll() {
     const context = getCurrentDrawContext()
-    if (!context) { return }
-
-    select_visibles(context)
+    if (context) {
+      select_visibles(context)
+    }
   }
 
-  clear() {
+  selectNone() {
     do_deselect()
   }
 
   onTap({ target }) {
-
-    // Select all
-
-    if (target == this.selectBtn) {
-      this.selectAll()
-      return
-    }
-
-    // Clear selection
-
-    if (target == this.unselectBtn) {
-      this.clear()
-      return
-    }
+    if (target == this.selectBtn) { return this.selectAll() }
+    if (target == this.unselectBtn) { return this.selectNone() }
   }
 }
 

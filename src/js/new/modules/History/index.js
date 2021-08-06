@@ -8,34 +8,17 @@ class History {
     this.updateBtns(0, 0)
   }
 
-  undo() {
-    do_undo()
+  onTap({ target }) {
+    if (target == this.undoBtn) { return this.undo() }
+    if (target == this.redoBtn) { return this.redo() }
   }
 
-  redo() {
-    do_redo()
-  }
+  undo() { do_undo() }
+  redo() { do_redo() }
 
   updateBtns(undoAbleCount = 0, redoAbleCount = 0) {
     this.undoBtn.toggleAttribute('disabled', undoAbleCount == 0)
     this.redoBtn.toggleAttribute('disabled', redoAbleCount == 0)
-  }
-
-  onTap({ target }) {
-
-    // Undo
-
-    if (target == this.undoBtn) {
-      this.undo()
-      return
-    }
-
-    // Redo
-
-    if (target == this.redoBtn) {
-      this.redo()
-      return
-    }
   }
 
   onUndoRedo({ detail }) {

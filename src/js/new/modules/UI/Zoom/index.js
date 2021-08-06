@@ -8,21 +8,19 @@ class Zoom {
   constructor() {
     this.zoomInBtn = document.getElementById('zoom-in')
     this.zoomOutBtn = document.getElementById('zoom-out')
-    this.zoomResetBtn = document.getElementById('zoom-reset')
+    this.resetBtn = document.getElementById('zoom-reset')
     this.levelEl = document.getElementById('zoom-level')
   }
 
-  in() {
-    this.by(ZOOM_STEP)
+  onTap({ target }) {
+    if (target == this.zoomInBtn) { return this.in() }
+    if (target == this.zoomOutBtn) { return this.out() }
+    if (target == this.resetBtn) { return this.reset() }
   }
 
-  out() {
-    this.by(ZOOM_STEP_REVERSED)
-  }
-
-  reset() {
-    this.by(ZOOM_DEFAULT)
-  }
+  in() { this.by(ZOOM_STEP) }
+  out() { this.by(ZOOM_STEP_REVERSED) }
+  reset() { this.by(ZOOM_DEFAULT) }
 
   by(cx = 1) {
     const context = getCurrentDrawContext()
@@ -35,29 +33,6 @@ class Zoom {
 
   format(zoom) {
     return `${Math.round(zoom * 100)}%`
-  }
-
-  onTap({ target }) {
-
-    // Zoom In
-
-    if (target == this.zoomInBtn) {
-      this.in()
-      return
-    }
-
-    // Zoom out
-
-    if (target == this.zoomOutBtn) {
-      this.out()
-      return
-    }
-
-    // Reset zoom
-
-    if (target == this.zoomResetBtn) {
-      this.reset()
-    }
   }
 }
 

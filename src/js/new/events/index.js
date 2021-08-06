@@ -12,15 +12,23 @@ class EventsManager {
     document.addEventListener('touchstart', () => {})
 
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
+
+    // core app events
+    document.addEventListener('undoredo', this.onUndoRedo.bind(this), captureEvent)
   }
 
   onTap(e) {
     this.app.player?.onTap(e)
     this.app.ui?.onTap(e)
+    this.app.history?.onTap(e)
   }
 
   onChange(e) {
     this.app.player?.onChange(e)
+  }
+
+  onUndoRedo(e) {
+    this.app.history?.onUndoRedo(e)
   }
 }
 

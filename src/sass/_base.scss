@@ -177,6 +177,10 @@ button {
 
   font-weight: inherit;
 
+  &[disabled] {
+    cursor: not-allowed;
+  }
+
   * { pointer-events: none; }
 }
 

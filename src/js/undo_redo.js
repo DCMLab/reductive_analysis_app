@@ -116,10 +116,13 @@ export function do_undo() {
     redo_actions.push([what, [pname, oct, n, id], sel, extra])
   }
   tooltip_update()
+
+  emitUndoRedoEvent()
 }
 
 export function flush_redo() {
   setRedoActions([])
+  emitUndoRedoEvent()
 }
 
 // Actually, let's redo that.
@@ -165,4 +168,15 @@ export function do_redo() {
       toggle_selected(sel[0])
       break
   }
+
+  emitUndoRedoEvent()
+}
+
+// Emit event on undo-redo
+
+function emitUndoRedoEvent() {
+  document.dispatchEvent(new CustomEvent('undoredo', { detail: {
+    redoAbleCount: getRedoActions().length,
+    undoAbleCount: getUndoActions().length,
+  } }))
 }

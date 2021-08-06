@@ -4,6 +4,7 @@ import { doc } from './utils/document'
 import initEvents from './events'
 import player from './modules/Player'
 import ui from './modules/UI'
+import history from './modules/History'
 
 class App {
   constructor() {
@@ -16,8 +17,14 @@ class App {
 
     initEvents(this)
 
-    this.player = player
+    // Modules below should be delayed to…
+
+    // … when first score is loaded…
     this.ui = ui
+    this.player = player
+
+    // … and when first action is done.
+    this.history = history
   }
 }
 

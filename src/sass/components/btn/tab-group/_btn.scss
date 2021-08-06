@@ -46,4 +46,8 @@
     --btn-bg: var(--primary);
     --btn-color: var(--bg);
   }
+
+  &[disabled] {
+    color: $alto;
+  }
 }

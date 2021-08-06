@@ -115,6 +115,24 @@
                 <span class="visually-hidden">Zoom out</span>
             </button>
         </div>
+
+        <!-- In-score navigation -->
+
+        <div id="score-navigation" class="score-navigation">
+            <button id="to-left" class="btn btn--plain navigation-arrow" type="button">
+                <svg class="btn__icon chevron--left" width="6" height="8">
+                    <use xlink:href="#chevron-path"/>
+                </svg>
+                <span class="visually-hidden">To left</span>
+            </button>
+
+            <button id="to-right" class="btn btn--plain navigation-arrow" type="button">
+                <svg class="btn__icon" width="6" height="8">
+                    <use xlink:href="#chevron-path"/>
+                </svg>
+                <span class="visually-hidden">To right</span>
+            </button>
+        </div>
     </div>
 
     <div id="selected_things"></div>
@@ -177,14 +195,10 @@
             <div id="relations_panel_toggle" title="Shortcut: '-'">&#9900;</div>
         </div>
         <div id="navigation_buttons">
-            <input type="button" id="panleftbutton" value="Left">
-            <input type="button" id="panrightbutton" value="Right">
             <input type="button" id="previousbookmarkbutton" value="Previous">
             <input type="button" id="nextbookmarkbutton" value="Next">
             <input type="button" id="previouscontextbutton" value="Up">
             <input type="button" id="nextcontextbutton" value="Down">
-            <!-- <input type="button" id="zoomoutbutton" value="Zoom out"> -->
-            <!-- <input type="button" id="zoominbutton" value="Zoom in"> -->
         </div>
         <div id="basic_buttons">
             <input type="button" id="deletebutton" value="Delete meta-relations">

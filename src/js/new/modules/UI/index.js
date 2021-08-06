@@ -1,9 +1,11 @@
 import zoom from './Zoom'
 import selection from './Selection'
+import initNavigation from './Navigation'
 
 class UI {
   constructor() {
     this.ctn = document.getElementById('ui')
+
     this.init()
   }
 
@@ -12,11 +14,23 @@ class UI {
 
     this.zoom?.onTap(e)
     this.selection?.onTap(e)
+    this.navigation?.onTap(e)
+  }
+
+  onResize() {
+    this.computeValues()
+  }
+
+  computeValues() {
+    this.wW = window.innerWidth
   }
 
   init() {
+    this.computeValues()
+
     this.zoom = zoom
     this.selection = selection
+    this.navigation = initNavigation(this)
   }
 }
 

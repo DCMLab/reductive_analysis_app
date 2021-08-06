@@ -62,6 +62,8 @@ html {
   background: v(bg);
   color: v(primary);
 
+  scroll-behavior: smooth;
+
   @supports (font-variation-settings: normal) {
     font-family: $body-font;
   }

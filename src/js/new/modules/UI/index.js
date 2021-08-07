@@ -5,7 +5,6 @@ import initNavigation from './Navigation'
 class UI {
   constructor() {
     this.ctn = document.getElementById('ui')
-
     this.init()
   }
 

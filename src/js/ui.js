@@ -428,7 +428,7 @@ function onclick_select_functions(draw_context) {
 window.onmousedown = (e) => {
   var elem = document.elementFromPoint(mouseX, mouseY)
   var dc = getDrawContexts().find((dc) => dc.view_elem.contains(elem))
-  if (!navigation_conf.switch_context_on_hover && dc) current_draw_context = dc
+  if (!navigation_conf.switch_context_on_hover && dc) setCurrentDrawContext(dc)
 
   indicate_current_context()
 }
@@ -439,7 +439,7 @@ window.onmousemove = (e) => {
   // Not sure if this is the best way...
   var elem = document.elementFromPoint(mouseX, mouseY)
   var dc = getDrawContexts().find((dc) => dc.view_elem.contains(elem))
-  if (navigation_conf.switch_context_on_hover && dc) current_draw_context = dc
+  if (navigation_conf.switch_context_on_hover && dc) setCurrentDrawContext(dc)
 
   indicate_current_context()
   if (placing_note != '') {
@@ -482,7 +482,7 @@ export function handle_keypress(ev) {
   if (ev.key == 'Enter') {
     do_edges()
   } else if (ev.key == action_conf.move_relation_to_front) { // Scroll through relations
-    elem = document.elementFromPoint(mouseX, mouseY)
+    var elem = document.elementFromPoint(mouseX, mouseY)
     if (elem.tagName == 'circle')
       elem = elem.closest('g')
     flip_to_bg(elem)
@@ -977,6 +977,7 @@ const addBookmarkButton = document.getElementById('addbookmarkbutton')
 addBookmarkButton.addEventListener('click', add_bookmark)
 
 export function jump_to_adjacent_bookmark(direction = 1) {
+  var current_draw_context = getCurrentDrawContext()
 
   function moveTo(el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })

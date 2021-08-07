@@ -1,7 +1,7 @@
 import { getDrawContexts, getMeiGraph, getUndoActions } from './app'
 import { getExtraSelected, getSelected, toggle_selected, tooltip_update } from './ui'
 import { flush_redo } from './undo_redo'
-import { get_class_from_classlist, unmark_secondaries } from './utils'
+import { get_by_id, get_class_from_classlist, get_id, unmark_secondaries } from './utils'
 
 function delete_relation(elem) {
   console.debug('Using globals: mei for element selection')

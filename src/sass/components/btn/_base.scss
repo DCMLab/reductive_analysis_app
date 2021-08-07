@@ -1,5 +1,5 @@
 .btn {
-  --btn-radius: 1rem;
+  --btn-default-radius: 1rem;
 
   padding: 1rem 1.5rem;
   display: inline-flex;
@@ -8,7 +8,7 @@
 
   background: v(btn-bg, bg, transparent);
   border: solid .2rem v(btn-border, inherit);
-  border-radius: v(btn-radius);
+  border-radius: v(btn-radius, btn-default-radius, 0);
   color: v(btn-color, primary);
 
   transition: v(btn-transition, .1s) $in-out-quad;
@@ -16,13 +16,18 @@
 
   &:hover,
   &:focus {
-    --btn-color: var(--primary);
     --btn-bg: var(--bg);
     --btn-border: var(--primary);
+    --btn-color: var(--primary);
 
     outline: none;
 
     transition-duration: v(btn-hover-transition, btn-transition, 0s);
+  }
+
+  &:active {
+    --btn-bg: #{$gallery};
+    --btn-transition: 0s;
   }
 }
 
@@ -33,9 +38,21 @@
 }
 
 .btn--plain {
-  --btn-color: var(--bg);
   --btn-bg: var(--primary);
   --btn-border: var(--primary);
+  --btn-color: var(--bg);
+
+  &:hover,
+  &:focus {
+    --btn-bg: #{$lacquered-licorice};
+    --btn-border: #{$lacquered-licorice};
+    --btn-color: var(--bg);
+  }
+
+  &:active {
+    --btn-bg: #{$silver};
+    --btn-border: #{$silver};
+  }
 }
 
 .btn--small {

@@ -16,9 +16,9 @@
   --relation-2: #{$seance};
   --relation-3: #{$pomegranate};
   --relation-4: #{$persian-green};
-  --relation-5: #{$pear};
-  --relation-6: #{$gorse};
-  --relation-7: #{$amber};
+  --relation-5: #{$sushi};
+  --relation-6: #{$amber};
+  --relation-7: #{$orange-peel};
 
   @supports (top: env(safe-area-inset-top, 0)) {
     --safe-area-top: env(safe-area-inset-top, 0);
@@ -212,6 +212,8 @@ h3,
 h4,
 h5,
 h6 {
+  font: inherit;
+
   @media (--mobile) {
     margin: 0;
   }

@@ -1,0 +1,20 @@
+.fly-out__hr {
+  margin: 2rem 0;
+  opacity: .1;
+  border: none;
+  border-block: .1rem solid;
+}
+
+.fly-out__title {
+  margin: 1rem 0;
+}
+
+.fly-out__notch {
+  --notch: var(--fly-out-bg);
+
+  position: absolute;
+  z-index: 122;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -3%); // -3% is a workaround: there’s a positionning issue (all browsers but at different levels, likely a rounding issue) where the notch doesn’t stick to the fly-out box.
+}

@@ -437,7 +437,7 @@ function onclick_select_functions(draw_context) {
 window.onmousedown = (e) => {
   var elem = document.elementFromPoint(mouseX, mouseY)
   var dc = getDrawContexts().find((dc) => dc.view_elem.contains(elem))
-  if (!navigation_conf.switch_context_on_hover && dc) current_draw_context = dc
+  if (!navigation_conf.switch_context_on_hover && dc) setCurrentDrawContext(dc)
 
   indicate_current_context()
 }
@@ -448,7 +448,7 @@ window.onmousemove = (e) => {
   // Not sure if this is the best way...
   var elem = document.elementFromPoint(mouseX, mouseY)
   var dc = getDrawContexts().find((dc) => dc.view_elem.contains(elem))
-  if (navigation_conf.switch_context_on_hover && dc) current_draw_context = dc
+  if (navigation_conf.switch_context_on_hover && dc) setCurrentDrawContext(dc)
 
   indicate_current_context()
   if (placing_note != '') {
@@ -1013,6 +1013,7 @@ const addBookmarkButton = document.getElementById('addbookmarkbutton')
 addBookmarkButton.addEventListener('click', add_bookmark)
 
 export function jump_to_adjacent_bookmark(direction = 1) {
+  var current_draw_context = getCurrentDrawContext()
 
   function moveTo(el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })

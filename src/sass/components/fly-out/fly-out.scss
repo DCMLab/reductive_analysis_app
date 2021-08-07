@@ -1,29 +1,3 @@
-.fly-out {
-  position: relative;
-  padding: 3rem;
-
-  background: v(fly-out-bg, $cod-gray);
-  border-radius: 1rem;
-  filter: drop-shadow(0 .2rem 1rem hsl(0, 0%, 0%, .15));
-}
-
-.fly-out--dark {
-  --bg: #{$cod-gray};
-  --primary: var(--white);
-  --btn-color: var(--primary);
-  --fly-out-bg: var(--bg);
-}
-
-.fly-out--light {
-  --fly-out-bg: var(--bg);
-}
-
-.fly-out__notch {
-  --notch: var(--fly-out-bg);
-
-  position: absolute;
-  z-index: 122;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, -3%); // -3% is a workaround: there’s a positionning issue (all browsers but at different levels, likely a rounding issue) where the notch doesn’t stick to the fly-out box.
-}
+@import 'main';
+@import 'elements';
+@import 'collapsible';

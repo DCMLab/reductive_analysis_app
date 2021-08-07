@@ -29,11 +29,8 @@
         transition-property: border-color;
       }
 
+      // Hide surrounding separators of the active button.
       &:active {
-        --btn-transition: 0s;
-
-        // Hide surrounding separators of the active button.
-
         &::before,
         & + ::before {
           opacity: 0;

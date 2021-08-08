@@ -12,7 +12,7 @@ import {
 import { do_note } from './coordinates'
 import { delete_relations } from './delete'
 import { getExtraSelected, getSelected, toggle_selected, toggle_shade, tooltip_update } from './ui'
-import { get_by_id, get_by_oldid, id_or_oldid, node_referred_to, unmark_secondaries } from './utils'
+import { get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, unmark_secondaries } from './utils'
 
 // Oops, undo whatever we did last.
 export function do_undo() {

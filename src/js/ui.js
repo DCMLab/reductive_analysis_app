@@ -63,6 +63,7 @@ import {
 import { update_metadata } from './metadata'
 import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
+import { naturalize_notes } from './accidentals'
 
 /* UI globals */
 
@@ -509,6 +510,8 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.select_same_notes) { // Select same notes in the measure
     select_samenote()
     do_relation('repeat')
+  } else if (ev.key == action_conf.naturalize_note) { // Naturalize note.
+    naturalize_notes()
   } else if (ev.key == action_conf.toggle_add_note) { // Toggle note creation.
     toggle_placing_note()
   } else if (ev.key == navigation_conf.pan_left) { // Pan left.

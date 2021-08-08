@@ -1024,7 +1024,7 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
   return true
 }
 
-function draw_context_of(elem) {
+export function draw_context_of(elem) {
   var dc = getDrawContexts().filter((dc) => dc.svg_elem.contains(elem))
   if (dc.length == 0)
     return null

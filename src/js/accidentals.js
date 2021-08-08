@@ -1,8 +1,9 @@
-import { getDrawContexts } from './app'
-import { toggle_selected } from './ui'
-import { get_by_id, get_id, note_coords } from './utils'
+import { getDrawContexts, getMei } from './app'
+import { getExtraSelected, getSelected, toggle_selected } from './ui'
+import { draw_context_of, get_by_id, get_id, note_coords } from './utils'
 
 export function naturalize_notes() {
+  var selected = getSelected()
   if (!selected[0].classList.contains('note')) {
     console.log('Can only naturalize notes.')
     return
@@ -11,7 +12,7 @@ export function naturalize_notes() {
     console.log('No modifications allowed to original layer.')
     return
   }
-  var sel = selected.concat(extraselected)
+  var sel = selected.concat(getExtraSelected())
   sel.forEach(naturalize_note)
   sel.forEach(toggle_selected)
 
@@ -30,7 +31,7 @@ function naturalize_note(elem) {
   svg_accid.classList.add('hidden')
   let accid_id = get_id(svg_accid)
   var draw_contexts = getDrawContexts()
-  for (dc of draw_contexts) {
+  for (const dc of draw_contexts) {
     let dc_id = dc.id_prefix + accid_id
     let svg_dc_elem = document.getElementById(dc_id)
     if (svg_dc_elem)
@@ -44,7 +45,7 @@ function remove_accidental(elem) {
     note_elem = note_elem.parentElement
 
   var mei_note_id = get_id(note_elem)
-  var mei_note = get_by_id(mei, mei_note_id)
+  var mei_note = get_by_id(getMei(), mei_note_id)
 
   remove_mei_accidental(mei_note)
 }

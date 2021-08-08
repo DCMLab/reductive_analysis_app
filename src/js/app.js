@@ -85,6 +85,7 @@ import {
 import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
 
+require('./accidentals')
 require('select2/dist/js/select2')
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 

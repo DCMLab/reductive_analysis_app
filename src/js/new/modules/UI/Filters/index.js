@@ -5,13 +5,11 @@
  *
  * @todo:
  *
- * 1) update on metarelations delete
+ * 1) reset state on new score upload
  *
- * 2) reset state on new score upload
+ * 2) bring default color config
  *
- * 3) bring default color config
- *
- * 4) remove filters from index.html as they are JS-generated
+ * 3) remove filters from index.html as they are JS-generated
  */
 
 import Group from './group'
@@ -28,15 +26,7 @@ class Filters {
     this.svgCtn = document.getElementById('layers')
 
     this.observer = this.createObserver() // adapt it
-
-    // Filters groups
-    this.groups = [
-      new Group('relation', {
-        filterCtnId: 'relations-filters', svgCtn: this.svgCtn
-      }),
-      new Group('metarelation', {
-        filterCtnId: 'meta-relations-filters', svgCtn: this.svgCtn }),
-    ]
+    this.groups = this.createGroups()
   }
 
   onTap({ target }) {
@@ -76,17 +66,43 @@ class Filters {
         .map(mutation => mutation.addedNodes?.item(0))
         .find(node => node.nodeType == 1)
 
-      console.log(newRelation)
-
       if (newRelation) {
         const relationType = newRelation.getAttribute('type')
         const isExistingType = this.groups.some(group => group.hasRelationType(relationType))
-        console.log(isExistingType)
         if (!isExistingType) {
           return this.update()
         }
       }
+
+      // Deleted relation.
+
+      const deletedRelation = mutations.length == 1 && mutations
+        .filter(mutation => mutation.type == 'childList' && mutation.removedNodes?.length == 1)
+        .map(mutation => mutation.removedNodes?.item(0))
+        .find(node => node.nodeType == 1)
+
+      if (deletedRelation) {
+        const relationType = deletedRelation.getAttribute('type')
+        const wasLastOfType = this.groups.some(group => group.wasLastOfType(relationType))
+        if (wasLastOfType) {
+          return this.update()
+        }
+      }
     })
+  }
+
+  // Filters groups
+  createGroups() {
+    return [
+      new Group('relation', {
+        filterCtnId: 'relations-filters',
+        svgCtn: this.svgCtn,
+      }),
+      new Group('metarelation', {
+        filterCtnId: 'meta-relations-filters',
+        svgCtn: this.svgCtn,
+      }),
+    ]
   }
 
   observe() {

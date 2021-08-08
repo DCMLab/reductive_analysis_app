@@ -1,4 +1,4 @@
-import { getDrawContexts, getMeiGraph, getUndoActions } from './app'
+import { getDrawContexts, getMei, getMeiGraph, getUndoActions } from './app'
 import { getExtraSelected, getSelected, toggle_selected, tooltip_update } from './ui'
 import { flush_redo } from './undo_redo'
 import { get_by_id, get_class_from_classlist, get_id, unmark_secondaries } from './utils'
@@ -7,13 +7,14 @@ function delete_relation(elem) {
   console.debug('Using globals: mei for element selection')
   // Assume no meta-edges for now, meaning we only have to
   // remove the SVG elem, the MEI node, and any involved arcs
+  var mei = getMei()
   var mei_id = get_id(elem)
   var mei_he = get_by_id(mei, mei_id)
   var svg_hes = []
   var metarel = get_class_from_classlist(elem) == 'metarelation'
   var mei_graph = getMeiGraph()
   var draw_contexts = getDrawContexts()
-  for (draw_context of draw_contexts) {
+  for (const draw_context of draw_contexts) {
     let svg_he = get_by_id(document, draw_context.id_prefix + mei_id)
     if (svg_he) {
       svg_hes.push(svg_he)

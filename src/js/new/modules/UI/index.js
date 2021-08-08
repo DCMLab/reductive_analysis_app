@@ -1,6 +1,7 @@
-import zoom from './Zoom'
-import selection from './Selection'
+import filters        from './Filters'
 import initNavigation from './Navigation'
+import selection      from './Selection'
+import zoom           from './Zoom'
 
 class UI {
   constructor() {
@@ -14,10 +15,15 @@ class UI {
     this.zoom?.onTap(e)
     this.selection?.onTap(e)
     this.navigation?.onTap(e)
+    this.filters?.onTap(e)
   }
 
   onResize() {
     this.computeValues()
+  }
+
+  onScoreLoad(e) {
+    this.filters?.onScoreLoad(e)
   }
 
   computeValues() {
@@ -30,6 +36,7 @@ class UI {
     this.zoom = zoom
     this.selection = selection
     this.navigation = initNavigation(this)
+    this.filters = filters
   }
 }
 

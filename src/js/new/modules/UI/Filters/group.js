@@ -39,6 +39,10 @@ export default class FilterGroup {
     return this.fields.some(relation => relation.type == relationType)
   }
 
+  wasLastOfType(relationType) {
+    return !Array.from(this.paths).some(path => path.getAttribute('type') == relationType)
+  }
+
   render() {
     let filtersDomString = this.fields.map(relationType => this.createFilterElement(relationType)).join(' ')
     this.ctn.innerHTML = filtersDomString

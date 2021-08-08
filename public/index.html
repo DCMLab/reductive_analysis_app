@@ -81,9 +81,92 @@
                 </h3>
 
                 <div class="fly-out__inner" style="--fly-out-max-height: 39rem;">
-                    <h4 class="fly-out__title">Relations</h4>
-                    <ul class="btn-group btn-group--vertical noselect" id="relations-filters">
-                        <li class id="relation-filter-repeat">
+
+                    <fieldset>
+                        <legend class="fly-out__title">Relations</legend>
+                        <ul class="btn-group btn-group--vertical noselect" id="relations-filters">
+                            <li class id="relation-filter-repeat">
+                                <label class="checkable color-relation-repeat" for="filter-repeat">
+                                    Repeat
+                                    <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
+                                    <span class="checkbox checkbox--colored">
+                                        <svg class="checkable__icon btn__icon" width="12" height="10">
+                                            <use xlink:href="#check-path"/>
+                                        </svg>
+                                    </span>
+                                </label>
+                            </li>
+                            <label class="checkable color-relation-passing" for="filter-passing">
+                                Passing
+                                <input class="checkable__input" type="checkbox" id="filter-passing" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-neighbour" for="filter-neighbour">
+                                Neighbour
+                                <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-harmonic" for="filter-harmonic">
+                                Harmonic
+                                <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-arpeggio" for="filter-arpeggio">
+                                Arpeggio
+                                <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-urlinie" for="filter-urlinie">
+                                Urlinie
+                                <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
+                                Bassbrechung
+                                <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable" for="filter-something-else">
+                                Something else
+                                <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
+                                <span class="checkbox">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                        </ul>
+                    </fieldset>
+
+                    <hr class="fly-out__hr">
+
+                    <fieldset>
+                        <legend class="fly-out__title">Meta-relations</legend>
+                        <ul class="btn-group btn-group--vertical noselect" id="meta-relations-filters">
                             <label class="checkable color-relation-repeat" for="filter-repeat">
                                 Repeat
                                 <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
@@ -93,147 +176,71 @@
                                     </svg>
                                 </span>
                             </label>
-                        </li>
-                        <label class="checkable color-relation-passing" for="filter-passing">
-                            Passing
-                            <input class="checkable__input" type="checkbox" id="filter-passing" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-neighbour" for="filter-neighbour">
-                            Neighbour
-                            <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-harmonic" for="filter-harmonic">
-                            Harmonic
-                            <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-arpeggio" for="filter-arpeggio">
-                            Arpeggio
-                            <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-urlinie" for="filter-urlinie">
-                            Urlinie
-                            <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
-                            Bassbrechung
-                            <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable" for="filter-something-else">
-                            Something else
-                            <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
-                            <span class="checkbox">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                    </ul>
-                    <hr class="fly-out__hr">
-                    <h4 class="fly-out__title">Meta-relations</h4>
-                    <ul class="btn-group btn-group--vertical noselect" id="meta-relations-filters">
-                        <label class="checkable color-relation-repeat" for="filter-repeat">
-                            Repeat
-                            <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-passing" for="filter-passing">
-                            Passing
-                            <input class="checkable__input" type="checkbox" id="filter-passing" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-neighbour" for="filter-neighbour">
-                            Neighbour
-                            <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-harmonic" for="filter-harmonic">
-                            Harmonic
-                            <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-arpeggio" for="filter-arpeggio">
-                            Arpeggio
-                            <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-urlinie" for="filter-urlinie">
-                            Urlinie
-                            <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
-                            Bassbrechung
-                            <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
-                            <span class="checkbox checkbox--colored">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                        <label class="checkable" for="filter-something-else">
-                            Something else
-                            <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
-                            <span class="checkbox">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use xlink:href="#check-path"/>
-                                </svg>
-                            </span>
-                        </label>
-                    </ul>
+                            <label class="checkable color-relation-passing" for="filter-passing">
+                                Passing
+                                <input class="checkable__input" type="checkbox" id="filter-passing" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-neighbour" for="filter-neighbour">
+                                Neighbour
+                                <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-harmonic" for="filter-harmonic">
+                                Harmonic
+                                <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-arpeggio" for="filter-arpeggio">
+                                Arpeggio
+                                <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-urlinie" for="filter-urlinie">
+                                Urlinie
+                                <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
+                                Bassbrechung
+                                <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable" for="filter-something-else">
+                                Something else
+                                <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
+                                <span class="checkbox">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use xlink:href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                        </ul>
+                    </fieldset>
                 </div>
 
             </div>

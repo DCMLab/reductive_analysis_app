@@ -1,14 +1,20 @@
 /**
+ * Filter relations shown on screen. The filters available are the ones
+ * matching the score relations and are automatically synced using a
+ * MutationObserver listening for DOM changes in score.
+ *
  * @todo:
- * - Split in two parts.
  *
- * 1) open/close management
+ * 1) update on metarelations delete
  *
- * 2) handle filter block that will be instantiated two times (one for
- * relations, one for metarelations) instead of these managing both…
+ * 2) reset state on new score upload
  *
  * 3) bring default color config
+ *
+ * 4) remove filters from index.html as they are JS-generated
  */
+
+import Group from './group'
 
 class Filters {
   constructor() {
@@ -17,17 +23,20 @@ class Filters {
     // Filters DOM elements
     this.ctn = document.getElementById('filters')
     this.toggleBtn = document.getElementById('filters-toggle')
-    this.relationsCtn = document.getElementById('relations-filters')
-    this.metaRelationsCtn = document.getElementById('meta-relations-filters')
-    this.relations = []
-    this.metaRelations = []
 
-    // Score DOM elements
+    // Score SVG
     this.svgCtn = document.getElementById('layers')
-    this.relationsPaths = this.svgCtn.getElementsByClassName('relation')
-    this.metaRelationsPaths = this.svgCtn.getElementsByClassName('metarelation')
 
-    this.observer = this.createObserver()
+    this.observer = this.createObserver() // adapt it
+
+    // Filters groups
+    this.groups = [
+      new Group('relation', {
+        filterCtnId: 'relations-filters', svgCtn: this.svgCtn
+      }),
+      new Group('metarelation', {
+        filterCtnId: 'meta-relations-filters', svgCtn: this.svgCtn }),
+    ]
   }
 
   onTap({ target }) {
@@ -37,12 +46,7 @@ class Filters {
   }
 
   onChange(e) {
-    if (e.composedPath().includes(this.relationsCtn)) {
-      this.toggleRelationsFromType(e.target.dataset.type, e.target.checked)
-    }
-    if (e.composedPath().includes(this.metaRelationsCtn)) {
-      this.toggleMetaRelationsFromType(e.target.dataset.type, e.target.checked)
-    }
+    this.groups.forEach(group => group.onChange(e))
   }
 
   onScoreLoad(e) {
@@ -72,13 +76,13 @@ class Filters {
         .map(mutation => mutation.addedNodes?.item(0))
         .find(node => node.nodeType == 1)
 
+      console.log(newRelation)
+
       if (newRelation) {
         const relationType = newRelation.getAttribute('type')
-        const isNewType =
-          !this.relations.some(relation => relation.type == relationType)
-          && !this.metaRelations.some(relation => relation.type == relationType)
-
-        if (isNewType) {
+        const isExistingType = this.groups.some(group => group.hasRelationType(relationType))
+        console.log(isExistingType)
+        if (!isExistingType) {
           return this.update()
         }
       }
@@ -101,74 +105,8 @@ class Filters {
   }
 
   update() {
-    this.getRelations()
-    this.getMetaRelations()
-    this.render()
-  }
-
-  /**
-   * Get the list of relations on the page.
-   */
-  getRelations() {
-    const uniqueRelations = new Set(Array.from(this.relationsPaths, path => path.getAttribute('type')))
-
-    this.relations = Array.from(uniqueRelations, type => ({
-      type,
-      checked: true, // @todo: modify later
-      el: null, // @todo: useless for now…
-    }))
-  }
-
-  getMetaRelations() {
-    const uniqueRelations = new Set(Array.from(this.metaRelationsPaths, path => path.getAttribute('type')))
-
-    this.metaRelations = Array.from(uniqueRelations, type => ({
-      type,
-      checked: true, // @todo: modify later
-      el: null, // @todo: useless for now…
-    }))
-  }
-
-  /**
-   * Show/hide relations from specified type
-   */
-
-  toggleRelationsFromType(type, state) {
-    this.toggleAllFromType(this.relationsPaths, type, state)
-  }
-
-  toggleMetaRelationsFromType(type, state) {
-    this.toggleAllFromType(this.metaRelationsPaths, type, state)
-  }
-
-  toggleAllFromType(paths, type, state) {
-    Array.from(paths)
-      .filter(path => path.getAttribute('type') == type)
-      .forEach(path => path.classList.toggle('filtered', !state))
-  }
-
-  render() {
-    let filtersDomString = this.relations.map(relation => this.createFilterElement(relation, 'relation')).join(' ')
-    this.relationsCtn.innerHTML = filtersDomString
-
-    filtersDomString = this.metaRelations.map(relation => this.createFilterElement(relation, 'metarelation')).join(' ')
-    this.metaRelationsCtn.innerHTML = filtersDomString
-  }
-
-  createFilterElement({ type, checked }, relationCategory) {
-    return `
-      <li>
-        <label class="checkable color-${relationCategory}-${type}" for="${relationCategory}-filter-${type}">
-            ${type}
-            <input class="checkable__input" type="checkbox" id="${relationCategory}-filter-${type}" data-type="${type}" ${checked ? 'checked' : ''}>
-            <span class="checkbox checkbox--colored">
-                <svg class="checkable__icon btn__icon" width="12" height="10">
-                    <use xlink:href="#check-path"/>
-                </svg>
-            </span>
-        </label>
-      </li>
-    `
+    this.groups.forEach(group => group.getRelations())
+    this.groups.forEach(group => group.render())
   }
 }
 

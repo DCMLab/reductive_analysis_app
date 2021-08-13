@@ -192,6 +192,14 @@ function add_buttons(draw_context) {
   var hiercheck = checkbox("Roots low");
   hiercheck.id = (draw_context.id_prefix+"hierarchycb");
   hiercheck.checked = true;
+  var save_layer = checkbox("Save layer");
+  save_layer.id = (draw_context.id_prefix+"savecb");
+  save_layer.checked = false;
+  var edit_layer = checkbox("Edit layer");
+  edit_layer.id = (draw_context.id_prefix+"editcb");
+  edit_layer.checked = false;
+
+
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
   newlayerbutton.onclick = () =>{ create_new_layer(new_draw_context,slicecheck.checked,tiedcheck.checked);}
@@ -202,6 +210,31 @@ function add_buttons(draw_context) {
   buttondiv.appendChild(document.createTextNode("\u25BC"));
   buttondiv.appendChild(document.createElement("br"));
   buttondiv.appendChild(document.createElement("br"));
+  buttondiv.appendChild(save_layer);
+  var save_label = document.createElement("label")
+  save_label.htmlFor = draw_context.id_prefix+"savecb";
+  save_label.appendChild(document.createTextNode("Save layer"));
+  buttondiv.append(save_label);
+  buttondiv.appendChild(edit_layer);
+  var edit_label = document.createElement("label")
+  edit_label.htmlFor = draw_context.id_prefix+"editcb";
+  edit_label.appendChild(document.createTextNode("Edit layer"));
+  buttondiv.append(edit_label);
+  buttondiv.appendChild(document.createElement("br"));
+  if(draw_context.id_prefix == ""){
+    //Original score layer
+    save_layer.checked = true;
+    save_layer.disabled = true;
+
+    edit_layer.checked = false;
+    edit_layer.disabled= true;
+  }else{
+    //Non-original score layer
+    save_layer.checked = true;
+
+    edit_layer.checked = true;
+  }
+
 
   buttondiv.appendChild(unreducebutton);
   buttondiv.appendChild(document.createElement("br"));

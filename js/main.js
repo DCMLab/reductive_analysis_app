@@ -539,7 +539,7 @@ function render_mei(mei) {
 }
 
 
-function rerender(draw_context) {
+/*function rerender(draw_context) {
   var [new_view_elem,new_svg_elem] = new_view_elements(draw_context.layer.layer_elem);
   var new_mei = rerender_mei(false, draw_context);
   var [new_data, new_svg] = render_mei(new_mei);
@@ -566,7 +566,7 @@ function rerender(draw_context) {
   new_draw_context.id_prefix = draw_contexts.length;
   prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);
   finalize_draw_context(new_draw_context);
-}
+}*/
 
 function initialize_panel() {
   // Add shortcut tooltips to the panel buttons.

@@ -972,6 +972,32 @@ function arrayToSelect2(plain_array) {
   return (plain_array.map(e => ({"id": e, "text": e})));
 }
 
+function sanitize_mei(mei) {
+
+  var sanitized_mei = mei;
+
+  strip_mei_tags.forEach(tag => {
+    Array.from(mei.getElementsByTagName(tag)).forEach(e => {
+        e.parentNode.removeChild(e)
+    });
+  });
+
+  return sanitized_mei;
+}
+
+function sanitize_xml(xml) {
+
+  var sanitized_xml = xml;
+
+  strip_xml_tags.forEach(tag => {
+    Array.from(xml.getElementsByTagName(tag)).forEach(e => {
+        e.parentNode.removeChild(e)
+    });
+  });
+
+  return sanitized_xml;
+}
+
 function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
 
   var primaries = prospective_primaries
@@ -1001,4 +1027,13 @@ function check_for_duplicate_relations(type, prospective_primaries, prospective_
   });
   return true;
 }
+
+function draw_context_of(elem) {
+  var dc = draw_contexts.filter((dc) => dc.svg_elem.contains(elem));
+  if(dc.length == 0)
+    return null;
+  else
+    return dc[0];
+}
+
 

@@ -418,10 +418,14 @@ function handle_keypress(ev) {
     do_edges();
   } else if (ev.key == action_conf.move_relation_to_front) { // Scroll through relations
     elem = document.elementFromPoint(mouseX, mouseY);
+    if(elem.tagName == "circle")
+      elem = elem.closest("g");
     flip_to_bg(elem);
     if (elem.onmouseout) elem.onmouseout();
   } else if (ev.key == action_conf.undo) { // UNDO
     do_undo();
+  } else if (ev.key == action_conf.redo) { // UNDO
+    do_redo();
   } else if (ev.key == action_conf.reduce_relations) { // Reduce relations
     do_reduce_pre(current_draw_context);
   } else if (ev.key == action_conf.show_hide_notation) { // Show/hide ties etc.
@@ -743,6 +747,8 @@ function drag_selector_installer(svg_elem) {
 }
 
 function tooltip_update() {
+  if(mouseX == undefined)
+    return;
   var update = [document.elementFromPoint(mouseX, mouseY)]
   .map(x => {
     if (x) {

@@ -16,6 +16,7 @@ try {
   // General action shortcuts.
   var action_conf = {
     "undo":                    "U",
+    "redo":                    "I",
     "deselect_all":            "d",
     "delete_all":              "D",
     "add_bookmark":            "^",
@@ -24,7 +25,8 @@ try {
     "show_hide_notation":      "s",
     "toggle_type_shades":      "h",
     "select_same_notes":       "+",
-    "toggle_add_note":         "x"
+    "toggle_add_note":         "x",
+    "naturalize_note":         "Z"
   }
 
   // Navigation shortcuts.
@@ -143,8 +145,9 @@ var meta_full_conf = [
 
 
 
-  // MEI classes not to be rendered.
+  // MEI classes to be hidden after rendering.
   var hide_classes = [
+    "barLineAttr",
     "fermata",
     "rest",
     "stem",
@@ -155,7 +158,18 @@ var meta_full_conf = [
     "dynam",
     "tempo",
     "tupletNum",
-    "dir"
+    "dir",
+    "verse"
+  ]
+
+  // MEI and MusicXML tags to be stripped before rendering.
+  var strip_mei_tags = [
+    "label",
+    "labelAbbr",
+    "tempo"
+  ]
+
+  var strip_xml_tags = [
   ]
 
   // THIS MUST STAY AT THE END OF THE try {...} SCOPE.

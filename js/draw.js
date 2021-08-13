@@ -72,6 +72,43 @@ function draw_relation(draw_context, mei_graph, g_elem) {
 
 }
 
+function undraw_meta_or_relation(draw_context, g_elem) {
+  let mei_id = get_id(g_elem);
+  let svg_id = draw_context.id_prefix + mei_id;
+  let svg_he = get_by_id(document,svg_id);
+  if(!svg_he){
+    console.debug("Could not undraw relation in draw context",g_elem, draw_context);
+    return false;
+  }
+  if(g_elem.getAttribute("type") == "relation")
+    unmark_secondaries(draw_context, mei_graph, mei_he);
+  var primaries = relation_primaries(mei_graph,g_elem).map(
+      (e) => document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
+    );
+  var secondaries = relation_secondaries(mei_graph,g_elem).map(
+      (e) => document.getElementById(id_in_svg(draw_context,node_to_note_id(e)))
+    );
+  primaries.forEach(  (item) => { item.classList.remove("extrahover"); });
+  secondaries.forEach((item) => { item.classList.remove("selecthover"); });
+  svg_he.parentNode.removeChild(svg_he);
+  return true;
+}
+
+
+function redraw_relation(draw_context,g_elem) {
+  var svg_g_elem = get_by_id(document, id_in_svg(draw_context, get_id(g_elem)));
+  if(!svg_g_elem){
+    console.log("Unable to redraw relation: ",g_elem," in draw context ", draw_context);
+    return;
+  }
+  unmark_secondaries(draw_context,mei_graph,g_elem);
+  svg_g_elem.parentElement.removeChild(svg_g_elem);
+  svg_g_elem = draw_relation(draw_context, mei_graph, g_elem);
+  mark_secondaries(draw_context,mei_graph,g_elem);
+  return svg_g_elem[0];
+}  
+
+
 
 // Essentially the same procedure as above, but for metarelations
 function draw_metarelation(draw_context, mei_graph, g_elem) {
@@ -116,8 +153,8 @@ function draw_metarelation(draw_context, mei_graph, g_elem) {
   // We can scroll among metarelations as well
   g_elem.onwheel = (e) => {
     var elem1 = e.target;
-    flip_to_bg(elem1);
-    elem.onmouseout();
+    flip_to_bg(elem1.closest("g"));
+    g_elem.onmouseout();
     return false;
   };
 

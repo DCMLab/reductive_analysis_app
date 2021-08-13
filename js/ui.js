@@ -180,9 +180,6 @@ function add_buttons(draw_context) {
   var unreducebutton = button("Unreduce");
   unreducebutton.classList.add("unreducebutton");
   unreducebutton.id = (draw_context.id_prefix+"unreducebutton");
-  var rerenderbutton = button("Create new view");
-  rerenderbutton.classList.add("rerenderbutton");
-  rerenderbutton.id = (draw_context.id_prefix+"rerenderbutton");
   var playbutton = button("Play reduction");
   playbutton.classList.add("midireducebutton");
   playbutton.id = (draw_context.id_prefix+"midireducebutton");
@@ -197,7 +194,6 @@ function add_buttons(draw_context) {
   hiercheck.checked = true;
   unreducebutton.onclick = () =>{undo_reduce(new_draw_context);}
   reducebutton.onclick =   () =>{  do_reduce_pre(new_draw_context);}
-  rerenderbutton.onclick = () =>{   rerender(new_draw_context);}
   newlayerbutton.onclick = () =>{ create_new_layer(new_draw_context,slicecheck.checked,tiedcheck.checked);}
   playbutton.onclick =     () =>{play_midi_reduction(new_draw_context);}
   hierbutton.onclick =     () =>{draw_hierarchy_graph(new_draw_context,50,hiercheck.checked);}
@@ -211,9 +207,6 @@ function add_buttons(draw_context) {
   buttondiv.appendChild(document.createElement("br"));
 
   buttondiv.appendChild(reducebutton  );
-  buttondiv.appendChild(document.createElement("br"));
-
-  buttondiv.appendChild(rerenderbutton);
   buttondiv.appendChild(document.createElement("br"));
 
   buttondiv.appendChild(newlayerbutton);

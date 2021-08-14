@@ -4,18 +4,12 @@ import DragSelect from 'dragselect'
 import newApp from './new/app'
 
 import {
-  action_conf,
   button_shades,
-  combo_conf,
   combo_keys,
-  custom_conf,
   hide_classes,
-  meta_conf,
   meta_keys,
   meta_shades,
-  navigation_conf,
   shades_array,
-  type_conf,
   type_keys,
   type_shades,
   type_synonym

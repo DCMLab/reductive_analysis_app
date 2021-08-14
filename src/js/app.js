@@ -1,35 +1,20 @@
 import $ from 'expose-loader?exposes=$,jQuery!jquery'
 
+import { action_conf } from 'expose-loader?exposes=action_conf|action_conf!./conf'
+import { navigation_conf } from 'expose-loader?exposes=navigation_conf|navigation_conf!./conf'
+import { custom_conf } from 'expose-loader?exposes=custom_conf|custom_conf!./conf'
+import { meta_conf } from 'expose-loader?exposes=meta_conf|meta_conf!./conf'
+import { type_conf } from 'expose-loader?exposes=type_conf|type_conf!./conf'
+import { combo_conf } from 'expose-loader?exposes=combo_conf|combo_conf!./conf'
+import { type_full_conf } from 'expose-loader?exposes=type_full_conf|type_full_conf!./conf'
+import { meta_full_conf } from 'expose-loader?exposes=meta_full_conf|meta_full_conf!./conf'
+
 import newApp from './new/app'
 import jBox from 'jbox'
 
 import { add_metarelation, add_relation } from './graph'
 import { mei_for_layer, new_layer } from './layers'
 import { draw_relation, draw_metarelation } from './draw'
-
-import {
-  action_conf,
-  button_shades,
-  combo_conf,
-  combo_keys,
-  CONFIG_OK,
-  custom_conf,
-  hide_classes,
-  meta_conf,
-  meta_full_conf,
-  meta_keys,
-  meta_shades,
-  navigation_conf,
-  optional_resp_roles,
-  shades_array,
-  strip_mei_tags,
-  strip_xml_tags,
-  type_conf,
-  type_full_conf,
-  type_keys,
-  type_shades,
-  type_synonym,
-} from './conf'
 
 import {
   add_buttons,

@@ -1,6 +1,6 @@
 import { getDrawContexts } from './app'
 import { toggle_selected } from './ui'
-import { get_by_id, get_id, note_coords } from './utils'
+import { draw_context_of, get_by_id, get_id, note_coords } from './utils'
 
 export function naturalize_notes() {
   if (!selected[0].classList.contains('note')) {
@@ -30,7 +30,7 @@ function naturalize_note(elem) {
   svg_accid.classList.add('hidden')
   let accid_id = get_id(svg_accid)
   var draw_contexts = getDrawContexts()
-  for (dc of draw_contexts) {
+  for (const dc of draw_contexts) {
     let dc_id = dc.id_prefix + accid_id
     let svg_dc_elem = document.getElementById(dc_id)
     if (svg_dc_elem)

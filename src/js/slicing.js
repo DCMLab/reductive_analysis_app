@@ -17,7 +17,6 @@ import { get_by_id, get_id, note_coords, prefix_ids } from './utils'
 // Optionally do verticalisations
 function slicify(draw_context, score_elem, tied = false) {
   var vrvToolkit = getVerovioToolkit()
-  var mei = getMei()
   var mei2 = rerender_mei(true, draw_context)
   var data2 = new XMLSerializer().serializeToString(mei2)
   vrvToolkit.loadData(data2)

@@ -132,10 +132,6 @@ function getRandomShade(colour) {
   return shade + '88' // Semitransparency
 }
 
-export function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
 // Draw a line between points p1 and p2
 export function line(p1, p2) {
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'line')

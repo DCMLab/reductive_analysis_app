@@ -5,11 +5,9 @@
  *
  * @todo:
  *
- * 1) reset state on new score upload
+ * 1) bring default color config
  *
- * 2) bring default color config
- *
- * 3) remove filters from index.html as they are JS-generated
+ * 2) remove filters from index.html as they are JS-generated
  */
 
 import Group from './group'
@@ -40,6 +38,7 @@ class Filters {
   }
 
   onScoreLoad(e) {
+    this.toggle(false) // close filter menu
     this.observer.disconnect() // stop observer
     this.update()
     this.observe() // restart observer

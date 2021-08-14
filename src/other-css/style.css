@@ -478,10 +478,6 @@ body:not(.mousedown) .extraselectedrelation:hover {
   visibility: hidden
 }
 
-.filtered {
-  visibility: hidden
-}
-
 .none {
   display: none;
 }

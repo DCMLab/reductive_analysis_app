@@ -1,3 +1,5 @@
+import { capitalize } from '../../../utils/string'
+
 export default class FilterGroup {
   constructor(namespace, options) {
     this.namespace = namespace
@@ -19,7 +21,7 @@ export default class FilterGroup {
   toggleRelationsPaths(type, state) {
     Array.from(this.paths)
       .filter(path => path.getAttribute('type') == type)
-      .forEach(path => path.classList.toggle('filtered', !state)) // @todo: rename the filtered class and transition it
+      .forEach(path => path.classList.toggle('relation--filtered', !state))
   }
 
   /**
@@ -52,7 +54,7 @@ export default class FilterGroup {
     return `
       <li>
         <label class="checkable color-${this.namespace}-${type}" for="${this.namespace}-filter-${type}">
-            ${type}
+            ${capitalize(type)}
             <input class="checkable__input" type="checkbox" id="${this.namespace}-filter-${type}" data-type="${type}" ${checked ? 'checked' : ''}>
             <span class="checkbox checkbox--colored">
                 <svg class="checkable__icon btn__icon" width="12" height="10">

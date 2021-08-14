@@ -1,9 +1,2 @@
 .env
 /node_modules
-
-/public/*
-!/public/*.html
-/public/js/*
-!/public/js/vendor/
-
-tags*

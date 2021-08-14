@@ -47,6 +47,7 @@
     "easings.scss": "^0.3",
     "eslint": "^7.30.0",
     "eslint-webpack-plugin": "^2.5.4",
+    "expose-loader": "^3.0.0",
     "family.scss": "^1.0",
     "fast-xml-parser": "^3.18.0",
     "hsl.scss": "^1.0.1",

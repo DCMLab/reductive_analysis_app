@@ -164,5 +164,9 @@ The app is in `/public/index.html`. Assets called by the app needs to be compile
 3. `npm run prod` to compile assets with optimizations. Alternatively:
     - (recommended for development) `npm run watch` to compile assets and automatically reload your browser while developing;
     - `npm run dev` to compile assets without optimizations.
+4. **Before pushing to the repository**, update the modified build (`npm run prod`).
 
-You can also enforce JavaScript syntax using `npm run lint` to check it or `npm run lint-fix` to directly fix it.
+Various:
+- You can also enforce JavaScript syntax using `npm run lint` to check it or `npm run lint-fix` to directly fix it.
+- Run tests with `npm run test`.
+- If you need to expose some modules or variables to the global scope, see documentation and examples at the start of `src/js/app.js`.

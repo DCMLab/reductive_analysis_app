@@ -4,18 +4,12 @@ import DragSelect from 'dragselect'
 import newApp from './new/app'
 
 import {
-  action_conf,
   button_shades,
-  combo_conf,
   combo_keys,
-  custom_conf,
   hide_classes,
-  meta_conf,
   meta_keys,
   meta_shades,
-  navigation_conf,
   shades_array,
-  type_conf,
   type_keys,
   type_shades,
   type_synonym
@@ -26,8 +20,6 @@ import {
   do_comborelation,
   do_metarelation,
   getMeiGraph,
-  getMei,
-  getOrigMidi,
   draw_graph,
   rerender_mei,
   getVerovioToolkit,
@@ -63,6 +55,7 @@ import {
 import { update_metadata } from './metadata'
 import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
+import { naturalize_notes } from './accidentals'
 
 /* UI globals */
 
@@ -85,12 +78,6 @@ export const getMouseY = () => mouseY
 
 var tooltip
 
-/* Select stuff */
-
-// Clicking selects
-var selected = []
-// Shift-clicking extra selects
-var extraselected = []
 // Last-selected entity in the current selection.
 var last_selected = null
 
@@ -500,6 +487,8 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.select_same_notes) { // Select same notes in the measure
     select_samenote()
     do_relation('repeat')
+  } else if (ev.key == action_conf.naturalize_note) { // Naturalize note.
+    naturalize_notes()
   } else if (ev.key == action_conf.toggle_add_note) { // Toggle note creation.
     toggle_placing_note()
   } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
@@ -1064,12 +1053,6 @@ const orphanNotesButton = document.getElementById('orphannotesbutton')
 orphanNotesButton.addEventListener('click', toggle_orphan_notes)
 
 // Functions helping to interact with variable declared here from other files.
-export const getSelected = () => selected
-export const setSelected = (value) => selected = value
-
-export const getExtraSelected = () => extraselected
-export const setExtraSelected = (value) => extraselected = value
-
 export const getShades = () => shades
 export const setShades = (value) => shades = value
 

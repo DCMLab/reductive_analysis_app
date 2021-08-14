@@ -2,7 +2,6 @@ import {
   do_metarelation,
   do_relation,
   getDrawContexts,
-  getMei,
   getMeiGraph,
   getRedoActions,
   getRerenderedAferAction,
@@ -11,8 +10,8 @@ import {
 } from './app'
 import { do_note } from './coordinates'
 import { delete_relations } from './delete'
-import { getExtraSelected, getSelected, toggle_selected, toggle_shade, tooltip_update } from './ui'
-import { get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, unmark_secondaries } from './utils'
+import { toggle_selected, toggle_shade, tooltip_update } from './ui'
+import { get_id, get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, mark_secondaries, unmark_secondaries } from './utils'
 
 // Oops, undo whatever we did last.
 export function do_undo() {
@@ -30,8 +29,6 @@ export function do_undo() {
     return
   }
   // Deselect the current selection, if any
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
   selected.forEach(toggle_selected)
   extraselected.forEach((x) => { toggle_selected(x, true) })
 
@@ -74,7 +71,7 @@ export function do_undo() {
       let rel = get_class_from_classlist(x[0]) == 'relation'
       if (dc && rel) {
         let mei_id = get_id(x[0])
-        let mei_he = get_by_id(getMei(), mei_id)
+        let mei_he = get_by_id(mei, mei_id)
         mark_secondaries(dc, getMeiGraph(), mei_he)
       }
     })
@@ -93,7 +90,7 @@ export function do_undo() {
       var id = id_or_oldid(he)
       var hes = [get_by_id(document, id)].concat(get_by_oldid(document, id))
       hes.forEach((he) => he.setAttribute('type', from))
-      var mei_he = get_by_id(getMei(), id)
+      var mei_he = get_by_id(mei, id)
       mei_he.getElementsByTagName('label')[0].setAttribute('type', from)
       hes.forEach(toggle_shade)
     })
@@ -134,8 +131,6 @@ export function do_redo() {
     return
   }
   // Deselect the current selection, if any
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
   selected.forEach(toggle_selected)
   extraselected.forEach((x) => { toggle_selected(x, true) })
 

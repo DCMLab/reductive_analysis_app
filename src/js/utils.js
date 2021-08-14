@@ -1,6 +1,6 @@
 import { polygonHull } from 'd3'
 
-import { getDrawContexts, getMei, getMeiGraph, getVerovioToolkit } from './app'
+import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
 import { getCurrentDrawContext, getTooltip, toggle_selected } from './ui'
 
@@ -271,7 +271,6 @@ export function id_or_oldid(elem) {
 // either the MEI or the document.
 // Takes an element, gives an ID string
 export function get_id(elem) {
-  var mei = getMei()
   if (document.contains(elem)) {
     // SVG traversal
     if (!elem.hasAttribute('oldid'))
@@ -331,7 +330,7 @@ function arcs_where_node_referred_to(mei_graph, id) {
 // From graph node to list of all arcs that refer to it
 export function node_referred_to(id) {
   console.debug('Using global: mei to find element')
-  return Array.from(getMei().getElementsByTagName('arc'))
+  return Array.from(mei.getElementsByTagName('arc'))
     .filter((x) => {
       return (x.getAttribute('from') == '#' + id ||
                 x.getAttribute('to') == '#' + id)
@@ -417,7 +416,7 @@ function get_time(note) {
 }
 
 // From any relation element to list of MEI note elements
-function relation_get_notes(he) {
+export function relation_get_notes(he) {
   var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var note_nodes = relation_allnodes(mei_graph, he)
@@ -426,8 +425,7 @@ function relation_get_notes(he) {
 
 }
 // From any relation element to list of MEI note elements
-function relation_get_notes_separated(he) {
-  var mei = getMei()
+export function relation_get_notes_separated(he) {
   var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var prim_nodes = relation_primaries(mei_graph, he)
@@ -486,7 +484,6 @@ export function relation_type(he) {
 
 // Set up new graph node for a note
 export function add_mei_node_for(mei_graph, note) {
-  var mei = getMei()
   var svg_id = get_id(note)
   var id = get_id(get_by_id(mei, svg_id))
   var elem = get_by_id(mei_graph.getRootNode(), 'gn-' + id)
@@ -719,7 +716,6 @@ function remove_empty_relations(graph) {
 export function average(l) { return l.reduce((a, b) => a + b, 0) / l.length }
 
 export function note_to_text(id) {
-  var mei = getMei()
   var mei_elem = get_by_id(mei, id)
   var accid = note_get_accid(mei_elem)
   accid = accid.replace(/s/g, '#')
@@ -780,7 +776,6 @@ var attributes = ['dur',
 
 // Make a rest of the same properties as the given note.
 export function note_to_rest(mei, note) {
-  var mei = getMei()
   var rest = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'rest')
   rest.setAttribute('xml:id', 'rest-' + note.getAttribute('xml:id'))
   for (let a of attributes)
@@ -790,7 +785,6 @@ export function note_to_rest(mei, note) {
 }
 // Make a space of the same properties as the given note.
 function note_to_space(mei, note) {
-  var mei = getMei()
   var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
   space.setAttribute('xml:id', 'space-' + note.getAttribute('xml:id'))
   for (a of attributes)
@@ -800,7 +794,6 @@ function note_to_space(mei, note) {
 }
 // Make a chord of the same properties as the given note.
 export function note_to_chord(mei, note) {
-  var mei = getMei()
   var chord = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'chord')
   chord.setAttribute('xml:id', 'chord-' + note.getAttribute('xml:id'))
   for (const a of attributes)
@@ -832,7 +825,6 @@ export function prefix_ids(elem, prefix) {
 
 // Clone an MEI into a new XMLDocument
 export function clone_mei(mei) {
-  var mei = getMei()
   var new_mei = mei.implementation.createDocument(
     mei.namespaceURI, // namespace to use
     null, // name of the root element (or for empty document)
@@ -967,7 +959,6 @@ export function arrayToSelect2(plain_array) {
 }
 
 function sanitize_mei(mei) {
-  var mei = getMei()
 
   var sanitized_mei = mei
 
@@ -1024,7 +1015,7 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
   return true
 }
 
-function draw_context_of(elem) {
+export function draw_context_of(elem) {
   var dc = getDrawContexts().filter((dc) => dc.svg_elem.contains(elem))
   if (dc.length == 0)
     return null

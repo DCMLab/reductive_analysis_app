@@ -112,9 +112,7 @@ configJs = {
     splitChunks: false,
   },
 
-
   externals: {
-    jquery: 'jQuery',
     verovio: 'verovio',
   },
 

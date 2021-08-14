@@ -20,8 +20,6 @@ import {
   do_comborelation,
   do_metarelation,
   getMeiGraph,
-  getMei,
-  getOrigMidi,
   draw_graph,
   rerender_mei,
   getVerovioToolkit,

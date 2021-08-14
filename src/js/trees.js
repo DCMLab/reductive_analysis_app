@@ -1,4 +1,4 @@
-import { getMei, getMeiGraph } from './app'
+import { getMeiGraph } from './app'
 import { clear_top } from './ui'
 import { add_to_svg_bg, average, g, get_by_id, get_id, id_in_svg, line, note_coords, rect, text } from './utils'
 
@@ -65,7 +65,6 @@ function draw_textbox(txt, padding = 25) {
 }
 
 function obj_tree_to_xml(json_tree) {
-  var mei = getMei()
   var elem, elems
 
   var lbl = mei.createElement('label')
@@ -132,7 +131,6 @@ function find_x_tree(draw_context, tree) {
 }
 
 export function load_tree(draw_context) {
-  var mei = getMei()
   var elem = mei.querySelector('eTree')
   if (!elem) {
     console.log('No tree to load')

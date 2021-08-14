@@ -1,4 +1,4 @@
-import { getMei, getMeiGraph } from './app'
+import { getMeiGraph } from './app'
 import { toggle_selected } from './ui'
 import {
   get_by_id,

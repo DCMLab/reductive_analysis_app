@@ -1,4 +1,4 @@
-import { getMei, getMeiGraph } from './app'
+import { getMeiGraph } from './app'
 import { adjust_top, clear_top, getShades, toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
@@ -47,8 +47,6 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
   var existing = clear_top(draw_context)
   var g_elem = g()
   g_elem.id = 'hier' + id_prefix
-
-  var mei = getMei()
 
   // find layers
   var current_note_nodes = Array.from(svg_elem.

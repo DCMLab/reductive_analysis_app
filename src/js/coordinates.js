@@ -1,4 +1,4 @@
-import { getMei, getUndoActions } from './app'
+import { getUndoActions } from './app'
 import { getCurrentDrawContext, getMouseX, getMouseY, getPlacingNote, setPlacingNote, toggle_selected } from './ui'
 import { flush_redo } from './undo_redo'
 import { average2, get_by_id, get_id, mod, note_coords, note_to_chord, random_id } from './utils'
@@ -91,7 +91,6 @@ function coord_staff(dc, pt, measure) {
 }
 
 function diatonic_note_n(note) {
-  var mei = getMei()
   // Given an SVG note, what is its signed interval in diatonic steps from C0
   var mei_note = get_by_id(mei, get_id(note))
   var pname = mei_note.getAttribute('pname')
@@ -256,7 +255,6 @@ function draw_note(pname, oct, note, sim = true, id = '') {
 }
 
 function add_note(layer_context, pname, oct, note, sim = true, id = '') {
-  var mei = getMei()
   var l = get_by_id(mei, get_id(note))
   if (!layer_context.score_elem.contains(l)) {
     console.log('Note not in layer?')

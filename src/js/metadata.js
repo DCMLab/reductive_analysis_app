@@ -1,4 +1,3 @@
-import { getMei } from './app'
 import { texton } from './ui'
 import {
   optional_resp_roles,
@@ -6,7 +5,6 @@ import {
 import { capitalize, get_by_id } from './utils'
 
 export function initialize_metadata() {
-  var mei = getMei()
   // Runs on load, initializes the metadata div
   // Create title/composer if they don't exist
   var meiHead = mei.getElementsByTagName('meiHead')[0]
@@ -99,7 +97,6 @@ function add_resp_person_input(role, id = '', value = '') {
 }
 
 export function update_metadata() {
-  var mei = getMei()
   // Runs after focus leaves one of the metadata text fields
   var meiHead = mei.getElementsByTagName('meiHead')[0]
   var fd = mei.getElementsByTagName('fileDesc')[0]
@@ -127,7 +124,6 @@ export function update_metadata() {
 }
 
 function from_musicxml_metadata() {
-  var mei = getMei()
   // Runs on load from MusicXML
   var meiHead = mei.getElementsByTagName('meiHead')[0]
   var fd = mei.getElementsByTagName('fileDesc')[0]
@@ -144,7 +140,6 @@ function from_mei_metadata() {
 }
 
 function assign_responsibility_selected(resp) {
-  var mei = getMei()
   // Loops through the selected (SVG) relations and notes and assigns @resp
   // to the argument xml:id
   // Make this undoable

@@ -2,7 +2,6 @@ import {
   do_metarelation,
   do_relation,
   getDrawContexts,
-  getMei,
   getMeiGraph,
   getRedoActions,
   getRerenderedAferAction,
@@ -72,7 +71,7 @@ export function do_undo() {
       let rel = get_class_from_classlist(x[0]) == 'relation'
       if (dc && rel) {
         let mei_id = get_id(x[0])
-        let mei_he = get_by_id(getMei(), mei_id)
+        let mei_he = get_by_id(mei, mei_id)
         mark_secondaries(dc, getMeiGraph(), mei_he)
       }
     })
@@ -91,7 +90,7 @@ export function do_undo() {
       var id = id_or_oldid(he)
       var hes = [get_by_id(document, id)].concat(get_by_oldid(document, id))
       hes.forEach((he) => he.setAttribute('type', from))
-      var mei_he = get_by_id(getMei(), id)
+      var mei_he = get_by_id(mei, id)
       mei_he.getElementsByTagName('label')[0].setAttribute('type', from)
       hes.forEach(toggle_shade)
     })

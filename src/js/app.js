@@ -1,5 +1,6 @@
 import $ from 'expose-loader?exposes=$,jQuery!jquery'
 
+// Making conf globals
 import { action_conf } from 'expose-loader?exposes=action_conf|action_conf!./conf'
 import { navigation_conf } from 'expose-loader?exposes=navigation_conf|navigation_conf!./conf'
 import { custom_conf } from 'expose-loader?exposes=custom_conf|custom_conf!./conf'
@@ -64,12 +65,10 @@ import {
   matcher,
   new_layer_element,
   new_view_elements,
-  node_referred_to,
   note_coords,
   note_to_rest,
   prefix_ids,
   sanitize_xml,
-  unmark_secondaries,
 } from './utils'
 import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
@@ -82,7 +81,7 @@ require('select2/dist/js/select2')
 // Load Verovio
 var vrvToolkit
 // And the underlying MEI
-var mei
+window.mei = null
 // And the graph node in the MEI
 var mei_graph
 // And the MIDI
@@ -710,7 +709,6 @@ function initialize_panel() {
 console.log('Main webapp library is loaded')
 
 export const getDrawContexts = () => draw_contexts
-export const getMei = () => mei
 export const getMeiGraph = () => mei_graph
 export const getOrigMidi = () => orig_midi
 export const getVerovioToolkit = () => vrvToolkit

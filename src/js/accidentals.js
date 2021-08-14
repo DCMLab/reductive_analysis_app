@@ -1,4 +1,4 @@
-import { getDrawContexts, getMei } from './app'
+import { getDrawContexts } from './app'
 import { toggle_selected } from './ui'
 import { draw_context_of, get_by_id, get_id, note_coords } from './utils'
 
@@ -44,7 +44,7 @@ function remove_accidental(elem) {
     note_elem = note_elem.parentElement
 
   var mei_note_id = get_id(note_elem)
-  var mei_note = get_by_id(getMei(), mei_note_id)
+  var mei_note = get_by_id(mei, mei_note_id)
 
   remove_mei_accidental(mei_note)
 }

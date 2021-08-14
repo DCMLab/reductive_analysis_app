@@ -166,3 +166,7 @@ The app is in `/public/index.html`. Assets called by the app needs to be compile
     - `npm run dev` to compile assets without optimizations.
 
 You can also enforce JavaScript syntax using `npm run lint` to check it or `npm run lint-fix` to directly fix it.
+
+Run tests with `npm run test`.
+
+If you need to expose some modules or variables to the global scope, see documentation and examples at the start of `src/js/app.js`.

@@ -1,11 +1,2 @@
 .env
 /node_modules
-
-/public/*
-!/public/*.html
-!/public/css/*
-!/public/instruments/*
-!/public/js/*
-
-tags*
-.DS_Store

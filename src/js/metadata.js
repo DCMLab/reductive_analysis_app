@@ -1,8 +1,9 @@
+import { capitalize } from './new/utils/string'
 import { texton } from './ui'
 import {
   optional_resp_roles,
 } from './conf'
-import { capitalize, get_by_id } from './utils'
+import { get_by_id } from './utils'
 
 export function initialize_metadata() {
   // Runs on load, initializes the metadata div

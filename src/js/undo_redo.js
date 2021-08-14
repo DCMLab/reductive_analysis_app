@@ -11,7 +11,7 @@ import {
 } from './app'
 import { do_note } from './coordinates'
 import { delete_relations } from './delete'
-import { getExtraSelected, getSelected, toggle_selected, toggle_shade, tooltip_update } from './ui'
+import { toggle_selected, toggle_shade, tooltip_update } from './ui'
 import { get_id, get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, mark_secondaries, unmark_secondaries } from './utils'
 
 // Oops, undo whatever we did last.
@@ -30,8 +30,6 @@ export function do_undo() {
     return
   }
   // Deselect the current selection, if any
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
   selected.forEach(toggle_selected)
   extraselected.forEach((x) => { toggle_selected(x, true) })
 
@@ -131,8 +129,6 @@ export function do_redo() {
     return
   }
   // Deselect the current selection, if any
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
   selected.forEach(toggle_selected)
   extraselected.forEach((x) => { toggle_selected(x, true) })
 

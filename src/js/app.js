@@ -9,6 +9,12 @@ import { combo_conf } from 'expose-loader?exposes=combo_conf|combo_conf!./conf'
 import { type_full_conf } from 'expose-loader?exposes=type_full_conf|type_full_conf!./conf'
 import { meta_full_conf } from 'expose-loader?exposes=meta_full_conf|meta_full_conf!./conf'
 
+// Clicking selects
+window.selected = []
+
+// Shift-clicking extra selects
+window.extraselected = []
+
 import newApp from './new/app'
 import jBox from 'jbox'
 
@@ -20,8 +26,6 @@ import {
   add_buttons,
   combo_type,
   drag_selector_installer,
-  getExtraSelected,
-  getSelected,
   getShades,
   handle_click,
   handle_hull_controller,
@@ -34,8 +38,6 @@ import {
   meta_type,
   minimap,
   music_tooltip_installer,
-  setExtraSelected,
-  setSelected,
   toggle_selected,
   toggle_shade,
   toggle_shades,
@@ -159,10 +161,6 @@ window.onerror = function errorHandler(errorMsg, url, lineNumber) {
 // OK we've selected stuff, let's make the selection into a
 // "relation".
 export function do_relation(type, id, redoing = false) {
-
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
-
   console.debug('Using globals: selected, extraselected, mei, undo_actions')
   if (selected.length == 0 && extraselected == 0) {
     return
@@ -212,9 +210,6 @@ const relationButton = document.getElementById('relationbutton')
 relationButton.addEventListener('click', do_relation)
 
 export function do_comborelation(type) {
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
-
   var all = selected.concat(extraselected)
   if (all.length < 3 || extraselected.length > 2) { return }
   all.sort((a, b) => {
@@ -229,8 +224,6 @@ export function do_comborelation(type) {
 
   extraselected = [fst, snd]
   selected = all
-  setSelected(selected)
-  setExtraSelected(extraselected)
 
   do_relation(combo_conf[type].total)
   tooltip_update()
@@ -238,8 +231,6 @@ export function do_comborelation(type) {
 
 export function do_metarelation(type, id, redoing = false) {
   console.debug('Using globals:  mei_graph, selected, extraselected')
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
   if (selected.length == 0 && extraselected == 0) {
     return
   }
@@ -349,8 +340,8 @@ export function load() {
     closeButton: false
   })
   /* Cancel loading if changes are not saved? alert */
-  setSelected([])
-  setExtraSelected([])
+  selected = []
+  extraselected = []
   var upload = document.getElementById('fileupload')
   if (upload.files.length == 1) {
     reader.onload = function (e) {

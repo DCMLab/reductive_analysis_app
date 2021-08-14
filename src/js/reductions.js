@@ -1,5 +1,5 @@
 import { getMei, getMeiGraph } from './app'
-import { getExtraSelected, getSelected, toggle_selected } from './ui'
+import { toggle_selected } from './ui'
 import {
   get_by_id,
   get_id,
@@ -57,8 +57,6 @@ export function calc_reduce(mei_graph, remaining_relations, target_relations) {
 
 export function do_reduce_pre(draw_context) {
   var mei_graph = getMeiGraph()
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
   do_reduce(draw_context, mei_graph, selected, extraselected)
 }
 
@@ -104,8 +102,6 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
 }
 
 export function undo_reduce(draw_context) {
-  var selected = getSelected()
-  var extraselected = getExtraSelected()
   console.log('Using globals: selected/extraselected')
   var unreduce_actions = draw_context['reductions']
   // Get latest unreduce_actions

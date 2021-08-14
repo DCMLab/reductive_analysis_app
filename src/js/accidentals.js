@@ -1,9 +1,8 @@
 import { getDrawContexts, getMei } from './app'
-import { getExtraSelected, getSelected, toggle_selected } from './ui'
+import { toggle_selected } from './ui'
 import { draw_context_of, get_by_id, get_id, note_coords } from './utils'
 
 export function naturalize_notes() {
-  var selected = getSelected()
   if (!selected[0].classList.contains('note')) {
     console.log('Can only naturalize notes.')
     return
@@ -12,7 +11,7 @@ export function naturalize_notes() {
     console.log('No modifications allowed to original layer.')
     return
   }
-  var sel = selected.concat(getExtraSelected())
+  var sel = selected.concat(extraselected)
   sel.forEach(naturalize_note)
   sel.forEach(toggle_selected)
 

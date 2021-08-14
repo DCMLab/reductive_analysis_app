@@ -80,12 +80,6 @@ export const getMouseY = () => mouseY
 
 var tooltip
 
-/* Select stuff */
-
-// Clicking selects
-var selected = []
-// Shift-clicking extra selects
-var extraselected = []
 // Last-selected entity in the current selection.
 var last_selected = null
 
@@ -1097,12 +1091,6 @@ const orphanNotesButton = document.getElementById('orphannotesbutton')
 orphanNotesButton.addEventListener('click', toggle_orphan_notes)
 
 // Functions helping to interact with variable declared here from other files.
-export const getSelected = () => selected
-export const setSelected = (value) => selected = value
-
-export const getExtraSelected = () => extraselected
-export const setExtraSelected = (value) => extraselected = value
-
 export const getShades = () => shades
 export const setShades = (value) => shades = value
 

@@ -1,3 +1,5 @@
+import $ from 'expose-loader?exposes=$,jQuery!jquery'
+
 import newApp from './new/app'
 import jBox from 'jbox'
 

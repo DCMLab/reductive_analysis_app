@@ -3,7 +3,9 @@
 
 /public/*
 !/public/index.html
-/public/js/*
-!/public/js/vendor/
+!/public/css/*
+!/public/instruments/*
+!/public/js/*
 
 tags*
+.DS_Store

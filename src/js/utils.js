@@ -416,7 +416,7 @@ function get_time(note) {
 }
 
 // From any relation element to list of MEI note elements
-function relation_get_notes(he) {
+export function relation_get_notes(he) {
   var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var note_nodes = relation_allnodes(mei_graph, he)
@@ -425,7 +425,7 @@ function relation_get_notes(he) {
 
 }
 // From any relation element to list of MEI note elements
-function relation_get_notes_separated(he) {
+export function relation_get_notes_separated(he) {
   var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var prim_nodes = relation_primaries(mei_graph, he)

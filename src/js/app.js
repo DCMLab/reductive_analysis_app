@@ -10,6 +10,10 @@ import { combo_conf } from 'expose-loader?exposes=combo_conf|combo_conf!./conf'
 import { type_full_conf } from 'expose-loader?exposes=type_full_conf|type_full_conf!./conf'
 import { meta_full_conf } from 'expose-loader?exposes=meta_full_conf|meta_full_conf!./conf'
 
+// Making relations functions global (for tests purpose)
+import { relation_get_notes } from 'expose-loader?exposes=relation_get_notes|relation_get_notes!./utils'
+import { relation_get_notes_separated } from 'expose-loader?exposes=relation_get_notes_separated|relation_get_notes_separated!./utils'
+
 // Clicking selects
 window.selected = []
 

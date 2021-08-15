@@ -1,0 +1,11 @@
+.fly-out--relations {
+  max-width: 37rem;
+
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+
+  // Custom properties set in JavaScript.
+  transform: translate(var(--relations-menu-x, 0), var(--relations-menu-y, 0));
+}

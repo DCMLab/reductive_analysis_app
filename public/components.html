@@ -30,24 +30,80 @@
 
 <body>
 
+    <!-- Fly-out with a notch -->
+
     <div class="fly-out fly-out--big fly-out--dark">
-        <div class="fly-out__inner btn-group">
-            <button class="btn btn--hollow btn--relation color-relation-repeat" type="button">Repeat</button>
-            <button class="btn btn--hollow btn--relation color-relation-passing" type="button">Passing</button>
-            <button class="btn btn--hollow btn--relation color-relation-neighbour" type="button">Neighbour</button>
-            <button class="btn btn--hollow btn--relation color-relation-harmonic" type="button">Harmonic</button>
-            <button class="btn btn--hollow btn--relation color-relation-arpeggio" type="button">Arpeggio</button>
-            <button class="btn btn--hollow btn--relation color-relation-urlinie" type="button">Urlinie</button>
-            <button class="btn btn--hollow btn--relation color-relation-bassbrechung" type="button">Bassbrechung</button>
-            <button class="btn btn--hollow" type="button">
-                <span class="visually-hidden">view more relations</span>
-                &hellip;
-            </button>
-            <svg class="fly-out__notch notch" width="40" height="13">
-                <use xlink:href="#notch-path"/>
-            </svg>
+        <div class="fly-out__inner">
+            <div>
+                <div class="fly-out__headerRow">
+                    <div class="fly-out__title fly-out__title--big">Fly-out with a notch</div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn--hollow btn--relation color-relation-repeat" type="button">Repeat</button>
+                    <button class="btn btn--hollow btn--relation color-relation-passing" type="button">Passing</button>
+                </div>
+            </div>
         </div>
+
+        <svg class="fly-out__notch notch" width="40" height="13">
+            <use xlink:href="#notch-path"/>
+        </svg>
     </div>
+
+    <!-- Relations fly-out -->
+
+    <div class="fly-out fly-out--big fly-out--dark">
+        <div class="fly-out__inner">
+
+            <div>
+                <div class="fly-out__headerRow">
+                    <div class="fly-out__title fly-out__title--big">Relations</div>
+
+                    <div class="fly-out__headerActions | flex-center">
+                        <button class="fly-out__headerActionBtn | flex-center" type="button">
+                            <svg class="fly-out__headerBinIcon" width="18" height="19">
+                                <use xlink:href="#bin-path"/>
+                            </svg>
+                        </button>
+                        <button class="fly-out__headerActionBtn | flex-center" type="button">
+                            <span class="visually-hidden">Close relations menu</span>
+                            <svg width="16" height="16">
+                                <use xlink:href="#cross-path"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn--hollow btn--relation color-relation-repeat" type="button">Repeat</button>
+                    <button class="btn btn--hollow btn--relation color-relation-passing" type="button">Passing</button>
+                    <button class="btn btn--hollow btn--relation color-relation-neighbour" type="button">Neighbour</button>
+                    <button class="btn btn--hollow btn--relation color-relation-harmonic" type="button">Harmonic</button>
+                    <button class="btn btn--hollow btn--relation color-relation-arpeggio" type="button">Arpeggio</button>
+                    <button class="btn btn--hollow btn--relation color-relation-urlinie" type="button">Urlinie</button>
+                    <button class="btn btn--hollow btn--relation color-relation-bassbrechung" type="button">Bassbrechung</button>
+                    <button class="btn btn--hollow" type="button">
+                        <span class="visually-hidden">view more relations</span>
+                        &hellip;
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <button id="drag-relations" class="fly-out__drag | btn btn--plain" type="button">
+            <span class="visually-hidden">Drag menu</span>
+            <svg class="btn__icon" width="10" height="14">
+                <use xlink:href="#draggable-path"/>
+            </svg>
+        </button>
+
+        <!-- <hr class="fly-out__hr"> -->
+    </div>
+
+    <!-- Filters (collapsed) fly-out -->
 
     <div class="fly-out fly-out--dark fly-out--collapsible fly-out--collapsed">
 
@@ -65,6 +121,8 @@
         </div>
 
     </div>
+
+    <!-- Filters (expanded) fly-out -->
 
     <div class="fly-out fly-out--dark fly-out--collapsible fly-out--expanded">
 
@@ -228,6 +286,8 @@
 
     </div>
 
+    <!-- Buttons: Save file, Save as SVG, zoom, undo/redo, menu, metadata, filters, add a new note, bookmark note, naturalize note -->
+
     <button class="btn btn--hollow" type="button">Save file</button>
     <button class="btn btn--hollow" type="button"><span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span></button>
 
@@ -270,35 +330,6 @@
         </svg>
     </button>
 
-    <div class="fly-out fly-out--dark fly-out--collapsible fly-out--expanded">
-
-        <h3 class="fly-out__toggle">
-            <button id="menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
-                Menu
-                <svg class="btn__icon" width="20" height="10">
-                    <use xlink:href="#filter-path"/>
-                </svg>
-            </button>
-        </h3>
-
-        <div class="fly-out__inner">
-            <h4 class="fly-out__title">File</h4>
-            <div class="btn-group">
-                <button class="btn btn--plain" type="button">Save file</button>
-                <button class="btn btn--plain" type="button"><span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span></button>
-                <label class="file | btn btn--plain" for="file">
-                    <span>
-                        Select a <abbr title="Music Encoding Initiative">MEI</abbr> file
-                        <input class="file__input" id="file" type="file" accept=".mei">
-                    </span>
-                </label>
-            </div>
-            <hr class="fly-out__hr">
-            <h4 class="fly-out__title">Relations settings</h4>
-        </div>
-
-    </div>
-
     <button class="btn btn--plain btn--small-icon" type="button">
         Metadata
         <svg class="btn__icon" width="10" height="8">
@@ -334,6 +365,37 @@
         Naturalize note
     </button>
 
+    <!-- Menu fly-out -->
+
+    <div class="fly-out fly-out--dark fly-out--collapsible fly-out--expanded">
+
+        <h3 class="fly-out__toggle">
+            <button id="menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                Menu
+                <svg class="btn__icon" width="20" height="10">
+                    <use xlink:href="#filter-path"/>
+                </svg>
+            </button>
+        </h3>
+
+        <div class="fly-out__inner">
+            <h4 class="fly-out__title">File</h4>
+            <div class="btn-group">
+                <button class="btn btn--plain" type="button">Save file</button>
+                <button class="btn btn--plain" type="button"><span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span></button>
+                <label class="file | btn btn--plain" for="file">
+                    <span>
+                        Select a <abbr title="Music Encoding Initiative">MEI</abbr> file
+                        <input class="file__input" id="file" type="file" accept=".mei">
+                    </span>
+                </label>
+            </div>
+            <hr class="fly-out__hr">
+            <h4 class="fly-out__title">Relations settings</h4>
+        </div>
+
+    </div>
+
     <!-- Spritesheet -->
 
     <svg style="display: none;">
@@ -341,6 +403,11 @@
         <symbol id="add-note-path" viewBox="0 0 143 150" fill="currentColor">
             <path d="M102.06 33.3v88.67c.36 7.98-6.18 17.32-16.79 22.82-13.06 6.78-27.32 5.21-31.87-3.53-4.55-8.75 2.35-21.3 15.41-28.08 11.47-5.9 23.65-5.46 29.63.5V.13c.21-.32.46 0 .63.38a76.21 76.21 0 0021.6 29.1c11.8 9.69 21.55 19.56 21.33 38.81-.25 20.9-16.03 40.98-16.92 40.1-.2-.2.5-1.46 1.65-3.53 3.97-7.1 13.25-23.73 9.2-39.24-3.32-12.58-14.21-19.19-23.14-24.6-4.47-2.72-8.45-5.13-10.73-7.85z" stroke-width="5" stroke="currentColor"/>
             <use xlink:href="#plus-path" y="15" width="80" height="80"/>
+        </symbol>
+
+        <symbol id="bin-path" viewBox="0 0 18 19" fill="currentColor">
+            <path d="M1.945 5.566l.986 11.903c.07.858.802 1.531 1.664 1.531h9.084c.862 0 1.593-.673 1.664-1.531l.985-11.903H1.945zm4.408 11.207a.557.557 0 01-.555-.521l-.556-8.98a.557.557 0 01.52-.591.548.548 0 01.59.52l.557 8.981a.557.557 0 01-.556.591zm3.34-.556a.556.556 0 11-1.113 0v-8.98a.556.556 0 111.114 0v8.98zm3.34-8.946l-.557 8.98a.556.556 0 11-1.111-.069l.556-8.98a.566.566 0 01.59-.521c.307.019.54.283.521.59z"/>
+            <path d="M16.375 2.227h-3.34V1.67c0-.92-.749-1.67-1.67-1.67H6.912c-.92 0-1.67.75-1.67 1.67v.557h-3.34a1.113 1.113 0 100 2.226h14.473a1.113 1.113 0 000-2.226zm-4.453 0H6.355V1.67c0-.307.25-.557.557-.557h4.453c.307 0 .557.25.557.557v.557z"/>
         </symbol>
 
         <symbol id="bookmark-path" viewBox="0 0 12 16" fill="#e42618">
@@ -355,10 +422,20 @@
             <path d="M1.55 0a1 1 0 00-.87.63.9.9 0 00.22 1.03L3.17 4 .9 6.34a.9.9 0 00-.22 1.03 1 1 0 00.87.63c.23 0 .45-.1.64-.3l1.52-1.52C4.91 5.01 5.4 4.52 5.4 4c0-.52-.5-1-1.69-2.18C3.3 1.42 2.78.9 2.19.3 2 .1 1.8 0 1.55 0z"/>
         </symbol>
 
+        <symbol id="cross-path" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+            <path d="M2 14L14 2M2 2l12 12"/>
+        </symbol>
+
         <symbol id="filter-path" viewBox="0 0 20 10" fill="currentColor">
             <rect width="20" height="2" rx="1"/>
             <rect width="14" height="2" rx="1" x="3" y="4"/>
             <rect width="8" height="2" rx="1" x="6" y="8"/>
+        </symbol>
+
+        <symbol id="draggable-path" viewBox="0 0 10 14" fill="currentColor">
+            <rect width="2" height="8" rx="1" y="3"/>
+            <rect width="2" height="14" rx="1" x="4"/>
+            <rect width="2" height="8" rx="1" x="8" y="3"/>
         </symbol>
 
         <symbol id="menu-path" viewBox="0 0 15 10" fill="currentColor">

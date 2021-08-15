@@ -5,8 +5,39 @@
   border-block: .1rem solid;
 }
 
+.fly-out__headerRow {
+  margin-bottom: 1.6rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fly-out__headerActions {
+  margin-right: -.7rem;
+  gap: 1rem;
+
+  > :not(:hover):not(:focus) {
+    opacity: .4;
+    transition: opacity .2s $in-out-quad;
+  }
+}
+
+.fly-out__headerActionBtn {
+  size: 3rem;
+}
+
 .fly-out__title {
   margin: 1rem 0;
+}
+
+.fly-out__title--big {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.fly-out__headerBinIcon {
+  transform: translateY(-.15rem); // fix icon optical vertical center
 }
 
 .fly-out__notch {

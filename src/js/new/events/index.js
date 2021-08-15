@@ -34,6 +34,7 @@ class EventsManager {
     // core app events
     document.addEventListener('undoredo', this.onUndoRedo.bind(this))
     document.addEventListener('scoreload', this.onScoreLoad.bind(this))
+    document.addEventListener('scoreselection', this.onScoreSelection.bind(this))
   }
 
   // Browser events
@@ -110,6 +111,10 @@ class EventsManager {
 
   onScoreLoad(e) {
     this.app.ui?.onScoreLoad(e)
+  }
+
+  onScoreSelection(e) {
+    this.app.ui?.onScoreSelection(e)
   }
 
   // Keyboard events

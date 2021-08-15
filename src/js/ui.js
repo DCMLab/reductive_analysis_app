@@ -147,6 +147,11 @@ export function toggle_selected(item, extra) {
   }
 
   update_text()
+
+  // The selected elements have changed.
+  document.dispatchEvent(new CustomEvent('scoreselection', {
+    detail: { selected: selected, extraselected: extraselected }
+  }))
 }
 
 export function select_visibles(draw_context) {

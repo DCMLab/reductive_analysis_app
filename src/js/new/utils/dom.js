@@ -1,6 +1,9 @@
 /**
  * Get an object matching DOMRect, but with own properties, making it iterable.
  *
+ * This exists because the DOMRect object returned by
+ * `getBoundingClientRect` isn’t iterable.
+ *
  * @param {HTMLElement} element The HTML element that will be examinated.
  * @param {string[] | null} includedProps Only return the specified props in
  *                          the result (`x`, `y`, `width`, `height`, `top`,

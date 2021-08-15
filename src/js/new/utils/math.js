@@ -6,7 +6,7 @@
  * - clamp(-3, 3, 8)  // 3
  * - clamp(5, 3, 8)   // 5
  *
- * @param {number} value
+ * @param {number} val
  * @param {number} min
  * @param {number} max
  * @returns {number}

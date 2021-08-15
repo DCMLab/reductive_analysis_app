@@ -4,6 +4,7 @@ import { clamp }            from '../../../utils/math'
 import { getDOMRect }       from '../../../utils/dom'
 import { pxToRem }          from '../../../utils/units'
 import viewport             from '../../Viewport'
+import { doc } from '../../../utils/document'
 
 // The minimal distance between the relations menu and the viewport.
 const SNAP_DELTA = 10
@@ -13,6 +14,7 @@ class RelationsFlyOut {
 
   constructor() {
     this.ctn = { el: document.getElementById('relations-menu') }
+    this.closeBtn = this.ctn.el.querySelector('.fly-out__closeBtn')
     this.dragHandle = { el: this.ctn.el.querySelector('.fly-out__drag') }
 
     this.visible = false
@@ -20,12 +22,15 @@ class RelationsFlyOut {
     this.y = 0
 
     this.computeValues()
+    this.toggleVisibility(true) // for debug purpose
   }
 
   // Common handlers for touch and mouse events.
 
   onTap(e) {
-    // @todo
+    if (e.target == this.closeBtn) {
+      this.toggleVisibility(false)
+    }
   }
 
   onTapStart(e) {
@@ -35,22 +40,21 @@ class RelationsFlyOut {
   }
 
   onTapMove(x, y) {
-    if (this.#dragging) {
+    if (this.visible && this.#dragging) {
       this.updatePosition(x, y)
     }
   }
 
   onTapEnd() {
-    if (this.#dragging) {
+    if (this.visible && this.#dragging) {
       this.toggleDragging(false)
       this.computeValues()
-      this.snapInViewport()
     }
   }
 
   onResize() {
+    if (!this.visible) { return }
     this.computeValues()
-    this.snapInViewport()
   }
 
   updatePosition(x = this.x, y = this.y) {
@@ -60,10 +64,19 @@ class RelationsFlyOut {
     this.ctn.el.style.setProperty('--relations-menu-y', pxToRem(this.y))
   }
 
+  toggleVisibility(state = !this.visible) {
+    this.ctn.el.classList.toggle('fly-out--relations--visible', state)
+    this.visible = state
+
+    if (state) {
+      this.computeValues()
+    }
+  }
 
   toggleDragging(state = !this.#dragging) {
     this.#dragging = state
-    this.ctn.el.classList.toggle('grabbing', state)
+    this.ctn.el.classList.toggle('fly-out--grabbing', state)
+    doc.classList.toggle('dragging-relations-menu', state)
   }
 
   /**
@@ -97,21 +110,35 @@ class RelationsFlyOut {
     }
   }
 
+  // Compute the size and position of the container and the dragging handle.
+
   computeValues() {
+
+    // container
     const ctnDOMRect = getDOMRect(this.ctn.el, ['x', 'y', 'width', 'height'])
     Object.assign(this.ctn, ctnDOMRect)
 
+    // dragging handle
     const dragHandleDOMRect = getDOMRect(this.dragHandle.el, ['width', 'height'])
     Object.assign(this.dragHandle,
       dragHandleDOMRect,
       {
+        // Distance from the top left of the container.
         offsetLeft: this.dragHandle.el.offsetLeft,
         offsetTop: this.dragHandle.el.offsetTop,
       },
     )
 
+    /**
+     * Distance between the top-left of the menu and the center of the handle.
+     * This way it’s taken into account when the menu gets the `transform`.
+     */
     this.ctn.handleDeltaX = this.dragHandle.offsetLeft + (this.dragHandle.width / 2)
     this.ctn.handleDeltaY = this.dragHandle.offsetTop + (this.dragHandle.height / 2)
+
+    // Computation is done, we can finally snap if needed.
+
+    this.snapInViewport()
   }
 }
 

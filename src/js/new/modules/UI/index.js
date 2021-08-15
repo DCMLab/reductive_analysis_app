@@ -11,13 +11,14 @@ class UI {
   }
 
   onTap(e) {
+    this.relations?.onTap(e)
+
     if (!e.composedPath().includes(this.ctn)) { return }
 
     this.zoom?.onTap(e)
     this.selection?.onTap(e)
     this.navigation?.onTap(e)
     this.filters?.onTap(e)
-    this.relations?.onTap(e)
   }
 
   /**
@@ -47,6 +48,12 @@ class UI {
 
   onScoreLoad(e) {
     this.filters?.onScoreLoad(e)
+  }
+
+  onScoreSelection({ detail }) {
+    if (detail.selected.concat(detail.extraselected).length > 0) {
+      this.relations?.toggleVisibility(true)
+    }
   }
 
   init() {

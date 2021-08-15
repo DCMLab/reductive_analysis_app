@@ -1,5 +1,5 @@
 import filters        from './Filters'
-import initNavigation from './Navigation'
+import navigation from './Navigation'
 import selection      from './Selection'
 import zoom           from './Zoom'
 
@@ -19,23 +19,16 @@ class UI {
   }
 
   onResize() {
-    this.computeValues()
   }
 
   onScoreLoad(e) {
     this.filters?.onScoreLoad(e)
   }
 
-  computeValues() {
-    this.wW = window.innerWidth
-  }
-
   init() {
-    this.computeValues()
-
     this.zoom = zoom
     this.selection = selection
-    this.navigation = initNavigation(this)
+    this.navigation = navigation
     this.filters = filters
   }
 }

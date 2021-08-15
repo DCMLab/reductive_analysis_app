@@ -1,8 +1,8 @@
 import { doc } from '../../../utils/document'
+import viewport from '../../Viewport'
 
 class Navigation {
-  constructor(ui) {
-    this.ui = ui
+  constructor() {
     this.toLeftBtn = document.getElementById('to-left')
     this.toRightBtn = document.getElementById('to-right')
   }
@@ -12,8 +12,8 @@ class Navigation {
     if (e.target == this.toRightBtn) { return this.toRight() }
   }
 
-  toLeft() { this.goTo(-(this.ui.wW - 200)) }
-  toRight() { this.goTo(this.ui.wW - 200) }
+  toLeft() { this.goTo(-(viewport.w - 200)) }
+  toRight() { this.goTo(viewport.w - 200) }
 
   /**
    * Safari ignores CSS smooth scroll, which makes this a temporary solution.
@@ -27,4 +27,6 @@ class Navigation {
   goTo(x) { doc.scrollBy(x, 0) }
 }
 
-export default (ui) => new Navigation(ui)
+const navigation = new Navigation()
+
+export default navigation

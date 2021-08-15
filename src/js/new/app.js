@@ -1,10 +1,11 @@
 'use strict'
 
-import { doc } from './utils/document'
+import { doc }    from './utils/document'
 import initEvents from './events'
-import player from './modules/Player'
-import ui from './modules/UI'
-import history from './modules/History'
+import player     from './modules/Player'
+import ui         from './modules/UI'
+import history    from './modules/History'
+import viewport   from './modules/Viewport'
 
 class App {
   constructor() {
@@ -14,6 +15,8 @@ class App {
   init() {
     doc.classList.remove('loading')
     doc.classList.add('ready')
+
+    this.viewport = viewport
 
     initEvents(this)
 

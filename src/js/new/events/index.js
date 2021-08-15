@@ -30,6 +30,7 @@ class EventsManager {
 
   onResize() {
     debounceResize(() => {
+      this.app.viewport?.onResize()
       this.app.ui?.onResize()
     })
   }

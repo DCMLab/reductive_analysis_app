@@ -1,8 +1,10 @@
+import { passiveOnceEvent } from '../../../events/options'
 import { clamp }      from '../../../utils/math'
 import { getDOMRect } from '../../../utils/dom'
 import { pxToRem }    from '../../../utils/units'
 import viewport from '../../Viewport'
 
+// The minimal distance between the relations menu and the viewport.
 const SNAP_DELTA = 10
 
 class RelationsFlyOut {
@@ -35,15 +37,17 @@ class RelationsFlyOut {
     }
   }
 
-  onMouseUp() {
-    this.toggleDragging(false)
-    this.computeValues()
-    this.bringbackInViewport()
+  onMouseUp(e) {
+    if (this.#dragging) {
+      this.toggleDragging(false)
+      this.computeValues()
+      this.snapInViewport()
+    }
   }
 
   onResize() {
     this.computeValues()
-    this.bringbackInViewport()
+    this.snapInViewport()
   }
 
   updatePosition(x = this.x, y = this.y) {
@@ -53,10 +57,22 @@ class RelationsFlyOut {
     this.ctn.el.style.setProperty('--relations-menu-y', pxToRem(this.y))
   }
 
-  bringbackInViewport() {
+  /**
+   * Bring the relations menu back when dragged outside viewport boundaries.
+   */
+  snapInViewport() {
     const x = clamp(this.x, SNAP_DELTA, viewport.w - this.ctn.width - SNAP_DELTA)
     const y = clamp(this.y, SNAP_DELTA, viewport.h - this.ctn.height - SNAP_DELTA)
-    this.updatePosition(x + this.ctn.handleDeltaX, y + this.ctn.handleDeltaY)
+
+    if (x != this.x || y != this.y) {
+      this.ctn.el.classList.add('fly-out--relations--snapping')
+      this.ctn.el.addEventListener('transitionend', ({ propertyName }) => {
+        if (propertyName == 'transform') {
+          this.ctn.el.classList.remove('fly-out--relations--snapping')
+        }
+      }, passiveOnceEvent)
+      this.updatePosition(x + this.ctn.handleDeltaX, y + this.ctn.handleDeltaY)
+    }
   }
 
   toggleDragging(state = !this.#dragging) {

@@ -9,3 +9,7 @@
   // Custom properties set in JavaScript.
   transform: translate(var(--relations-menu-x, 0), var(--relations-menu-y, 0));
 }
+
+.fly-out--relations--snapping {
+  transition: transform .2s $out-back;
+}

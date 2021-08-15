@@ -60,27 +60,41 @@ class RelationsFlyOut {
     this.ctn.el.style.setProperty('--relations-menu-y', pxToRem(this.y))
   }
 
+
+  toggleDragging(state = !this.#dragging) {
+    this.#dragging = state
+    this.ctn.el.classList.toggle('grabbing', state)
+  }
+
   /**
    * Bring the relations menu back when dragged outside viewport boundaries.
    */
+
   snapInViewport() {
     const x = clamp(this.x, SNAP_DELTA, viewport.w - this.ctn.width - SNAP_DELTA)
     const y = clamp(this.y, SNAP_DELTA, viewport.h - this.ctn.height - SNAP_DELTA)
 
     if (x != this.x || y != this.y) {
+
+      // enable transition
       this.ctn.el.classList.add('fly-out--relations--snapping')
-      this.ctn.el.addEventListener('transitionend', ({ propertyName }) => {
-        if (propertyName == 'transform') {
-          this.ctn.el.classList.remove('fly-out--relations--snapping')
-        }
-      }, passiveOnceEvent)
-      this.updatePosition(x + this.ctn.handleDeltaX, y + this.ctn.handleDeltaY)
+      this.ctn.el.addEventListener('transitionend', this.onSnapTransitionEnd.bind(this))
+
+      // update position
+      this.updatePosition(
+        x + this.ctn.handleDeltaX,
+        y + this.ctn.handleDeltaY
+      )
     }
   }
 
-  toggleDragging(state = !this.#dragging) {
-    this.#dragging = state
-    this.ctn.el.classList.toggle('grabbing', state)
+  // Disable transition and remove transition listener.
+
+  onSnapTransitionEnd({ propertyName }) {
+    if (propertyName == 'transform') {
+      this.ctn.el.classList.remove('fly-out--relations--snapping')
+      this.ctn.el.removeEventListener('transitionend', this.onSnapTransitionEnd.bind(this))
+    }
   }
 
   computeValues() {

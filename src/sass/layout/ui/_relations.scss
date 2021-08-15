@@ -11,5 +11,9 @@
 }
 
 .fly-out--relations--snapping {
-  transition: transform .2s $out-back;
+  transition: transform .01s $out-back;
+
+  @media (--motion) {
+    transition-duration: .2s;
+  }
 }

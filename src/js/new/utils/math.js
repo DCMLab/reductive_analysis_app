@@ -5,6 +5,11 @@
  * - clamp(17, 3, 8)  // 8
  * - clamp(-3, 3, 8)  // 3
  * - clamp(5, 3, 8)   // 5
+ *
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
  */
 export const clamp = (val, min, max) => Math.max(min, Math.min(max, val))
 

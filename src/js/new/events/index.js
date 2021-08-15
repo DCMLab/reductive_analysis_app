@@ -1,6 +1,7 @@
 import { isFieldFocused } from '../utils/forms'
 import { isKey, isModifier, shortcutMeta } from './keyCodes'
 import { captureEvent } from './options'
+import MouseMoveTick from './mousemove'
 import debounceResize from './resize'
 
 class EventsManager {
@@ -15,6 +16,9 @@ class EventsManager {
 
     // input
     document.addEventListener('click', this.onTap.bind(this), captureEvent)
+    document.addEventListener('mousedown', this.onMouseDown.bind(this), captureEvent)
+    document.addEventListener('mousemove', this.onMouseMove.bind(this), captureEvent)
+    document.addEventListener('mouseup', this.onMouseUp.bind(this), captureEvent)
     document.addEventListener('keydown', this.onKeyDown.bind(this))
 
     // add :hover support in iOS ¯\_(ツ)_/¯
@@ -39,6 +43,20 @@ class EventsManager {
     this.app.player?.onTap(e)
     this.app.ui?.onTap(e)
     this.app.history?.onTap(e)
+  }
+
+  onMouseDown(e) {
+    this.app.ui?.onMouseDown(e)
+  }
+
+  onMouseMove(e) {
+    MouseMoveTick.tick(e, ({ x, y }) => {
+      this.app.ui?.onMouseMove(x, y)
+    })
+  }
+
+  onMouseUp(e) {
+    this.app.ui?.onMouseUp(e)
   }
 
   onChange(e) {

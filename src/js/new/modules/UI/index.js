@@ -1,7 +1,8 @@
-import filters        from './Filters'
+import filters    from './Filters'
 import navigation from './Navigation'
-import selection      from './Selection'
-import zoom           from './Zoom'
+import relations  from './Relations'
+import selection  from './Selection'
+import zoom       from './Zoom'
 
 class UI {
   constructor() {
@@ -16,9 +17,23 @@ class UI {
     this.selection?.onTap(e)
     this.navigation?.onTap(e)
     this.filters?.onTap(e)
+    this.relations?.onTap(e)
+  }
+
+  onMouseDown(e) {
+    this.relations?.onMouseDown(e)
+  }
+
+  onMouseMove(x, y) {
+    this.relations?.onMouseMove(x, y)
+  }
+
+  onMouseUp(e) {
+    this.relations?.onMouseUp(e)
   }
 
   onResize() {
+    this.relations?.onResize()
   }
 
   onScoreLoad(e) {
@@ -30,6 +45,7 @@ class UI {
     this.selection = selection
     this.navigation = navigation
     this.filters = filters
+    this.relations = relations
   }
 }
 

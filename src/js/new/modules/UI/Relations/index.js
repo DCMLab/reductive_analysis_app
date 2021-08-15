@@ -1,10 +1,10 @@
-import { passiveOnceEvent } from '../../../events/options'
 import { prevent }          from '../../../events/prevent'
 import { clamp }            from '../../../utils/math'
+import { doc }              from '../../../utils/document'
 import { getDOMRect }       from '../../../utils/dom'
 import { pxToRem }          from '../../../utils/units'
 import viewport             from '../../Viewport'
-import { doc } from '../../../utils/document'
+import { do_relation } from '../../../../app'
 
 // The minimal distance between the relations menu and the viewport.
 const SNAP_DELTA = 10
@@ -17,19 +17,27 @@ class RelationsFlyOut {
     this.closeBtn = this.ctn.el.querySelector('.fly-out__closeBtn')
     this.dragHandle = { el: this.ctn.el.querySelector('.fly-out__drag') }
 
+    // this.relationsBtns = this.ctn.el.getElementsByClassName('btn--relation')
+
     this.visible = false
     this.x = 0
     this.y = 0
 
     this.computeValues()
-    this.toggleVisibility(true) // for debug purpose
+    // this.toggleVisibility(true) // for debug purpose
   }
 
   // Common handlers for touch and mouse events.
 
   onTap(e) {
+    if (!e.composedPath().includes(this.ctn.el)) { return }
+
     if (e.target == this.closeBtn) {
-      this.toggleVisibility(false)
+      return this.toggleVisibility(false)
+    }
+
+    if (e.target.classList.contains('btn--relation')) {
+      do_relation(e.target.dataset.relationType)
     }
   }
 

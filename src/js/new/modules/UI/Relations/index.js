@@ -1,8 +1,9 @@
 import { passiveOnceEvent } from '../../../events/options'
-import { clamp }      from '../../../utils/math'
-import { getDOMRect } from '../../../utils/dom'
-import { pxToRem }    from '../../../utils/units'
-import viewport from '../../Viewport'
+import { prevent }          from '../../../events/prevent'
+import { clamp }            from '../../../utils/math'
+import { getDOMRect }       from '../../../utils/dom'
+import { pxToRem }          from '../../../utils/units'
+import viewport             from '../../Viewport'
 
 // The minimal distance between the relations menu and the viewport.
 const SNAP_DELTA = 10
@@ -21,23 +22,25 @@ class RelationsFlyOut {
     this.computeValues()
   }
 
+  // Common handlers for touch and mouse events.
+
   onTap(e) {
     // @todo
   }
 
-  onMouseDown({ target }) {
-    if (target == this.dragHandle.el) {
-      this.toggleDragging(true)
+  onTapStart(e) {
+    if (e.target == this.dragHandle.el) {
+      prevent(e, () => this.toggleDragging(true))
     }
   }
 
-  onMouseMove(x, y) {
+  onTapMove(x, y) {
     if (this.#dragging) {
       this.updatePosition(x, y)
     }
   }
 
-  onMouseUp(e) {
+  onTapEnd() {
     if (this.#dragging) {
       this.toggleDragging(false)
       this.computeValues()

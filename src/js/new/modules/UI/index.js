@@ -20,17 +20,26 @@ class UI {
     this.relations?.onTap(e)
   }
 
-  onMouseDown(e) {
-    this.relations?.onMouseDown(e)
+  /**
+   * Common handlers for touch and mouse events.
+   */
+
+  // touchstart, mousedown
+  onTapStart(e) {
+    this.relations?.onTapStart(e)
   }
 
-  onMouseMove(x, y) {
-    this.relations?.onMouseMove(x, y)
+  // touchmove, mousemove
+  onTapMove(x, y) {
+    this.relations?.onTapMove(x, y)
   }
 
-  onMouseUp(e) {
-    this.relations?.onMouseUp(e)
+  // touchend, mouseup
+  onTapEnd() {
+    this.relations?.onTapEnd()
   }
+
+  // Other events
 
   onResize() {
     this.relations?.onResize()

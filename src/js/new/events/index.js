@@ -14,15 +14,19 @@ class EventsManager {
   init() {
     window.addEventListener('resize', this.onResize.bind(this))
 
-    // input
+    // mouse
     document.addEventListener('click', this.onTap.bind(this), captureEvent)
-    document.addEventListener('mousedown', this.onMouseDown.bind(this), captureEvent)
+    document.addEventListener('mousedown', this.onTapStart.bind(this), captureEvent)
     document.addEventListener('mousemove', this.onMouseMove.bind(this), captureEvent)
-    document.addEventListener('mouseup', this.onMouseUp.bind(this), captureEvent)
-    document.addEventListener('keydown', this.onKeyDown.bind(this))
+    document.addEventListener('mouseup', this.onTapEnd.bind(this), captureEvent)
 
-    // add :hover support in iOS ¯\_(ツ)_/¯
-    document.addEventListener('touchstart', () => {})
+    // touch (`touchstart` also adds :hover support in iOS ¯\_(ツ)_/¯)
+    document.addEventListener('touchstart', this.onTapStart.bind(this), captureEvent)
+    document.addEventListener('touchmove', this.onTouchMove.bind(this), captureEvent)
+    document.addEventListener('touchend', this.onTapEnd.bind(this), captureEvent)
+
+    // keyboard
+    document.addEventListener('keydown', this.onKeyDown.bind(this))
 
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
@@ -32,6 +36,8 @@ class EventsManager {
     document.addEventListener('scoreload', this.onScoreLoad.bind(this))
   }
 
+  // Browser events
+
   onResize() {
     debounceResize(() => {
       this.app.viewport?.onResize()
@@ -39,30 +45,64 @@ class EventsManager {
     })
   }
 
+  /**
+   * Mouse and touch events.
+   *
+   * For orders of events and how to prevent the sequence on touch, see:
+   * https://developer.mozilla.org/en-US/docs/Web/API/Touch_events/Supporting_both_TouchEvent_and_MouseEvent#event_order
+   */
+
+  // Click event. It can happen with mouse and touch, so better name it tap!
+
   onTap(e) {
     this.app.player?.onTap(e)
     this.app.ui?.onTap(e)
     this.app.history?.onTap(e)
   }
 
-  onMouseDown(e) {
-    this.app.ui?.onMouseDown(e)
+  /**
+   * Common handlers for touch and mouse events.
+   */
+
+  // touchstart, mousedown
+  onTapStart(e) {
+    this.app.ui?.onTapStart(e)
   }
+
+  // touchend, mouseup
+  onTapEnd() {
+    this.app.ui?.onTapEnd()
+  }
+
+  // Mouse-only events
 
   onMouseMove(e) {
     MouseMoveTick.tick(e, ({ x, y }) => {
-      this.app.ui?.onMouseMove(x, y)
+      this.app.ui?.onTapMove(x, y)
     })
   }
 
-  onMouseUp(e) {
-    this.app.ui?.onMouseUp(e)
+  // Touch-only events
+
+  onTouchMove(e) {
+    const touchCoordinates = {
+      x: Math.round(e.touches[0].clientX),
+      y: Math.round(e.touches[0].clientY),
+    }
+
+    MouseMoveTick.tick(touchCoordinates, ({ x, y }) => {
+      this.app.ui?.onTapMove(x, y)
+    })
   }
+
+  // Forms events
 
   onChange(e) {
     this.app.player?.onChange(e)
     this.app.ui?.filters?.onChange(e)
   }
+
+  // App custom events
 
   onUndoRedo(e) {
     this.app.history?.onUndoRedo(e)
@@ -71,6 +111,8 @@ class EventsManager {
   onScoreLoad(e) {
     this.app.ui?.onScoreLoad(e)
   }
+
+  // Keyboard events
 
   onKeyDown(e) {
 

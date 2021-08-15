@@ -30,7 +30,8 @@
   "homepage": "https://github.com/DCMLab/reductive_analysis_app#readme",
   "devDependencies": {
     "@babel/cli": "^7.12",
-    "@babel/core": "^7.12",
+    "@babel/core": "^7.15.0",
+    "@babel/eslint-parser": "^7.15.0",
     "@babel/preset-env": "^7.12",
     "@soda/friendly-errors-webpack-plugin": "^1.8.0",
     "@testing-library/dom": "^7.29.4",
@@ -45,7 +46,7 @@
     "dotenv": "^8",
     "double-dash.scss": "^0.8",
     "easings.scss": "^0.3",
-    "eslint": "^7.30.0",
+    "eslint": "^7.32.0",
     "eslint-webpack-plugin": "^2.5.4",
     "expose-loader": "^3.0.0",
     "family.scss": "^1.0",

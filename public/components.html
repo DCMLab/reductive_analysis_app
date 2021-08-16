@@ -330,6 +330,35 @@
         </svg>
     </button>
 
+    <div class="fly-out fly-out--dark fly-out--collapsible fly-out--expanded">
+
+        <h3 class="fly-out__toggle">
+            <button id="menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                Menu
+                <svg class="btn__icon" width="20" height="10">
+                    <use xlink:href="#filter-path"/>
+                </svg>
+            </button>
+        </h3>
+
+        <div class="fly-out__inner">
+            <h4 class="fly-out__title">File</h4>
+            <div class="btn-group">
+                <button class="btn btn--plain" type="button">Save file</button>
+                <button class="btn btn--plain" type="button"><span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span></button>
+                <label class="file | btn btn--plain" for="file">
+                    <span>
+                        Select a <abbr title="Music Encoding Initiative">MEI</abbr> file
+                        <input class="file__input" id="file" type="file" accept=".mei">
+                    </span>
+                </label>
+            </div>
+            <hr class="fly-out__hr">
+            <h4 class="fly-out__title">Relations settings</h4>
+        </div>
+
+    </div>
+
     <button class="btn btn--plain btn--small-icon" type="button">
         Metadata
         <svg class="btn__icon" width="10" height="8">

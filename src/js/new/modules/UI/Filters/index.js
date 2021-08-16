@@ -1,12 +1,10 @@
 /**
  * Filter relations shown on screen. The filters available are the ones
  * matching the score relations and are automatically synced using a
- * MutationObserver listening for DOM changes in score.
+ * MutationObserver listening to DOM changes in the current score.
  *
  * @todo:
- *
  * 1) bring default color config
- *
  * 2) remove filters from index.html as they are JS-generated
  */
 
@@ -14,17 +12,17 @@ import Group from './group'
 
 class Filters {
   constructor() {
-    this.open = false
+    this.visible = false
 
     // Filters DOM elements
     this.ctn = document.getElementById('filters')
     this.toggleBtn = document.getElementById('filters-toggle')
 
-    // Score SVG
+    // Score SVG container
     this.svgCtn = document.getElementById('layers')
 
-    this.observer = this.createObserver() // adapt it
-    this.groups = this.createGroups()
+    this.observer = this.createMutationObserver() // adapt it
+    this.groups = this.createFiltersGroups()
   }
 
   onTap({ target }) {
@@ -37,14 +35,47 @@ class Filters {
     this.groups.forEach(group => group.onChange(e))
   }
 
-  onScoreLoad(e) {
+  onScoreLoad() {
     this.toggle(false) // close filter menu
     this.observer.disconnect() // stop observer
     this.update()
     this.observe() // restart observer
   }
 
-  createObserver() {
+  observe() {
+    this.observer.observe(document.querySelector('#layers .svg_container > svg .page-margin'), {
+      subtree: true,
+      childList: true,
+      attributeOldValue: true,
+      attributeFilter: ['type'],
+    })
+  }
+
+  toggle(state = !this.visible) {
+    this.visible = state
+    this.ctn.classList.toggle('fly-out--expanded', state)
+    this.ctn.classList.toggle('fly-out--collapsed', !state)
+  }
+
+  update() {
+    this.groups.forEach(group => group.getRelations())
+    this.groups.forEach(group => group.render())
+  }
+
+  createFiltersGroups() {
+    return [
+      new Group('relation', {
+        filterCtnId: 'relations-filters',
+        svgCtn: this.svgCtn,
+      }),
+      new Group('metarelation', {
+        filterCtnId: 'meta-relations-filters',
+        svgCtn: this.svgCtn,
+      }),
+    ]
+  }
+
+  createMutationObserver() {
     return new MutationObserver(mutations => {
 
       // Look for a type change in a relation.
@@ -88,40 +119,6 @@ class Filters {
         }
       }
     })
-  }
-
-  // Filters groups
-  createGroups() {
-    return [
-      new Group('relation', {
-        filterCtnId: 'relations-filters',
-        svgCtn: this.svgCtn,
-      }),
-      new Group('metarelation', {
-        filterCtnId: 'meta-relations-filters',
-        svgCtn: this.svgCtn,
-      }),
-    ]
-  }
-
-  observe() {
-    this.observer.observe(document.querySelector('#layers .svg_container > svg .page-margin'), {
-      subtree: true,
-      childList: true,
-      attributeOldValue: true,
-      attributeFilter: ['type'],
-    })
-  }
-
-  toggle(state = !this.open) {
-    this.open = state
-    this.ctn.classList.toggle('fly-out--expanded', state)
-    this.ctn.classList.toggle('fly-out--collapsed', !state)
-  }
-
-  update() {
-    this.groups.forEach(group => group.getRelations())
-    this.groups.forEach(group => group.render())
   }
 }
 

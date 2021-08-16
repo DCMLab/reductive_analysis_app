@@ -1,6 +1,14 @@
 import { capitalize } from '../../../utils/string'
 
+/**
+ * A group of filters for a category of relations.
+ */
 export default class FilterGroup {
+  /**
+   *
+   * @param {string} namespace
+   * @param {FilterGroupOptions} options
+   */
   constructor(namespace, options) {
     this.namespace = namespace
 
@@ -25,7 +33,7 @@ export default class FilterGroup {
   }
 
   /**
-   * Get the list of relations on the page.
+   * Get the list of relations type on the page.
    */
   getRelations() {
     const uniqueRelations = new Set(Array.from(this.paths, path => path.getAttribute('type')))
@@ -66,3 +74,10 @@ export default class FilterGroup {
     `
   }
 }
+
+/**
+ * @typedef FilterGroupOptions
+ *
+ * @property {string} filterCtnId The ID of the HTML container of the group.
+ * @property {HTMLElement} svgCtn The HTML element containing all the scores.
+ */

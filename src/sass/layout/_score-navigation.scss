@@ -1,0 +1,13 @@
+.score-navigation {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  display: inline-flex;
+  gap: 1rem;
+}
+
+.navigation-arrow {
+  size: 4rem;
+  border-radius: 50%;
+}

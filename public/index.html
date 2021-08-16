@@ -62,6 +62,33 @@
 
     <div id="ui" class="ui">
 
+        <!-- Undo, redo, (un)select all -->
+
+        <div id="history-and-selection" class="history-and-selection | flex-center">
+
+            <div class="btn-tabs">
+
+                <button id="undo" class="undo | btn btn--small btn-tabs__btn" type="button">
+                    <svg class="btn__icon" width="20" height="20">
+                        <use xlink:href="#undo-path"/>
+                    </svg>
+                    <span class="visually-hidden">Undo</span>
+                </button>
+
+                <button id="redo" class="redo | btn btn--small btn-tabs__btn" type="button">
+                    <svg class="redo__icon btn__icon" width="20" height="20">
+                        <use xlink:href="#undo-path"/>
+                    </svg>
+                    <span class="visually-hidden">Redo</span>
+                </button>
+
+            </div>
+
+            <button id="select-all" class="btn btn--hollow" type="button">Select visible relations</button>
+            <button id="unselect-all" class="btn btn--hollow" type="button">Unselect all</button>
+
+        </div>
+
         <!-- Zoom -->
 
         <div id="zoom" class="zoom">
@@ -85,6 +112,24 @@
                     <use xlink:href="#minus-path"/>
                 </svg>
                 <span class="visually-hidden">Zoom out</span>
+            </button>
+        </div>
+
+        <!-- In-score navigation -->
+
+        <div id="score-navigation" class="score-navigation">
+            <button id="to-left" class="btn btn--plain navigation-arrow" type="button">
+                <svg class="btn__icon chevron--left" width="6" height="8">
+                    <use xlink:href="#chevron-path"/>
+                </svg>
+                <span class="visually-hidden">To left</span>
+            </button>
+
+            <button id="to-right" class="btn btn--plain navigation-arrow" type="button">
+                <svg class="btn__icon" width="6" height="8">
+                    <use xlink:href="#chevron-path"/>
+                </svg>
+                <span class="visually-hidden">To right</span>
             </button>
         </div>
     </div>
@@ -149,20 +194,12 @@
             <div id="relations_panel_toggle" title="Shortcut: '-'">&#9900;</div>
         </div>
         <div id="navigation_buttons">
-            <input type="button" id="panleftbutton" value="Left">
-            <input type="button" id="panrightbutton" value="Right">
             <input type="button" id="previousbookmarkbutton" value="Previous">
             <input type="button" id="nextbookmarkbutton" value="Next">
             <input type="button" id="previouscontextbutton" value="Up">
             <input type="button" id="nextcontextbutton" value="Down">
-            <!-- <input type="button" id="zoomoutbutton" value="Zoom out"> -->
-            <!-- <input type="button" id="zoominbutton" value="Zoom in"> -->
         </div>
         <div id="basic_buttons">
-            <input type="button" id="undobutton" value="Undo">
-            <input type="button" id="redobutton" value="Redo">
-            <input type="button" id="selectvisiblesaltbutton" value="Select visible relations">
-            <input type="button" id="deselectbutton" value="Deselect all">
             <input type="button" id="deletebutton" value="Delete meta-relations">
             <input type="button" id="addnotebutton" value="Toggle adding a note"/>
             <input type="button" id="addbookmarkbutton" value="Bookmark note"/>
@@ -238,6 +275,9 @@
             <path d="M541 272c-39 40-106 40-145-1C296 168 118 0 0 0h936C821 0 641 168 541 272z"/>
         </symbol>
 
+        <symbol id="undo-path" viewBox="0 0 20 21" fill="currentColor">
+            <path d="M4.08 15.742V7.96C4.08 3.57 7.65 0 12.04 0 16.429 0 20 3.571 20 7.96v6.058a1.343 1.343 0 11-2.687 0V7.96a5.28 5.28 0 00-5.273-5.273A5.28 5.28 0 006.766 7.96v7.782l1.787-1.786a1.343 1.343 0 011.9 0 1.323 1.323 0 010 1.9l-4.08 4.08a1.343 1.343 0 01-1.9 0l-4.08-4.08a1.343 1.343 0 111.9-1.9l1.787 1.786z"/>
+        </symbol>
     </svg>
 </body>
 

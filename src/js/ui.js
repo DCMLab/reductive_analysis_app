@@ -173,9 +173,6 @@ export function select_visibles(draw_context) {
   }
 }
 
-const selectVisiblesAltButton = document.getElementById('selectvisiblesaltbutton')
-selectVisiblesAltButton.addEventListener('click', () => select_visibles(current_draw_context))
-
 /* UI populater functions */
 
 // Configured types need a button and a color each
@@ -387,12 +384,6 @@ function add_filters(draw_context) {
   Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, 'relation'))
   Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, 'metarelation'))
 
-  var selectVisiblesButton = button('Select visible relations')
-  selectVisiblesButton.classList.add('select_visibles_button')
-  selectVisiblesButton.id = (draw_context.id_prefix + 'selectvisiblesbutton')
-  selectVisiblesButton.onclick = () => { select_visibles(draw_context) }
-  div.appendChild(selectVisiblesButton)
-
   var zoomdiv = document.createElement('div')
   zoomdiv.classList.add('zoom_buttons')
   var zoomin = button('+')
@@ -500,10 +491,6 @@ export function handle_keypress(ev) {
     naturalize_notes()
   } else if (ev.key == action_conf.toggle_add_note) { // Toggle note creation.
     toggle_placing_note()
-  } else if (ev.key == navigation_conf.pan_left) { // Pan left.
-    pan(0)
-  } else if (ev.key == navigation_conf.pan_right) { // Pan right.
-    pan(1)
   } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
     zoom_out(current_draw_context)
   } else if (ev.key == navigation_conf.zoom_in) { // Zoom in.
@@ -692,9 +679,6 @@ export function do_deselect() {
   selected.forEach((x) => toggle_selected(x))
   extraselected.forEach((x) => toggle_selected(x, true))
 }
-
-const unselectButton = document.getElementById('deselectbutton')
-unselectButton.addEventListener('click', do_deselect)
 
 function getReducedMidi(draw_context = null) {
   if (!draw_context) {
@@ -933,20 +917,6 @@ function hide_top(draw_context) {
     svg_elem.children[0].setAttribute('height', draw_context.old_height)
   }
 }
-
-function pan(direction = 1) {
-  if (direction == 1)
-    $('html, body').animate({ scrollLeft: $(window).scrollLeft() + window.innerWidth }, 300)
-  else if (direction == 0)
-    $('html, body').animate({ scrollLeft: $(window).scrollLeft() - window.innerWidth }, 300)
-  else return false
-}
-
-const panLeftButton = document.getElementById('panleftbutton')
-panLeftButton.addEventListener('click', () => pan(0))
-
-const panRightButton = document.getElementById('panrightbutton')
-panRightButton.addEventListener('click', () => pan(1))
 
 export function minimap() {
   document.getElementById('minimap').width = 100

@@ -286,12 +286,6 @@ export function do_metarelation(type, id, redoing = false) {
 
 var rerendered_after_action
 
-const undoButton = document.getElementById('undobutton')
-undoButton.addEventListener('click', do_undo)
-
-const redoButton = document.getElementById('redobutton')
-redoButton.addEventListener('click', do_redo)
-
 // Function to download data to a file
 // Taken from StackOverflow answer by Kanchu at
 // https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
@@ -687,15 +681,11 @@ function initialize_panel() {
 
   const buttons = [
     // conf.js label    ->        <input> element id
-    ['undo', 'undobutton'],
-    ['deselect_all', 'deselectbutton'],
     ['delete_all', 'deletebutton'],
     ['add_bookmark', 'addbookmarkbutton'],
     ['show_hide_notation', 'equalizebutton'],
     ['toggle_type_shades', 'shadesbutton'],
     ['toggle_add_note', 'addnotebutton'],
-    ['pan_left', 'panleftbutton'],
-    ['pan_right', 'panrightbutton'],
     ['jump_to_next_bookmark', 'previousbookmarkbutton'],
     ['jump_to_previous_bookmark', 'nextbookmarkbutton'],
     ['jump_to_context_below', 'previouscontextbutton'],

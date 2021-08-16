@@ -107,6 +107,7 @@ describe('reductive_analysis_test_suite', () => {
       'input[type=file]',
       path.join(__dirname, 'test_scores', 'mozart13.xml')
     );
+    await expect(page).toMatchElement('div.layer'); 
   });
 
   it('should have loaded view-specific buttons', async function  () {

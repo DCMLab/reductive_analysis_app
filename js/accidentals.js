@@ -4,7 +4,7 @@ function naturalize_notes() {
     console.log("Can only naturalize notes.")
     return;
   }
-  if(!(get_by_id(document, draw_context_of(selected[0].id_prefix + "editcb")).checked)){
+  if(!(get_by_id(document, draw_context_of(selected[0]).id_prefix + "editcb").checked)){
     console.log("No modifications allowed to non-editable layer.");
     return;
   }

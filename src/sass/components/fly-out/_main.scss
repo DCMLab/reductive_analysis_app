@@ -1,0 +1,63 @@
+.fly-out {
+  position: relative;
+  padding-block-end: v(fly-out-inner-space, 2rem);
+
+  background: v(fly-out-bg, $cod-gray);
+  border-radius: 1rem;
+  color: v(primary);
+  filter: drop-shadow(0 .2rem 1rem hsl(0, 0%, 0%, .15));
+}
+
+.fly-out__inner {
+  /**
+   * Space used to position the overflow scrollbar half-way between this block
+   * and the fly-out border.
+   */
+  --fly-out-half-inner-space: calc(var(--fly-out-inner-space, 2rem) / 2);
+
+  margin-block-start: 2rem;
+  margin-inline-end: v(fly-out-half-inner-space);
+  padding-block-end: 0;
+  padding-inline:
+    v(fly-out-inner-space, 2rem)
+    v(fly-out-half-inner-space);
+
+  // Thanks for the parsing, SASS… -_-
+  // max-height: unquote('min(calc(100vh - 4rem), 58rem)'); // 4rem = space around UI.
+  max-height: unquote('min(var(--fly-out-max-height), calc(100vh - 4rem), 50rem)'); // 4rem = space around UI.
+
+  overflow-y: auto;
+
+  // Scrollbar (standard)
+
+  scrollbar-width: thin;
+  scrollbar-color: v(primary) hsl(0, 0%, 100%, .1);
+
+  // Scrollbar (webkit)
+
+  &::-webkit-scrollbar {
+    width: .4rem;
+    background: hsl(0, 0%, 100%, .1);
+    border-radius: .2rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: v(primary);
+    border-radius: .2rem;
+  }
+}
+
+.fly-out--big {
+  --fly-out-inner-space: 3rem;
+}
+
+.fly-out--dark {
+  --bg: #{$cod-gray};
+  --primary: var(--white);
+  --fly-out-bg: var(--bg);
+}
+
+// @todo
+.fly-out--light {
+  --fly-out-bg: var(--bg);
+}

@@ -151,7 +151,7 @@ export function toggle_selected(item, extra) {
 
 export function select_visibles(draw_context) {
   // Find all non-filtered relationships in the draw context.
-  var visibles = Array.from(draw_context.svg_elem.getElementsByClassName('relation')).filter(n => !n.classList.contains('filtered'))
+  var visibles = Array.from(draw_context.svg_elem.getElementsByClassName('relation')).filter(n => !n.classList.contains('relation--filtered'))
 
   // Clear out any selections in other contexts.
   if (visibles.length > 0) {
@@ -342,33 +342,6 @@ export function add_buttons(draw_context) {
   draw_context.view_elem.children[0].appendChild(buttondiv)
 }
 
-function add_filter(draw_context, div, type, thing) {
-  var d = document.createElement('div')
-  var cb = checkbox(type)
-  cb.id = draw_context.id_prefix + type + 'filtercb'
-  cb.classList.add(type + 'filtercb')
-  cb.checked = true
-  d.appendChild(cb)
-  div.appendChild(d)
-  var label = document.createElement('Label')
-  label.setAttribute('for', cb.id)
-  label.style.color = type_shades[type]
-  label.innerHTML = type
-  d.appendChild(label)
-  cb.onclick = (ev) => {
-    var filtered = !cb.checked
-    Array.from(draw_context.svg_elem.getElementsByClassName(thing)).forEach((e) => {
-      if (e.getAttribute('type') == type) {
-        if (filtered) {
-          if (e.classList.contains('selectedrelation')) toggle_selected(e)
-          e.classList.add('filtered')
-        } else
-          e.classList.remove('filtered')
-      }
-    })
-  }
-}
-
 function add_filters(draw_context) {
   var sidebar = document.createElement('div')
   sidebar.id = draw_context.id_prefix + 'sidebardiv'
@@ -380,9 +353,6 @@ function add_filters(draw_context) {
   div.classList.add('filterdiv')
   div.innerHTML = `&#9776;&nbsp;L${draw_context.layer_number}&nbsp;V${draw_context.view_number}<br/></br>`
   sidebar.prepend(div)
-
-  Object.keys(type_conf).forEach((x) => add_filter(draw_context, div, x, 'relation'))
-  Object.keys(meta_conf).forEach((x) => add_filter(draw_context, div, x, 'metarelation'))
 
   var zoomdiv = document.createElement('div')
   zoomdiv.classList.add('zoom_buttons')
@@ -798,7 +768,7 @@ export function drag_selector_installer(svg_elem) {
         .filter(x => {
           if (typeof (x) == 'undefined' || typeof (x.classList) == 'undefined') return false
           var shiftKey = event.shiftKey
-          return (x.classList.contains('relation') && !x.classList.contains('filtered') && !x.classList.contains('selectedrelation') && !x.classList.contains('extraselectedrelation') && !shiftKey)
+          return (x.classList.contains('relation') && !x.classList.contains('relation--filtered') && !x.classList.contains('selectedrelation') && !x.classList.contains('extraselectedrelation') && !shiftKey)
             || (x.classList.contains('note') && !x.classList.contains('selectednote') && !x.classList.contains('extraselectednote'))
             || (x.classList.contains('metarelation') && !x.classList.contains('selectedrelation') && !x.classList.contains('extraselectedrelation') && !shiftKey)
         })
@@ -833,7 +803,7 @@ export function tooltip_update() {
     })
     .filter(x => {
       if (typeof (x) == 'undefined' || typeof (x.classList) == 'undefined') return false
-      return (x.classList.contains('relation') && !x.classList.contains('filtered'))
+      return (x.classList.contains('relation') && !x.classList.contains('relation--filtered'))
         || (x.classList.contains('metarelation'))
     })[0]
   update = update ? update.getAttribute('type') : ''

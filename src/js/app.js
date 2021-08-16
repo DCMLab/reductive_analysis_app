@@ -534,6 +534,8 @@ function load_finish(loader_modal) {
   document.onkeyup = handle_keyup
   document.getElementById('layers').onclick = handle_click
 
+  document.dispatchEvent(new Event('scoreload'))
+
   // Install drag-select controller.
   drag_selector_installer()
 

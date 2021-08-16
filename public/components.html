@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="loader">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -30,15 +30,15 @@
 
 <body>
 
-    <div class="fly-out fly-out--dark">
-        <div class="btn-group">
-            <button class="btn btn--hollow btn--relation btn--relation-repeat" type="button">Repeat</button>
-            <button class="btn btn--hollow btn--relation btn--relation-passing" type="button">Passing</button>
-            <button class="btn btn--hollow btn--relation btn--relation-neighbour" type="button">Neighbour</button>
-            <button class="btn btn--hollow btn--relation btn--relation-harmonic" type="button">Harmonic</button>
-            <button class="btn btn--hollow btn--relation btn--relation-arpeggio" type="button">Arpeggio</button>
-            <button class="btn btn--hollow btn--relation btn--relation-urlinie" type="button">Urlinie</button>
-            <button class="btn btn--hollow btn--relation btn--relation-bassbrechung" type="button">Bassbrechung</button>
+    <div class="fly-out fly-out--big fly-out--dark">
+        <div class="fly-out__inner btn-group">
+            <button class="btn btn--hollow btn--relation color-relation-repeat" type="button">Repeat</button>
+            <button class="btn btn--hollow btn--relation color-relation-passing" type="button">Passing</button>
+            <button class="btn btn--hollow btn--relation color-relation-neighbour" type="button">Neighbour</button>
+            <button class="btn btn--hollow btn--relation color-relation-harmonic" type="button">Harmonic</button>
+            <button class="btn btn--hollow btn--relation color-relation-arpeggio" type="button">Arpeggio</button>
+            <button class="btn btn--hollow btn--relation color-relation-urlinie" type="button">Urlinie</button>
+            <button class="btn btn--hollow btn--relation color-relation-bassbrechung" type="button">Bassbrechung</button>
             <button class="btn btn--hollow" type="button">
                 <span class="visually-hidden">view more relations</span>
                 &hellip;
@@ -47,6 +47,185 @@
                 <use xlink:href="#notch-path"/>
             </svg>
         </div>
+    </div>
+
+    <div class="fly-out fly-out--dark fly-out--collapsible fly-out--collapsed">
+
+        <h3 class="fly-out__toggle">
+            <button id="filters-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                Filters
+                <svg class="btn__icon" width="20" height="10">
+                    <use xlink:href="#filter-path"/>
+                </svg>
+            </button>
+        </h3>
+
+        <div class="fly-out__inner">
+            Something not visible because collapsed.
+        </div>
+
+    </div>
+
+    <div class="fly-out fly-out--dark fly-out--collapsible fly-out--expanded">
+
+        <h3 class="fly-out__toggle">
+            <button id="filters-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                Filters
+                <svg class="btn__icon" width="20" height="10">
+                    <use xlink:href="#filter-path"/>
+                </svg>
+            </button>
+        </h3>
+
+        <div class="fly-out__inner" style="--fly-out-max-height: 39rem;">
+
+            <fieldset>
+                <legend class="fly-out__title">Relations</legend>
+                <ul class="btn-group btn-group--vertical noselect">
+                    <li>
+                        <label class="checkable color-relation-repeat" for="filter-repeat">
+                            Repeat
+                            <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-passing" for="filter-passing">
+                            Passing
+                            <input class="checkable__input" type="checkbox" id="filter-passing" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-neighbour" for="filter-neighbour">
+                            Neighbour
+                            <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-harmonic" for="filter-harmonic">
+                            Harmonic
+                            <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-arpeggio" for="filter-arpeggio">
+                            Arpeggio
+                            <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-urlinie" for="filter-urlinie">
+                            Urlinie
+                            <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
+                            Bassbrechung
+                            <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable" for="filter-something-else">
+                            Something else
+                            <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                </ul>
+            </fieldset>
+
+            <hr class="fly-out__hr">
+
+            <fieldset>
+                <legend class="fly-out__title">Meta-relations</legend>
+                <ul class="btn-group btn-group--vertical noselect">
+                    <li>
+                        <label class="checkable color-relation-repeat" for="filter-repeat">
+                            Repeat
+                            <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-passing" for="filter-passing">
+                            Passing
+                            <input class="checkable__input" type="checkbox" id="filter-passing" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
+                            Bassbrechung
+                            <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
+                            <span class="checkbox checkbox--colored">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="checkable" for="filter-something-else">
+                            Something else
+                            <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"/>
+                                </svg>
+                            </span>
+                        </label>
+                    </li>
+                </ul>
+            </fieldset>
+        </div>
+
     </div>
 
     <button class="btn btn--hollow" type="button">Save file</button>
@@ -91,6 +270,35 @@
         </svg>
     </button>
 
+    <div class="fly-out fly-out--dark fly-out--collapsible fly-out--expanded">
+
+        <h3 class="fly-out__toggle">
+            <button id="menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                Menu
+                <svg class="btn__icon" width="20" height="10">
+                    <use xlink:href="#filter-path"/>
+                </svg>
+            </button>
+        </h3>
+
+        <div class="fly-out__inner">
+            <h4 class="fly-out__title">File</h4>
+            <div class="btn-group">
+                <button class="btn btn--plain" type="button">Save file</button>
+                <button class="btn btn--plain" type="button"><span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span></button>
+                <label class="file | btn btn--plain" for="file">
+                    <span>
+                        Select a <abbr title="Music Encoding Initiative">MEI</abbr> file
+                        <input class="file__input" id="file" type="file" accept=".mei">
+                    </span>
+                </label>
+            </div>
+            <hr class="fly-out__hr">
+            <h4 class="fly-out__title">Relations settings</h4>
+        </div>
+
+    </div>
+
     <button class="btn btn--plain btn--small-icon" type="button">
         Metadata
         <svg class="btn__icon" width="10" height="8">
@@ -99,7 +307,7 @@
     </button>
 
     <button class="btn btn--plain" type="button">
-        Filter
+        Filters
         <svg class="btn__icon" width="20" height="10">
             <use xlink:href="#filter-path"/>
         </svg>
@@ -137,6 +345,10 @@
 
         <symbol id="bookmark-path" viewBox="0 0 12 16" fill="#e42618">
             <path d="M10.72 0H1.332A1.315 1.315 0 00.024 1.307v9.91c0 .416.199.808.535 1.054l4.687 3.476c.217.157.475.245.743.253.267-.01.525-.098.743-.252l4.731-3.477c.333-.248.526-.64.52-1.055V1.307A1.3 1.3 0 0010.72 0zM8.954 6.985l-.936.906.208 1.278a.743.743 0 01-.713.884.742.742 0 01-.342-.09l-1.152-.608-1.158.609a.743.743 0 01-.743-.045.743.743 0 01-.305-.743L4.035 7.9l-.943-.906a.743.743 0 01-.186-.743.743.743 0 01.594-.498l1.278-.193L5.35 4.4a.743.743 0 01.661-.4c.278-.002.533.153.661.4l.58 1.159 1.277.193c.275.045.502.24.587.505a.743.743 0 01-.163.728z"/>
+        </symbol>
+
+        <symbol id="check-path" viewBox="0 0 12 10" fill="currentColor" stroke="currentColor">
+            <path d="M10.38 1.22a.75.75 0 00-1.07 0L4.07 7.44 1.81 4.9A.75.75 0 00.7 5.92l2.8 3.12c.13.15.33.24.53.24h.02c.2 0 .39-.08.53-.22l5.8-6.77c.3-.3.3-.77 0-1.07z"  />
         </symbol>
 
         <symbol id="chevron-path" viewBox="0 0 6 8" fill="currentColor">

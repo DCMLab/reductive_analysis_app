@@ -25,6 +25,7 @@ class EventsManager {
 
     // core app events
     document.addEventListener('undoredo', this.onUndoRedo.bind(this))
+    document.addEventListener('scoreload', this.onScoreLoad.bind(this))
   }
 
   onResize() {
@@ -41,10 +42,15 @@ class EventsManager {
 
   onChange(e) {
     this.app.player?.onChange(e)
+    this.app.ui?.filters?.onChange(e)
   }
 
   onUndoRedo(e) {
     this.app.history?.onUndoRedo(e)
+  }
+
+  onScoreLoad(e) {
+    this.app.ui?.onScoreLoad(e)
   }
 
   onKeyDown(e) {

@@ -1,0 +1,44 @@
+// Container for a group of tab buttons.
+
+.btn-tabs {
+  display: inline-flex;
+
+  // When interacting with the group, highlight 1 button, fade out the others.
+
+  &:hover,
+  &:focus,
+  &:focus-within {
+    --btn-transition: .1s;
+
+    .btn-tabs__btn {
+      --btn-border: var(--primary); // overwrite default hover/focus
+
+      // Fade out other buttons.
+
+      &:not(:hover):not(:focus) {
+        --btn-color: #{$alto};
+      }
+
+      /**
+       * Removing transition on background-color and color to only keep the
+       * border-color one gives better feedback on :active release.
+       */
+
+      &:hover,
+      &:focus {
+        transition-property: border-color;
+      }
+
+      &:active {
+        --btn-transition: 0s;
+
+        // Hide surrounding separators of the active button.
+
+        &::before,
+        & + ::before {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}

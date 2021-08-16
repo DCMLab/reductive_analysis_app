@@ -1,0 +1,23 @@
+.zoom {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  display: grid;
+  grid-template-rows: auto auto auto;
+  justify-items: end;
+  gap: 1rem;
+}
+
+.zoom__reset {
+  border-top-left-radius: 2rem;
+  border-bottom-left-radius: 2rem;
+}
+
+/* To be moved to another file when I’ll have more clarity. */
+
+.svg_container {
+  @media (--motion) {
+    transition: transform .25s $in-out-quad;
+  }
+}

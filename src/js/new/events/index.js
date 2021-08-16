@@ -16,6 +16,7 @@ class EventsManager {
 
   onTap(e) {
     this.app.player?.onTap(e)
+    this.app.ui?.onTap(e)
   }
 
   onChange(e) {

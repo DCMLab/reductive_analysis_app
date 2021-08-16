@@ -681,18 +681,12 @@ function zoom_in(draw_context) {
     draw_context.svg_elem.style.transform = 'scale(' + draw_context.zoom + ')'
   }
 }
-export function zoom_out(draw_context) {
+function zoom_out(draw_context) {
   if (typeof (draw_context) != 'undefined') {
     draw_context.zoom = draw_context.zoom * 0.90909090909090
     draw_context.svg_elem.style.transform = 'scale(' + draw_context.zoom + ')'
   }
 }
-
-const zoomOutButton = document.getElementById('zoomoutbutton')
-zoomOutButton.addEventListener('click', () => zoom_out(current_draw_context))
-
-const zoomIntButton = document.getElementById('zoominbutton')
-zoomIntButton.addEventListener('click', () => zoom_in(current_draw_context))
 
 export function do_deselect() {
   selected.forEach((x) => toggle_selected(x))

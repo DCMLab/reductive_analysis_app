@@ -3,6 +3,7 @@
 import { doc } from './utils/document'
 import initEvents from './events'
 import player from './modules/Player'
+import ui from './modules/UI'
 
 class App {
   constructor() {
@@ -16,6 +17,7 @@ class App {
     initEvents(this)
 
     this.player = player
+    this.ui = ui
   }
 }
 

@@ -1,12 +1,24 @@
 :root {
-  --primary: #{$black};
-  --bg: #{$white};
-  --accent: #{$ultramarine-blue};
+  --black: #{$black};
+  --white: #{$white};
+
+  --primary: var(--black);
+  --bg: var(--white);
+
+  --accent: #{$san-marino};
 
   --safe-top: var(--safe-area-top, 0);
   --safe-right: var(--safe-area-right, 0);
   --safe-bottom: var(--safe-area-bottom, 0);
   --safe-left: var(--safe-area-left, 0);
+
+  --relation-1: #{$san-marino};
+  --relation-2: #{$seance};
+  --relation-3: #{$pomegranate};
+  --relation-4: #{$persian-green};
+  --relation-5: #{$pear};
+  --relation-6: #{$gorse};
+  --relation-7: #{$amber};
 
   @supports (top: env(safe-area-inset-top, 0)) {
     --safe-area-top: env(safe-area-inset-top, 0);
@@ -44,15 +56,19 @@
 html {
   size: 100%;
 
-  font: 50% / #{$body-lh} $body-font;
+  font: 500 50% / #{$body-lh} $body-font-static;
   @include font-smoothing(on);
 
   background: v(bg);
   color: v(primary);
 
-  @media (--mobile) {
-    font-size: 62.5%;
+  @supports (font-variation-settings: normal) {
+    font-family: $body-font;
   }
+
+  // @media (--tablet-9) {
+    font-size: 62.5%;
+  // }
 }
 
 body {
@@ -159,6 +175,8 @@ button {
   user-select: none;
   -webkit-touch-callout: none;
 
+  font-weight: inherit;
+
   * { pointer-events: none; }
 }
 
@@ -197,15 +215,15 @@ h6 {
   }
 }
 
-// svg {
-//   pointer-events: none;
+svg {
+  pointer-events: none;
 
-//   * { transform-origin: 50% 50%; }
+  * { transform-origin: 50% 50%; }
 
-//   // Score container. We need initial behaviour here.
-//   .svg_container & {
-//     pointer-events: initial;
+  // Score container. We need initial behaviour here.
+  .svg_container & {
+    pointer-events: initial;
 
-//     * { transform-origin: 0 0; }
-//   }
-// }
+    * { transform-origin: 0 0; }
+  }
+}

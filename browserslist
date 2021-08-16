@@ -1,0 +1,14 @@
+# https://github.com/browserslist/browserslist#queries
+
+and_chr >= 64
+Chrome >= 64
+Edge >= 79
+
+Firefox >= 64
+
+Opera >= 64
+
+ios_saf >= 12
+Safari >= 12
+
+Samsung >= 10

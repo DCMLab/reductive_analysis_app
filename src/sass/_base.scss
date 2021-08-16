@@ -1,0 +1,211 @@
+:root {
+  --primary: #{$black};
+  --bg: #{$white};
+  --accent: #{$ultramarine-blue};
+
+  --safe-top: var(--safe-area-top, 0);
+  --safe-right: var(--safe-area-right, 0);
+  --safe-bottom: var(--safe-area-bottom, 0);
+  --safe-left: var(--safe-area-left, 0);
+
+  @supports (top: env(safe-area-inset-top, 0)) {
+    --safe-area-top: env(safe-area-inset-top, 0);
+    --safe-area-right: env(safe-area-inset-right, 0);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0);
+    --safe-area-left: env(safe-area-inset-left, 0);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+* {
+  touch-action: manipulation;
+}
+
+::selection {
+  background: v(accent);
+  color: v(bg);
+}
+
+// @TODO: refine focus (likely by element)
+:focus {
+  outline: .1rem solid currentColor;
+  outline-offset: .25em;
+}
+
+/* HTML & BODY */
+
+html {
+  size: 100%;
+
+  font: 50% / #{$body-lh} $body-font;
+  @include font-smoothing(on);
+
+  background: v(bg);
+  color: v(primary);
+
+  @media (--mobile) {
+    font-size: 62.5%;
+  }
+}
+
+body {
+  size: 100%;
+  min-height: 100%;
+
+  font-size: $body-size;
+
+  @media (--mobile) {
+    // overflow-x: hidden;
+  }
+}
+
+/* LISTS */
+
+ul,
+ol {
+  margin: 0;
+  padding-left: 0;
+
+  list-style-type: none;
+}
+
+dl,
+dd {
+  margin: 0;
+}
+
+/* QUOTES */
+
+blockquote {
+  margin: 0;
+}
+
+/* IMAGES */
+
+figure {
+  margin: 0;
+
+  font-size: 0;
+}
+
+
+/* FORMS */
+
+fieldset {
+  margin: 0;
+  padding: 0;
+
+  border: none;
+}
+
+input {
+  appearance: none;
+  border-radius: 0; // Safari iOS
+
+  line-height: inherit;
+}
+
+select {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+option {
+  padding-block-start: 0;
+  padding-inline-start: 0;
+  padding-block-end: 0;
+  padding-inline-end: 0;
+}
+
+input,
+select {
+
+  // Autofill colors hack
+  &:-webkit-autofill {
+    -webkit-text-fill-color: v(primary);
+    background-color: transparent;
+    box-shadow: 0 0 0px 100px transparent inset;
+
+    transition: background-color 500000s ease-in-out 500000s;
+
+    &::selection {
+      -webkit-text-fill-color: v(accent);
+    }
+  }
+}
+
+input,
+button {
+  padding: 0;
+
+  background: transparent;
+  border: none;
+  color: v(primary);
+}
+
+textarea {
+  resize: none;
+}
+
+button {
+  cursor: pointer;
+  user-select: none;
+  -webkit-touch-callout: none;
+
+  * { pointer-events: none; }
+}
+
+/* ABBREVIATIONS */
+
+abbr[title] {
+  &:not(:hover) {
+    @media (--mobile) {
+      border: none;
+      text-decoration: none;
+    }
+  }
+}
+
+/* LINKS */
+
+a {
+  color: v(primary);
+  text-decoration: none;
+
+  * { pointer-events: none; }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @media (--mobile) {
+    margin: 0;
+  }
+
+  em {
+    font-style: normal;
+  }
+}
+
+// svg {
+//   pointer-events: none;
+
+//   * { transform-origin: 50% 50%; }
+
+//   // Score container. We need initial behaviour here.
+//   .svg_container & {
+//     pointer-events: initial;
+
+//     * { transform-origin: 0 0; }
+//   }
+// }

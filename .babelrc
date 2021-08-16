@@ -1,0 +1,14 @@
+{
+    "comments": true,
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "bugfixes": true,
+                // "useBuiltIns": true,
+                // "loose": true,
+                // "debug": true,
+            }
+        ]
+    ],
+}

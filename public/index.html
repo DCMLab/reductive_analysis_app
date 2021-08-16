@@ -1,0 +1,150 @@
+<html class="loader">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DCML Reductive Analysis Webapp / Redusic / MuseReduce /</title>
+    <link type="text/css" rel="stylesheet" href="css/vendor/normalize.css">
+    <link type="text/css" rel="stylesheet" href="css/vendor/jBox.all.min.css">
+    <link type="text/css" rel="stylesheet" href="css/vendor/select2.min.css">
+    <link type="text/css" rel="stylesheet" href="css/vendor/style.css">
+    <link type="text/css" rel="stylesheet" href="css/app.css">
+    <script type="text/javascript" src="js/vendor/verovio-toolkit.js" defer></script>
+    <script type="text/javascript" src="js/app.js" defer></script>
+</head>
+
+<body>
+
+    <svg width="0" height="0" style="display:block;">
+        <filter id="glowFilter">
+            <feFlood result="flood" flood-color="#444444" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
+            <feMorphology in="mask" operator="dilate" radius="2" result="thickened" />
+            <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="selectFilter">
+            <feFlood result="flood" flood-color="#00ff00" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
+            <feMorphology in="mask" operator="dilate" radius="2" result="thickened" />
+            <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="extraFilter">
+            <feFlood result="flood" flood-color="green" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
+            <feMorphology in="mask" operator="dilate" radius="10" result="thickened" />
+            <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </svg>
+
+    <div id="selected_things"></div>
+    <div id="load_save" class="main_buttons">
+        <div id="main_buttons_title">
+            &#9881;
+            <br>
+        </div>
+        <div id="main_buttons_content">
+            <input type="button" id="downloadbutton" value="Save">
+            <input type="button" id="svgdownloadbutton" value="Save SVG">
+            <input type="file" id="fileupload" value="Load">
+            <div id="player" class="player">
+                <button type="button" id="player-play">Play original</button>
+                <button type="button" id="player-pause">Pause</button>
+                <button type="button" id="player-stop">Stop</button>
+
+                <!-- Progress bar -->
+                <div class="progress" id="player-progress-ctn">
+
+                    <!-- Semantic progress bar -->
+                    <progress class="progress__inner | visually-hidden--always" id="player-progress"></progress>
+
+                    <!-- Visual progress bar -->
+                    <div class="progress__bar"></div>
+
+                    <!-- Label (done / left) -->
+                    <label class="progress__label" for="player-progress">
+                        <span class="visually-hidden">Time progress</span>
+                        <span id="player-progress-done"></span> /
+                        <span id="player-progress-max"></span>
+                    </label>
+
+                    <!-- Manipulate the timeline -->
+                    <input class="progress__range" id="player-timeline-input" type="range" min="0" value="0" step="1">
+                </div>
+
+            </div>
+            <div id="hull_controller_container">
+                <input type="range" min="20" max="200" class="slider" id="hull_controller">
+            </div>
+            <input type="button" id="equalizebutton" value="Toggle (s)tems etc.">
+            <input type="button" id="shadesbutton" value="Toggle type s(h)ades.">
+            <input type="button" id="orphannotesbutton" value="Toggle non-related tones.">
+        </div>
+    </div>
+    <div id="metadata_input" class="metadata_input">
+        <div id="metadata_input_title">
+            METADATA
+        </div>
+        <br>
+        Title: <input type="text" id="metadata_title"><br />
+        Composer: <input type="text" id="composer"><br />
+        <div id="optional_metadata_input">
+        </div>
+    </div>
+    <!-- Draggable relations panel -->
+    <div id="relations_panel">
+        <div id="relations_panel_header">
+            <div id="relations_panel_toggle" title="Shortcut: '-'">&#9900;</div>
+        </div>
+        <div id="navigation_buttons">
+            <input type="button" id="panleftbutton" value="Left">
+            <input type="button" id="panrightbutton" value="Right">
+            <input type="button" id="previousbookmarkbutton" value="Previous">
+            <input type="button" id="nextbookmarkbutton" value="Next">
+            <input type="button" id="previouscontextbutton" value="Up">
+            <input type="button" id="nextcontextbutton" value="Down">
+            <input type="button" id="zoomoutbutton" value="Zoom out">
+            <input type="button" id="zoominbutton" value="Zoom in">
+        </div>
+        <div id="basic_buttons">
+            <input type="button" id="undobutton" value="Undo">
+            <input type="button" id="redobutton" value="Redo">
+            <input type="button" id="selectvisiblesaltbutton" value="Select visible relations">
+            <input type="button" id="deselectbutton" value="Deselect all">
+            <input type="button" id="deletebutton" value="Delete meta-relations">
+            <input type="button" id="addnotebutton" value="Toggle adding a note"/>
+            <input type="button" id="addbookmarkbutton" value="Bookmark note"/>
+            <input type="button" id="naturalizebutton" value="Naturali(Z)e notes"/>
+        </div>
+        <div id="relation_buttons">
+            <select id="custom_type" name="relation"></select>
+            <br>
+            <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation">
+        </div>
+        <div id="meta_buttons" class="none">
+            <select id="meta_custom_type" name="metarelation"></select>
+            <br>
+        </div>
+        <div id="combo_buttons">
+        </div>
+    </div>
+    <!--//////////////////////////////////////////////-->
+    <!-- The div where we are going to insert the SVG -->
+    <!--//////////////////////////////////////////////-->
+    <div id="layers">
+    </div>
+    <!-- The minimap canvas. -->
+    <canvas id="minimap"></canvas>
+</body>
+
+</html>

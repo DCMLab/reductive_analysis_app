@@ -1,0 +1,32 @@
+/*
+ * JS AVAILABLE / NOT AVAILABLE
+ *
+ * Apply CSS rules when JavaScript is (un)available and thus
+ * it should not be used without some code in the <head>.
+ *
+ * Use:
+ *  @include js() {}
+ *  @include no-js() {}
+ *
+ * Examples of JavaScript in `<head>`:
+ *  ```
+ *  <script>
+ *    // This test also excludes IE10- and Opera Mini from JS support.
+ *    if('classList' in document.documentElement) {
+ *      var html = document.querySelector('html');
+ *      html.classList.remove('no-js');
+ *      html.classList.add('js');
+ *    }
+ *  </script>
+ *  ```
+ */
+
+@mixin js() {
+  @if & { html.js &   { @content; } }
+  @else { html.js     { @content; } }
+}
+
+@mixin no-js() {
+  @if & { html.no-js &   { @content; } }
+  @else { html.no-js     { @content; } }
+}

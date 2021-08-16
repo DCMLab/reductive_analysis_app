@@ -1,0 +1,33 @@
+@mixin theme($name: 'basic-black', $mq-name: '--dark') {
+
+  @if & {
+    // @debug '------';
+    // @debug &;
+    // @debug selector-parse(&) == selector-parse(':root');
+    // @debug str-length(#{selector-unify(':root', &)}) == 5;
+
+    @if selector-parse(&) == selector-parse(':root') {
+      &.theme-set.#{$name} { @content; }
+
+      @media($mq-name) {
+        &:not(.theme-set) { @content; }
+      }
+    }
+
+    @else {
+      :root.theme-set.#{$name} & { @content; }
+
+      @media($mq-name) {
+        :root:not(.theme-set) & { @content; }
+      }
+    }
+  }
+
+  @else {
+    :root.theme-set.#{$name} { @content; }
+
+    @media($mq-name) {
+      :root:not(.theme-set) { @content; }
+    }
+  }
+}

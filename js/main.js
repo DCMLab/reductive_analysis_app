@@ -224,8 +224,19 @@ function save() {
   download(saved, filename+".mei", "text/xml");
 }
 function save_orig() {
+  // Remove layers which are not to be saved
+  var mei_clone = mei.cloneNode(true);
+  for(dc of draw_contexts){
+    if(!(get_by_id(document, dc.id_prefix+"savecb").checked)){
+      console.log("Trying to remove layer", dc);
+      var layer_elem = get_by_id(mei_clone, dc.mei_score.getAttribute("xml:id"));
+      layer_elem.parentElement.removeChild(layer_elem);
+      console.log("Found and tried to remove ", layer_elem);
+    }
+  }
+
   console.debug("Using globals: mei");
-  var saved = new XMLSerializer().serializeToString(mei);
+  var saved = new XMLSerializer().serializeToString(mei_clone);
   download(saved, filename+".mei", "text/xml");
 }
 
@@ -539,7 +550,7 @@ function render_mei(mei) {
 }
 
 
-function rerender(draw_context) {
+/*function rerender(draw_context) {
   var [new_view_elem,new_svg_elem] = new_view_elements(draw_context.layer.layer_elem);
   var new_mei = rerender_mei(false, draw_context);
   var [new_data, new_svg] = render_mei(new_mei);
@@ -566,7 +577,7 @@ function rerender(draw_context) {
   new_draw_context.id_prefix = draw_contexts.length;
   prefix_ids(new_draw_context.svg_elem,new_draw_context.id_prefix);
   finalize_draw_context(new_draw_context);
-}
+}*/
 
 function initialize_panel() {
   // Add shortcut tooltips to the panel buttons.

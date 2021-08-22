@@ -366,6 +366,43 @@
         </svg>
     </button>
 
+    <div class="fly-out fly-out--dark fly-out--collapsible fly-out--expanded">
+
+        <h3 class="fly-out__toggle">
+            <button id="menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                Metadata
+                <svg class="btn__icon" width="10" height="8">
+                    <use xlink:href="#triangle-path"/>
+                </svg>
+            </button>
+        </h3>
+
+        <form class="fly-out__inner" style="--fly-out-max-height: 39rem;" id="metadata-form">
+            <label class="fillable fly-out__title" for="metadata-title">
+                Title
+                <input class="fillable__input" id="metadata-title" type="text" placeholder="The name ♪ of the song ♫">
+            </label>
+            <hr class="fly-out__hr">
+            <label class="fillable fly-out__title" for="metadata-composer">
+                Composer
+                <input class="fillable__input" id="metadata-composer" type="text" placeholder="Wolfgang Amadeus Mozart">
+            </label>
+            <hr class="fly-out__hr">
+            <label class="fillable fly-out__title" for="metadata-analyst">
+                Analyst
+                <input class="fillable__input" id="metadata-analyst" type="text" placeholder="Maybe… you?">
+            </label>
+            <button class="btn btn--plain btn--small" type="button">Assign responsibility</button>
+            <hr class="fly-out__hr">
+            <label class="fillable fly-out__title" for="metadata-annotator">
+                Annotator
+                <input class="fillable__input" id="metadata-annotator" type="text" placeholder="Maybe… you?">
+            </label>
+            <button class="btn btn--plain btn--small" type="button">Assign responsibility</button>
+        </form>
+
+    </div>
+
     <button class="btn btn--plain" type="button">
         Filters
         <svg class="btn__icon" width="20" height="10">

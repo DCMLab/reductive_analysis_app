@@ -1,4 +1,5 @@
 import filters    from './Filters'
+import metadata   from './Metadata'
 import navigation from './Navigation'
 import relations  from './Relations'
 import selection  from './Selection'
@@ -17,6 +18,7 @@ class UI {
 
     this.zoom?.onTap(e)
     this.selection?.onTap(e)
+    this.metadata?.onTap(e)
     this.navigation?.onTap(e)
     this.filters?.onTap(e)
   }
@@ -48,6 +50,7 @@ class UI {
 
   onScoreLoad(e) {
     this.filters?.onScoreLoad(e)
+    this.metadata?.onScoreLoad(e)
   }
 
   onScoreSelection({ detail }) {
@@ -60,6 +63,7 @@ class UI {
     this.zoom = zoom
     this.selection = selection
     this.navigation = navigation
+    this.metadata = metadata
     this.filters = filters
     this.relations = relations
   }

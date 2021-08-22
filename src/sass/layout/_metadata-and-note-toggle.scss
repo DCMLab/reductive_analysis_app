@@ -1,0 +1,10 @@
+.metadata-and-note-toggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  gap: 1rem;
+  justify-items: start;
+}

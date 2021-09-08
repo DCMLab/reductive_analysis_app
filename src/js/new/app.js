@@ -4,6 +4,7 @@ import { doc }    from './utils/document'
 import initEvents from './events'
 import player     from './modules/Player'
 import ui         from './modules/UI'
+import score      from './modules/Score'
 import history    from './modules/History'
 import viewport   from './modules/Viewport'
 
@@ -24,6 +25,7 @@ class App {
 
     // … when first score is loaded…
     this.ui = ui
+    this.score = score
     this.player = player
 
     // … and when first action is done.

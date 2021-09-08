@@ -130,11 +130,6 @@ export const meta_full_conf = [
   'parallel_octaves'
 ]
 
-// Authorship meta-data fields.
-export const optional_resp_roles = [
-  'analyst', 'annotator'
-]
-
 // MEI classes to be hidden after rendering.
 export const hide_classes = [
   'barLineAttr',

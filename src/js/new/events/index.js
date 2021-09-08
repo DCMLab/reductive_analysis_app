@@ -110,10 +110,12 @@ class EventsManager {
   }
 
   onScoreLoad(e) {
+    this.app.score?.onScoreLoad(e)
     this.app.ui?.onScoreLoad(e)
   }
 
   onScoreSelection(e) {
+    this.app.score?.onScoreSelection(e)
     this.app.ui?.onScoreSelection(e)
   }
 

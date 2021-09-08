@@ -52,7 +52,6 @@ import {
   update_placing_note
 } from './coordinates'
 
-import { update_metadata } from './metadata'
 import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
 import { naturalize_notes } from './accidentals'
@@ -615,14 +614,6 @@ function show_buttons() {
   $('#load_save')[0].classList.remove('hidden')
   $('#hidden_buttons')[0].classList.add('hidden')
 }
-
-const metadataTitleField = document.getElementById('metadata_title')
-metadataTitleField.addEventListener('onfocus', texton)
-metadataTitleField.addEventListener('onblur', update_metadata)
-
-const metadataComposerField = document.getElementById('composer')
-metadataComposerField.addEventListener('onfocus', texton)
-metadataComposerField.addEventListener('onblur', update_metadata)
 
 export function toggle_buttons() {
   if (!$('#relations_panel').hasClass('collapsed')) {

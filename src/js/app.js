@@ -73,8 +73,6 @@ import {
   update_text,
 } from './ui'
 
-import { initialize_metadata } from './metadata'
-
 import {
   add_mei_node_for,
   arrayToSelect2,
@@ -463,7 +461,7 @@ function load_finish(loader_modal) {
     $('#fileupload').val('')
     return false
   }
-  initialize_metadata()
+
   // Clear the old (if any)
   draw_contexts = []
   layer_contexts = []

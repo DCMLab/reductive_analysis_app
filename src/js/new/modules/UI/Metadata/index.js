@@ -1,6 +1,6 @@
-// MEI Metadata spec: https://music-encoding.org/guidelines/v4/content/metadata.html
 import { get_by_id, get_id } from '../../../../utils'
 import score from '../../Score'
+
 import config from './config'
 import { createField, createRolesFields, createUpdateBtn } from './templates'
 
@@ -8,6 +8,10 @@ const parser = new DOMParser()
 
 // Assign button id looks like `metadata-something-assign`
 const assignBtnRegex = new RegExp(/^metadata-\w+-assign$/)
+
+/**
+ * @todo later: evaluate opportunity to move roles to a dedicated module
+ */
 
 class Metadata {
   constructor() {

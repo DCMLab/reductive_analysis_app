@@ -1,10 +1,14 @@
+/**
+ * ⚠️ The relations menu is a work in progress.
+ */
+
 import { prevent }          from '../../../events/prevent'
 import { clamp }            from '../../../utils/math'
 import { doc }              from '../../../utils/document'
 import { getDOMRect }       from '../../../utils/dom'
 import { pxToRem }          from '../../../utils/units'
 import viewport             from '../../Viewport'
-import { do_relation } from '../../../../app'
+import { do_relation }      from '../../../../app'
 
 // The minimal distance between the relations menu and the viewport.
 const SNAP_DELTA = 10

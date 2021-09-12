@@ -63,6 +63,11 @@ class EventsManager {
 
   /**
    * Common handlers for touch and mouse events.
+   *
+   * When the time will come to drop Safari 12.x support, consider using
+   * pointer events:
+   * - https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events
+   * - https://twitter.com/Mamboleoo/status/1432385635298521089
    */
 
   // touchstart, mousedown

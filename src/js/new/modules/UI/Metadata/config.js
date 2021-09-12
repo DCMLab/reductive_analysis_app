@@ -1,9 +1,6 @@
 /**
  * The config file for editable metadata.
  *
- * Following the MEI metadata spec:
- * https://music-encoding.org/guidelines/v4/content/metadata.html
- *
  * This is the score XML head structure containing title and roles:
  *  - meiHead
  *    - fileDesc
@@ -23,7 +20,8 @@
  *   - `placeholder`: (optional) the placeholder of the field.
  * }
  *
- * You can add as many role as you need (follow the spec).
+ * You can add as many role as you need. Refer to the spec:
+ * https://music-encoding.org/guidelines/v4/content/metadata.html
  */
 export default {
   title: {

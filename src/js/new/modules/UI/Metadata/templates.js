@@ -1,9 +1,4 @@
-export const createRolesFields = (persNames) =>
-  persNames.map(({ role, config, value }) => `
-    <hr class="fly-out__hr">
-    ${createField(role, config, value)}
-    ${createUpdateBtn(role, config)}
-  `).join('')
+// Metadata field (<label> and <input>)
 
 export const createField = (name, { label, placeholder = '' }, value = '') => `
   <label class="fillable fly-out__title" for="metadata-${name}">
@@ -18,6 +13,8 @@ export const createField = (name, { label, placeholder = '' }, value = '') => `
   </label>
 `
 
+// Metadata update <button>
+
 export const createUpdateBtn = (name, { saveBtn }) => `
   <button
       class="btn btn--plain btn--small"
@@ -26,3 +23,12 @@ export const createUpdateBtn = (name, { saveBtn }) => `
       data-role="${name}"
   >${saveBtn}</button>
 `
+
+// Metadata separator (<hr>) + field (<label> and <input>) + update <button>.
+
+export const createRolesFields = (persNames) =>
+  persNames.map(({ role, config, value }) => `
+    <hr class="fly-out__hr">
+    ${createField(role, config, value)}
+    ${createUpdateBtn(role, config)}
+  `).join('')

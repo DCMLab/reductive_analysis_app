@@ -20,8 +20,8 @@
 }
 
 /**
- * This should be the single pointer-events rule needed here, but it seems to
- * disable the `grabbing` cursor, at least on Chromium. @todo: check why…
+ * This should be the single pointer-events rule needed here, but it seems it
+ * disables the `grabbing` cursor, at least on Chromium. @todo: check why…
  */
 // // Disable all app pointer-events on drag, excepted on fly-out and its handle.
 

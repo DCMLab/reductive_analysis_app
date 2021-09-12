@@ -23,12 +23,12 @@ class App {
 
     // Modules below should be delayed to…
 
-    // … when first score is loaded…
+    // … when the first score is loaded…
     this.ui = ui
     this.score = score
     this.player = player
 
-    // … and when first action is done.
+    // … and when a first action is done.
     this.history = history
   }
 }

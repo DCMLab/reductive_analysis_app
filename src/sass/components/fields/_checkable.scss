@@ -29,15 +29,13 @@
     }
   }
 
-  // @todo: do a focus-visible mixin
-
-  @supports  #{'\selector(*:focus-visible)'}  {
+  @include supports-focus-visible {
     &:focus-visible {
       + .checkbox::before { opacity: 1; }
     }
   }
 
-  @supports  #{'\not selector(*:focus-visible)'}  {
+  @include supports-focus-visible(false) {
     &:focus {
       + .checkbox::before { opacity: 1; }
     }

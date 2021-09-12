@@ -10,6 +10,7 @@ const postcssPresetEnvOptions = {
     'all-property': false,
     'color-functional-notation': false,
     'focus-within-pseudo-class': false,
+    'focus-visible-pseudo-class': false,
     'logical-properties-and-values': { dir: 'ltr' },
     'prefers-color-scheme-query': false,
   },

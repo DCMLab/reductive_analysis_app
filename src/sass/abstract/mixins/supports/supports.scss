@@ -1,0 +1,22 @@
+/**
+ * Test supports of `:focus-visible`.
+ *
+ * Use:
+ * @include supports-focus-visible
+ * @include supports-focus-visible(true)
+ * @include supports-focus-visible(false)
+ *
+ * Parameters:
+ *  $support (`true` by default)
+ */
+@mixin supports-focus-visible($support: true) {
+  @if $support == true {
+    @supports  #{'\selector(*:focus-visible)'}  {
+      @content;
+    }
+  } @else {
+    @supports  #{'\not selector(*:focus-visible)'}  {
+      @content
+    }
+  }
+}

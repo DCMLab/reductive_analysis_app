@@ -508,7 +508,7 @@ body:not(.mousedown) .extraselectedrelation:hover {
 
 .main_buttons {
   position: fixed;
-  bottom: 0;
+  bottom: 140px;
   z-index: 10;
   width: 100vw;
   background: gray;

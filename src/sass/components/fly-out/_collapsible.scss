@@ -5,6 +5,8 @@
    */
   --fly-out-bg: none;
 
+  padding-block-end: 0;
+
   > :not(.fly-out__toggle) {
     display: none;
   }

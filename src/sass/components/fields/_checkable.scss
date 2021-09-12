@@ -8,6 +8,13 @@
   @media (--hidpi) {
     font-size: 1.3rem; // only renders fine on high pixel density screens
   }
+
+  &:hover {
+    .checkbox::before {
+      opacity: 1;
+      transition: none;
+    }
+  }
 }
 
 .checkable__input {

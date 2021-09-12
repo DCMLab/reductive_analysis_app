@@ -1,0 +1,21 @@
+.fillable {
+  display: grid;
+  gap: 1rem;
+}
+
+.fillable__input {
+  padding: .8rem;
+
+  font-weight: inherit;
+
+  border: solid .2rem v(fillable-border, primary, null);
+  border-radius: 1rem;
+
+  &:not(:focus):not(:hover) {
+    --fillable-border: #{$lacquered-licorice};
+  }
+
+  &:focus {
+    outline: none;
+  }
+}

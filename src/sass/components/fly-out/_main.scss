@@ -26,7 +26,7 @@
   // max-height: unquote('min(calc(100vh - 4rem), 58rem)'); // 4rem = space around UI.
   max-height: unquote('min(var(--fly-out-max-height), calc(100vh - 4rem), 50rem)'); // 4rem = space around UI.
 
-  overflow-y: auto;
+  overflow: hidden auto;
 
   // Scrollbar (standard)
 

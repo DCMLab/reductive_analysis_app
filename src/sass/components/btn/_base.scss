@@ -6,6 +6,8 @@
   align-items: center;
   gap: 1.5rem;
 
+  white-space: nowrap;
+
   background: v(btn-bg, bg, transparent);
   border: solid .2rem v(btn-border, inherit);
   border-radius: v(btn-radius, btn-default-radius, 0);

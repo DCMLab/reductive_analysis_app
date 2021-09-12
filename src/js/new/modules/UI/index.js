@@ -1,7 +1,9 @@
-import filters        from './Filters'
-import initNavigation from './Navigation'
-import selection      from './Selection'
-import zoom           from './Zoom'
+import filters    from './Filters'
+import metadata   from './Metadata'
+import navigation from './Navigation'
+import relations  from './Relations'
+import selection  from './Selection'
+import zoom       from './Zoom'
 
 class UI {
   constructor() {
@@ -10,33 +12,60 @@ class UI {
   }
 
   onTap(e) {
+    this.relations?.onTap(e)
+
     if (!e.composedPath().includes(this.ctn)) { return }
 
     this.zoom?.onTap(e)
     this.selection?.onTap(e)
+    this.metadata?.onTap(e)
     this.navigation?.onTap(e)
     this.filters?.onTap(e)
   }
 
+  /**
+   * Common handlers for touch and mouse events.
+   */
+
+  // touchstart, mousedown
+  onTapStart(e) {
+    this.relations?.onTapStart(e)
+  }
+
+  // touchmove, mousemove
+  onTapMove(x, y) {
+    this.relations?.onTapMove(x, y)
+  }
+
+  // touchend, mouseup
+  onTapEnd() {
+    this.relations?.onTapEnd()
+  }
+
+  // Other events
+
   onResize() {
-    this.computeValues()
+    this.relations?.onResize()
   }
 
   onScoreLoad(e) {
     this.filters?.onScoreLoad(e)
+    this.metadata?.onScoreLoad(e)
   }
 
-  computeValues() {
-    this.wW = window.innerWidth
+  onScoreSelection({ detail }) {
+    if (detail.selected.concat(detail.extraselected).length > 0) {
+      this.relations?.toggleVisibility(true)
+    }
   }
 
   init() {
-    this.computeValues()
-
     this.zoom = zoom
     this.selection = selection
-    this.navigation = initNavigation(this)
+    this.navigation = navigation
+    this.metadata = metadata
     this.filters = filters
+    this.relations = relations
   }
 }
 

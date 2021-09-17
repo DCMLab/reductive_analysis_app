@@ -6,6 +6,13 @@
   border-radius: 1rem;
   color: v(primary);
   filter: drop-shadow(0 .2rem 1rem hsl(0, 0%, 0%, .15));
+
+  transition:
+    v(fly-out-transition-duration, .2s)
+    v(fly-out-transition-easing, $in-out-quad)
+    v(fly-out-transition-delay, 0s);
+  transition-property:
+    var(--fly-out-transition-properties, opacity, visibility);
 }
 
 .fly-out__inner {

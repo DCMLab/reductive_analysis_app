@@ -4,16 +4,17 @@ import { doc }        from '../../../utils/document'
 import { getDOMRect } from '../../../utils/dom'
 import { pxToRem }    from '../../../utils/units'
 import viewport       from '../../Viewport'
+import { FlyOut }     from './'
 
 // The minimal distance between the fly-out menu and the viewport.
 const SNAP_DELTA = 10
 
-export default class DraggableFlyOut {
+export default class DraggableFlyOut extends FlyOut {
   #dragging = false
 
   constructor(ctnId) {
-    this.ctn = { el: document.getElementById(ctnId) }
-    this.closeBtn = this.ctn.el.querySelector('.fly-out__closeBtn')
+    super(ctnId)
+
     this.dragHandle = { el: this.ctn.el.querySelector('.fly-out__drag') }
 
     this.visible = false
@@ -24,14 +25,6 @@ export default class DraggableFlyOut {
   }
 
   // Common handlers for touch and mouse events.
-
-  onTap(e) {
-    if (!e.composedPath().includes(this.ctn.el)) { return }
-
-    if (e.target == this.closeBtn) {
-      return this.toggleVisibility(false)
-    }
-  }
 
   onTapStart(e) {
     if (e.target == this.dragHandle.el) {
@@ -62,15 +55,6 @@ export default class DraggableFlyOut {
     this.y = y - this.ctn.handleDeltaY
     this.ctn.el.style.setProperty('--fly-out-x', pxToRem(this.x))
     this.ctn.el.style.setProperty('--fly-out-y', pxToRem(this.y))
-  }
-
-  toggleVisibility(state = !this.visible) {
-    this.ctn.el.classList.toggle('fly-out--visible', state)
-    this.visible = state
-
-    if (state) {
-      this.computeValues()
-    }
   }
 
   toggleDragging(state = !this.#dragging) {

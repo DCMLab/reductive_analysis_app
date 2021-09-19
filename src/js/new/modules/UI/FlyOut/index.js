@@ -1,5 +1,4 @@
 import FlyOut from './base'
+import DraggableFlyOut from './draggable'
 
-export {
-  FlyOut
-}
+export { DraggableFlyOut, FlyOut }

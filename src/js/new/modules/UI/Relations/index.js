@@ -1,6 +1,6 @@
 import { do_relation } from '../../../../app'
+import { DraggableFlyOut } from '../FlyOut'
 
-import DraggableFlyOut from '../DraggableFlyOut'
 
 class RelationsFlyOut extends DraggableFlyOut {
   constructor() {

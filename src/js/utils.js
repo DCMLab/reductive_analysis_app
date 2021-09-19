@@ -720,8 +720,8 @@ export function note_to_text(id) {
   return mei_elem.getAttribute('pname') + accid + mei_elem.getAttribute('oct')
 }
 
-// Compute a text to represent the elements
-export function to_text(draw_contexts, mei_graph, elems) {
+// Compute a text to represent notes
+export function to_text(elems) {
   // TODO: Detect and warn for selections spanning several drawing contexts
   if (elems.length == 0)
     return ''
@@ -731,11 +731,7 @@ export function to_text(draw_contexts, mei_graph, elems) {
       const [mx, my] = note_coords(m)
       return (nx - mx == 0) ? my - ny : nx - mx
     })
-    return 'notes(' + elems.map((n) => note_to_text(get_id(n))).join('; ') + ')'
-  } else if (elems[0].classList.contains('relation')) {
-    return 'relations(' + elems.map((elem) => elem.getAttribute('type')).join('; ') + ')'
-  } else if (elems[0].classList.contains('metarelation')) {
-    return 'metarelations(' + elems.map((elem) => elem.getAttribute('type')).join('; ') + ')'
+    return elems.map(note => note_to_text(get_id(note)))
   }
 }
 

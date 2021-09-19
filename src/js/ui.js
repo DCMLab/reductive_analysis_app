@@ -145,8 +145,6 @@ export function toggle_selected(item, extra) {
     }
   }
 
-  update_text()
-
   // The selected elements have changed.
   document.dispatchEvent(new CustomEvent('scoreselection', {
     detail: { selected: selected, extraselected: extraselected }
@@ -523,20 +521,6 @@ function toggle_he_selected(selecting) {
     document.getElementById('meta_buttons').classList.remove('none')
   else
     document.getElementById('meta_buttons').classList.add('none')
-}
-
-export function update_text() {
-  var mei_graph = getMeiGraph()
-  var primaries, secondaries
-  var draw_contexts = getDrawContexts()
-  primaries = to_text(draw_contexts, mei_graph, extraselected)
-  secondaries = to_text(draw_contexts, mei_graph, selected)
-  if (primaries || secondaries) {
-    $('#selected_things').show()
-    $('#selected_things').html('<span class=\'selected_primaries\'>Primaries: </span>' + primaries + '<br/><span class=\'selected_secondaries\'>Secondaries: </span>' + secondaries)
-  } else {
-    $('#selected_things').hide()
-  }
 }
 
 // Toggle showing things other than notes in the score

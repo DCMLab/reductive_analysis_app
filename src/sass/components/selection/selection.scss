@@ -1,0 +1,38 @@
+.selection {
+  line-height: 1.2;
+
+  @include all-but(1) {
+    margin-top: 1em;
+  }
+}
+
+// example: 'primary: '
+.selection__title {
+  display: inline;
+
+  &::after {
+    content: ': ';
+  }
+}
+
+.selection__title--primary {
+  color: orangered;
+}
+
+.selection__title--secondary {
+  color: chartreuse;
+}
+
+.selection__list {
+  display: inline-flex;
+}
+
+// example: 'a4 / b6 / c1'
+.selection__listItem {
+  @include all-but(1) {
+    &::before {
+      content: ' / ';
+      margin-left: .25em;
+    }
+  }
+}

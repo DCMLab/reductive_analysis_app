@@ -1,8 +1,15 @@
-.zoom {
+.selection-legend-and-zoom {
   position: absolute;
   top: 0;
   right: 0;
 
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: start;
+  gap: 2rem;
+}
+
+.zoom {
   display: grid;
   grid-template-rows: auto auto auto;
   justify-items: end;

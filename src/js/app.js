@@ -163,8 +163,6 @@ $(document).ready(function() {
   Object.keys(meta_conf).forEach(meta_type)
   Object.keys(combo_conf).forEach(combo_type)
   toggle_shades()
-  // $('#player').midiPlayer({ color: 'grey', width: 250 })
-  $('#selected_things').hide()
 
   $('#hull_controller').on('change', handle_hull_controller)
   handle_relations_panel(document.getElementById('relations_panel'))

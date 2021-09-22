@@ -58,9 +58,8 @@ export default class FilterGroup {
     this.ctn.innerHTML = filtersDomString
   }
 
-  createFilterElement({ type, checked }) {
-    return `
-      <li>
+  createFilterElement = ({ type, checked }) => `
+    <li>
         <label class="checkable color-${this.namespace}-${type}" for="${this.namespace}-filter-${type}">
             ${capitalize(type)}
             <input class="checkable__input" type="checkbox" id="${this.namespace}-filter-${type}" data-type="${type}" ${checked ? 'checked' : ''}>
@@ -70,9 +69,8 @@ export default class FilterGroup {
                 </svg>
             </span>
         </label>
-      </li>
-    `
-  }
+    </li>
+  `
 }
 
 /**

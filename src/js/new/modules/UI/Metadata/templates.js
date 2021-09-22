@@ -26,7 +26,7 @@ export const createUpdateBtn = (name, { saveBtn }) => `
 
 // Metadata separator (<hr>) + field (<label> and <input>) + update <button>.
 
-export const createRolesFields = (persNames) =>
+export const createRolesFields = persNames =>
   persNames.map(({ role, config, value }) => `
     <hr class="fly-out__hr">
     ${createField(role, config, value)}

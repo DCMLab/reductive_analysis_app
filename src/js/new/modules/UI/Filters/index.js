@@ -8,6 +8,7 @@
  * 2) remove filters from index.html as they are JS-generated
  */
 
+import { NodeType } from '../../../utils/dom'
 import Group from './group'
 
 class Filters {
@@ -62,64 +63,60 @@ class Filters {
     this.groups.forEach(group => group.render())
   }
 
-  createFiltersGroups() {
-    return [
-      new Group('relation', {
-        filterCtnId: 'relations-filters',
-        svgCtn: this.svgCtn,
-      }),
-      new Group('metarelation', {
-        filterCtnId: 'meta-relations-filters',
-        svgCtn: this.svgCtn,
-      }),
-    ]
-  }
+  createFiltersGroups = () => [
+    new Group('relation', {
+      filterCtnId: 'relations-filters',
+      svgCtn: this.svgCtn,
+    }),
+    new Group('metarelation', {
+      filterCtnId: 'meta-relations-filters',
+      svgCtn: this.svgCtn,
+    }),
+  ]
 
-  createMutationObserver() {
-    return new MutationObserver(mutations => {
+  createMutationObserver = () => new MutationObserver(mutations => {
 
-      // Look for a type change in a relation.
+    // Look for a type change in a relation.
 
-      const changesInListOfRelationsNames = mutations
-        .filter(mutation => mutation.type == 'attributes' && mutation.attributeName == 'type')
-        .filter(mutation => mutation.target.getAttribute('type') != mutation.oldValue)
-        .length > 0
+    const changesInListOfRelationsNames = mutations
+      .filter(mutation => mutation.type == 'attributes' && mutation.attributeName == 'type')
+      .filter(mutation => mutation.target.getAttribute('type') != mutation.oldValue)
+      .length > 0
 
-      if (changesInListOfRelationsNames) {
+    if (changesInListOfRelationsNames) {
+      return this.update()
+    }
+
+    // Is there a new relation type in the SVG?
+
+    const newRelation = mutations.length == 1 && mutations
+      .filter(mutation => mutation.type == 'childList' && mutation.addedNodes?.length == 1)
+      .map(mutation => mutation.addedNodes?.item(0))
+      .find(NodeType.isElement)
+
+    if (newRelation) {
+      const relationType = newRelation.getAttribute('type')
+      const isExistingType = this.groups.some(group => group.hasRelationType(relationType))
+      if (!isExistingType) {
         return this.update()
       }
+    }
 
-      // Is there a new relation type in the SVG?
+    // Deleted relation.
 
-      const newRelation = mutations.length == 1 && mutations
-        .filter(mutation => mutation.type == 'childList' && mutation.addedNodes?.length == 1)
-        .map(mutation => mutation.addedNodes?.item(0))
-        .find(node => node.nodeType == 1)
+    const deletedRelation = mutations.length == 1 && mutations
+      .filter(mutation => mutation.type == 'childList' && mutation.removedNodes?.length == 1)
+      .map(mutation => mutation.removedNodes?.item(0))
+      .find(NodeType.isElement)
 
-      if (newRelation) {
-        const relationType = newRelation.getAttribute('type')
-        const isExistingType = this.groups.some(group => group.hasRelationType(relationType))
-        if (!isExistingType) {
-          return this.update()
-        }
+    if (deletedRelation) {
+      const relationType = deletedRelation.getAttribute('type')
+      const wasLastOfType = this.groups.some(group => group.wasLastOfType(relationType))
+      if (wasLastOfType) {
+        return this.update()
       }
-
-      // Deleted relation.
-
-      const deletedRelation = mutations.length == 1 && mutations
-        .filter(mutation => mutation.type == 'childList' && mutation.removedNodes?.length == 1)
-        .map(mutation => mutation.removedNodes?.item(0))
-        .find(node => node.nodeType == 1)
-
-      if (deletedRelation) {
-        const relationType = deletedRelation.getAttribute('type')
-        const wasLastOfType = this.groups.some(group => group.wasLastOfType(relationType))
-        if (wasLastOfType) {
-          return this.update()
-        }
-      }
-    })
-  }
+    }
+  })
 }
 
 const filters = new Filters()

@@ -2,6 +2,10 @@ import score from '../../Score'
 import { FlyOut } from '../FlyOut'
 import { createSelectionText } from './templates'
 
+/**
+ * This class displays the list of selected notes, relations or metarelations
+ * in a dedicated fly-out.
+ */
 export default class SelectionLegend extends FlyOut {
   constructor() {
     super('selection-legend')

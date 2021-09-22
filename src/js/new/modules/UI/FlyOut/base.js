@@ -19,7 +19,5 @@ export default class FlyOut {
     this.visible = state
   }
 
-  hide() {
-    this.toggleVisibility(false)
-  }
+  hide = () => this.toggleVisibility(false)
 }

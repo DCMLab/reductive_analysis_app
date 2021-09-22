@@ -132,20 +132,18 @@ class EventsManager {
     if (isFieldFocused()) { return }
 
     /**
-     * Undo (Cmd/Ctrl + Z)
      * Redo (Cmd/Ctrl + Shift + Z)
+     * Undo (Cmd/Ctrl + Z)
      */
-
     if (isKey(e, 'z')) {
-      if (isModifier(e, shortcutMeta)) {
-        return this.app.history.undo()
-      }
-
       if (isModifier(e, [shortcutMeta, 'shift'])) {
         return this.app.history.redo()
       }
-    }
 
+      if (isModifier(e, shortcutMeta)) {
+        return this.app.history.undo()
+      }
+    }
     /**
      * Select all visible relations (Cmd/Ctrl + A)
      */

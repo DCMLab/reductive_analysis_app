@@ -62,27 +62,6 @@ body {
     min-height: 1em;
 }
 
-#selected_things {
-    z-index: 1;
-    font-family: monospace;
-    position: fixed;
-    right: 3em;
-    top: 1em;
-    background: rgb(20, 20, 20, 0.7);
-    backdrop-filter: blur(2px);
-    border-radius: 10px;
-    padding: 1em;
-    color: white;
-}
-
-#selected_things .selected_primaries {
-    color: orangered;
-}
-
-#selected_things .selected_secondaries {
-    color: chartreuse;
-}
-
 .ds-selector {
   background: none !important;
   border: none !important;
@@ -499,11 +478,6 @@ body:not(.mousedown) .extraselectedrelation:hover {
 .view {
   position: relative;
   min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
-  background: rgb(240,240,240);
-}
-
-.view_active {
-  background: white;
 }
 
 .main_buttons {

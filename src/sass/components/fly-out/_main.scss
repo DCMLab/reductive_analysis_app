@@ -22,8 +22,8 @@
    */
   --fly-out-half-inner-space: calc(var(--fly-out-inner-space, 2rem) / 2);
 
-  margin-block-start: 2rem;
   margin-inline-end: v(fly-out-half-inner-space);
+  margin-block-start: v(fly-out-inner-space, 2rem);
   padding-block-end: 0;
   padding-inline:
     v(fly-out-inner-space, 2rem)
@@ -54,9 +54,8 @@
   }
 }
 
-.fly-out--big {
-  --fly-out-inner-space: 3rem;
-}
+.fly-out--small { --fly-out-inner-space: 1rem; }
+.fly-out--big { --fly-out-inner-space: 3rem; }
 
 .fly-out--dark {
   --bg: #{$cod-gray};

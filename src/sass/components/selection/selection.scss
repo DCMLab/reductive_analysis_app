@@ -1,8 +1,8 @@
 .selection {
   line-height: 1.2;
 
-  @include all-but(1) {
-    margin-top: 1em;
+  &:not(:first-of-type) {
+    margin-top: .5em;
   }
 }
 
@@ -36,3 +36,21 @@
     }
   }
 }
+
+// // @todo - Other color set test. Should be in accessibility settings.
+
+// .selection__title--primary {
+//   color: #e49718;
+// }
+
+// .selection__title--secondary {
+//   color: #1890ff;
+// }
+
+// .extraselectednote {
+//   fill: #e49718;
+// }
+
+// .selectednote {
+//   fill: #1890ff;
+// }

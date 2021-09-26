@@ -21,5 +21,5 @@ export const createSelectionText = selection => {
   return items.join('')
 }
 
-const createSelectedNoteItem = note => `<li class="selection__listItem">${note}</li>`
+const createSelectedNoteItem = note => `<li class="selection__listItem">${note.toUpperCase()}</li>`
 const createSelectedRelationItem = el => `<li class="selection__listItem">${el.getAttribute('type')}</li>`

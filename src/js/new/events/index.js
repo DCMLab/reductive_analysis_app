@@ -27,6 +27,7 @@ class EventsManager {
 
     // keyboard
     document.addEventListener('keydown', this.onKeyDown.bind(this))
+    document.addEventListener('keyup', this.onKeyUp.bind(this))
 
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
@@ -152,6 +153,17 @@ class EventsManager {
       if (isModifier(e, shortcutMeta)) {
         return this.app.ui.selection.selectAll()
       }
+    }
+  }
+
+  onKeyUp(e) {
+
+    // Ignore keyboard shortcuts if a field is focused.
+    if (isModifier(e)) { return }
+
+    // Blur focused field
+    if (isKey(e, 'escape') && isFieldFocused()) {
+      document.activeElement.blur()
     }
   }
 }

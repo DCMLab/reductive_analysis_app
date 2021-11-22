@@ -1,5 +1,5 @@
 import pagemap from 'pagemap'
-import jBox from 'jbox'
+// import jBox from 'jbox'
 import DragSelect from 'dragselect'
 import newApp from './new/app'
 
@@ -176,48 +176,6 @@ export function select_visibles(draw_context) {
 }
 
 /* UI populater functions */
-
-// Configured types need a button and a color each
-export function init_type(type) {
-  console.debug('Using globals: document, shades_array, type_shades, type_keys, button_shades for conf')
-  var elem = document.createElement('input')
-  elem.setAttribute('type', 'button')
-  elem.classList.add('relationbutton')
-  elem.setAttribute('id', type + 'relationbutton')
-  elem.setAttribute('value', 'Add ' + type + ' relation ' + '(' + type_conf[type].key + ')')
-  elem.onclick = () => { do_relation(type) }
-  $('#relation_buttons')[0].appendChild(elem)
-  type_shades[type] = shades_array[type_conf[type].colour]
-  type_keys[type_conf[type].key] = type
-  button_shades[type + 'relationbutton'] = shades_array[type_conf[type].colour]
-}
-
-// Configured meta types need a button and a color each
-export function combo_type(type) {
-  var elem = document.createElement('input')
-  elem.setAttribute('type', 'button')
-  elem.classList.add('comborelationbutton')
-  elem.setAttribute('id', type + 'comborelationbutton')
-  elem.setAttribute('value', 'Add ' + combo_conf[type].total + ' comborelation ' + '(' + combo_conf[type].key + ')')
-  elem.onclick = () => { do_comborelation(type) }
-  $('#combo_buttons')[0].appendChild(elem)
-  combo_keys[combo_conf[type].key] = type
-}
-
-// Configured meta types need a button and a color each
-export function meta_type(type) {
-  console.debug('Using globals: document, shades_array, meta_shades, meta_keys, button_shades for conf')
-  var elem = document.createElement('input')
-  elem.setAttribute('type', 'button')
-  elem.classList.add('metarelationbutton')
-  elem.setAttribute('id', type + 'metarelationbutton')
-  elem.setAttribute('value', 'Add ' + type + ' metarelation ' + '(' + meta_conf[type].key + ')')
-  elem.onclick = () => { do_metarelation(type) }
-  $('#meta_buttons')[0].appendChild(elem)
-  meta_shades[type] = shades_array[meta_conf[type].colour]
-  meta_keys[meta_conf[type].key] = type
-  button_shades[type + 'metarelationbutton'] = shades_array[meta_conf[type].colour]
-}
 
 export function add_buttons(draw_context) {
   add_filters(draw_context)
@@ -422,11 +380,11 @@ export function handle_keyup(ev) {
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === 'Shift')
     $('#layers').removeClass('shift-pressed')
-  // Use `Escape` to focus outside relations palette.
-  if (ev.key === 'Escape') {
-    document.getElementById('custom_type').blur()
-    document.getElementById('meta_custom_type').blur()
-  }
+  // // Use `Escape` to focus outside relations palette.
+  // if (ev.key === 'Escape') {
+  //   document.getElementById('custom_type').blur()
+  //   document.getElementById('meta_custom_type').blur()
+  // }
 }
 
 export function handle_click(ev) {
@@ -439,7 +397,7 @@ export function handle_keypress(ev) {
   if (text_input)
     return
   if (ev.key == 'Enter') {
-    do_edges()
+    // do_edges()
   } else if (ev.key == action_conf.move_relation_to_front) { // Scroll through relations
     var elem = document.elementFromPoint(mouseX, mouseY)
     if (elem.tagName == 'circle')
@@ -485,12 +443,12 @@ export function handle_keypress(ev) {
     ev.preventDefault()
     var was_collapsed = $('#relations_panel').hasClass('collapsed')
     if (was_collapsed) toggle_buttons()
-    $('#custom_type').select2('open')
+    // $('#custom_type').select2('open')
   } else if (ev.key == custom_conf.meta_relation) { // Custom meta-relations.
     ev.preventDefault()
     var was_collapsed = $('#relations_panel').hasClass('collapsed')
     if (was_collapsed) toggle_buttons()
-    $('#meta_custom_type').select2('open')
+    // $('#meta_custom_type').select2('open')
   } else if (type_keys[ev.key]) { // Add a relation
     do_relation(type_keys[ev.key])
   } else if (meta_keys[ev.key]) { // Add a metarelation
@@ -510,13 +468,6 @@ export function handle_keypress(ev) {
 function toggle_he_selected(selecting) {
   console.debug('Using globals: document for changing button texts/visibility')
 
-  Array.from(document.getElementsByClassName('relationbutton')).forEach((button) => {
-    var val = button.getAttribute('value')
-    if (selecting)
-      button.setAttribute('value', val.replace('Add', 'Set to'))
-    else
-      button.setAttribute('value', val.replace('Set to', 'Add'))
-  })
   if (selecting)
     document.getElementById('meta_buttons').classList.remove('none')
   else
@@ -764,6 +715,7 @@ export function drag_selector_installer(svg_elem) {
 }
 
 export function tooltip_update() {
+  // return $('.jBox-Mouse').hide()
   if (mouseX == undefined)
     return
   var update = [document.elementFromPoint(mouseX, mouseY)]
@@ -788,37 +740,21 @@ export function tooltip_update() {
     })[0]
   update = update ? update.getAttribute('type') : ''
   if (update) {
-    $('.jBox-Mouse').show()
+    // $('.jBox-Mouse').show()
     tooltip.setContent(update)
   } else {
-    $('.jBox-Mouse').hide()
+    // $('.jBox-Mouse').hide()
   }
 }
 
 // A tooltip for displaying relationship and meta-relationship types.
 export function music_tooltip_installer() {
   if (typeof (tooltip) != 'undefined') tooltip.destroy()
-  tooltip = new jBox('Mouse', {
-    attach: '#layers',
-    trigger: 'mouseenter',
-    onPosition: tooltip_update
-  })
-}
-
-export function initialize_select_controls() {
-  $('#custom_type, #meta_custom_type').on('select2:opening', function () {
-    texton()
-  })
-
-  $('#custom_type').on('select2:closing', function () {
-    textoff()
-    do_relation($('#custom_type :selected').text())
-  })
-
-  $('#meta_custom_type').on('select2:closing', function (e) {
-    textoff()
-    do_metarelation($('#meta_custom_type :selected').text())
-  })
+  // tooltip = new jBox('Mouse', {
+  //   attach: '#layers',
+  //   trigger: 'mouseenter',
+  //   onPosition: tooltip_update
+  // })
 }
 
 export function clear_top(draw_context) {

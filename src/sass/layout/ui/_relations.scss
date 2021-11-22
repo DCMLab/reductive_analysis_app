@@ -1,8 +1,30 @@
 .fly-out--relations {
-  max-width: 37rem;
+  max-width: 37rem; // shouldn’t exist when not expanded
 
   position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
+
+  .fly-out__btnGroup--visible:last-of-type {
+    .fly-out__hr:last-of-type {
+      display: none;
+    }
+  }
+
+  .fly-out__btnGroup--visible ~ .fly-out__btnGroup--visible {
+    margin-top: 3rem;
+    padding-top: 3rem;
+
+    border-top: .1rem solid hsl(0, 0%, 100%, .1);
+
+    .fly-out__showMore {
+      display: none;
+    }
+  }
+}
+
+.fly-out--relations-compact {
+  max-width: none;
+  --fly-out-half-inner-space: 3rem;
 }

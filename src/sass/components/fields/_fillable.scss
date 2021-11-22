@@ -1,6 +1,31 @@
 .fillable {
   display: grid;
   gap: 1rem;
+
+  position: relative;
+
+  &:hover,
+  &:focus-within {
+    .fillable__label__triangle {
+      display: none;
+    }
+  }
+}
+
+.fillable__label {
+  position: absolute;
+  inset: 1rem; // padding + border
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  pointer-events: none;
+}
+
+// replacement for the datalist arrow
+.fillable__label__triangle {
+  transform: rotate(180deg);
 }
 
 .fillable__input {
@@ -17,5 +42,10 @@
 
   &:focus {
     outline: none;
+  }
+
+  // arrow shown where a datalist is used
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0;
   }
 }

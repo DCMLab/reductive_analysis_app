@@ -31,6 +31,7 @@ class EventsManager {
 
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
+    document.addEventListener('blur', this.onBlur.bind(this), captureEvent)
 
     // core app events
     document.addEventListener('undoredo', this.onUndoRedo.bind(this))
@@ -107,6 +108,12 @@ class EventsManager {
   onChange(e) {
     this.app.player?.onChange(e)
     this.app.ui?.filters?.onChange(e)
+  }
+
+  // Forms events
+
+  onBlur(e) {
+    this.app.ui?.relations?.onBlur(e)
   }
 
   // App custom events

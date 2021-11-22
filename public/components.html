@@ -406,6 +406,29 @@
 
     </div>
 
+    <label class="fillable fly-out__title" for="some-fillable-field">
+        Field label
+        <input class="fillable__input" id="some-fillable-field" type="text" placeholder="Optional placeholder">
+    </label>
+
+    <label class="fillable fly-out__title" for="some-fillable-field-with-datalist">
+        <span class="fillable__label">
+            Field label
+            <svg class="fillable__label__triangle | btn__icon" width="10" height="8">
+                <use xlink:href="#triangle-path"/>
+            </svg>
+        </span>
+        <!-- Field label with datalist suggestions -->
+        <input class="fillable__input" id="some-fillable-field-with-datalist" type="text" list="the-fillable-datalist" placeholder="Optional placeholder">
+    </label>
+
+    <datalist id="the-fillable-datalist">
+        <option value="yolo">
+        <option value="pineapple">
+        <option value="apple">
+        <option value="lupin">
+    </datalist>
+
     <button class="btn btn--plain btn--small-icon" type="button">
         Metadata
         <svg class="btn__icon" width="10" height="8">

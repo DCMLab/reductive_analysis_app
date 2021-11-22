@@ -31,17 +31,15 @@ class Score {
   // Cached members.
 
   get flatSelection() {
-    this.#cache.setIfNew('flatSelection', Object.values(this.selection).flat())
-
-    return this.#cache.get('flatSelection')
+    return this.#cache.remember('flatSelection', Object.values(this.selection).flat())
   }
 
   get selectionType() {
-    this.#cache.setIfNew('selectionType', SELECTABLE_TYPES.find(type => {
+    const selectionType = SELECTABLE_TYPES.find(type => {
       return this.flatSelection[0]?.classList.contains(type)
-    }) ?? null)
+    }) ?? null
 
-    return this.#cache.get('selectionType')
+    return this.#cache.remember('selectionType', selectionType)
   }
 
   // Events.

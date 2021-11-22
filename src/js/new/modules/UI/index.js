@@ -54,9 +54,8 @@ class UI {
   }
 
   onScoreSelection({ detail }) {
-    if (detail.selected.concat(detail.extraselected).length > 0) {
-      this.relations?.toggleVisibility(true)
-    }
+    this.selection?.onScoreSelection(detail)
+    this.relations?.onScoreSelection(detail)
   }
 
   init() {

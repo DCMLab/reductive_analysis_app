@@ -1,5 +1,4 @@
 import pagemap from 'pagemap'
-// import jBox from 'jbox'
 import DragSelect from 'dragselect'
 import newApp from './new/app'
 

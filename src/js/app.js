@@ -44,7 +44,6 @@ window.extraselected = []
 // Regular import
 
 import newApp from './new/app'
-// import jBox from 'jbox'
 
 import { add_metarelation, add_relation } from './graph'
 import { mei_for_layer, new_layer } from './layers'

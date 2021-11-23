@@ -41,9 +41,7 @@ window.selected = []
 // Shift-clicking extra selects, exposed globally
 window.extraselected = []
 
-// Regular import
-
-import newApp from './new/app'
+// Regular imports
 
 import { add_metarelation, add_relation } from './graph'
 import { mei_for_layer, new_layer } from './layers'

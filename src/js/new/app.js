@@ -36,7 +36,3 @@ class App {
 const app = new App()
 
 export default app
-
-// export default function initApp() {
-//   new App()
-// }

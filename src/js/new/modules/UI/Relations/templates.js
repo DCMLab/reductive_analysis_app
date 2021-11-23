@@ -60,7 +60,7 @@ const createOption = value => `<option value="${value}">`
 /**
  * Two optional functions, not needed right now:
  * - createDatalist: alternate implementation requiring wrapHtmlIn
- * - wraHtmlin: wrap any string with HTML tag + attributes (passed as object)
+ * - wrapHtmlin: wrap any string with HTML tag + attributes (passed as object)
  */
 
 // export const createDatalist = (types, id) => wrapHtmlIn(createOptions(types), 'datalist', {

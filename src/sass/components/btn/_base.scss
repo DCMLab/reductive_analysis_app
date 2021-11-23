@@ -61,6 +61,10 @@
   padding: .8rem;
 }
 
+.btn--naked {
+  --btn-border: transparent;
+}
+
 .btn--small-icon {
   gap: 1rem;
 }

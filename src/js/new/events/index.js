@@ -27,9 +27,11 @@ class EventsManager {
 
     // keyboard
     document.addEventListener('keydown', this.onKeyDown.bind(this))
+    document.addEventListener('keyup', this.onKeyUp.bind(this))
 
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
+    document.addEventListener('blur', this.onBlur.bind(this), captureEvent)
 
     // core app events
     document.addEventListener('undoredo', this.onUndoRedo.bind(this))
@@ -108,6 +110,12 @@ class EventsManager {
     this.app.ui?.filters?.onChange(e)
   }
 
+  // Forms events
+
+  onBlur(e) {
+    this.app.ui?.relations?.onBlur(e)
+  }
+
   // App custom events
 
   onUndoRedo(e) {
@@ -132,20 +140,18 @@ class EventsManager {
     if (isFieldFocused()) { return }
 
     /**
-     * Undo (Cmd/Ctrl + Z)
      * Redo (Cmd/Ctrl + Shift + Z)
+     * Undo (Cmd/Ctrl + Z)
      */
-
     if (isKey(e, 'z')) {
-      if (isModifier(e, shortcutMeta)) {
-        return this.app.history.undo()
-      }
-
       if (isModifier(e, [shortcutMeta, 'shift'])) {
         return this.app.history.redo()
       }
-    }
 
+      if (isModifier(e, shortcutMeta)) {
+        return this.app.history.undo()
+      }
+    }
     /**
      * Select all visible relations (Cmd/Ctrl + A)
      */
@@ -154,6 +160,17 @@ class EventsManager {
       if (isModifier(e, shortcutMeta)) {
         return this.app.ui.selection.selectAll()
       }
+    }
+  }
+
+  onKeyUp(e) {
+
+    // Ignore keyboard shortcuts if a field is focused.
+    if (isModifier(e)) { return }
+
+    // Blur focused field
+    if (isKey(e, 'escape') && isFieldFocused()) {
+      document.activeElement.blur()
     }
   }
 }

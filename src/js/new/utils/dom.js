@@ -34,3 +34,8 @@ export const getDOMRect = (el, includedProps = null) => {
  * @property {number} bottom - Element width
  * @property {number} left - Element height
  */
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+export class NodeType {
+  static isElement = node => node.nodeType == 1
+}

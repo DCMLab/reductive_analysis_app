@@ -1,4 +1,4 @@
-import { sameArray } from '../utils/array'
+import { arrayIncludesAll } from '../utils/array'
 
 const keys = Object.freeze({
   escape: 27,
@@ -27,7 +27,7 @@ export function isModifier(keyboardEvent, modifiers = null) {
   }
 
   // Look for all specified modifiers.
-  return sameArray([modifiers].flat(), keys)
+  return arrayIncludesAll(keys, [modifiers].flat())
 }
 
 /**

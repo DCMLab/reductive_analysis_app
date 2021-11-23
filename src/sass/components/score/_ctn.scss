@@ -1,0 +1,21 @@
+.view {
+
+  &::before {
+    content: '';
+
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+
+    background: $gallery;
+    pointer-events: none;
+
+    transition: opacity .5s $in-out-quad;
+  }
+}
+
+.view--active {
+  &::before {
+    opacity: 0;
+  }
+}

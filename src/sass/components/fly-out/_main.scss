@@ -5,22 +5,35 @@
   background: v(fly-out-bg, $cod-gray);
   border-radius: 1rem;
   color: v(primary);
-  filter: drop-shadow(0 .2rem 1rem hsl(0, 0%, 0%, .15));
-}
+
+  transition:
+    v(fly-out-transition-duration, .2s)
+    v(fly-out-transition-easing, $in-out-quad)
+    v(fly-out-transition-delay, 0s);
+  transition-property:
+    var(--fly-out-transition-properties, opacity, visibility);
+
+  &:not(.fly-out--no-shadow) {
+    filter: drop-shadow(0 .2rem 1rem hsl(0, 0%, 0%, var(--fly-out-shadow-opacity, .15)));
+  }
+
+  /**
+   * Space used to position the overflow scrollbar half-way between the inner
+   * block and the fly-out border.
+   */
+   --fly-out-half-inner-space: calc(var(--fly-out-inner-space, 2rem));
+   --scrollbar: var(--scrollbar-w, 0); // in JS: scrollbarW = `getComputedStyle(el).width - el.clientWidth` // but do it by using getBoundingClientRect
+   --scrollbar-margin-adjust: .5rem;
+   --scrollbar-padding-adjust: .5rem;
+ }
 
 .fly-out__inner {
-  /**
-   * Space used to position the overflow scrollbar half-way between this block
-   * and the fly-out border.
-   */
-  --fly-out-half-inner-space: calc(var(--fly-out-inner-space, 2rem) / 2);
-
-  margin-block-start: 2rem;
-  margin-inline-end: v(fly-out-half-inner-space);
+  margin-block-start: v(fly-out-inner-space, 2rem);
+  margin-inline-end: calc(var(--fly-out-half-inner-space) - var(--scrollbar-margin-adjust));
   padding-block-end: 0;
   padding-inline:
     v(fly-out-inner-space, 2rem)
-    v(fly-out-half-inner-space);
+    calc(var(--fly-out-half-inner-space) + var(--scrollbar-padding-adjust));
 
   // Thanks for the parsing, SASS… -_-
   // max-height: unquote('min(calc(100vh - 4rem), 58rem)'); // 4rem = space around UI.
@@ -32,6 +45,11 @@
 
   scrollbar-width: thin;
   scrollbar-color: v(primary) hsl(0, 0%, 100%, .1);
+
+  // Temp awaiting for JS computation of scrollbarWidth.
+  @supports not (scrollbar-width: thin) {
+    --scrollbar-padding-adjust: 0rem;
+  }
 
   // Scrollbar (webkit)
 
@@ -45,6 +63,11 @@
     background: v(primary);
     border-radius: .2rem;
   }
+}
+
+.fly-out--small {
+  --fly-out-inner-space: 1rem;
+  --fly-out-shadow-opacity: .05;
 }
 
 .fly-out--big {

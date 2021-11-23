@@ -41,10 +41,7 @@ window.selected = []
 // Shift-clicking extra selects, exposed globally
 window.extraselected = []
 
-// Regular import
-
-import newApp from './new/app'
-import jBox from 'jbox'
+// Regular imports
 
 import { add_metarelation, add_relation } from './graph'
 import { mei_for_layer, new_layer } from './layers'
@@ -52,7 +49,6 @@ import { draw_relation, draw_metarelation } from './draw'
 
 import {
   add_buttons,
-  combo_type,
   drag_selector_installer,
   getShades,
   handle_click,
@@ -61,21 +57,16 @@ import {
   handle_keypress,
   handle_keyup,
   handle_relations_panel,
-  init_type,
-  initialize_select_controls,
-  meta_type,
   minimap,
   music_tooltip_installer,
   toggle_selected,
   toggle_shade,
   toggle_shades,
   tooltip_update,
-  update_text,
 } from './ui'
 
 import {
   add_mei_node_for,
-  arrayToSelect2,
   check_for_duplicate_relations,
   fix_synonyms,
   get_by_id,
@@ -87,7 +78,6 @@ import {
   id_or_oldid,
   indicate_current_context,
   mark_secondaries,
-  matcher,
   new_layer_element,
   new_view_elements,
   note_coords,
@@ -97,9 +87,9 @@ import {
 } from './utils'
 import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
+import { comboRelationTypes } from './new/modules/Relations/config'
 
 require('./accidentals')
-require('select2/dist/js/select2')
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 
 // GLOBALS
@@ -157,20 +147,17 @@ window.addEventListener('beforeunload', function (e) {
 })
 
 // Once things are loaded, do configuration stuff
+
+// each relation type is initialized here, among other things
+
 $(document).ready(function() {
   document.getElementsByTagName('html')[0].classList.remove('loader')
-  Object.keys(type_conf).forEach(init_type)
-  Object.keys(meta_conf).forEach(meta_type)
-  Object.keys(combo_conf).forEach(combo_type)
   toggle_shades()
-  // $('#player').midiPlayer({ color: 'grey', width: 250 })
-  $('#selected_things').hide()
 
   $('#hull_controller').on('change', handle_hull_controller)
   handle_relations_panel(document.getElementById('relations_panel'))
   minimap()
   initialize_panel()
-  initialize_select_controls()
 })
 
 // Catch-all exception handler.
@@ -204,7 +191,7 @@ export function do_relation(type, id, redoing = false) {
       mei_he.getElementsByTagName('label')[0].setAttribute('type', type)
       hes.forEach(toggle_shade)
     })
-    update_text()
+    // update_text()
     undo_actions.push(['change relation type', types.reverse(), selected, extraselected])
   } else if (selected.concat(extraselected)[0].classList.contains('note')) {
     check_for_duplicate_relations(type, extraselected, selected)
@@ -230,9 +217,6 @@ export function do_relation(type, id, redoing = false) {
   tooltip_update()
 }
 
-const relationButton = document.getElementById('relationbutton')
-relationButton.addEventListener('click', do_relation)
-
 export function do_comborelation(type) {
   var all = selected.concat(extraselected)
   if (all.length < 3 || extraselected.length > 2) { return }
@@ -241,15 +225,15 @@ export function do_comborelation(type) {
     var [bx, by] = note_coords(b)
     return ax - bx
   })
-  var fst = all.shift()
-  var snd = all.pop()
-  selected = selected.filter((e) => e == fst || e == snd)
-  do_relation(combo_conf[type].outer)
+  var firstNote = all.shift()
+  var secondNote = all.pop()
+  selected = selected.filter((e) => e == firstNote || e == secondNote)
+  do_relation(comboRelationTypes.main[type].outer)
 
-  extraselected = [fst, snd]
+  extraselected = [firstNote, secondNote]
   selected = all
 
-  do_relation(combo_conf[type].total)
+  do_relation(comboRelationTypes.main[type].total)
   tooltip_update()
 }
 
@@ -349,14 +333,15 @@ saveSvgButton.addEventListener('click', save_orig)
 // Load a new MEI
 export function load() {
   console.debug('Using globals: selected_extraselected, upload, reader, filenmae')
-  var loaderModal = new jBox('Modal', {
-    id: 'loader-modal',
-    title: 'Loading...',
-    content: 'Please wait...',
-    closeOnEsc: false,
-    closeOnClick: false,
-    closeButton: false
-  })
+  // var loaderModal = new jBox('Modal', {
+  //   id: 'loader-modal',
+  //   title: 'Loading...',
+  //   content: 'Please wait...',
+  //   closeOnEsc: false,
+  //   closeOnClick: false,
+  //   closeButton: false
+  // })
+
   /* Cancel loading if changes are not saved? alert */
   selected = []
   extraselected = []
@@ -366,10 +351,10 @@ export function load() {
       data = reader.result
       // TODO: Understand why this setTimeout hack is necessary for the modal to appear.
       setTimeout(() => {
-        loaderModal.open()
+        // loaderModal.open()
         setTimeout(() => {
-          load_finish(loaderModal)
-          loaderModal.close(loaderModal)
+          load_finish(null)
+          // loaderModal.close(loaderModal)
           music_tooltip_installer()
           indicate_current_context()
         }, 1000)
@@ -380,7 +365,7 @@ export function load() {
     if (filename == '')
       filename = upload.files[0].name
   } else {
-    loaderModal.close()
+    // loaderModal.close()
     return
   }
 }
@@ -417,10 +402,10 @@ function load_finish(loader_modal) {
     mei = parser.parseFromString(data, 'text/xml')
     if (mei.getElementsByTagName('parsererror').length > 0) {
       console.log('This is not a valid XML or MEI file. However it could be ABC or Humdrum, for instance')
-      loader_modal.close()
+      // loader_modal.close()
     }
   } catch {
-    loader_modal.close()
+    // loader_modal.close()
     $('#fileupload').val('')
   }
 
@@ -433,7 +418,7 @@ function load_finish(loader_modal) {
     } catch {
       if (!new_svg) {
         console.log('Verovio could not generate SVG from non-MEI file.')
-        loader_modal.close()
+        // loader_modal.close()
         $('#fileupload').val('')
         return false
       }
@@ -445,7 +430,7 @@ function load_finish(loader_modal) {
       mei = parser.parseFromString(data, 'text/xml')
     } catch {
       alert('Cannot parse this XML file as valid MEI.')
-      loader_modal.close()
+      // loader_modal.close()
       $('#fileupload').val('')
       return false
     }
@@ -457,7 +442,7 @@ function load_finish(loader_modal) {
     mei_graph = add_or_fetch_graph()
   } catch {
     alert('Cannot parse this XML file as valid MEI.')
-    loader_modal.close()
+    // loader_modal.close()
     $('#fileupload').val('')
     return false
   }
@@ -695,32 +680,6 @@ function initialize_panel() {
   buttons.forEach(b => document.getElementById(b[1]) .setAttribute('title',
     custom_conf[b[0]] || navigation_conf[b[0]] || action_conf[b[0]])
   )
-
-  $('#custom_type').select2({
-    data: arrayToSelect2(type_full_conf),
-    width: '300px',
-    tags: true,
-    insertTag: function (data, tag) {
-      data.push(tag)
-    },
-    placeholder: 'Select relation type',
-    allowClear: true,
-    matcher: matcher
-  })
-  $('#custom_type').val(null).trigger('change')
-
-  $('#meta_custom_type').select2({
-    data: arrayToSelect2(meta_full_conf),
-    width: '300px',
-    tags: true,
-    insertTag: function (data, tag) {
-      data.push(tag)
-    },
-    placeholder: 'Select metarelation type',
-    allowClear: true,
-    matcher: matcher
-  })
-  $('#meta_custom_type').val(null).trigger('change')
 }
 
 console.log('Main webapp library is loaded')

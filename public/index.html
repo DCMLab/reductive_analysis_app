@@ -12,7 +12,6 @@
     <meta name="color-scheme" content="light only">
 
     <link type="text/css" rel="stylesheet" href="css/vendor/normalize.css">
-    <link type="text/css" rel="stylesheet" href="css/vendor/jBox.all.min.css">
     <link type="text/css" rel="stylesheet" href="css/vendor/select2.min.css">
     <link type="text/css" rel="stylesheet" href="css/vendor/style.css">
     <link type="text/css" rel="stylesheet" href="css/app.css">
@@ -273,31 +272,58 @@
 
         </div>
 
-        <!-- Zoom -->
+        <!-- Selection legend and zoom controls -->
 
-        <div id="zoom" class="zoom">
-            <button id="zoom-reset" class="btn btn--plain zoom__reset" type="button">
-                <span class="visually-hidden">Reset zoom</span>
+        <div id="selection-legend-and-zoom" class="selection-legend-and-zoom">
 
-                <!-- @todo: Check semantic of button > label + output -->
-                <label for="zoom-level" class="visually-hidden">Current zoom level:</label>
-                <output id="zoom-level" for="zoom-in zoom-out">100%</output>
-            </button>
+            <!-- Selection legend -->
 
-            <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
-                <svg class="btn__icon" width="12" height="12">
-                    <use xlink:href="#plus-path"/>
-                </svg>
-                <span class="visually-hidden">Zoom in</span>
-            </button>
+            <div id="selection-legend" class="selection-legend | fly-out fly-out--small fly-out--dark fly-out--hideable">
+                <div class="fly-out__inner">
 
-            <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
-                <svg class="btn__icon" width="12" height="12">
-                    <use xlink:href="#minus-path"/>
-                </svg>
-                <span class="visually-hidden">Zoom out</span>
-            </button>
+                    <h2 id="selection-type" class="visually-hidden">Selection</h2>
+
+                    <div class="selection" id="selection-primary">
+                        <h3 class="selection__title selection__title--primary">Primary</h3>
+                        <ul class="selection__list" id="selection-list-primary"></ul>
+                    </div>
+
+                    <div class="selection" id="selection-secondary">
+                        <h3 class="selection__title selection__title--secondary">Secondary</h3>
+                        <ul class="selection__list" id="selection-list-secondary"></ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Zoom -->
+
+            <div id="zoom" class="zoom">
+                <button id="zoom-reset" class="btn btn--plain zoom__reset" type="button">
+                    <span class="visually-hidden">Reset zoom</span>
+
+                    <!-- @todo: Check semantic of button > label + output -->
+                    <label for="zoom-level" class="visually-hidden">Current zoom level:</label>
+                    <output id="zoom-level" for="zoom-in zoom-out">100%</output>
+                </button>
+
+                <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
+                    <svg class="btn__icon" width="12" height="12">
+                        <use xlink:href="#plus-path"/>
+                    </svg>
+                    <span class="visually-hidden">Zoom in</span>
+                </button>
+
+                <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
+                    <svg class="btn__icon" width="12" height="12">
+                        <use xlink:href="#minus-path"/>
+                    </svg>
+                    <span class="visually-hidden">Zoom out</span>
+                </button>
+            </div>
+
         </div>
+
 
         <!-- In-score navigation -->
 
@@ -316,6 +342,8 @@
                 <span class="visually-hidden">To right</span>
             </button>
         </div>
+
+        <!-- Metadata and new note -->
 
         <div id="metadata-and-note-toggle" class="metadata-and-note-toggle">
 
@@ -344,7 +372,6 @@
 
     </div>
 
-    <div id="selected_things"></div>
     <div id="load_save" class="main_buttons">
         <div id="main_buttons_title">
             &#9881;
@@ -409,13 +436,8 @@
             <input type="button" id="naturalizebutton" value="Naturali(Z)e notes"/>
         </div>
         <div id="relation_buttons">
-            <select id="custom_type" name="relation"></select>
-            <br>
-            <input type="button" class="relationbutton" id="relationbutton" value="Add untyped relation">
         </div>
         <div id="meta_buttons" class="none">
-            <select id="meta_custom_type" name="metarelation"></select>
-            <br>
         </div>
         <div id="combo_buttons">
         </div>
@@ -427,10 +449,20 @@
 
     <!-- Relations fly-out -->
 
-    <div class="fly-out fly-out--big fly-out--dark fly-out--draggable fly-out--relations" id="relations-menu">
+    <div
+        class="
+            fly-out fly-out--big
+            fly-out--dark
+            fly-out--draggable
+            fly-out--hideable
+            fly-out--relations
+        "
+        id="relations-menu"
+    >
         <div class="fly-out__inner">
 
-            <div>
+            <!-- Not sure this innerSomething wrapper is useful… We’ll see later. -->
+            <div class="fly-out__innerSomething">
                 <div class="fly-out__headerRow">
                     <div class="fly-out__title fly-out__title--big">Relations</div>
 
@@ -450,54 +482,10 @@
 
                 </div>
 
-                <div class="btn-group">
-                    <button type="button"
-                        class="btn btn--hollow btn--relation color-relation-repeat"
-                        data-relation-type="repeat"
-                    >
-                        Repeat
-                    </button>
-                    <button type="button"
-                        class="btn btn--hollow btn--relation color-relation-passing"
-                        data-relation-type="passing"
-                    >
-                        Passing
-                    </button>
-                    <button type="button"
-                        class="btn btn--hollow btn--relation color-relation-neighbour"
-                        data-relation-type="neighbour"
-                    >
-                        Neighbour
-                    </button>
-                    <button type="button"
-                        class="btn btn--hollow btn--relation color-relation-harmonic"
-                        data-relation-type="harmonic"
-                    >
-                        Harmonic
-                    </button>
-                    <button type="button"
-                        class="btn btn--hollow btn--relation color-relation-arpeggio"
-                        data-relation-type="arpeggio"
-                    >
-                        Arpeggio
-                    </button>
-                    <button type="button"
-                        class="btn btn--hollow btn--relation color-relation-urlinie"
-                        data-relation-type="urlinie"
-                    >
-                        Urlinie
-                    </button>
-                    <button type="button"
-                        class="btn btn--hollow btn--relation color-relation-bassbrechung"
-                        data-relation-type="bassbrechung"
-                    >
-                        Bassbrechung
-                    </button>
-                    <button class="btn btn--hollow" type="button">
-                        <span class="visually-hidden">view more relations</span>
-                        &hellip;
-                    </button>
-                </div>
+                <!-- Relations -->
+                <div class="fly-out__btnGroup | btn-group" id="relations-btns"></div>
+                <div class="fly-out__btnGroup | btn-group" id="metarelations-btns"></div>
+                <div class="fly-out__btnGroup | btn-group" id="comborelations-btns"></div>
 
             </div>
         </div>

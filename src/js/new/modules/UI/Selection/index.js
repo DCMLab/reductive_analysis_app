@@ -3,11 +3,13 @@ import {
   getCurrentDrawContext,
   select_visibles
 } from '../../../../ui'
+import SelectionLegend from './legend'
 
 class Selection {
   constructor() {
     this.selectBtn = document.getElementById('select-all')
     this.unselectBtn = document.getElementById('unselect-all')
+    this.legend = new SelectionLegend() // rename it?
   }
 
   selectAll() {
@@ -24,6 +26,10 @@ class Selection {
   onTap({ target }) {
     if (target == this.selectBtn) { return this.selectAll() }
     if (target == this.unselectBtn) { return this.selectNone() }
+  }
+
+  onScoreSelection(detail) {
+    this.legend.update(detail)
   }
 }
 

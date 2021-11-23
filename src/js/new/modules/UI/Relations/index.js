@@ -1,156 +1,166 @@
-/**
- * ⚠️ The relations menu is a work in progress.
- */
+import {
+  do_relation,
+  do_metarelation,
+  do_comborelation,
+} from '../../../../app'
 
-import { prevent }          from '../../../events/prevent'
-import { clamp }            from '../../../utils/math'
-import { doc }              from '../../../utils/document'
-import { getDOMRect }       from '../../../utils/dom'
-import { pxToRem }          from '../../../utils/units'
-import viewport             from '../../Viewport'
-import { do_relation }      from '../../../../app'
+import {
+  relationTypes,
+  metaRelationTypes,
+  comboRelationTypes,
+  menuOrderByType,
+  getMenuOrder,
+} from '../../Relations/config'
 
-// The minimal distance between the relations menu and the viewport.
-const SNAP_DELTA = 10
+import score from '../../Score'
+import { DraggableFlyOut } from '../FlyOut'
+import RelationsGroup from './group'
 
-class RelationsFlyOut {
-  #dragging = false
-
+class RelationsFlyOut extends DraggableFlyOut {
   constructor() {
-    this.ctn = { el: document.getElementById('relations-menu') }
-    this.closeBtn = this.ctn.el.querySelector('.fly-out__closeBtn')
-    this.dragHandle = { el: this.ctn.el.querySelector('.fly-out__drag') }
+    super('relations-menu')
 
-    // this.relationsBtns = this.ctn.el.getElementsByClassName('btn--relation')
-
-    this.visible = false
-    this.x = 0
-    this.y = 0
-
-    this.computeValues()
-    // this.toggleVisibility(true) // for debug purpose
+    this.innerCtn = this.ctn.el.querySelector('.fly-out__innerSomething')
+    this.init()
   }
 
-  // Common handlers for touch and mouse events.
+  get visibleGroups() {
+    return [
+      this.relations,
+      this.metarelations,
+      this.comborelations
+    ].filter(({ isVisible }) => isVisible)
+  }
 
   onTap(e) {
-    if (!e.composedPath().includes(this.ctn.el)) { return }
+    super.onTap(e)
 
-    if (e.target == this.closeBtn) {
-      return this.toggleVisibility(false)
+    const { dataset, classList } = e.target
+
+    if (!('relationType' in dataset)) { return }
+
+    const relationType = dataset.relationType
+
+    // Create relation
+    if (classList.contains('btn--relation')) {
+      return this[relationType].eventCallbacks.tap(dataset.relationName)
     }
 
-    if (e.target.classList.contains('btn--relation')) {
-      do_relation(e.target.dataset.relationType)
-    }
-  }
-
-  onTapStart(e) {
-    if (e.target == this.dragHandle.el) {
-      prevent(e, () => this.toggleDragging(true))
-    }
-  }
-
-  onTapMove(x, y) {
-    if (this.visible && this.#dragging) {
-      this.updatePosition(x, y)
-    }
-  }
-
-  onTapEnd() {
-    if (this.visible && this.#dragging) {
-      this.toggleDragging(false)
+    // Toggle button
+    if (classList.contains('btn')) {
+      this[relationType].onTap()
+      this.compact()
       this.computeValues()
     }
   }
 
-  onResize() {
-    if (!this.visible) { return }
-    this.computeValues()
-  }
+  onBlur({ target: { dataset, value, id }, target }) {
 
-  updatePosition(x = this.x, y = this.y) {
-    this.x = x - this.ctn.handleDeltaX
-    this.y = y - this.ctn.handleDeltaY
-    this.ctn.el.style.setProperty('--relations-menu-x', pxToRem(this.x))
-    this.ctn.el.style.setProperty('--relations-menu-y', pxToRem(this.y))
-  }
+    /**
+     * Early return.
+     *
+     * We can’t directly check `!('relationType' in dataset)` because it
+     * crashes on `document` blur (it has no `dataset`). Two options:
+     * 1. if (!dataset || !('relationType' in dataset))
+     * 2. if (!dataset?.hasOwnProperty('relationType'))
+     *
+     * `hasOwnProperty` is preferred: it allows optional chaining.
+     */
+    if (!dataset?.hasOwnProperty('relationType')) { return }
 
-  toggleVisibility(state = !this.visible) {
-    this.ctn.el.classList.toggle('fly-out--relations--visible', state)
-    this.visible = state
+    const { relationType } = dataset
 
-    if (state) {
-      this.computeValues()
+    if (value && id == `free-field-${relationType}`) {
+      return this[relationType].eventCallbacks.tap(value)
     }
   }
 
-  toggleDragging(state = !this.#dragging) {
-    this.#dragging = state
-    this.ctn.el.classList.toggle('fly-out--grabbing', state)
-    doc.classList.toggle('dragging-relations-menu', state)
+  onScoreSelection({ detail }) {
+
+    // Nothing selected: hide the menu. Otherwise: show it.
+    this.toggleVisibility(score.flatSelection.length)
+
+    this.reorder()
+
+    // Always show the relations buttons.
+    this.relations.show()
+
+    // Only hide metarelations when a note is selected.
+    this.metarelations.toggleVisibility(score.selectionType != 'note')
+
+    // // selected items are relations or metarelations
+    // if (/relation/.test(score.selectionType)) {
+    //   this[score.selectionType + 's'].show()
+    // }
+
+    this.compact()
+
+    /**
+     * The dimensions of the fly-out may change if the selected item isn’t the
+     * same type (note, relation, metarelation) as previously. On the first
+     * selected item, we need to re-compute its values.
+     */
+    if (score.flatSelection.length == 1) {
+      this.computeValues()
+    }
   }
 
   /**
-   * Bring the relations menu back when dragged outside viewport boundaries.
+   * Reorder the relation groups depending on the type of the selection.
+   * The order by type is defined in `modules/Relations/config.js`.
    */
+  reorder() {
 
-  snapInViewport() {
-    const x = clamp(this.x, SNAP_DELTA, viewport.w - this.ctn.width - SNAP_DELTA)
-    const y = clamp(this.y, SNAP_DELTA, viewport.h - this.ctn.height - SNAP_DELTA)
+    // Reorder only when 1 item is selected.
+    if (!(score.flatSelection.length === 1)) { return }
 
-    if (x != this.x || y != this.y) {
+    const order = getMenuOrder(score.selectionType)
 
-      // enable transition
-      this.ctn.el.classList.add('fly-out--relations--snapping')
-      this.ctn.el.addEventListener('transitionend', this.onSnapTransitionEnd.bind(this))
-
-      // update position
-      this.updatePosition(
-        x + this.ctn.handleDeltaX,
-        y + this.ctn.handleDeltaY
+    for (let index = order.length - 1; index > 0; index--) {
+      this.innerCtn.insertBefore(
+        this[order[index - 1]].ctn,
+        this[order[index]].ctn
       )
+
+      // Expand all but first one.
+      if (index > 1) {
+        this[order[index - 1]].toggle(true)
+      }
     }
   }
 
-  // Disable transition and remove transition listener.
+  compact() {
+    // Reorder only when 1 item is selected.
+    if (!(score.flatSelection.length === 1)) { return }
 
-  onSnapTransitionEnd({ propertyName }) {
-    if (propertyName == 'transform') {
-      this.ctn.el.classList.remove('fly-out--relations--snapping')
-      this.ctn.el.removeEventListener('transitionend', this.onSnapTransitionEnd.bind(this))
-    }
+    const order = getMenuOrder(score.selectionType)
+    const shouldCompact = !this[order[0]].isExpanded
+    this.ctn.el.classList.toggle('fly-out--relations-compact', shouldCompact)
+    this.ctn.el.classList.toggle('fly-out--big', !shouldCompact)
+
+    // Condition partly from src/js/app.js: do_comborelation()
+    const comborelationsVisible =
+        this.relations.isExpanded
+        && score.selectionType == 'note'
+        && score.flatSelection.length > 2
+        && score.selection.extraselected.length < 3
+    this.comborelations.toggleVisibility(comborelationsVisible)
   }
 
-  // Compute the size and position of the container and the dragging handle.
+  init() {
+    this.relations = new RelationsGroup('relations', relationTypes, {
+      tap: do_relation,
+    })
 
-  computeValues() {
+    this.metarelations = new RelationsGroup('metarelations', metaRelationTypes, {
+      tap: do_metarelation,
+    })
 
-    // container
-    const ctnDOMRect = getDOMRect(this.ctn.el, ['x', 'y', 'width', 'height'])
-    Object.assign(this.ctn, ctnDOMRect)
+    this.comborelations = new RelationsGroup('comborelations', comboRelationTypes, {
+      tap: do_comborelation,
+    })
 
-    // dragging handle
-    const dragHandleDOMRect = getDOMRect(this.dragHandle.el, ['width', 'height'])
-    Object.assign(this.dragHandle,
-      dragHandleDOMRect,
-      {
-        // Distance from the top left of the container.
-        offsetLeft: this.dragHandle.el.offsetLeft,
-        offsetTop: this.dragHandle.el.offsetTop,
-      },
-    )
-
-    /**
-     * Distance between the top-left of the menu and the center of the handle.
-     * This way it’s taken into account when the menu gets the `transform`.
-     */
-    this.ctn.handleDeltaX = this.dragHandle.offsetLeft + (this.dragHandle.width / 2)
-    this.ctn.handleDeltaY = this.dragHandle.offsetTop + (this.dragHandle.height / 2)
-
-    // Computation is done, we can finally snap if needed.
-
-    this.snapInViewport()
+    this.title = this.ctn.el.querySelector('.fly-out__title')
   }
 }
 

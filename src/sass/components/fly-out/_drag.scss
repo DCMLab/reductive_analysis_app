@@ -10,13 +10,19 @@
   &:hover { cursor: grab; }
   .fly-out--grabbing & { cursor: grabbing; }
 
-  .dragging-relations-menu :not(&) {
+  .dragging-fly-out :not(&) {
     pointer-events: none;
   }
 }
 
-.dragging-relations-menu .fly-out--draggable {
-  pointer-events: auto;
+.fly-out--draggable {
+
+  // Custom properties set in JavaScript.
+  transform: translate(var(--fly-out-x, 0), var(--fly-out-y, 0));
+
+  .dragging-fly-out & {
+    pointer-events: auto;
+  }
 }
 
 /**
@@ -25,6 +31,15 @@
  */
 // // Disable all app pointer-events on drag, excepted on fly-out and its handle.
 
-// .dragging-relations-menu :not(.fly-out--grabbing):not(.fly-out__drag) {
+// .dragging-fly-out :not(.fly-out--grabbing):not(.fly-out__drag) {
 //   pointer-events: none;
 // }
+
+.fly-out--snapping {
+  --fly-out-transition-easing: #{$out-back};
+  --fly-out-transition-properties: transform;
+
+  @media (--no-motion) {
+    --fly-out-transition-duration: .01s;
+  }
+}

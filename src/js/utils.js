@@ -1,4 +1,5 @@
 import { polygonHull } from 'd3'
+// import fuzzysearch from 'fuzzysearch'
 
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
@@ -720,8 +721,8 @@ export function note_to_text(id) {
   return mei_elem.getAttribute('pname') + accid + mei_elem.getAttribute('oct')
 }
 
-// Compute a text to represent the elements
-export function to_text(draw_contexts, mei_graph, elems) {
+// Compute a text to represent notes
+export function to_text(elems) {
   // TODO: Detect and warn for selections spanning several drawing contexts
   if (elems.length == 0)
     return ''
@@ -731,11 +732,7 @@ export function to_text(draw_contexts, mei_graph, elems) {
       const [mx, my] = note_coords(m)
       return (nx - mx == 0) ? my - ny : nx - mx
     })
-    return 'notes(' + elems.map((n) => note_to_text(get_id(n))).join('; ') + ')'
-  } else if (elems[0].classList.contains('relation')) {
-    return 'relations(' + elems.map((elem) => elem.getAttribute('type')).join('; ') + ')'
-  } else if (elems[0].classList.contains('metarelation')) {
-    return 'metarelations(' + elems.map((elem) => elem.getAttribute('type')).join('; ') + ')'
+    return elems.map(note => note_to_text(get_id(note)))
   }
 }
 
@@ -888,70 +885,18 @@ export function indicate_current_context() {
   // Visually indicate the current context. This cannot be done in CSS alone
   // because the relations palette is not a child of .view elements.
   // TODO: Find a more economical solution. This is becoming a hefty `onmousemove`.
+  // Note regarding this 👆: could maybe changed on mouseenter of the view. To test: apply `pointer-events: none;` (CSS) on direct children (or on all children) of non-active views, so that mouseenter doesn’t reach children elements of the view.
   var current_draw_context = getCurrentDrawContext()
   if (!(typeof (current_draw_context) == 'undefined')) {
+
     // Lighten the background of the current context.
-    $('.view').removeClass('view_active')
-    current_draw_context.view_elem.classList.add('view_active')
+    $('.view').removeClass('view--active')
+    current_draw_context.view_elem.classList.add('view--active')
+
     // Mark the sidebar of the current context.
     $('.sidebar').removeClass('sidebar_active')
     current_draw_context.view_elem.children[0].classList.add('sidebar_active')
   }
-}
-
-// Fuzzy search algorithm for <select> controls.
-// See https://github.com/bevacqua/fuzzysearch
-function fuzzysearch(needle, haystack) {
-  var hlen = haystack.length
-  var nlen = needle.length
-  if (nlen > hlen) {
-    return false
-  }
-  if (nlen === hlen) {
-    return needle === haystack
-  }
-  outer: for (var i = 0, j = 0; i < nlen; i++) {
-    var nch = needle.charCodeAt(i)
-    while (j < hlen) {
-      if (haystack.charCodeAt(j++) === nch) {
-        continue outer
-      }
-    }
-    return false
-  }
-  return true
-}
-
-// Select2 matcher call back for fuzzy searching.
-export function matcher(params, data) {
-  // If there are no search terms, return all of the data
-  if ($.trim(params.term) === '') {
-    return data
-  }
-
-  // Do not display the item if there is no 'text' property
-  if (typeof data.text === 'undefined') {
-    return null
-  }
-
-  // `params.term` should be the term that is used for searching
-  // `data.text` is the text that is displayed for the data object
-  if (fuzzysearch(params.term.toUpperCase(), data.text.toUpperCase())) {
-    var modifiedData = $.extend({}, data, true)
-
-    // You can return modified objects from here
-    // This includes matching the `children` how you want in nested data sets
-    return modifiedData
-  }
-
-  // Return `null` if the term should not be displayed
-  return null
-}
-
-// Converting plain arrays of <select> options into the type required by Select2.
-// See https://select2.org/data-sources/formats for the specification.
-export function arrayToSelect2(plain_array) {
-  return (plain_array.map(e => ({ 'id': e, 'text': e })))
 }
 
 function sanitize_mei(mei) {

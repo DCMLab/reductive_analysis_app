@@ -24,6 +24,11 @@
 }
 
 // replacement for the datalist arrow
+.fillable__label__text {
+  opacity: 0;
+}
+
+// replacement for the datalist arrow
 .fillable__label__triangle {
   transform: rotate(180deg);
 }
@@ -47,5 +52,10 @@
   // arrow shown where a datalist is used
   &::-webkit-calendar-picker-indicator {
     opacity: 0;
+  }
+
+  // shown when the field is empty
+  &::placeholder {
+    opacity: 1;
   }
 }

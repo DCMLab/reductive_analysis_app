@@ -33,7 +33,7 @@ flex: 1 0 100%;
 export const createFillable = (id, { label, placeholder = '' }) => `
   <label class="fillable fly-out__title" for="free-field-${id}">
       <span class="fillable__label">
-          ${label}
+          <span class="fillable__label__text">${label}</span>
           <svg class="fillable__label__triangle | btn__icon" width="10" height="8">
               <use xlink:href="#triangle-path"/>
           </svg>
@@ -44,7 +44,7 @@ export const createFillable = (id, { label, placeholder = '' }) => `
           id="free-field-${id}"
           type="text"
           list="datalist-${id}"
-          placeholder="${placeholder}"
+          placeholder="${label}"
           data-relation-type="${id}"
       >
   </label>

@@ -321,7 +321,7 @@ export function start_placing_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
   if (typeof (current_draw_context) != 'undefined') {
-    if (current_draw_context.layer.original_score)
+    if (!(get_by_id(document, current_draw_context.id_prefix + 'editcb').checked))
       return
     let [pname, oct, note] = note_params()
     placing_note = 'temp' + random_id()

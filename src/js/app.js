@@ -45,6 +45,7 @@ window.extraselected = []
 
 import { add_metarelation, add_relation } from './graph'
 import { mei_for_layer, new_layer } from './layers'
+import { new_sliced_layer } from './slicing'
 import { draw_relation, draw_metarelation } from './draw'
 
 import {

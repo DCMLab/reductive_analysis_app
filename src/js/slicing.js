@@ -50,13 +50,14 @@ function slicify(draw_context, score_elem, tied = false) {
   new_score_elem.appendChild(modified_scoreDef)
   new_score_elem.appendChild(new_section_elem)
   var ts = Object.keys(time_id_map)
-  for (ix in ts) {
+  console.log(time_id_map)
+  for (var ix in ts) {
     let t = ts[ix]
     let ids = time_id_map[t]
     let new_measure = mei.createElement('measure')
     new_measure.setAttribute('xml:id', 'measure-' + t)
     new_section_elem.appendChild(new_measure)
-    for (staffDef of staffDefs) {
+    for (var staffDef of staffDefs) {
       let new_staff = mei.createElement('staff')
       // TODO: set ID
       new_staff.setAttribute('n', staffDef.getAttribute('n'))
@@ -121,7 +122,7 @@ function slicify(draw_context, score_elem, tied = false) {
       }
 
     })
-    for (staff of new_measure.querySelectorAll('staff')) {
+    for (var staff of new_measure.querySelectorAll('staff')) {
       if (!staff.querySelector('note')) {
         let layer = staff.querySelector('layer')
         if (!layer) {
@@ -141,7 +142,7 @@ function slicify(draw_context, score_elem, tied = false) {
   return new_score_elem
 }
 
-function new_sliced_layer(draw_context, tied = false) {
+export function new_sliced_layer(draw_context, tied = false) {
   var score_elem = draw_context.mei_score
   var new_score_elem = slicify(draw_context, score_elem, tied)
   var n_layers = score_elem.parentElement.getElementsByTagName('score').length

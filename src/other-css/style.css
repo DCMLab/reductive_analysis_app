@@ -540,6 +540,7 @@ body:not(.mousedown) .view_buttons:hover {
 }
 
 .view_buttons input {
+  all: revert;
   vertical-align: top;
 }
 

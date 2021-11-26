@@ -431,7 +431,6 @@
             <input type="button" id="nextcontextbutton" value="Down">
         </div>
         <div id="basic_buttons">
-            <input type="button" id="deletebutton" value="Delete meta-relations">
             <input type="button" id="addnotebutton" value="Toggle adding a note"/>
             <input type="button" id="addbookmarkbutton" value="Bookmark note"/>
             <input type="button" id="naturalizebutton" value="Naturali(Z)e notes"/>
@@ -468,7 +467,8 @@
                     <div class="fly-out__title fly-out__title--big">Relations</div>
 
                     <div class="fly-out__headerActions | flex-center">
-                        <button class="fly-out__headerActionBtn | flex-center" type="button">
+                        <button class="fly-out__headerActionBtn fly-out__deleteBtn | flex-center" type="button">
+                            <span class="visually-hidden">Delete relation</span>
                             <svg class="fly-out__headerBinIcon" width="18" height="19">
                                 <use xlink:href="#bin-path"/>
                             </svg>

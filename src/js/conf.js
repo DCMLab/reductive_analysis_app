@@ -22,7 +22,9 @@ export const action_conf = {
   'toggle_type_shades':      'h',
   'select_same_notes':       '+',
   'toggle_add_note':         'x',
-  'naturalize_note':         'Z'
+  'naturalize_note':         'Z',
+  'copy':                    'C',
+  'paste':                   'V'
 }
 
 // Navigation shortcuts.

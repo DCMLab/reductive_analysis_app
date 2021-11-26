@@ -222,6 +222,74 @@ export function g() {
 export function random_id(n = 5) {
   return Math.floor(Math.random() * (1 << (n * 4))).toString(16)
 }
+export function pitch_offset(n1, n2) {
+  var vrvToolkit = getVerovioToolkit()
+  // Pitch offset in MIDI steps
+  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).pitch - 
+	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).pitch
+}
+
+export function time_offset(n1, n2) {
+  var vrvToolkit = getVerovioToolkit()
+  // Time offset in MIDI milliseconds
+  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).time - 
+	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).time
+}
+
+export function notes_template(ns) {
+  // For a number of notes, generate a map of pitch/time offsets to the
+  // earliest, lowest note
+  var ns_temp = ns
+  ns_temp = ns_temp.sort(pitch_offset)
+  ns_temp = ns_temp.sort(time_offset)
+  var ns_relative = ns_temp.map((n) => {
+    return {
+      p_off: pitch_offset(n, ns_temp[0]),
+      t_off: time_offset(n, ns_temp[0]),
+      n_from: n
+    }
+  })
+  return ns_relative
+}
+
+export function notes_in_range(n_ref, min_p_off, max_p_off, max_t_off) {
+  // Given a note, a pitch offset range, and a time range, find all notes
+  // within that range
+  var curr_measure = n_ref.closest('measure')
+  var ns = []
+  while (curr_measure) {
+    let none_added = true
+    let c_ns = curr_measure.querySelectorAll('note')
+    for (let m of c_ns) {
+      let t_off = time_offset(m, n_ref)
+      if (t_off >= 0 && t_off <= max_t_off) {
+        console.log('in time')
+        let p_off = pitch_offset(m, n_ref)
+        if (p_off >= min_p_off && p_off <= max_p_off) {
+	  console.log('in pitch')
+	  none_added = false
+	  ns.push(m)
+        }
+      }
+    }
+    if (none_added) // TODO: Better check - there could be measures with no
+    // notes in the pitch range that are still in the time
+		   // range
+      curr_measure = null
+    else
+      curr_measure = next_measure(curr_measure)
+  }
+  return ns
+}
+
+export function next_measure(m) {
+  if (m.nextElementSibling && m.nextElementSibling.tagName == 'measure')
+    return m.nextElementSibling
+  else if (!m.nextElementSibling)
+    return null
+  else
+    return next_measure(m.nextElementSibling)
+}
 
 // Note coordinates are off center by a bit
 export function note_coords(note) {
@@ -780,7 +848,7 @@ export function note_to_rest(mei, note) {
 function note_to_space(mei, note) {
   var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
   space.setAttribute('xml:id', 'space-' + note.getAttribute('xml:id'))
-  for (a of attributes)
+  for (let a of attributes)
     if (note.hasAttribute(a))
       space.setAttribute(a, note.getAttribute(a))
   return space

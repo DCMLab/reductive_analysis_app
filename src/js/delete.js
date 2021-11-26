@@ -62,6 +62,3 @@ export function delete_relations(redoing = false) {
   if (!redoing)
     flush_redo()
 }
-
-const deleteRelationsButtons = document.getElementById('deletebutton')
-deleteRelationsButtons.addEventListener('click', delete_relations)

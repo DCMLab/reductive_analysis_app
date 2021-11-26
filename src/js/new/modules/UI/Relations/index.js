@@ -4,6 +4,8 @@ import {
   do_comborelation,
 } from '../../../../app'
 
+import { delete_relations } from '../../../../delete'
+
 import {
   relationTypes,
   metaRelationTypes,
@@ -21,6 +23,7 @@ class RelationsFlyOut extends DraggableFlyOut {
     super('relations-menu')
 
     this.innerCtn = this.ctn.el.querySelector('.fly-out__innerSomething')
+    this.deleteBtn = this.ctn.el.querySelector('.fly-out__deleteBtn')
     this.init()
   }
 
@@ -34,6 +37,10 @@ class RelationsFlyOut extends DraggableFlyOut {
 
   onTap(e) {
     super.onTap(e)
+
+    if (e.target == this.deleteBtn) {
+      return delete_relations()
+    }
 
     const { dataset, classList } = e.target
 
@@ -94,6 +101,9 @@ class RelationsFlyOut extends DraggableFlyOut {
     // }
 
     this.compact()
+
+    // Disable the delete button unless a relation is selected
+    this.deleteBtn.disabled = !score.flatSelection.length || score.selectionType == 'note'
 
     /**
      * The dimensions of the fly-out may change if the selected item isn’t the

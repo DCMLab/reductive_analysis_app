@@ -26,7 +26,8 @@
   margin-right: -.7rem;
   gap: 1rem;
 
-  > :not(:hover):not(:focus) {
+  > :not(:hover):not(:focus),
+  > :disabled {
     opacity: .4;
     transition: opacity .2s $in-out-quad;
   }

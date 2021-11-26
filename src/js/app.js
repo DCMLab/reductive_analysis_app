@@ -675,7 +675,6 @@ function initialize_panel() {
 
   const buttons = [
     // conf.js label    ->        <input> element id
-    ['delete_all', 'deletebutton'],
     ['add_bookmark', 'addbookmarkbutton'],
     ['show_hide_notation', 'equalizebutton'],
     ['toggle_type_shades', 'shadesbutton'],

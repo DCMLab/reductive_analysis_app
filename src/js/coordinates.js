@@ -326,7 +326,6 @@ export function start_placing_note() {
     let [pname, oct, note] = note_params()
     placing_note = 'temp' + random_id()
     setPlacingNote(placing_note)
-    $('#addnotebutton').addClass('active')
     document.getElementById('layers').style.cursor = 'crosshair'
     if (pname)
       show_note(pname, oct, note, true, placing_note)
@@ -340,7 +339,6 @@ export function stop_placing_note() {
     elem.parentElement.removeChild(elem)
   placing_note = ''
   setPlacingNote(placing_note)
-  $('#addnotebutton').removeClass('active')
   document.getElementById('layers').style.cursor = 'default'
 }
 
@@ -350,14 +348,13 @@ export function toggle_placing_note() {
   if (!current_draw_context?.layer.original_score) {
     if (placing_note) {
       stop_placing_note()
-    } else {
-      start_placing_note()
+      return false
     }
+
+    start_placing_note()
+    return true
   }
 }
-
-const addNoteButton = document.getElementById('addnotebutton')
-addNoteButton.addEventListener('click', toggle_placing_note)
 
 export function update_placing_note() {
   var current_draw_context = getCurrentDrawContext()

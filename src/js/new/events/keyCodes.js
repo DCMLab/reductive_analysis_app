@@ -1,10 +1,12 @@
 import { arrayIncludesAll } from '../utils/array'
 
 const keys = Object.freeze({
+  control: 17,
   escape: 27,
   left: 37,
   right: 39,
   a: 65,
+  x: 88,
   z: 90,
 })
 

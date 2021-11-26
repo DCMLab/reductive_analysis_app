@@ -1,6 +1,7 @@
 import pagemap from 'pagemap'
 import DragSelect from 'dragselect'
 import newApp from './new/app'
+import jBox from 'jbox'
 
 import {
   button_shades,
@@ -762,21 +763,21 @@ export function tooltip_update() {
     })[0]
   update = update ? update.getAttribute('type') : ''
   if (update) {
-    // $('.jBox-Mouse').show()
+    $('.jBox-Mouse').show()
     tooltip.setContent(update)
   } else {
-    // $('.jBox-Mouse').hide()
+    $('.jBox-Mouse').hide()
   }
 }
 
 // A tooltip for displaying relationship and meta-relationship types.
 export function music_tooltip_installer() {
   if (typeof (tooltip) != 'undefined') tooltip.destroy()
-  // tooltip = new jBox('Mouse', {
-  //   attach: '#layers',
-  //   trigger: 'mouseenter',
-  //   onPosition: tooltip_update
-  // })
+  tooltip = new jBox('Mouse', {
+    attach: '#layers',
+    trigger: 'mouseenter',
+    onPosition: tooltip_update
+  })
 }
 
 export function clear_top(draw_context) {

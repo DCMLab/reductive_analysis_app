@@ -57,12 +57,11 @@ import {
 import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
 import { naturalize_notes } from './accidentals'
+import { isFieldFocused } from './new/utils/forms'
 
 /* UI globals */
 
 var non_notes_hidden = false
-
-var text_input = false
 
 var shades = false
 
@@ -314,8 +313,6 @@ export function add_buttons(draw_context) {
   var aligntreebutton = button('Align tree to selection')
   aligntreebutton.id = draw_context.id_prefix + 'treebutton'
   aligntreebutton.onclick = () => { align_tree(new_draw_context) }
-  treetext.onfocus = texton
-  treetext.onblur = textoff
   buttondiv.appendChild(drawtreebutton)
   buttondiv.appendChild(document.createElement('br'))
   buttondiv.appendChild(treetext); buttondiv.appendChild(document.createElement('br'))
@@ -418,9 +415,10 @@ export function handle_click(ev) {
 
 // We have keyboard commands!
 export function handle_keypress(ev) {
-  console.debug('Using globals: text_input, meta_keys, type_keys')
-  if (text_input)
-    return
+  console.debug('Using globals: meta_keys, type_keys')
+
+  if (isFieldFocused()) { return }
+
   if (ev.key == 'Enter') {
     // do_edges()
   } else if (ev.key == action_conf.move_relation_to_front) { // Scroll through relations
@@ -572,8 +570,6 @@ toggleShadesButton.addEventListener('click', toggle_shades)
 
 /* Small UI functions */
 
-export function texton() { text_input = true }
-function textoff() { text_input = false }
 function show_buttons() {
   $('#load_save')[0].classList.remove('hidden')
   $('#hidden_buttons')[0].classList.add('hidden')

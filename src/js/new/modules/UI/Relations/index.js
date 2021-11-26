@@ -102,6 +102,9 @@ class RelationsFlyOut extends DraggableFlyOut {
 
     this.compact()
 
+    // Disable the delete button unless a relation is selected
+    this.deleteBtn.disabled = !score.flatSelection.length || score.selectionType == 'note'
+
     /**
      * The dimensions of the fly-out may change if the selected item isn’t the
      * same type (note, relation, metarelation) as previously. On the first

@@ -715,7 +715,7 @@ export function drag_selector_installer(svg_elem) {
 }
 
 export function tooltip_update() {
-  return $('.jBox-Mouse').hide()
+  // return $('.jBox-Mouse').hide()
   if (mouseX == undefined)
     return
   var update = [document.elementFromPoint(mouseX, mouseY)]

@@ -1,5 +1,5 @@
 import { isFieldFocused } from '../utils/forms'
-import { isKey, isModifier, shortcutMeta } from './keyCodes'
+import { isKey, isModifier, pressedModifiers, shortcutMeta } from './keyCodes'
 import { captureEvent } from './options'
 import MouseMoveTick from './mousemove'
 import debounceResize from './resize'
@@ -152,23 +152,48 @@ class EventsManager {
         return this.app.history.undo()
       }
     }
+
     /**
      * Select all visible relations (Cmd/Ctrl + A)
      */
-
     if (isKey(e, 'a')) {
       if (isModifier(e, shortcutMeta)) {
         return this.app.ui.selection.selectAll()
       }
     }
+
+    /**
+     * Enable “New Note” cursor (Control)
+     */
+    if (isKey(e, 'control') && pressedModifiers(e).length === 1) {
+      return this.app.ui.newNote.enable()
+    }
+
+    // All shortcuts starting here don’t need modifiers.
+
+    if (isModifier(e)) { return }
+
+    /**
+     * Toggle “New Note” cursor (X)
+     */
+    if (isKey(e, 'x')) {
+      return this.app.ui.newNote.toggle()
+    }
   }
 
   onKeyUp(e) {
+    /**
+     * Enable “New Note” cursor (Control)
+     */
+    if (isKey(e, 'control')) {
+      return this.app.ui.newNote.disable()
+    }
 
-    // Ignore keyboard shortcuts if a field is focused.
+    // All shortcuts starting here don’t need modifiers.
+
     if (isModifier(e)) { return }
 
-    // Blur focused field
+    // Blur focused field (Escape)
     if (isKey(e, 'escape') && isFieldFocused()) {
       document.activeElement.blur()
     }

@@ -4,6 +4,7 @@ import navigation from './Navigation'
 import relations  from './Relations'
 import selection  from './Selection'
 import zoom       from './Zoom'
+import newNote    from './Note'
 
 class UI {
   constructor() {
@@ -21,6 +22,7 @@ class UI {
     this.metadata?.onTap(e)
     this.navigation?.onTap(e)
     this.filters?.onTap(e)
+    this.newNote?.onTap(e)
   }
 
   /**
@@ -65,6 +67,7 @@ class UI {
     this.metadata = metadata
     this.filters = filters
     this.relations = relations
+    this.newNote = newNote
   }
 }
 

@@ -48,9 +48,6 @@ import {
 
 import {
   place_note,
-  start_placing_note,
-  stop_placing_note,
-  toggle_placing_note,
   update_placing_note
 } from './coordinates'
 
@@ -387,26 +384,17 @@ window.onmousemove = (e) => {
 }
 
 export function handle_keydown(ev) {
-  if (ev.key == 'Control') {
-    start_placing_note()
-  }
+
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === 'Shift')
     $('#layers').addClass('shift-pressed')
 }
 
 export function handle_keyup(ev) {
-  if (ev.key == 'Control') {
-    stop_placing_note()
-  }
+
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === 'Shift')
     $('#layers').removeClass('shift-pressed')
-  // // Use `Escape` to focus outside relations palette.
-  // if (ev.key === 'Escape') {
-  //   document.getElementById('custom_type').blur()
-  //   document.getElementById('meta_custom_type').blur()
-  // }
 }
 
 export function handle_click(ev) {
@@ -446,8 +434,6 @@ export function handle_keypress(ev) {
     do_relation('repeat')
   } else if (ev.key == action_conf.naturalize_note) { // Naturalize note.
     naturalize_notes()
-  } else if (ev.key == action_conf.toggle_add_note) { // Toggle note creation.
-    toggle_placing_note()
   } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
     zoom_out(current_draw_context)
   } else if (ev.key == navigation_conf.zoom_in) { // Zoom in.

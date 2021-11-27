@@ -309,7 +309,7 @@ export function do_note(pname, oct, note, offset, id, redoing = false) {
 export function place_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
-  if (placing_note != '' && !current_draw_context.layer.original_score) {
+  if (placing_note != '' && (get_by_id(document, current_draw_context.id_prefix + 'editcb').checked)) {
     let [pname, oct, note] = note_params()
     if (!pname)
       return
@@ -345,7 +345,7 @@ export function stop_placing_note() {
 export function toggle_placing_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
-  if (!current_draw_context?.layer.original_score) {
+  if ((get_by_id(document, current_draw_context.id_prefix + 'editcb').checked)) {
     if (placing_note) {
       stop_placing_note()
       return false
@@ -358,7 +358,7 @@ export function toggle_placing_note() {
 
 export function update_placing_note() {
   var current_draw_context = getCurrentDrawContext()
-  if (current_draw_context.layer.original_score)
+  if (!(get_by_id(document, current_draw_context.id_prefix + 'editcb').checked)) {
     return
   let [pname, oct, note] = note_params()
   if (pname) {

@@ -67,7 +67,59 @@
 
         <div id="menu-and-filters" class="menu-and-filters">
 
-            <p>Menu</p>
+            <!-- Main menu fly-out -->
+
+            <div id="main-menu" class="fly-out fly-out--dark fly-out--collapsible fly-out--collapsed fly-out--main-menu">
+
+                <!-- Collapsed, in case the expanded menu must overlap the filters one.
+                    For that, 1) make the expanded version by position: absolute,
+                    2) make this one disabled 3) hide it (opacity 0)
+                 -->
+                <!-- <h3 class="fly-out__toggle">
+                    <button id="menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                        Menu
+                        <svg class="btn__icon" width="15" height="10">
+                            <use xlink:href="#menu-path"/>
+                        </svg>
+                    </button>
+                </h3> -->
+
+                <!-- Expanded -->
+                <h3 class="fly-out__toggle">
+                    <button id="main-menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                        Menu
+                        <!-- Expanded -->
+                        <svg class="fly-out__hideIfCollapsed" width="11" height="11">
+                            <use xlink:href="#cross-path"/>
+                        </svg>
+                        <!-- Collapsed -->
+                        <svg class="fly-out__hideIfExpanded" width="15" height="10">
+                            <use xlink:href="#menu-path"/>
+                        </svg>
+                    </button>
+                </h3>
+
+                <div class="fly-out__inner">
+                    <h4 class="fly-out__title">File</h4>
+
+                    <div class="btn-group">
+                        <button id="save-file" class="btn btn--plain btn--small" type="button">Save file</button>
+
+                        <button id="save-file-svg" class="btn btn--plain btn--small" type="button">
+                            <span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span>
+                        </button>
+
+                        <label class="file | btn btn--plain btn--small" for="score-file-picker">
+                            <span>
+                                Select a <abbr title="Music Encoding Initiative">MEI</abbr> file
+                                <input class="file__input" id="score-file-picker" type="file" accept=".mei">
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
 
             <div id="filters" class="fly-out fly-out--dark fly-out--collapsible fly-out--collapsed">
 
@@ -379,9 +431,6 @@
             <br>
         </div>
         <div id="main_buttons_content">
-            <input type="button" id="downloadbutton" value="Save">
-            <input type="button" id="svgdownloadbutton" value="Save SVG">
-            <input type="file" id="fileupload" value="Load">
 
             <!-- MIDI Player -->
 

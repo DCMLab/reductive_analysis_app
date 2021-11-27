@@ -81,7 +81,7 @@ body {
   position: sticky;
   width: fit-content;
   width: -moz-fit-content;
-  top: 0;
+  top: 200px;
   left: 0;
   padding-bottom: 0.3rem;
   padding-top: 0.3rem;

@@ -1,3 +1,4 @@
+import mainMenu   from './MainMenu'
 import filters    from './Filters'
 import metadata   from './Metadata'
 import navigation from './Navigation'
@@ -17,6 +18,7 @@ class UI {
 
     if (!e.composedPath().includes(this.ctn)) { return }
 
+    this.mainMenu?.onTap(e)
     this.zoom?.onTap(e)
     this.selection?.onTap(e)
     this.metadata?.onTap(e)
@@ -61,6 +63,7 @@ class UI {
   }
 
   init() {
+    this.mainMenu = mainMenu
     this.zoom = zoom
     this.selection = selection
     this.navigation = navigation

@@ -7,7 +7,8 @@
 
   padding-block-end: 0;
 
-  > :not(.fly-out__toggle) {
+  > :not(.fly-out__toggle),
+  .fly-out__hideIfCollapsed {
     display: none;
   }
 
@@ -24,6 +25,10 @@
     .btn__icon {
       transform: rotate(180deg);
     }
+  }
+
+  .fly-out__hideIfExpanded {
+    display: none;
   }
 }
 

@@ -31,6 +31,8 @@ import { combo_conf } from 'expose-loader?exposes=combo_conf|combo_conf!./conf'
 import { type_full_conf } from 'expose-loader?exposes=type_full_conf|type_full_conf!./conf'
 import { meta_full_conf } from 'expose-loader?exposes=meta_full_conf|meta_full_conf!./conf'
 
+import { downloadAs } from './new/utils/file'
+
 // Exposing relations functions to the global scope (for tests purpose)
 import { relation_get_notes } from 'expose-loader?exposes=relation_get_notes|relation_get_notes!./utils'
 import { relation_get_notes_separated } from 'expose-loader?exposes=relation_get_notes_separated|relation_get_notes_separated!./utils'
@@ -269,28 +271,6 @@ export function do_metarelation(type, id, redoing = false) {
 
 var rerendered_after_action
 
-// Function to download data to a file
-// Taken from StackOverflow answer by Kanchu at
-// https://stackoverflow.com/questions/13405129/javascript-create-and-save-file
-function download(data, filename, type) {
-  console.debug('Using globals: document, window')
-  var file = new Blob([data], { type: type })
-  if (window.navigator.msSaveOrOpenBlob) // IE10+
-    window.navigator.msSaveOrOpenBlob(file, filename)
-  else { // Others
-    var a = document.createElement('a'),
-      url = URL.createObjectURL(file)
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    setTimeout(() => {
-      document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
-    }, 0)
-  }
-}
-
 // If the MEI already has a graph, we add on to that. TODO:
 // Check that the graph is actually our kind of graph
 function add_or_fetch_graph() {
@@ -310,10 +290,10 @@ function add_or_fetch_graph() {
 function save() {
   console.debug('Using globals: mei')
   var saved = new XMLSerializer().serializeToString(mei)
-  download(saved, filename + '.mei', 'text/xml')
+  downloadAs(saved, filename + '.mei', 'text/xml')
 }
 
-function save_orig() {
+export function save_orig() {
   var mei_clone = mei.cloneNode(true)
   for (var dc of draw_contexts) {
     if (!(get_by_id(document, dc.id_prefix + 'savecb').checked)) {
@@ -324,20 +304,14 @@ function save_orig() {
     }
   }
   var saved = new XMLSerializer().serializeToString(mei_clone)
-  download(saved, filename + '.mei', 'text/xml')
+  downloadAs(saved, filename + '.mei', 'text/xml')
 }
-
-const downloadButton = document.getElementById('downloadbutton')
-downloadButton.addEventListener('click', save_orig)
 
 // Download the current SVG, including graph elements
 export function savesvg() {
   var saved = new XMLSerializer().serializeToString($('#svg_output')[0])
-  download(saved, filename + '.svg', 'text/xml')
+  downloadAs(saved, filename + '.svg', 'text/xml')
 }
-
-const saveSvgButton = document.getElementById('svgdownloadbutton')
-saveSvgButton.addEventListener('click', save_orig)
 
 // Load a new MEI
 export function load() {
@@ -354,7 +328,7 @@ export function load() {
   /* Cancel loading if changes are not saved? alert */
   selected = []
   extraselected = []
-  var upload = document.getElementById('fileupload')
+  var upload = document.getElementById('score-file-picker')
   if (upload.files.length == 1) {
     reader.onload = function (e) {
       data = reader.result
@@ -379,7 +353,7 @@ export function load() {
   }
 }
 
-const loadButton = document.getElementById('fileupload')
+const loadButton = document.getElementById('score-file-picker')
 loadButton.addEventListener('change', load)
 
 // Draw the existing graph
@@ -415,7 +389,7 @@ function load_finish(loader_modal) {
     }
   } catch {
     // loader_modal.close()
-    $('#fileupload').val('')
+    $('#score-file-picker').val('')
   }
 
   vrvToolkit = new verovio.toolkit()
@@ -428,7 +402,7 @@ function load_finish(loader_modal) {
       if (!new_svg) {
         console.log('Verovio could not generate SVG from non-MEI file.')
         // loader_modal.close()
-        $('#fileupload').val('')
+        $('#score-file-picker').val('')
         return false
       }
     }
@@ -440,7 +414,7 @@ function load_finish(loader_modal) {
     } catch {
       alert('Cannot parse this XML file as valid MEI.')
       // loader_modal.close()
-      $('#fileupload').val('')
+      $('#score-file-picker').val('')
       return false
     }
   } else {
@@ -452,7 +426,7 @@ function load_finish(loader_modal) {
   } catch {
     alert('Cannot parse this XML file as valid MEI.')
     // loader_modal.close()
-    $('#fileupload').val('')
+    $('#score-file-picker').val('')
     return false
   }
 

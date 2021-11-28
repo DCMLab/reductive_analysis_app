@@ -484,7 +484,6 @@ function load_finish(loader_modal) {
       'layer_number': 0,
       'score_elem': score_elem,
       'id_mapping': get_id_pairs(score_elem),
-      'original_score': i == 0, // The first layer is assumed to be the original score
       'number_of_views': 1
     }
 
@@ -588,7 +587,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     'layer_number': layer_contexts.length,
     'score_elem': new_score_elem,
     'id_mapping': get_id_pairs(new_score_elem),
-    'original_score': false,
     'number_of_views': 1,
   }
   layer_contexts.push(layer_context)

@@ -108,6 +108,7 @@ class EventsManager {
   onChange(e) {
     this.app.player?.onChange(e)
     this.app.ui?.filters?.onChange(e)
+    this.app.ui?.mainMenu?.onChange(e)
   }
 
   // Forms events

@@ -4,7 +4,7 @@
  * ordet to do that (e.g. CollapsibleFlyOut extending the FlyOut class).
  */
 
-import { savesvg, save_orig } from '../../../../app'
+import { load, savesvg, save_orig } from '../../../../app'
 
 class MainMenu {
   constructor() {
@@ -13,7 +13,9 @@ class MainMenu {
     // DOM elements
     this.ctn = document.getElementById('main-menu')
     this.toggleBtn = document.getElementById('main-menu-toggle')
-    this.selectFile = document.getElementById('score-file-picker')
+
+    // File actions
+    this.filePicker = document.getElementById('score-file-picker')
     this.saveFile = document.getElementById('save-file')
     this.saveAsSvg = document.getElementById('save-file-svg')
   }
@@ -29,6 +31,13 @@ class MainMenu {
 
     if (target == this.saveAsSvg) {
       savesvg() // currently not working
+    }
+  }
+
+  onChange(e) {
+    if (e.composedPath().includes(this.filePicker)) {
+      load(e)
+      this.toggle(false)
     }
   }
 

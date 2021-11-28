@@ -314,47 +314,28 @@ export function savesvg() {
 }
 
 // Load a new MEI
-export function load() {
+export function load(event) {
   console.debug('Using globals: selected_extraselected, upload, reader, filenmae')
-  // var loaderModal = new jBox('Modal', {
-  //   id: 'loader-modal',
-  //   title: 'Loading...',
-  //   content: 'Please wait...',
-  //   closeOnEsc: false,
-  //   closeOnClick: false,
-  //   closeButton: false
-  // })
+
+  const files = event.target.files
 
   /* Cancel loading if changes are not saved? alert */
   selected = []
   extraselected = []
-  var upload = document.getElementById('score-file-picker')
-  if (upload.files.length == 1) {
+
+  if (files.length == 1) {
     reader.onload = function (e) {
       data = reader.result
-      // TODO: Understand why this setTimeout hack is necessary for the modal to appear.
-      setTimeout(() => {
-        // loaderModal.open()
-        setTimeout(() => {
-          load_finish(null)
-          // loaderModal.close(loaderModal)
-          music_tooltip_installer()
-          indicate_current_context()
-        }, 1000)
-      }, 1000)
+      load_finish(null)
+      music_tooltip_installer()
+      indicate_current_context()
     }
-    reader.readAsText(upload.files[0])
-    filename = upload.files[0].name.split('.').slice(0, -1).join('.')
+    reader.readAsText(files[0])
+    filename = files[0].name.split('.').slice(0, -1).join('.')
     if (filename == '')
-      filename = upload.files[0].name
-  } else {
-    // loaderModal.close()
-    return
+      filename = files[0].name
   }
 }
-
-const loadButton = document.getElementById('score-file-picker')
-loadButton.addEventListener('change', load)
 
 // Draw the existing graph
 export function draw_graph(draw_context) {

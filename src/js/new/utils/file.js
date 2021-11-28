@@ -14,7 +14,7 @@ export function downloadAs(filedata, filename, mimeType) {
   const file = new Blob([filedata], { type: mimeType })
 
   const link = document.createElement('a')
-  link.classList.add('none')
+  link.style.display = 'none'
   link.href = URL.createObjectURL(file)
   link.download = filename
 

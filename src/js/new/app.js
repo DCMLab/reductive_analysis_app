@@ -14,8 +14,7 @@ class App {
   }
 
   init() {
-    doc.classList.remove('loading')
-    doc.classList.add('ready')
+    doc.classList.replace('loading', 'ready')
 
     this.viewport = viewport
 

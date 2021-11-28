@@ -109,6 +109,7 @@ class EventsManager {
     this.app.player?.onChange(e)
     this.app.ui?.filters?.onChange(e)
     this.app.ui?.mainMenu?.onChange(e)
+    this.app.ui?.startScreen?.onChange(e)
   }
 
   // Forms events
@@ -126,6 +127,11 @@ class EventsManager {
   onScoreLoad(e) {
     this.app.score?.onScoreLoad(e)
     this.app.ui?.onScoreLoad(e)
+
+    if (this.app.ui.startScreen) {
+      this.app.ui.startScreen.destroy()
+      delete this.app.ui.startScreen
+    }
   }
 
   onScoreSelection(e) {

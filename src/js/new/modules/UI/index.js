@@ -1,3 +1,4 @@
+import startScreen   from './StartScreen'
 import mainMenu   from './MainMenu'
 import filters    from './Filters'
 import metadata   from './Metadata'
@@ -63,6 +64,7 @@ class UI {
   }
 
   init() {
+    this.startScreen = startScreen
     this.mainMenu = mainMenu
     this.zoom = zoom
     this.selection = selection

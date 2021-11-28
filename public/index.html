@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 
 <head>
     <meta charset="UTF-8">
@@ -19,9 +19,56 @@
     <script type="text/javascript" src="js/vendor/verovio-toolkit.js" defer></script>
     <script type="text/javascript" src="js/app.js" defer></script>
     <!-- <link rel="manifest" href="/site.webmanifest"> -->
+
+    <script>
+        document.documentElement.classList.replace('no-js', 'js');
+        document.documentElement.classList.add('loading');
+    </script>
 </head>
 
 <body>
+
+    <!-- Start screen -->
+
+    <div id="start-screen" class="start-screen">
+        <!-- @todo: add musical notes in the background in .start-screen__bg -->
+        <!-- <div class="start-screen__bg"></div> -->
+
+        <div class="start-screen__main">
+
+            <!-- Title -->
+            <h1 class="start-screen__title">MuseReduce</h1>
+
+            <!-- Loading -->
+            <div id="start-screen-loading-spinner" class="start-screen__loading">
+                <div class="loading-spinner">
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                </div>
+                <p>Loading</p>
+            </div>
+
+            <!-- Pick a score -->
+            <p class="start-screen__instructions"><strong class="f500">Start by picking a <abbr title="Music Encoding Initiative">MEI</abbr> file on your device.</strong></p>
+            <label class="start-screen__filePicker file | btn btn--plain btn--big" for="start-screen-score-file-picker">
+                <span>
+                    Select a score
+                    <input class="file__input" id="start-screen-score-file-picker" type="file" accept=".mei">
+                </span>
+            </label>
+        </div>
+
+        <!-- About -->
+        <footer class="start-screen__footer">
+            <p>
+                MuseReduce is an <a href="https://github.com/DCMLab/reductive_analysis_app" target="_blank" rel="noopener" title="code repository">open-source</a> project
+                by the <a href="https://www.epfl.ch/labs/dcml" target="_blank" rel="noopener"><abbr title="Digital and Cognitive Musicology Lab">DCML</abbr></a>.
+            </p>
+        </footer>
+    </div>
 
     <!-- Filters used on the score (?) -->
 

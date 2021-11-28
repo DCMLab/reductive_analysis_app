@@ -670,7 +670,7 @@ body:not(.mousedown) #relations_panel_toggle:hover {
     right: 10;
     width: 100px;
     height: 100%;
-    z-index: 100;
+    z-index: 90;
 }
 
 .bookmark {

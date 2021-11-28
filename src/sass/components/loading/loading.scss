@@ -1,0 +1,58 @@
+@keyframes loading-spinner {
+  100% { transform: rotate(1turn); }
+}
+
+@keyframes loading-disc {
+  80% { transform: rotate(1turn); }
+  100% { transform: rotate(1turn); }
+}
+
+// Container of the spinner bullets
+
+.loading-spinner {
+  --spinner-size: 6rem;
+  --spinner-bullet-diameter: 1.4rem;
+
+  size: v(spinner-size);
+
+  position: relative;
+
+  animation: loading-spinner 19s infinite linear;
+
+  @media (--no-motion) {
+    display: none;
+  }
+}
+
+// Spinner bullet
+
+.loading-spinner__disc {
+
+  // size is {10% * bullet index} smaller (compared to the biggest one)
+  --spinner-bullet-size: calc(
+    var(--spinner-bullet-diameter)
+    * (1 - var(--spinner-bullet-index) * .1)
+  );
+  size: v(spinner-bullet-size);
+
+  position: absolute;
+  top: calc((var(--spinner-bullet-diameter) - var(--spinner-bullet-size)) / 2);
+  left: calc(50% - var(--spinner-bullet-size) / 2);
+  // `calc` 👆 adjust bullets position so they all share the same center.
+
+  background: v(primary);
+  border-radius: 50%;
+
+  opacity: calc(1 - var(--spinner-bullet-index) * .16); // from 1 to 0.3
+
+  transform-origin: 50% calc(var(--spinner-size) / 2);
+
+  animation: loading-disc 3.5s infinite $in-out-quart calc(var(--spinner-bullet-index) * .17s);
+
+  // Bullet index used for staggering of animation delay, opacity and size.
+  @for $bullet-index from 1 through 5 {
+    &:nth-of-type(#{$bullet-index}) {
+      --spinner-bullet-index: #{$bullet-index - 1};
+    }
+  }
+}

@@ -360,6 +360,7 @@ export function update_placing_note() {
   var current_draw_context = getCurrentDrawContext()
   if (!(get_by_id(document, current_draw_context.id_prefix + 'editcb').checked)) {
     return
+  }
   let [pname, oct, note] = note_params()
   if (pname) {
     show_note(pname, oct, note, true, getPlacingNote())

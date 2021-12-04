@@ -18,8 +18,10 @@ class StartScreen {
     }
   }
 
+  // Delete start screen HTML after fade-out.
   destroy() {
-    this.ctn.remove()
+    this.ctn.addEventListener('transitionend', this.ctn.remove, { once: true })
+    this.ctn.classList.add('start-screen--out')
   }
 }
 

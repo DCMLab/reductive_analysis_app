@@ -34,6 +34,11 @@
   }
 }
 
+.start-screen--out {
+  opacity: 0;
+  transition: opacity .3s $in-quad;
+}
+
 // Title, instructions, file picker
 
 .start-screen__main {

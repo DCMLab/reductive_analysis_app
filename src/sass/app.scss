@@ -1,8 +1,8 @@
 // Abstract (mixins and functions)
-@import '~family.scss';
-@import '~hsl.scss';
-@import '~v.scss';
-@import '~double-dash.scss';
+@import 'family.scss';
+@import 'hsl.scss';
+@import 'v.scss';
+@import 'double-dash.scss';
 @import 'abstract/abstract';
 
 // Variables
@@ -15,6 +15,9 @@
 
 // @keyframes
 @import 'animations/animations';
+
+// Typo
+@import 'typo/typo';
 
 // Utility
 @import 'utility/utility';
@@ -30,3 +33,4 @@
 
 // Pages
 @import 'layout/layout';
+@import 'pages/start-screen';

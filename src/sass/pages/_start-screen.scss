@@ -1,0 +1,89 @@
+// 688px * 640px
+@custom-media --start-screen-more-padding (width > 43em) and (height > 40em);
+
+// Container
+
+.start-screen {
+  position: fixed;
+  z-index: 99;
+  inset: 0;
+
+  --start-screen-padding: 2rem;
+  padding: v(start-screen-padding);
+
+  display: grid;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+
+  overflow: auto;
+
+  text-align: center;
+  font-size: 1.6rem;
+
+  background: v(bg);
+
+  @supports (top: #{'max(0px)'}) {
+    padding: #{'max(var(--safe-top), var(--start-screen-padding))'}
+      #{'max(var(--safe-right), var(--start-screen-padding))'}
+      #{'max(var(--safe-bottom), var(--start-screen-padding))'}
+      #{'max(var(--safe-left), var(--start-screen-padding))'};
+  }
+
+  @media (--start-screen-more-padding) {
+    --start-screen-padding: 5rem;
+  }
+}
+
+.start-screen--out {
+  opacity: 0;
+  transition: opacity .3s $in-quad;
+}
+
+// Title, instructions, file picker
+
+.start-screen__main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.start-screen__title {
+  font-size: 3.6rem;
+  font-weight: 600;
+}
+
+.start-screen__loading {
+  position: absolute;
+
+  html:not(.loading) & {
+    display: none;
+  }
+}
+
+.start-screen__instructions {
+  html:not(.ready) & {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.start-screen__filePicker {
+  margin-top: 6rem;
+
+  transition:
+    opacity .2s $in-out-quad .1s,
+    transform .3s $out-back .1s;
+
+  html:not(.ready) & {
+    opacity: 0;
+    transform: scale(.95);
+    visibility: hidden;
+  }
+}
+
+// Footer (about)
+
+.start-screen__footer {
+  margin-top: 7rem;
+}

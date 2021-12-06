@@ -225,14 +225,14 @@ export function random_id(n = 5) {
 export function pitch_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
   // Pitch offset in MIDI steps
-  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).pitch - 
+  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).pitch -
 	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).pitch
 }
 
 export function time_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
   // Time offset in MIDI milliseconds
-  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).time - 
+  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).time -
 	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).time
 }
 
@@ -325,12 +325,7 @@ export function get_by_id(doc, id) {
 }
 
 // Simple utility to get oldid if available.
-export function id_or_oldid(elem) {
-  if (elem.hasAttribute('oldid'))
-    return elem.getAttribute('oldid')
-  else
-    return elem.id
-}
+export const id_or_oldid = elem => elem.getAttribute('oldid') ?? elem.id
 
 // More complex utility to fully search until we find the "basic" ID, in
 // either the MEI or the document.

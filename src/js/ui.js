@@ -4,15 +4,10 @@ import newApp from './new/app'
 import jBox from 'jbox'
 
 import {
-  button_shades,
   combo_keys,
   hide_classes,
   meta_keys,
-  meta_shades,
-  shades_array,
   type_keys,
-  type_shades,
-  type_synonym
 } from './conf'
 
 import {
@@ -55,6 +50,8 @@ import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
 import { naturalize_notes } from './accidentals'
 import { isFieldFocused } from './new/utils/forms'
+import { rootStyles } from './new/utils/document'
+import { metaRelationTypes, relationTypes } from './new/modules/Relations/config'
 
 /* UI globals */
 
@@ -515,30 +512,14 @@ const equalizeButton = document.getElementById('equalizebutton')
 equalizeButton.addEventListener('click', toggle_equalize)
 
 // Toggle the current relation having a type-dependent shade
-// or not
-export function toggle_shade(he) {
-  console.debug('Using globals: shades, type_shades, meta_shades, type_synonym')
-  if (!shades && he.getAttribute('old_fill')) {
-    he.setAttribute('fill', he.getAttribute('old_fill'))
-    he.removeAttribute('old_fill')
-  } else if (shades && type_shades[he.getAttribute('type')]) {
-    he.setAttribute('old_fill', he.getAttribute('fill'))
-    he.setAttribute('fill', type_shades[he.getAttribute('type')])
-  } else if (shades && meta_shades[he.getAttribute('type')]) {
-    he.setAttribute('old_fill', he.getAttribute('fill'))
-    he.setAttribute('fill', meta_shades[he.getAttribute('type')])
-  } else if (shades && type_synonym[he.getAttribute('type')]) {
-    he.setAttribute('old_fill', he.getAttribute('fill'))
-    he.setAttribute('fill', type_shades[type_synonym[he.getAttribute('type')]])
-  }
-}
+export function toggle_shade(element) {
+  const isRelation = element.classList.contains('relation')
+  const config = isRelation ? relationTypes : metaRelationTypes
+  const type = element.getAttribute('type')
 
-function toggle_button_shade(button) {
-  console.debug('Using globals: shades, button_shades')
-  if (shades)
-    button.style.color = button_shades[button.getAttribute('id')]
-  else
-    button.style.color = ''
+  const colorIndex = config.main[type]?.color ?? 0
+
+  element.setAttribute('fill', rootStyles.getPropertyValue(`--relation-${colorIndex}`))
 }
 
 // Toggle type-dependent shades for relations and buttons
@@ -547,8 +528,6 @@ export function toggle_shades() {
   shades = !shades
   Array.from(document.getElementsByClassName('relation')).forEach(toggle_shade)
   Array.from(document.getElementsByClassName('metarelation')).forEach(toggle_shade)
-  Array.from(document.getElementsByClassName('relationbutton')).forEach(toggle_button_shade)
-  Array.from(document.getElementsByClassName('metarelationbutton')).forEach(toggle_button_shade)
 }
 
 const toggleShadesButton = document.getElementById('shadesbutton')

@@ -12,6 +12,10 @@
   --safe-bottom: var(--safe-area-bottom, 0);
   --safe-left: var(--safe-area-left, 0);
 
+/*
+ * @todo: Check how to inject data using Webpack so that these classes are
+ * automatically generated.
+ */
   --relation-1: #{$san-marino};
   --relation-2: #{$seance};
   --relation-3: #{$pomegranate};

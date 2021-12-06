@@ -381,9 +381,14 @@ stroke: black;
 
 
 
+.relation,
 .metarelation {
-  fill-opacity: 0.5;
-  stroke-opacity: 0.1;
+  fill: currentColor;
+  fill-opacity: 0.2;
+
+  stroke: currentColor;
+  stroke-width: 27;
+  stroke-opacity: 0.3;
 }
 
 body:not(.mousedown) .metarelation:hover {
@@ -404,10 +409,7 @@ body:not(.mousedown) .metarelation:hover {
     transform : translate3d(0,0,0);
     filter : url("#selectFilter");
 }
-.relation {
-  fill-opacity: 0.5;
-  stroke-opacity: 0.1;
-}
+
 body:not(.mousedown) .relation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
@@ -456,11 +458,6 @@ body:not(.mousedown) .extraselectedrelation:hover {
 .hidden {
   visibility: hidden
 }
-
-.none {
-  display: none;
-}
-
 
 
 .svg_container {

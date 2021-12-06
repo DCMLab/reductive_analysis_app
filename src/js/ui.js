@@ -519,7 +519,7 @@ export function toggle_shade(element) {
 
   const colorIndex = config.main[type]?.color ?? 0
 
-  element.setAttribute('fill', rootStyles.getPropertyValue(`--relation-${colorIndex}`))
+  element.setAttribute('color', rootStyles.getPropertyValue(`--relation-${colorIndex}`))
 }
 
 // Toggle type-dependent shades for relations and buttons

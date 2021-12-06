@@ -21,7 +21,7 @@ export default class SelectionLegend extends FlyOut {
   }
 
   update({ selected, extraselected }) {
-    this.toggleVisibility(score.flatSelection.length > 0)
+    this.toggleVisibility(score.hasSelection)
 
     if (this.visible) {
       this.updateTitle()

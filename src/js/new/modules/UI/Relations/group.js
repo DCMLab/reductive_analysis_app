@@ -33,6 +33,21 @@ export default class RelationsGroup {
     this.ctn.classList.toggle('fly-out__btnGroup--expanded', state)
   }
 
+  select(types) {
+    this.unselect()
+
+    if (!types) { return }
+
+    Array.from(this.btns)
+      .filter(btn => types.has(btn.dataset.relationName))
+      .forEach(btn => btn.classList.add('btn--selected'))
+  }
+
+  unselect() {
+    Array.from(this.selectedBtns)
+      .forEach(btn => btn.classList.remove('btn--selected'))
+  }
+
   initHtml(config) {
 
     // buttons with main relations
@@ -66,6 +81,7 @@ export default class RelationsGroup {
     this.ctn.innerHTML = btnsHtml + additionalContent
 
     this.btns = this.ctn.getElementsByClassName('btn--relation')
+    this.selectedBtns = this.ctn.getElementsByClassName('btn--selected')
     this.freeField = this.ctn.querySelector(`#free-field-${this.type}`)
   }
 }

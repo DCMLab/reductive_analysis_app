@@ -60,7 +60,7 @@ class UI {
 
   onScoreSelection({ detail }) {
     this.selection?.onScoreSelection(detail)
-    this.relations?.onScoreSelection(detail)
+    this.relations?.onScoreSelection()
   }
 
   init() {

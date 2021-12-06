@@ -1,3 +1,7 @@
+.selection-legend {
+  max-width: 34.8rem;
+}
+
 .selection {
   line-height: 1.2;
 
@@ -24,15 +28,16 @@
 }
 
 .selection__list {
-  display: inline-flex;
+  display: contents;
 }
 
 // example: 'a4 / b6 / c1'
 .selection__listItem {
+  display: inline;
+
   @include all-but(1) {
     &::before {
       content: ' / ';
-      margin-left: .25em;
     }
   }
 }

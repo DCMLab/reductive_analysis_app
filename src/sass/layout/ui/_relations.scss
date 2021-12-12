@@ -27,4 +27,15 @@
 .fly-out--relations-compact {
   max-width: none;
   --fly-out-half-inner-space: 3rem;
+
+  .fly-out__compact {
+    display: none;
+  }
+}
+
+.fly-out__compact {
+  --btn-radius: 1rem 1rem 0rem 0rem;
+  --primary: #{$moonless-night};
+
+  margin-right: 1.5rem;
 }

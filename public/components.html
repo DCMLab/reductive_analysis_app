@@ -152,12 +152,20 @@
             </div>
         </div>
 
-        <button id="drag-relations" class="fly-out__drag | btn btn--plain" type="button">
-            <span class="visually-hidden">Drag menu</span>
-            <svg class="btn__icon" width="10" height="14">
-                <use xlink:href="#draggable-path"/>
-            </svg>
-        </button>
+        <div class="fly-out__footerActions | flex-center">
+            <button class="fly-out__footerActionBtn fly-out__toggleBtn fly-out__compact | btn btn--plain flex-center" type="button">
+                <span class="visually-hidden">Compact menu</span>
+                <svg class="btn__icon chevron chevron--top" width="7" height="10">
+                    <use xlink:href="#chevron-path"/>
+                </svg>
+            </button>
+            <button class="fly-out__footerActionBtn fly-out__drag | btn btn--plain flex-center" type="button">
+                <span class="visually-hidden">Drag menu</span>
+                <svg class="btn__icon" width="10" height="14">
+                    <use xlink:href="#draggable-path"/>
+                </svg>
+            </button>
+        </div>
 
         <!-- <hr class="fly-out__hr"> -->
     </div>

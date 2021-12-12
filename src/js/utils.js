@@ -94,24 +94,24 @@ export function roundedHull(points) {
   var hullPadding = draw_contexts.hullPadding || 200
 
   // Returns an SVG path for a rounded hull around the points
-  var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-  newElement.setAttribute('fill', getRandomColor()) // TODO: Better colour picking
+  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  // TODO: Better colour picking
+  path.style.setProperty('--shade-alternate', randomColor())
   if (points.length == 1) {
-    newElement.setAttribute('d', roundedHull1(points, hullPadding))
+    path.setAttribute('d', roundedHull1(points, hullPadding))
   } else if (points.length == 2) {
-    newElement.setAttribute('d', roundedHull2(points, hullPadding))
+    path.setAttribute('d', roundedHull2(points, hullPadding))
   } else {
-    newElement.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
+    path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
   }
-  return newElement
+  return path
 }
 
-function getRandomColor() {
-  // Returns a random colour
-  var letters = '0123456789ABCDEF'
-  var color = '#'
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(4 + Math.random() * 8)]
+function randomColor() {
+  const hexChars = '456789AB' // characters pool for hex color
+  let color = '#'
+  for (let i = 0; i < 6; i++) {
+    color += hexChars[Math.floor(Math.random() * hexChars.length)]
   }
   return color
 }

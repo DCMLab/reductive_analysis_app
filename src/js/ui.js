@@ -50,14 +50,14 @@ import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
 import { naturalize_notes } from './accidentals'
 import { isFieldFocused } from './new/utils/forms'
-import { rootStyles } from './new/utils/document'
+import { doc, rootStyles } from './new/utils/document'
 import { metaRelationTypes, relationTypes } from './new/modules/Relations/config'
 
 /* UI globals */
 
 var non_notes_hidden = false
 
-var shades = false
+var shades = true
 
 // Hovering and adding notes
 var placing_note = ''
@@ -513,21 +513,19 @@ equalizeButton.addEventListener('click', toggle_equalize)
 
 // Toggle the current relation having a type-dependent shade
 export function toggle_shade(element) {
+  const type = element.getAttribute('type')
   const isRelation = element.classList.contains('relation')
   const config = isRelation ? relationTypes : metaRelationTypes
-  const type = element.getAttribute('type')
-
   const colorIndex = config.main[type]?.color ?? 0
 
-  element.setAttribute('color', rootStyles.getPropertyValue(`--relation-${colorIndex}`))
+  const color = rootStyles.getPropertyValue(`--relation-${colorIndex}`)
+  element.setAttribute('color', color)
 }
 
 // Toggle type-dependent shades for relations and buttons
 export function toggle_shades() {
-  console.debug('Using globals: shades, document for element selection')
   shades = !shades
-  Array.from(document.getElementsByClassName('relation')).forEach(toggle_shade)
-  Array.from(document.getElementsByClassName('metarelation')).forEach(toggle_shade)
+  doc.classList.toggle('shades-alternate', !shades)
 }
 
 const toggleShadesButton = document.getElementById('shadesbutton')
@@ -930,12 +928,12 @@ orphanNotesButton.addEventListener('click', toggle_orphan_notes)
 
 // Functions helping to interact with variable declared here from other files.
 export const getShades = () => shades
-export const setShades = (value) => shades = value
+export const setShades = value => shades = value
 
 export const getTooltip = () => tooltip
 
 export const getPlacingNote = () => placing_note
-export const setPlacingNote = (value) => placing_note = value
+export const setPlacingNote = value => placing_note = value
 
 export const getCurrentDrawContext = () => current_draw_context
-export const setCurrentDrawContext = (value) => current_draw_context = value
+export const setCurrentDrawContext = value => current_draw_context = value

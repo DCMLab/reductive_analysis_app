@@ -383,12 +383,17 @@ stroke: black;
 
 .relation,
 .metarelation {
-  fill: currentColor;
+  fill: var(--shade, currentColor);
   fill-opacity: 0.2;
 
-  stroke: currentColor;
+  stroke: var(--shade, currentColor);
   stroke-width: 27;
   stroke-opacity: 0.3;
+}
+
+html.shades-alternate .relation,
+html.shades-alternate .metarelation {
+  --shade: var(--shade-alternate, currentColor);
 }
 
 body:not(.mousedown) .metarelation:hover {

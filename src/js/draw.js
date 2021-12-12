@@ -60,10 +60,8 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   elem.classList.add('relation')
   elem.setAttribute('type', type)
 
-  var shades = getShades()
-
   // Are we running with type-specific shades?
-  if (shades)
+  if (getShades())
     toggle_shade(elem)
 
   // Relations can be scrolled
@@ -159,6 +157,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   coords.push([x, y])
   // We make a group
   var g_elem = g()
+  g_elem.style.setProperty('--shade-alternate', '#000')
   g_elem.setAttribute('id', id)
   g_elem.classList.add('metarelation')
   // TODO: Use classlist for types

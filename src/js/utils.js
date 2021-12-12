@@ -1,4 +1,4 @@
-import { polygonHull } from 'd3'
+import { polygonHull } from 'd3-polygon'
 // import fuzzysearch from 'fuzzysearch'
 
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'

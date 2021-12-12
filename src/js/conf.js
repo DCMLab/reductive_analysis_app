@@ -1,7 +1,3 @@
-import { schemeTableau10 } from 'd3'
-
-export const shades_array = schemeTableau10
-
 export const type_keys = {}
 export const type_shades = {}
 export const meta_keys = {}

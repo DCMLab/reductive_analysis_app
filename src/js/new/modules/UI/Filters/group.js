@@ -60,7 +60,7 @@ export default class FilterGroup {
 
   createFilterElement = ({ type, checked }) => `
     <li>
-        <label class="checkable color-${this.namespace}-${type}" for="${this.namespace}-filter-${type}">
+        <label class="checkable color-relation-${type}" for="${this.namespace}-filter-${type}">
             ${capitalize(type)}
             <input class="checkable__input" type="checkbox" id="${this.namespace}-filter-${type}" data-type="${type}" ${checked ? 'checked' : ''}>
             <span class="checkbox checkbox--colored">

@@ -511,7 +511,15 @@ function set_non_note_visibility(hidden) {
 const equalizeButton = document.getElementById('equalizebutton')
 equalizeButton.addEventListener('click', toggle_equalize)
 
-// Toggle the current relation having a type-dependent shade
+/**
+ * Toggle the current relation having a type-dependent shade.
+ *
+ * Ideas to evaluate for improvements:
+ * 1) gather colors in one object so that
+ *    `rootStyles.getPropertyValue(`--relation-${colorIndex}`)` isn’t needed.
+ * 2) Do `element.setAttribute('color', color)` on relation creation,
+ *    maybe in `draw_relation()` after elem.setAttribute('type', type).
+ */
 export function toggle_shade(element) {
   const type = element.getAttribute('type')
   const isRelation = element.classList.contains('relation')

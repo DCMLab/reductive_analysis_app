@@ -25,13 +25,13 @@ export const relationTypes = {
 
   // Main relation types, keyboards shortcuts and colors.
   main: {
-    repeat:       { key: 'e', color: 0 },
-    passing:      { key: 'p', color: 6 },
-    neighbour:    { key: 'n', color: 2 },
-    harmonic:     { key: 'i', color: 3 },
-    arpeggio:     { key: 'a', color: 4 },
-    urlinie:      { key: 'u', color: 5 },
-    bassbrechung: { key: 'b', color: 5 },
+    repeat:       { key: 'e', color: 1, shadeColor: 0, },
+    passing:      { key: 'p', color: 2, shadeColor: 6, },
+    neighbour:    { key: 'n', color: 3, shadeColor: 2, },
+    harmonic:     { key: 'i', color: 4, shadeColor: 3, },
+    arpeggio:     { key: 'a', color: 5, shadeColor: 4, },
+    urlinie:      { key: 'u', color: 6, shadeColor: 5, },
+    bassbrechung: { key: 'b', color: 7, shadeColor: 5, },
     untyped:      { color: 5 },
   },
 
@@ -67,10 +67,10 @@ export const metaRelationTypes = {
 
   // Main relation types, keyboards shortcuts and colors.
   main: {
-    context:  { key: 'c', colour: 0 },
-    layer:    { key: 'l', colour: 6 },
-    phrase:   { key: 'r', colour: 2 },
-    section:  { key: 't', colour: 3 },
+    context:  { key: 'c', color: 1, shadeColor: 0 },
+    layer:    { key: 'l', color: 2, shadeColor: 6 },
+    phrase:   { key: 'r', color: 3, shadeColor: 2 },
+    section:  { key: 't', color: 5, shadeColor: 3 },
   },
 
   // The full list of pre-defined meta-relations.

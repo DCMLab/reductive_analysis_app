@@ -34,11 +34,23 @@ class Score {
     return this.#cache.remember('flatSelection', () => Object.values(this.selection).flat())
   }
 
+  get hasSelection() {
+    return this.#cache.remember('hasSelection', () => this.flatSelection.length > 0)
+  }
+
   get selectionType() {
     return this.#cache.remember('selectionType', () => {
       return SELECTABLE_TYPES.find(type => {
         return this.flatSelection[0]?.classList.contains(type)
       }) ?? null
+    })
+  }
+
+  get relationTypes() {
+    return this.#cache.remember('relationTypes', () => {
+      if (!this.hasSelection || this.selectionType == 'note') { return null }
+
+      return new Set(this.flatSelection.map(el => el.getAttribute('type')).filter(type => type))
     })
   }
 

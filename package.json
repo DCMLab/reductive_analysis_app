@@ -30,7 +30,7 @@
   "homepage": "https://github.com/DCMLab/reductive_analysis_app#readme",
   "dependencies": {
     "base64-arraybuffer": "^1",
-    "d3": "^5.14.2",
+    "d3-polygon": "^3.0.1",
     "dragselect": "2.2.1",
     "expect-puppeteer": "^4.4.0",
     "fuzzysearch": "^1.0.3",
@@ -72,7 +72,7 @@
     "jest-serializer-xml": "^0.1.27",
     "lite-server": "^2.6.1",
     "mini-css-extract-plugin": "^2.3.0",
-    "node-sass": "^6",
+    "node-sass": "^7",
     "nodemon": "^2.0.4",
     "postcss": "^8.2.4",
     "postcss-loader": "^6",

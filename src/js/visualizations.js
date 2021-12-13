@@ -7,6 +7,7 @@ import {
   g,
   get_by_id,
   get_id,
+  get_metarelation_target,
   id_in_svg,
   node_to_note_id,
   note_coords,
@@ -60,6 +61,12 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
     getElementsByClassName('relation')).
 					    map(get_id).
 					    map((id) => get_by_id(mei, id))
+  current_note_nodes = current_note_nodes.concat(current_relation_nodes)
+  current_relation_nodes = current_relation_nodes.concat(Array.from(svg_elem.
+    getElementsByClassName('metarelation')).
+					    map(get_id).
+					    map((id) => get_by_id(mei, id)))
+
   var layers = calc_hierarchy(current_note_nodes, current_relation_nodes, roots_low)
 
   // find top of system
@@ -69,7 +76,11 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
   // find coordinates
   var layers_coords = layers.flatMap((layer, ix) => layer.map((e) => {
     let n = document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
-    let [x, y] = note_coords(n)
+    let x, y
+    if (n.classList.contains('note'))
+      [x, y] = note_coords(n)
+    else
+      [x, y] = get_metarelation_target(n)
     return [e, [x, svg_top - layer_dist * ix]]
   }))
 

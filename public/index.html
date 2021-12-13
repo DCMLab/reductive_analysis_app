@@ -88,7 +88,7 @@
             </feMerge>
         </filter>
         <filter id="selectFilter">
-            <feFlood result="flood" flood-color="#00ff00" />
+            <feFlood result="flood" flood-color="green" />
             <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
             <feMorphology in="mask" operator="dilate" radius="2" result="thickened" />
             <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />
@@ -98,7 +98,7 @@
             </feMerge>
         </filter>
         <filter id="extraFilter">
-            <feFlood result="flood" flood-color="green" />
+            <feFlood result="flood" flood-color="red" />
             <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
             <feMorphology in="mask" operator="dilate" radius="10" result="thickened" />
             <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />

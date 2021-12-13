@@ -374,8 +374,8 @@ function id_in_layer(layer_context, id) {
   var pair = layer_context.id_mapping.find((p) => p[1] == id)
   if (pair)
     return pair[0]
-  else
-    return undefined
+  else // This is probably a relation that has no real 'layer' as such
+    return id
 }
 
 // From graph node to list of all arcs that refer to it
@@ -427,6 +427,8 @@ function node_to_note_id_prefix(prefix, note) {
 
 // From MEI graph node to the ID string for its referred note.
 export function node_to_note_id(note) {
+  if (note.getElementsByTagName('label')[0].children.length == 0)
+    return note.getAttribute('xml:id')
   return note.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
     getAttribute('sameas').replace('#', '')
@@ -777,6 +779,8 @@ export function average(l) { return l.reduce((a, b) => a + b, 0) / l.length }
 
 export function note_to_text(id) {
   var mei_elem = get_by_id(mei, id)
+  if (mei_elem.tagName == 'node')
+    return mei_elem.children[0].getAttribute('type')
   var accid = note_get_accid(mei_elem)
   accid = accid.replace(/s/g, '#')
   accid = accid.replace(/f/g, 'b')

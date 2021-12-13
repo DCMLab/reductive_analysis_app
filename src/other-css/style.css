@@ -459,6 +459,11 @@ body:not(.mousedown) .extraselectedrelation:hover {
        filter: url("#glowFilter");
 }
 
+.extrarelationhover {
+      transform: translate3d(0,0,0);
+       filter: url("#extraFilter");
+}
+
 
 .hidden {
   visibility: hidden

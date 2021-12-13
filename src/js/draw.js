@@ -141,6 +141,12 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   // this drawing style.
   var targets = relation_allnodes(mei_graph, g_elem).map(
     (e) => document.getElementById(draw_context.id_prefix + get_id(e)))
+  var primaries = relation_primaries(mei_graph, g_elem).map(
+    (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+  )
+  var secondaries = relation_secondaries(mei_graph, g_elem).map(
+    (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+  )
   // TODO should be possible to draw partial metarelations
   if (targets.indexOf(null) != -1) {
     console.log('Missing relation, not drawing metarelation')
@@ -183,10 +189,12 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   // Decorate with onclick and onmouseover handlers
   g_elem.onclick = function(ev) { toggle_selected(g_elem, ev.shiftKey) }
   g_elem.onmouseover = function (ev) {
-    targets.forEach((item) => { item.classList.add('relationhover') })
+    primaries.forEach((item) => { item.classList.add('extrarelationhover') })
+    secondaries.forEach((item) => { item.classList.add('relationhover') })
   }
   g_elem.onmouseout = function (ev) {
-    targets.forEach((item) => { item.classList.remove('relationhover') })
+    primaries.forEach((item) => { item.classList.remove('extrarelationhover') })
+    secondaries.forEach((item) => { item.classList.remove('relationhover') })
   }
 
   // TODO: Set up more onhover stuff for The Same Relation

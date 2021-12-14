@@ -5,9 +5,7 @@
  * `getBoundingClientRect` isn’t iterable.
  *
  * @param {HTMLElement} element The HTML element that will be examinated.
- * @param {string[] | null} includedProps Only return the specified props in
- *                          the result (`x`, `y`, `width`, `height`, `top`,
- *                          `right`, `bottom`, `left`).
+ * @param {null | getDOMRectOptions} includedProps When not null: the list of returned DOMRect props.
  * @returns {IterableDOMRect}
  */
 export const getDOMRect = (el, includedProps = null) => {
@@ -22,6 +20,10 @@ export const getDOMRect = (el, includedProps = null) => {
 
   return rect
 }
+
+/**
+ * @typedef {['x' | 'y' | 'width' | 'height' | 'top' | 'right' | 'bottom' | 'left' ]} getDOMRectOptions
+ */
 
 /**
  * @typedef {Object} IterableDOMRect

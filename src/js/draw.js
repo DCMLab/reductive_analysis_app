@@ -190,7 +190,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.onclick = function(ev) { toggle_selected(g_elem, ev.shiftKey) }
   g_elem.onmouseover = function (ev) {
     primaries.forEach((item) => {
-      if (item.classList.contains('relation')
+      if (item.classList.contains('relation'))
 	    item.classList.add('extrarelationhover')
       else
 	    item.children[0].classList.add('extrarelationhover')

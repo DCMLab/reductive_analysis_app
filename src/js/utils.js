@@ -862,6 +862,15 @@ export function note_to_chord(mei, note) {
   return chord
 }
 
+export function chord_to_space(mei, chord) {
+  var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
+  space.setAttribute('xml:id', 'space-' + chord.getAttribute('xml:id'))
+  for (let a of attributes)
+    if (chord.hasAttribute(a))
+      space.setAttribute(a, chord.getAttribute(a))
+  return space
+}
+
 // Traverse the XML tree and add on a prefix to the start of each ID. If
 // it's an SVG, we also save the old id in the oldid attribute
 export function prefix_ids(elem, prefix) {

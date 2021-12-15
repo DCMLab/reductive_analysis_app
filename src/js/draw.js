@@ -194,7 +194,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 	    item.classList.add('extrarelationhover')
       else
 	    item.children[0].classList.add('extrarelationhover')
-    }
+    })
     secondaries.forEach((item) => {
       if (item.classList.contains('relation'))
 	    item.classList.add('relationhover')

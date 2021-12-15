@@ -844,7 +844,7 @@ export function note_to_rest(mei, note) {
   return rest
 }
 // Make a space of the same properties as the given note.
-function note_to_space(mei, note) {
+export function note_to_space(mei, note) {
   var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
   space.setAttribute('xml:id', 'space-' + note.getAttribute('xml:id'))
   for (let a of attributes)

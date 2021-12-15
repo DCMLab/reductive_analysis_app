@@ -1,5 +1,5 @@
 import { getDrawContexts } from './app'
-import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids } from './utils'
+import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space } from './utils'
 
 // This is code relating to the addition of new layers in analyses.
 

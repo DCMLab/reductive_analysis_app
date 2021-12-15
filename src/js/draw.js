@@ -189,12 +189,32 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   // Decorate with onclick and onmouseover handlers
   g_elem.onclick = function(ev) { toggle_selected(g_elem, ev.shiftKey) }
   g_elem.onmouseover = function (ev) {
-    primaries.forEach((item) => { item.classList.add('extrarelationhover') })
-    secondaries.forEach((item) => { item.classList.add('relationhover') })
+    primaries.forEach((item) => {
+      if (item.classList.contains('relation')
+	    item.classList.add('extrarelationhover')
+      else
+	    item.children[0].classList.add('extrarelationhover')
+    }
+    secondaries.forEach((item) => {
+      if (item.classList.contains('relation'))
+	    item.classList.add('relationhover')
+      else
+	    item.children[0].classList.add('relationhover')
+    })
   }
   g_elem.onmouseout = function (ev) {
-    primaries.forEach((item) => { item.classList.remove('extrarelationhover') })
-    secondaries.forEach((item) => { item.classList.remove('relationhover') })
+    primaries.forEach((item) => {
+      if (item.classList.contains('relation'))
+	    item.classList.remove('extrarelationhover')
+      else
+	    item.children[0].classList.remove('extrarelationhover')
+    })
+    secondaries.forEach((item) => {
+      if (item.classList.contains('relation'))
+	    item.classList.remove('relationhover')
+      else
+	    item.children[0].classList.remove('relationhover')
+    })
   }
 
   // TODO: Set up more onhover stuff for The Same Relation

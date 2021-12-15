@@ -1,5 +1,5 @@
 import { getDrawContexts } from './app'
-import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space } from './utils'
+import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space, chord_to_space } from './utils'
 
 // This is code relating to the addition of new layers in analyses.
 
@@ -11,13 +11,17 @@ import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space } fr
 // music, just under different levels of abstraction.
 
 function layer_clone_element(changes, elem, new_children) {
-  // No need to copy over empty beams and measures.
-  if ((elem.tagName == 'beam' || elem.tagName == 'measure') &&
-      new_children.findIndex((e) => e.nodeType == Node.ELEMENT_NODE &&
+  const no_notes_below = new_children.findIndex(
+    (e) => e.nodeType == Node.ELEMENT_NODE &&
 	                            (e.tagName == 'note' ||
-	                            e.getElementsByTagName('note').length > 0)
-			    ) == -1)
+	                            e.getElementsByTagName('note').length >
+				    0)) == -1
+  // No need to copy over empty beams and measures.
+  if ((elem.tagName == 'beam' || elem.tagName == 'measure') && no_notes_below)
     return null
+  // Replace empty chords with spaces
+  if (elem.tagName == 'chord' && no_notes_below)
+    return chord_to_space(mei, elem)
   var new_elem = elem.cloneNode()
   if (changes) {
     new_elem.setAttribute('corresp', elem.getAttribute('xml:id'))

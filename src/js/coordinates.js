@@ -118,10 +118,41 @@ export function pitch_grid(staff) {
     const sibling_staff = staves.find((st) => staff_midpoint(st) == mid &&
 	st.getElementsByClassName('note').length > 0)
     // And a note we can compare heights with
-    note = sibling_staff.getElementsByClassName('note')[0]
+    if (sibling_staff)
+      note = sibling_staff.getElementsByClassName('note')[0]
   }
-  // What's the diatonic note number at the middle line of the staff
-  const mid_n = diatonic_note_n(note) - Math.floor((note_coords(note)[1] - mid) / snd)
+  var mid_n
+  console.log(note)
+  if (!note) {
+    // There's no notes to compare with - we need to look at the clef
+    const sys = staff.closest('.system')
+    // Look through the other staves
+    const staves = Array.from(sys.getElementsByClassName('staff'))
+    // For something that has the same height as this
+    const sibling_staff = staves.find((st) => staff_midpoint(st) == mid &&
+	st.getElementsByClassName('clef').length > 0)
+    // And a clef we can compare heights with
+    const clef = sibling_staff.getElementsByClassName('clef')[0]
+    // CLEF Y IS WHAT YOU EXPECT
+    const clef_y = clef.children[0].getAttribute('y')
+    let clef_n
+    switch (clef.children[0].getAttribute('xlink:href')) {
+      case 'E062': // Bass clef
+        clef_n = 24
+        break
+      case 'E052': // 8vb treble clef
+        clef_n = 25
+        break
+      case 'E050': // Treble clef
+        clef_n = 32
+        break
+      // TODO: more clefs
+    }
+    mid_n = clef_n - Math.floor((clef_y - mid) / snd)
+  } else {
+    // What's the diatonic note number at the middle line of the staff
+    mid_n = diatonic_note_n(note) - Math.floor((note_coords(note)[1] - mid) / snd)
+  }
 
   return [(y) => {
     // What's the diatonic note number?

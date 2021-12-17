@@ -844,7 +844,7 @@ export function note_to_rest(mei, note) {
   return rest
 }
 // Make a space of the same properties as the given note.
-function note_to_space(mei, note) {
+export function note_to_space(mei, note) {
   var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
   space.setAttribute('xml:id', 'space-' + note.getAttribute('xml:id'))
   for (let a of attributes)
@@ -860,6 +860,15 @@ export function note_to_chord(mei, note) {
     if (note.hasAttribute(a))
       chord.setAttribute(a, note.getAttribute(a))
   return chord
+}
+
+export function chord_to_space(mei, chord) {
+  var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
+  space.setAttribute('xml:id', 'space-' + chord.getAttribute('xml:id'))
+  for (let a of attributes)
+    if (chord.hasAttribute(a))
+      space.setAttribute(a, chord.getAttribute(a))
+  return space
 }
 
 // Traverse the XML tree and add on a prefix to the start of each ID. If

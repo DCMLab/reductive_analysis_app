@@ -44,6 +44,15 @@ class RelationsFlyOut extends DraggableFlyOut {
 
     const { dataset, classList } = e.target
 
+    // The target is the button compacting the relations menu.
+
+    if (classList.contains('fly-out__compact')) {
+      this.relations.toggle(false)
+      this.metarelations.toggle(false)
+      this.compact()
+      return this.computeValues()
+    }
+
     if (!('relationType' in dataset)) { return }
 
     const relationType = dataset.relationType
@@ -53,9 +62,9 @@ class RelationsFlyOut extends DraggableFlyOut {
       return this[relationType].eventCallbacks.tap(dataset.relationName)
     }
 
-    // Toggle button
-    if (classList.contains('btn')) {
-      this[relationType].onTap()
+    // Show more button
+    if (classList.contains('fly-out__showMore')) {
+      this[relationType].toggle(true)
       this.compact()
       this.computeValues()
     }
@@ -145,8 +154,7 @@ class RelationsFlyOut extends DraggableFlyOut {
   }
 
   compact() {
-    // Reorder only when 1 item is selected.
-    if (!(score.flatSelection.length === 1)) { return }
+    if (!(score.flatSelection.length)) { return }
 
     const order = getMenuOrder(score.selectionType)
     const shouldCompact = !this[order[0]].isExpanded

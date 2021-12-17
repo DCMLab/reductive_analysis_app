@@ -1,4 +1,4 @@
-import { createBtn, createDatalist, createFillable, createShowMoreBtn } from './templates'
+import { createBtn, createDatalist, createFillable, createSeparator, createShowMoreBtn } from './templates'
 
 export default class RelationsGroup {
   #visible = false
@@ -52,7 +52,7 @@ export default class RelationsGroup {
 
     // buttons with main relations
     const btnsHtml = Object.keys(config.main)
-      .map(name => createBtn(name, this.type))
+      .map((name, index) => createBtn(name, this.type, index))
       .join('')
 
     let additionalContent = ''
@@ -65,16 +65,13 @@ export default class RelationsGroup {
     if ('additional' in config) {
       additionalContent +=
 
-      // separator between group items (not ideal)
-      '<hr class="fly-out__hr">'
+        // separator between group items (not ideal)
+        createSeparator()
 
         // free field with autocomplete proposals for even more relations…
         // @Todo: handle this input change events from somewhere…
         + createFillable(this.type, { label: 'Select a ' + this.name })
         + createDatalist(config.additional, this.type)
-
-      // separator before next group (not ideal)
-      '<hr class="fly-out__hr">'
     }
 
     this.ctn = document.getElementById(`${this.type}-btns`)

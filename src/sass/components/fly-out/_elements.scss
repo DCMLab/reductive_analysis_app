@@ -64,24 +64,6 @@
   &:not(.fly-out__btnGroup--visible) {
     display: none;
   }
-
-  &:not(.fly-out__btnGroup--expanded) {
-    ~ * { display: none; }
-    > * {
-      @include after-first(3) {
-        &:not(.fly-out__showMore) {
-          display: none;
-        }
-      }
-    }
-  }
-
-  // Only show the “show more” button of the first group.
-  ~ * {
-    .fly-out__showMore {
-      display: none;
-    }
-  }
 }
 
 .fly-out__footerActions {

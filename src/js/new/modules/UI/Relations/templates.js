@@ -5,6 +5,16 @@ const CSS = {
   hideIfNotCompact: 'hide-when-not-compact',
 }
 
+// Add group title
+
+export const createTitle = name => `
+  <div class="fly-out__headerRow">
+      <div class="fly-out__title fly-out__title--big">
+          ${capitalize(name)}s
+      </div>
+  </div>
+`
+
 // Add relation <button>
 
 export const createBtn = (name, type, index) => `
@@ -27,19 +37,17 @@ export const createShowMoreBtn = type => `
   <button
       type="button"
       class="fly-out__showMore ${CSS.hideIfNotCompact} | btn btn--hollow"
-      data-relation-type="${type}"
   >
       <span class="visually-hidden">View more ${type}</span>
       &hellip;
   </button>
 `
 
-export const createSeparator = () => `
-  <hr class="fly-out__hr ${CSS.hideIfCompact}">
-`
-
 export const createFillable = (id, { label, placeholder = '' }) => `
-  <label class="fillable fly-out__title ${CSS.hideIfCompact}" for="free-field-${id}">
+  <label
+      class="fillable fly-out__relationsField ${CSS.hideIfCompact}"
+      for="free-field-${id}"
+  >
       <span class="fillable__label">
           <span class="fillable__label__text">${label}</span>
           <svg class="fillable__label__triangle | btn__icon" width="10" height="8">

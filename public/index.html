@@ -556,38 +556,33 @@
             fly-out--draggable
             fly-out--hideable
             fly-out--relations
+            fly-out--relations-compact
         "
         id="relations-menu"
     >
         <div class="fly-out__inner">
+            <div class="fly-out__headerActions | flex-center">
+                <button class="fly-out__headerActionBtn fly-out__deleteBtn | flex-center" type="button">
+                    <span class="visually-hidden">Delete relation</span>
+                    <svg class="fly-out__headerBinIcon" width="18" height="19">
+                        <use xlink:href="#bin-path"/>
+                    </svg>
+                </button>
+                <button class="fly-out__headerActionBtn fly-out__closeBtn | flex-center" type="button">
+                    <span class="visually-hidden">Close relations menu</span>
+                    <svg width="16" height="16">
+                        <use xlink:href="#cross-path"/>
+                    </svg>
+                </button>
+            </div>
 
-            <!-- Not sure this innerSomething wrapper is useful… We’ll see later. -->
-            <div class="fly-out__innerSomething">
-                <div class="fly-out__headerRow">
-                    <div class="fly-out__title fly-out__title--big">Relations</div>
+            <!-- TODO: UPDATE COMPONENTS.HTML -->
 
-                    <div class="fly-out__headerActions | flex-center">
-                        <button class="fly-out__headerActionBtn fly-out__deleteBtn | flex-center" type="button">
-                            <span class="visually-hidden">Delete relation</span>
-                            <svg class="fly-out__headerBinIcon" width="18" height="19">
-                                <use xlink:href="#bin-path"/>
-                            </svg>
-                        </button>
-                        <button class="fly-out__headerActionBtn fly-out__closeBtn | flex-center" type="button">
-                            <span class="visually-hidden">Close relations menu</span>
-                            <svg width="16" height="16">
-                                <use xlink:href="#cross-path"/>
-                            </svg>
-                        </button>
-                    </div>
-
-                </div>
-
-                <!-- Relations -->
-                <div class="fly-out__btnGroup | btn-group" id="relations-btns"></div>
-                <div class="fly-out__btnGroup | btn-group" id="metarelations-btns"></div>
-                <div class="fly-out__btnGroup | btn-group" id="comborelations-btns"></div>
-
+            <!-- Relations -->
+            <div id="relations-btns-ctn">
+                <div class="fly-out__relationsBtnsCtn" id="relations-btns"></div>
+                <div class="fly-out__relationsBtnsCtn" id="metarelations-btns"></div>
+                <div class="fly-out__relationsBtnsCtn" id="comborelations-btns"></div>
             </div>
         </div>
 

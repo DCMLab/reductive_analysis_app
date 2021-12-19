@@ -7,12 +7,6 @@
   opacity: .1;
 }
 
-// Bad naming, yes.
-.fly-out__innerSomething {
-  display: flex;
-  flex-direction: column;
-}
-
 .fly-out__headerRow {
   order: -2;
   margin-bottom: 1.6rem;
@@ -23,7 +17,9 @@
 }
 
 .fly-out__headerActions {
-  margin-right: -.7rem;
+  position: absolute;
+  inset-inline-end: -.7rem;
+
   gap: 1rem;
 
   > :not(:hover):not(:focus),
@@ -58,12 +54,6 @@
   top: 100%;
   left: 50%;
   transform: translate(-50%, -3%); // -3% is a workaround: there’s a positionning issue (all browsers but at different levels, likely a rounding issue) where the notch doesn’t stick to the fly-out box.
-}
-
-.fly-out__btnGroup {
-  &:not(.fly-out__btnGroup--visible) {
-    display: none;
-  }
 }
 
 .fly-out__footerActions {

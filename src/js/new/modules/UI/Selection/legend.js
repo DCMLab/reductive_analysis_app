@@ -25,8 +25,8 @@ export default class SelectionLegend extends FlyOut {
 
     if (this.visible) {
       this.updateTitle()
-      this.updateRow('primary', selected)
-      this.updateRow('secondary', extraselected)
+      this.updateRow('primary', extraselected)
+      this.updateRow('secondary', selected)
     }
   }
 

@@ -433,7 +433,7 @@
 
         <div id="score-navigation" class="score-navigation">
             <button id="to-left" class="btn btn--plain navigation-arrow" type="button">
-                <svg class="btn__icon chevron--left" width="6" height="8">
+                <svg class="btn__icon chevron chevron--left" width="6" height="8">
                     <use xlink:href="#chevron-path"/>
                 </svg>
                 <span class="visually-hidden">To left</span>
@@ -556,49 +556,49 @@
             fly-out--draggable
             fly-out--hideable
             fly-out--relations
+            fly-out--relations-compact
         "
         id="relations-menu"
     >
         <div class="fly-out__inner">
+            <div class="fly-out__headerActions | flex-center">
+                <button class="fly-out__headerActionBtn fly-out__deleteBtn | flex-center" type="button">
+                    <span class="visually-hidden">Delete relation</span>
+                    <svg class="fly-out__headerBinIcon" width="18" height="19">
+                        <use xlink:href="#bin-path"/>
+                    </svg>
+                </button>
+                <button class="fly-out__headerActionBtn fly-out__closeBtn | flex-center" type="button">
+                    <span class="visually-hidden">Close relations menu</span>
+                    <svg width="16" height="16">
+                        <use xlink:href="#cross-path"/>
+                    </svg>
+                </button>
+            </div>
 
-            <!-- Not sure this innerSomething wrapper is useful… We’ll see later. -->
-            <div class="fly-out__innerSomething">
-                <div class="fly-out__headerRow">
-                    <div class="fly-out__title fly-out__title--big">Relations</div>
-
-                    <div class="fly-out__headerActions | flex-center">
-                        <button class="fly-out__headerActionBtn fly-out__deleteBtn | flex-center" type="button">
-                            <span class="visually-hidden">Delete relation</span>
-                            <svg class="fly-out__headerBinIcon" width="18" height="19">
-                                <use xlink:href="#bin-path"/>
-                            </svg>
-                        </button>
-                        <button class="fly-out__headerActionBtn fly-out__closeBtn | flex-center" type="button">
-                            <span class="visually-hidden">Close relations menu</span>
-                            <svg width="16" height="16">
-                                <use xlink:href="#cross-path"/>
-                            </svg>
-                        </button>
-                    </div>
-
-                </div>
-
-                <!-- Relations -->
-                <div class="fly-out__btnGroup | btn-group" id="relations-btns"></div>
-                <div class="fly-out__btnGroup | btn-group" id="metarelations-btns"></div>
-                <div class="fly-out__btnGroup | btn-group" id="comborelations-btns"></div>
-
+            <!-- Relations -->
+            <div id="relations-btns-ctn">
+                <div class="fly-out__relationsBtnsCtn" id="relations-btns"></div>
+                <div class="fly-out__relationsBtnsCtn" id="metarelations-btns"></div>
+                <div class="fly-out__relationsBtnsCtn" id="comborelations-btns"></div>
             </div>
         </div>
 
-        <button class="fly-out__drag | btn btn--plain" type="button">
-            <span class="visually-hidden">Drag menu</span>
-            <svg class="btn__icon" width="10" height="14">
-                <use xlink:href="#draggable-path"/>
-            </svg>
-        </button>
-
-        <!-- <hr class="fly-out__hr"> -->
+        <!-- Footer actions -->
+        <div class="fly-out__footerActions | flex-center">
+            <button class="fly-out__footerActionBtn fly-out__toggleBtn fly-out__compact hide-when-compact | btn btn--plain flex-center" type="button">
+                <span class="visually-hidden">Compact menu</span>
+                <svg class="btn__icon chevron chevron--top" width="7" height="10">
+                    <use xlink:href="#chevron-path"/>
+                </svg>
+            </button>
+            <button class="fly-out__footerActionBtn fly-out__drag | btn btn--plain flex-center" type="button">
+                <span class="visually-hidden">Drag menu</span>
+                <svg class="btn__icon" width="10" height="14">
+                    <use xlink:href="#draggable-path"/>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <!-- Minimap -->

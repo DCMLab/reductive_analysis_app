@@ -1,8 +1,13 @@
-import { createBtn, createDatalist, createFillable, createShowMoreBtn } from './templates'
+import {
+  createBtn,
+  createDatalist,
+  createFillable,
+  createShowMoreBtn,
+  createTitle
+} from './templates'
 
 export default class RelationsGroup {
   #visible = false
-  #expanded = false
 
   constructor(type, config, eventCallbacks = {}) {
     this.type = type
@@ -13,24 +18,13 @@ export default class RelationsGroup {
   }
 
   get isVisible() { return this.#visible }
-  get isExpanded() { return this.#expanded }
-
-  onTap() { this.toggle() }
 
   show() { this.toggleVisibility(true) }
   hide() { this.toggleVisibility(false) }
 
-  expand() { this.toggle(true) }
-  collapse() { this.toggle(false) }
-
   toggleVisibility(state = !this.#visible) {
     this.#visible = state
-    this.ctn.classList.toggle('fly-out__btnGroup--visible', state)
-  }
-
-  toggle(state = !this.#expanded) {
-    this.#expanded = state
-    this.ctn.classList.toggle('fly-out__btnGroup--expanded', state)
+    this.ctn.classList.toggle('fly-out__relationsBtnsCtn--visible', state)
   }
 
   select(types) {
@@ -49,36 +43,32 @@ export default class RelationsGroup {
   }
 
   initHtml(config) {
+    const titleHtml = createTitle(config.name)
 
     // buttons with main relations
-    const btnsHtml = Object.keys(config.main)
-      .map(name => createBtn(name, this.type))
+    let btnsHtml = Object.keys(config.main)
+      .map((name, index) => createBtn(name, this.type, index))
       .join('')
-
-    let additionalContent = ''
 
     // button to toggle visibility of more relation buttons
     if (config.main.length > 3 || 'additional' in config) {
-      additionalContent += createShowMoreBtn(this.type)
+      btnsHtml += createShowMoreBtn(this.type)
     }
 
-    if ('additional' in config) {
-      additionalContent +=
+    btnsHtml = `<div class="btn-group">${btnsHtml}</div>`
 
-      // separator between group items (not ideal)
-      '<hr class="fly-out__hr">'
+    let additionalRelations = ''
+    if ('additional' in config) {
+      additionalRelations +=
 
         // free field with autocomplete proposals for even more relations…
         // @Todo: handle this input change events from somewhere…
-        + createFillable(this.type, { label: 'Select a ' + this.name })
+        createFillable(this.type, { label: 'Or type a ' + this.name })
         + createDatalist(config.additional, this.type)
-
-      // separator before next group (not ideal)
-      '<hr class="fly-out__hr">'
     }
 
     this.ctn = document.getElementById(`${this.type}-btns`)
-    this.ctn.innerHTML = btnsHtml + additionalContent
+    this.ctn.innerHTML = titleHtml + btnsHtml + additionalRelations
 
     this.btns = this.ctn.getElementsByClassName('btn--relation')
     this.selectedBtns = this.ctn.getElementsByClassName('btn--selected')

@@ -97,28 +97,21 @@ export default class DraggableFlyOut extends FlyOut {
   // Compute the size and position of the container and the dragging handle.
 
   computeValues() {
+    const DOMRectProps = ['x', 'y', 'width', 'height']
 
-    // Compute container values
-    const ctnDOMRect = getDOMRect(this.ctn.el, ['x', 'y', 'width', 'height'])
-    Object.assign(this.ctn, ctnDOMRect)
-
-    // Compute dragging handle values
-    const dragHandleDOMRect = getDOMRect(this.dragHandle.el, ['width', 'height'])
-    Object.assign(this.dragHandle,
-      dragHandleDOMRect,
-      {
-        // Distance from the top left of the container.
-        offsetLeft: this.dragHandle.el.offsetLeft,
-        offsetTop: this.dragHandle.el.offsetTop,
-      },
-    )
+    Object.assign(this.ctn, getDOMRect(this.ctn.el, DOMRectProps))
+    Object.assign(this.dragHandle, getDOMRect(this.dragHandle.el, DOMRectProps))
 
     /**
-     * Distance between the top-left of the menu and the center of the handle.
-     * This way it’s taken into account when the menu gets the `transform`.
+     * Distance between the top-left of the menu (1) and the handle center (2),
+     * used to shift the fly-out position while dragging. This way, the fly-
+     * out handle always stick to the cursor.
+     *
+     * (1) drag handle X position - container X position
+     * (2) drag size / 2
      */
-    this.ctn.handleDeltaX = this.dragHandle.offsetLeft + (this.dragHandle.width / 2)
-    this.ctn.handleDeltaY = this.dragHandle.offsetTop + (this.dragHandle.height / 2)
+    this.ctn.handleDeltaX = this.dragHandle.x - this.ctn.x + this.dragHandle.width / 2
+    this.ctn.handleDeltaY = this.dragHandle.y - this.ctn.y + this.dragHandle.height / 2
 
     // Computation is done, we can finally snap if needed.
 

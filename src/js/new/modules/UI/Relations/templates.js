@@ -1,11 +1,29 @@
 import { capitalize } from '../../../utils/string'
 
+const CSS = {
+  hideIfCompact: 'hide-when-compact',
+  hideIfNotCompact: 'hide-when-not-compact',
+}
+
+// Add group title
+
+export const createTitle = name => `
+  <div class="fly-out__headerRow">
+      <div class="fly-out__title fly-out__title--big">
+          ${capitalize(name)}s
+      </div>
+  </div>
+`
+
 // Add relation <button>
 
-export const createBtn = (name, type) => `
+export const createBtn = (name, type, index) => `
   <button
       type="button"
-      class="btn btn--hollow btn--relation color-relation-${name}"
+      class="
+        btn btn--hollow btn--relation color-relation-${name}
+        ${index > 2 ? CSS.hideIfCompact : ''}
+      "
       data-relation-name="${name}"
       data-relation-type="${type}"
   >
@@ -18,20 +36,18 @@ export const createBtn = (name, type) => `
 export const createShowMoreBtn = type => `
   <button
       type="button"
-      class="fly-out__showMore | btn btn--hollow"
-      data-relation-type="${type}"
+      class="fly-out__showMore ${CSS.hideIfNotCompact} | btn btn--hollow"
   >
       <span class="visually-hidden">View more ${type}</span>
       &hellip;
   </button>
 `
 
-export const createSeparator = () => `<hr class="fly-out__hr" style="
-flex: 1 0 100%;
-">`
-
 export const createFillable = (id, { label, placeholder = '' }) => `
-  <label class="fillable fly-out__title" for="free-field-${id}">
+  <label
+      class="fillable fly-out__relationsField ${CSS.hideIfCompact}"
+      for="free-field-${id}"
+  >
       <span class="fillable__label">
           <span class="fillable__label__text">${label}</span>
           <svg class="fillable__label__triangle | btn__icon" width="10" height="8">

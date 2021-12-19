@@ -1,10 +1,6 @@
 // The fly-out handle.
 
 .fly-out__drag {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-
   --btn-radius: 1rem 0rem 1rem 0rem;
 
   &:hover { cursor: grab; }

@@ -22,7 +22,7 @@ class RelationsFlyOut extends DraggableFlyOut {
   constructor() {
     super('relations-menu')
 
-    this.innerCtn = this.ctn.el.querySelector('.fly-out__innerSomething')
+    this.innerCtn = document.getElementById('relations-btns-ctn')
     this.deleteBtn = this.ctn.el.querySelector('.fly-out__deleteBtn')
     this.init()
   }
@@ -38,26 +38,27 @@ class RelationsFlyOut extends DraggableFlyOut {
   onTap(e) {
     super.onTap(e)
 
+    // Delete relation
     if (e.target == this.deleteBtn) {
       return delete_relations()
     }
 
     const { dataset, classList } = e.target
 
-    if (!('relationType' in dataset)) { return }
+    // Compact or expand
+    const isCompactBtn = classList.contains('fly-out__compact')
+    const isShowMoreBtn = classList.contains('fly-out__showMore')
 
-    const relationType = dataset.relationType
+    if (isCompactBtn || isShowMoreBtn) {
+      this.compact(isCompactBtn)
+      return this.computeValues()
+    }
+
+    if (!dataset?.hasOwnProperty('relationType')) { return }
 
     // Create relation
     if (classList.contains('btn--relation')) {
-      return this[relationType].eventCallbacks.tap(dataset.relationName)
-    }
-
-    // Toggle button
-    if (classList.contains('btn')) {
-      this[relationType].onTap()
-      this.compact()
-      this.computeValues()
+      this[dataset.relationType].eventCallbacks.tap(dataset.relationName)
     }
   }
 
@@ -136,27 +137,20 @@ class RelationsFlyOut extends DraggableFlyOut {
         this[order[index - 1]].ctn,
         this[order[index]].ctn
       )
-
-      // Expand all but first one.
-      if (index > 1) {
-        this[order[index - 1]].toggle(true)
-      }
     }
   }
 
-  compact() {
-    // Reorder only when 1 item is selected.
-    if (!(score.flatSelection.length === 1)) { return }
+  compact(shouldCompact = null) {
+    if (!(score.flatSelection.length)) { return }
 
-    const order = getMenuOrder(score.selectionType)
-    const shouldCompact = !this[order[0]].isExpanded
-    this.ctn.el.classList.toggle('fly-out--relations-compact', shouldCompact)
-    this.ctn.el.classList.toggle('fly-out--big', !shouldCompact)
+    if (shouldCompact != null) {
+      this.ctn.el.classList.toggle('fly-out--relations-compact', shouldCompact)
+      this.ctn.el.classList.toggle('fly-out--big', !shouldCompact)
+    }
 
     // Condition partly from src/js/app.js: do_comborelation()
     const comborelationsVisible =
-        this.relations.isExpanded
-        && score.selectionType == 'note'
+        score.selectionType == 'note'
         && score.flatSelection.length > 2
         && score.selection.extraselected.length < 3
     this.comborelations.toggleVisibility(comborelationsVisible)

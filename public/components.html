@@ -112,48 +112,60 @@
 
     <!-- Relations fly-out -->
 
-    <div class="fly-out fly-out--big fly-out--dark">
-        <div class="fly-out__inner">
+    <div
+        class="fly-out fly-out--big fly-out--dark fly-out--draggable"
+        style="max-width: 37rem;"
+    >
+        <div class="fly-out__inner" style="position: relative;">
+            <div class="fly-out__headerActions | flex-center">
+                <button class="fly-out__headerActionBtn fly-out__deleteBtn | flex-center" type="button">
+                    <span class="visually-hidden">Delete relation</span>
+                    <svg class="fly-out__headerBinIcon" width="18" height="19">
+                        <use xlink:href="#bin-path"/>
+                    </svg>
+                </button>
+                <button class="fly-out__headerActionBtn fly-out__closeBtn | flex-center" type="button">
+                    <span class="visually-hidden">Close relations menu</span>
+                    <svg width="16" height="16">
+                        <use xlink:href="#cross-path"/>
+                    </svg>
+                </button>
+            </div>
 
-            <div>
-                <div class="fly-out__headerRow">
-                    <div class="fly-out__title fly-out__title--big">Relations</div>
-
-                    <div class="fly-out__headerActions | flex-center">
-                        <button class="fly-out__headerActionBtn | flex-center" type="button">
-                            <svg class="fly-out__headerBinIcon" width="18" height="19">
-                                <use xlink:href="#bin-path"/>
-                            </svg>
-                        </button>
-                        <button class="fly-out__headerActionBtn | flex-center" type="button">
-                            <span class="visually-hidden">Close relations menu</span>
-                            <svg width="16" height="16">
-                                <use xlink:href="#cross-path"/>
-                            </svg>
+            <!-- Relations -->
+            <div id="relations-btns-ctn">
+                <div class="fly-out__relationsBtnsCtn fly-out__relationsBtnsCtn--visible" id="relations-btns">
+                    <div class="fly-out__headerRow">
+                        <div class="fly-out__title fly-out__title--big">Relations</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn--hollow btn--relation color-relation-repeat" type="button">Repeat</button>
+                        <button class="btn btn--hollow btn--relation color-relation-passing" type="button">Passing</button>
+                        <button class="btn btn--hollow btn--relation color-relation-neighbour" type="button">Neighbour</button>
+                        <button class="btn btn--hollow btn--relation color-relation-harmonic" type="button">Harmonic</button>
+                        <button class="btn btn--hollow btn--relation color-relation-arpeggio" type="button">Arpeggio</button>
+                        <button class="btn btn--hollow btn--relation color-relation-urlinie" type="button">Urlinie</button>
+                        <button class="btn btn--hollow btn--relation color-relation-bassbrechung" type="button">Bassbrechung</button>
+                        <button class="btn btn--hollow btn--relation color-relation-untyped" type="button">Untyped</button>
+                        <button type="button" class="fly-out__showMore hide-when-not-compact | btn btn--hollow">
+                            <span class="visually-hidden">View more relations</span>
+                            …
                         </button>
                     </div>
-
+                    <label class="fillable fly-out__relationsField hide-when-compact" for="free-field-relations">
+                        <span class="fillable__label">
+                            <span class="fillable__label__text">Or type a relation</span>
+                            <svg class="fillable__label__triangle | btn__icon" width="10" height="8"><use xlink:href="#triangle-path"></use></svg>
+                        </span>
+                        <input class="fillable__input" id="free-field-relations" type="text" list="datalist-relations" placeholder="Or type a relation" data-relation-type="relations">
+                    </label>
                 </div>
-
-                <div class="btn-group">
-                    <button class="btn btn--hollow btn--relation color-relation-repeat" type="button">Repeat</button>
-                    <button class="btn btn--hollow btn--relation color-relation-passing" type="button">Passing</button>
-                    <button class="btn btn--hollow btn--relation color-relation-neighbour" type="button">Neighbour</button>
-                    <button class="btn btn--hollow btn--relation color-relation-harmonic" type="button">Harmonic</button>
-                    <button class="btn btn--hollow btn--relation color-relation-arpeggio" type="button">Arpeggio</button>
-                    <button class="btn btn--hollow btn--relation color-relation-urlinie" type="button">Urlinie</button>
-                    <button class="btn btn--hollow btn--relation color-relation-bassbrechung" type="button">Bassbrechung</button>
-                    <button class="btn btn--hollow" type="button">
-                        <span class="visually-hidden">view more relations</span>
-                        &hellip;
-                    </button>
-                </div>
-
             </div>
         </div>
 
+        <!-- Footer actions -->
         <div class="fly-out__footerActions | flex-center">
-            <button class="fly-out__footerActionBtn fly-out__toggleBtn fly-out__compact | btn btn--plain flex-center" type="button">
+            <button class="fly-out__footerActionBtn fly-out__toggleBtn fly-out__compact hide-when-compact | btn btn--plain flex-center" type="button">
                 <span class="visually-hidden">Compact menu</span>
                 <svg class="btn__icon chevron chevron--top" width="7" height="10">
                     <use xlink:href="#chevron-path"/>

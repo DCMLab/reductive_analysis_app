@@ -5,7 +5,6 @@
   --btn-transition: .4s;
 
   position: relative;
-  padding-inline: 1.6rem;
 
   // 1. Remove inner borders
   // 2. Only exterior elements have rounded borders.
@@ -16,35 +15,13 @@
   &:first-child {
     border-start-start-radius: v(btn-default-radius);
     border-end-start-radius: v(btn-default-radius);
-    border-inline-start-width: revert;
+    border-inline-start-width: .2rem; // should be `revert` but it weirdly gives 3px…
   }
 
   &:last-child {
     border-start-end-radius: v(btn-default-radius);
     border-end-end-radius: v(btn-default-radius);
-    border-inline-end-width: revert;
-  }
-
-  // Separator between buttons.
-
-  @include all-but(1) {
-    &::before {
-      content: '';
-      size: .2rem 2rem;
-      position: absolute;
-      left: -.1rem;
-
-      background: $alto;
-      border-radius: .1rem;
-
-      pointer-events: none;
-    }
-  }
-
-
-  &:active {
-    --btn-bg: var(--primary);
-    --btn-color: var(--bg);
+    border-inline-end-width: .2rem;
   }
 
   &[disabled] {

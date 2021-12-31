@@ -650,10 +650,7 @@ margin-top: 0.5rem;
   font-size: 300%;
 }
 
-.collapsed #basic_buttons,
-.collapsed #relation_buttons,
-.collapsed #meta_buttons,
-.collapsed #combo_buttons {
+.collapsed #basic_buttons {
   display: none;
 }
 

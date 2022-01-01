@@ -45,10 +45,10 @@ export function do_paste() {
   let p_offs = copy.template.map((n) => n.p_off)
   p_offs = p_offs.sort((a, b) => a - b)
   // Find matching notes according to map
-  let n_candidates = notes_in_range(n_ref, p_offs[0], 
+  let n_candidates = notes_in_range(n_ref, p_offs[0],
     p_offs[p_offs.length - 1],
 					   copy.template[copy.template.length - 1].t_off)
-  
+
   copy.template.forEach((o) => o.n_to = undefined)
   for (var n_cand of n_candidates) {
     let t_off = time_offset(n_cand, n_ref)
@@ -94,4 +94,3 @@ export function do_paste() {
   // Go through each relation, select the corresponding notes, and
   // do_relation()
 }
-

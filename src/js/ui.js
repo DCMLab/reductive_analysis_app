@@ -19,7 +19,6 @@ import {
   rerender_mei,
   getVerovioToolkit,
   getData,
-  rerender,
   create_new_layer,
   getDrawContexts,
 } from './app'
@@ -37,7 +36,7 @@ import {
   flip_to_bg,
   get_class_from_classlist,
   indicate_current_context,
-  to_text,
+  select_samenote,
   unmark_secondaries
 } from './utils'
 
@@ -79,68 +78,84 @@ var last_selected = null
 var show_orphans = true
 
 // Toggle if a thing (for now: note or relation) is selected or not.
-export function toggle_selected(item, extra) {
-  console.debug('Using globals: selected, extraselected for adding/removing selected items. JQuery for changing displayed text of selected items')
-  var ci = get_class_from_classlist(item)
-  var cd = item.closest('div')
-  if (selected.length > 0 || extraselected.length > 0) {
-    var csel = get_class_from_classlist(selected.concat(extraselected)[0])
-    var cdsel = selected.concat(extraselected)[0].closest('div')
-    // Select only things of the same type for now - editing
-    // relations to add things means deleting and re-adding
-    if (ci != csel)
-      return
-    if (cd != cdsel)
-      return
+export function toggle_selected(item, extra = null) {
+  const itemType = get_class_from_classlist(item)
+
+  if (!['relation', 'metarelation', 'note'].includes(itemType)) {
+    return
   }
-  if (ci == 'note') {
-    // We're selecting notes.
-    if (selected.find(x => x === item) || extraselected.find(x => x === item)) {
-      item.classList.remove('selectednote')
-      item.classList.remove('extraselectednote')
-      selected = selected.filter(x => x !== item)
-      extraselected = extraselected.filter(x => x !== item)
-    } else {
-      if (extra) {
-        item.classList.add('extraselectednote')
-        extraselected.push(item)
-        last_selected = item
-      } else {
-        item.classList.add('selectednote')
-        selected.push(item)
-        last_selected = item
-      }
+
+  const flatSelection = selected.concat(extraselected)
+
+  /**
+   * Make sure selection happens in the same layer, restricted to same type of
+   * selected items for now. Editing relations to add things means deleting
+   * and re-adding.
+   */
+  if (flatSelection.length > 0) {
+    const selectionType = get_class_from_classlist(flatSelection[0])
+    const selectionScoreContainer = flatSelection[0].closest('.svg_container')
+    const itemScoreContainer = item.closest('.svg_container')
+    if (itemType != selectionType || itemScoreContainer != selectionScoreContainer) {
+      return
     }
-  } else if (ci == 'relation' || ci == 'metarelation') {
-    // Relation selection
-    if (selected.concat(extraselected).length == 0) {
-      // We're beginning to select relations
-      toggle_he_selected(true)
-    }
-    if (selected.find(x => x === item) || extraselected.find(x => x === item)) {
-      item.classList.remove('extraselectedrelation')
-      item.classList.remove('selectedrelation')
-      selected = selected.filter(x => x !== item)
-      extraselected = extraselected.filter(x => x !== item)
+  }
+
+  const isAlreadySelected = flatSelection.find(el => el == item)
+
+  // Unselect and remove from selection arrays
+
+  if (isAlreadySelected) {
+    item.classList.remove(
+      'selectednote', 'extraselectednote',
+      'selectedrelation', 'extraselectedrelation'
+    )
+
+    selected = selected.filter(x => x !== item)
+    extraselected = extraselected.filter(x => x !== item)
+  }
+
+  /**
+   * Unless it’s explicitely forced (= when `extra` is `true` or `false`), the
+   * selection mode is handled by a keyboard shortcut or the visual toggle.
+   */
+  if (extra === null) {
+    extra = newApp.ui.selection.mode.mode == 'primary'
+  }
+
+  // Select note.
+
+  if (itemType == 'note' && !isAlreadySelected) {
+    if (extra) {
+      item.classList.add('extraselectednote')
+      extraselected.push(item)
     } else {
+      item.classList.add('selectednote')
+      selected.push(item)
+    }
+    last_selected = item
+  }
+
+  // Select relation.
+
+  if (itemType == 'relation' || itemType == 'metarelation') {
+    if (!isAlreadySelected) {
       if (extra) {
         item.classList.add('extraselectedrelation')
         extraselected.push(item)
-        last_selected = item
       } else {
         item.classList.add('selectedrelation')
         selected.push(item)
-        last_selected = item
       }
+      last_selected = item
     }
     if (selected.concat(extraselected).length == 0) {
-      // We're finished selecting relations
-      toggle_he_selected(false)
       last_selected = null
     }
   }
 
-  // The selected elements have changed.
+  // Dispatch selection changes.
+
   document.dispatchEvent(new CustomEvent('scoreselection', {
     detail: { selected: selected, extraselected: extraselected }
   }))
@@ -349,10 +364,10 @@ function add_filters(draw_context) {
 
 function onclick_select_functions(draw_context) {
   for (let n of draw_context.svg_elem.getElementsByClassName('note')) {
-    n.onclick = function (ev) { toggle_selected(n, ev.shiftKey) }
+    n.onclick = function (ev) { toggle_selected(n) }
   }
   for (let h of draw_context.svg_elem.getElementsByClassName('relation')) {
-    h.onclick = function (ev) { toggle_selected(h, ev.shiftKey) }
+    h.onclick = function (ev) { toggle_selected(h) }
   }
 }
 
@@ -474,16 +489,6 @@ export function handle_keypress(ev) {
 
 /* Large-ish UI functions */
 
-// If we're selecting relations, we may want to change them.
-function toggle_he_selected(selecting) {
-  console.debug('Using globals: document for changing button texts/visibility')
-
-  if (selecting)
-    document.getElementById('meta_buttons').classList.remove('none')
-  else
-    document.getElementById('meta_buttons').classList.add('none')
-}
-
 // Toggle showing things other than notes in the score
 export function toggle_equalize() {
   console.debug('Using globals: non_notes_hidden')
@@ -573,8 +578,8 @@ function zoom_out(draw_context) {
 }
 
 export function do_deselect() {
-  selected.forEach((x) => toggle_selected(x))
-  extraselected.forEach((x) => toggle_selected(x, true))
+  selected.forEach(x => toggle_selected(x, false))
+  extraselected.forEach(x => toggle_selected(x, true))
 }
 
 function getReducedMidi(draw_context = null) {
@@ -699,7 +704,7 @@ export function drag_selector_installer(svg_elem) {
             || (x.classList.contains('note') && !x.classList.contains('selectednote') && !x.classList.contains('extraselectednote'))
             || (x.classList.contains('metarelation') && !x.classList.contains('selectedrelation') && !x.classList.contains('extraselectedrelation') && !shiftKey)
         })
-        .forEach(x => toggle_selected(x))
+        .forEach(toggle_selected)
     }
   })
 

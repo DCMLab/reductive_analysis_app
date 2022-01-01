@@ -96,14 +96,14 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   }
 
   // Decorate with onclick and onmouseover handlers
-  elem.onclick = function(ev) { toggle_selected(elem, ev.shiftKey) }
-  elem.onmouseover = function (ev) {
-    primaries.forEach((item) => { item.classList.add('extrahover') })
-    secondaries.forEach((item) => { item.classList.add('selecthover') })
+  elem.onclick = () => toggle_selected(elem)
+  elem.onmouseover = function () {
+    primaries.forEach(item => item.classList.add('extrahover'))
+    secondaries.forEach(item => item.classList.add('selecthover'))
   }
-  elem.onmouseout = function (ev) {
-    primaries.forEach((item) => { item.classList.remove('extrahover') })
-    secondaries.forEach((item) => { item.classList.remove('selecthover') })
+  elem.onmouseout = function () {
+    primaries.forEach(item => item.classList.remove('extrahover'))
+    secondaries.forEach(item => item.classList.remove('selecthover'))
   }
   // TODO: Set up more onhover stuff for The Same Relation
   // Elsewhere - but perhaps that's a separate thing?
@@ -187,7 +187,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   }
 
   // Decorate with onclick and onmouseover handlers
-  g_elem.onclick = function(ev) { toggle_selected(g_elem, ev.shiftKey) }
+  g_elem.onclick = () => toggle_selected(g_elem)
   g_elem.onmouseover = function (ev) {
     primaries.forEach((item) => {
       if (item.classList.contains('relation'))

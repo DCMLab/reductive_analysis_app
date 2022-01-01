@@ -349,12 +349,13 @@
             </div>
         </div>
 
-        <!-- Undo, redo, (un)select all -->
+        <!-- Undo, redo, (un)select all, primary/secondary -->
 
         <div id="history-and-selection" class="history-and-selection | flex-center">
 
-            <div class="btn-tabs">
+            <div class="btn-tabs btn-tabs--with-separator">
 
+                <!-- Undo -->
                 <button id="undo" class="undo | btn btn--small btn-tabs__btn" type="button">
                     <svg class="btn__icon" width="20" height="20">
                         <use xlink:href="#undo-path"/>
@@ -362,6 +363,7 @@
                     <span class="visually-hidden">Undo</span>
                 </button>
 
+                <!-- Redo -->
                 <button id="redo" class="redo | btn btn--small btn-tabs__btn" type="button">
                     <svg class="redo__icon btn__icon" width="20" height="20">
                         <use xlink:href="#undo-path"/>
@@ -371,8 +373,36 @@
 
             </div>
 
+            <!-- (Un)select all -->
             <button id="select-all" class="btn btn--hollow" type="button">Select visible relations</button>
             <button id="unselect-all" class="btn btn--hollow" type="button">Unselect all</button>
+
+            <!-- Selection mode -->
+            <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
+
+                <!-- Primary -->
+                <label
+                    class="btn-tabs__btn"
+                    style="--btn-checked: hsl(4, 81%, 49%);"
+                    for="selection-mode-primary"
+                    data-label="Primary"
+                >
+                    <input class="btn-tabs__radio" type="radio" name="selection-mode" id="selection-mode-primary" value="primary">
+                    <span class="btn btn--hollow btn-tabs__accent">Primary</span>
+                </label>
+
+                <!-- Secondary -->
+                <label
+                    class="btn-tabs__btn"
+                    style="--btn-checked: hsl(199, 98%, 55%);"
+                    for="selection-mode-secondary"
+                    data-label="Secondary"
+                >
+                    <input class="btn-tabs__radio" type="radio" name="selection-mode" id="selection-mode-secondary" value="secondary">
+                    <span class="btn btn--hollow btn-tabs__accent">Secondary</span>
+                </label>
+
+            </fieldset>
 
         </div>
 
@@ -534,12 +564,6 @@
             <input type="button" id="addnotebutton" value="Toggle adding a note"/>
             <input type="button" id="addbookmarkbutton" value="Bookmark note"/>
             <input type="button" id="naturalizebutton" value="Naturali(Z)e notes"/>
-        </div>
-        <div id="relation_buttons">
-        </div>
-        <div id="meta_buttons" class="none">
-        </div>
-        <div id="combo_buttons">
         </div>
     </div>
 

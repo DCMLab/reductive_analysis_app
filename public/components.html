@@ -365,7 +365,7 @@
 
     </div>
 
-    <!-- Buttons: Save file, Save as SVG, zoom, undo/redo, menu, metadata, filters, add a new note, bookmark note, naturalize note -->
+    <!-- Buttons: Save file, Save as SVG, zoom, undo/redo, menu, metadata, filters, selection mode, add a new note, bookmark note, naturalize note -->
 
     <button class="btn btn--hollow" type="button">Save file</button>
     <button class="btn btn--hollow" type="button"><span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span></button>
@@ -401,6 +401,32 @@
         </button>
 
     </div>
+
+    <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
+
+        <!-- Primary -->
+        <label
+            class="btn-tabs__btn"
+            style="--btn-checked: hsl(4, 81%, 49%);"
+            for="selection-mode-primary"
+            data-label="Primary"
+        >
+            <input class="btn-tabs__radio" type="radio" name="selection-mode" id="selection-mode-primary" value="primary">
+            <span class="btn btn--hollow btn-tabs__accent">Primary</span>
+        </label>
+
+        <!-- Secondary -->
+        <label
+            class="btn-tabs__btn"
+            style="--btn-checked: hsl(199, 98%, 55%);"
+            for="selection-mode-secondary"
+            data-label="Secondary"
+        >
+            <input class="btn-tabs__radio" type="radio" name="selection-mode" id="selection-mode-secondary" value="secondary">
+            <span class="btn btn--hollow btn-tabs__accent">Secondary</span>
+        </label>
+
+    </fieldset>
 
     <!-- Main menu button -->
     <button class="btn btn--plain" type="button">

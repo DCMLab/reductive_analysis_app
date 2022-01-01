@@ -128,13 +128,13 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
     // Are we running with type-specific shades?
     if (shades)
       toggle_shade(elem)
-    elem.onclick = function(ev) { toggle_selected(elem_in_score, ev.shiftKey) }
+    elem.onclick = ev => toggle_selected(elem_in_score)
 
-    elem.onmouseover = function (ev) {
+    elem.onmouseover = function () {
       elem_in_score.classList.add('relationhover')
       elem_in_score.onmouseover()
     }
-    elem.onmouseout = function (ev) {
+    elem.onmouseout = function () {
       elem_in_score.classList.remove('relationhover')
       elem_in_score.onmouseout()
     }

@@ -279,7 +279,7 @@ function draw_note(pname, oct, note, sim = true, id = '') {
     gh.appendChild(u)
     g.appendChild(gh)
     note.parentElement.appendChild(g)
-    g.onclick = function(ev) { toggle_selected(g, ev.shiftKey) }
+    g.onclick = () => toggle_selected(g)
     added.push(g)
   }
   return added.reverse()

@@ -1,10 +1,15 @@
 import { arrayIncludesAll } from '../utils/array'
 
 const keys = Object.freeze({
+  shift: 16,
   control: 17,
   escape: 27,
+
+  // arrows
   left: 37,
   right: 39,
+
+  // characters
   a: 65,
   x: 88,
   z: 90,
@@ -25,7 +30,7 @@ export function isModifier(keyboardEvent, modifiers = null) {
 
   // Not requesting a specific modifier.
   if (!modifiers) {
-    return keys !== null // `true` if any modifier is pressed.
+    return !!keys.length // `true` if any modifier is pressed.
   }
 
   // Look for all specified modifiers.
@@ -33,9 +38,10 @@ export function isModifier(keyboardEvent, modifiers = null) {
 }
 
 /**
- * Return pressed modifier keys, or null if none are pressed.
+ * Return pressed modifier keys.
  *
  * @param {KeyboardEvent}
+ * @returns {string[]} modifier keys
  */
 export function pressedModifiers({
   metaKey: meta,
@@ -45,9 +51,7 @@ export function pressedModifiers({
 }) {
   const modifiers = { meta, shift, ctrl, alt }
 
-  const keys = Object.keys(modifiers).filter(key => modifiers[key])
-
-  return keys.length ? keys : null
+  return Object.keys(modifiers).filter(key => modifiers[key])
 }
 
 // The key for usual platform shortcuts (Cmd on macOS, Ctrl anywhere else).

@@ -20,7 +20,7 @@ export function calc_reduce(mei_graph, remaining_relations, target_relations) {
   ).flat()
   // We know that the remaining relations that have not been
   // selected for reduction will remain
-  remaining_relations = remaining_relations.filter((x) => { return !target_relations.includes(x) })
+  remaining_relations = remaining_relations.filter(x => !target_relations.includes(x))
   // So all of their nodes should be added to the remaining
   // nodes, not just the primaries
   remaining_nodes = remaining_nodes.concat(remaining_relations.map(
@@ -32,12 +32,12 @@ export function calc_reduce(mei_graph, remaining_relations, target_relations) {
     var more_remains = target_relations.filter((he) => {
       // That is, relations that have, as secondaries, nodes
       // we know need to stay
-      return (relation_secondaries(mei_graph, he).findIndex((x) => { return remaining_nodes.includes(x) }) > -1)
+      return (relation_secondaries(mei_graph, he).findIndex(x => remaining_nodes.includes(x)) > -1)
     })
     // Add those relations to the ones that need to stay
     remaining_relations = remaining_relations.concat(more_remains)
     // And remove them from those that may be removed
-    target_relations = target_relations.filter((x) => { return !more_remains.includes(x) })
+    target_relations = target_relations.filter(x => !more_remains.includes(x))
     // And update the remaining nodes
     remaining_nodes = remaining_nodes.concat(more_remains.map(
       (he) => relation_secondaries(mei_graph, he)
@@ -68,7 +68,7 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
     (ge) => get_by_id(mei_graph.getRootNode(), get_id(ge))
   )
 
-  var all_relations_nodes = Array.from(mei_graph.getElementsByTagName('node')).filter((x) => { return x.getAttribute('type') == 'relation' })
+  var all_relations_nodes = Array.from(mei_graph.getElementsByTagName('node')).filter(x => x.getAttribute('type') == 'relation')
 
   var remaining_relations = all_relations_nodes.filter((n) => {
     var g = get_by_id(document, draw_context.id_prefix + n.getAttribute('xml:id'))
@@ -110,11 +110,11 @@ export function undo_reduce(draw_context) {
     return
   }
   // Deselect the current selection, if any
-  selected.forEach(toggle_selected)
-  extraselected.forEach((x) => { toggle_selected(x, true) })
+  selected.forEach(x => toggle_selected(x, false))
+  extraselected.forEach(x => toggle_selected(x, true))
   var [what, elems, sel, extra] = unreduce_actions.pop()
   var [relations, notes, graphicals] = elems
-  graphicals.flat().forEach((x) => { if (x) x.classList.remove('hidden') })
-  sel.forEach((x) => { toggle_selected(x) })
-  extra.forEach((x) => { toggle_selected(x, true) })
+  graphicals.flat().forEach(x => { if (x) x.classList.remove('hidden') })
+  sel.forEach(x => toggle_selected(x, false))
+  extra.forEach(x => toggle_selected(x, true))
 }

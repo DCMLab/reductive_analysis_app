@@ -570,7 +570,7 @@ function finalize_draw_context(new_draw_context) {
   draw_contexts.reverse()
   add_buttons(new_draw_context)
   for (let n of new_draw_context.svg_elem.getElementsByClassName('note')) {
-    n.onclick = function(ev) { toggle_selected(n, ev.shiftKey) }
+    n.onclick = () => toggle_selected(n)
   }
   for (let s of new_draw_context.svg_elem.getElementsByClassName('staff')) {
     // TODO: handle staves with no notes in them

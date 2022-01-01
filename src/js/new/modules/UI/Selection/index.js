@@ -4,12 +4,14 @@ import {
   select_visibles
 } from '../../../../ui'
 import SelectionLegend from './legend'
+import SelectionMode from './mode'
 
 class Selection {
   constructor() {
     this.selectBtn = document.getElementById('select-all')
     this.unselectBtn = document.getElementById('unselect-all')
     this.legend = new SelectionLegend() // rename it?
+    this.mode = new SelectionMode() // rename it?
   }
 
   selectAll() {

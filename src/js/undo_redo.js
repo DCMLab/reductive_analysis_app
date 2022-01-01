@@ -28,9 +28,10 @@ export function do_undo() {
     alert('Cannot undo past a rerender.')
     return
   }
+
   // Deselect the current selection, if any
-  selected.forEach(toggle_selected)
-  extraselected.forEach((x) => { toggle_selected(x, true) })
+  selected.forEach(x => toggle_selected(x, false))
+  extraselected.forEach(x => toggle_selected(x, true))
 
   var draw_contexts = getDrawContexts()
   var redo_actions = getRedoActions()
@@ -53,19 +54,19 @@ export function do_undo() {
       for (const dc of draw_contexts)
         unmark_secondaries(dc, getMeiGraph(), g_elem)
     // Remove added elements
-    added.flat().forEach((x) => {
+    added.flat().forEach(x => {
       if (!node_referred_to(x.getAttribute('xml:id')))
         x.parentNode.removeChild(x)
     })
     // Find and remove any leftover graphical elements
-    Array.from(document.querySelectorAll('[oldid="' + id + '"]')).forEach((x) => x.parentNode.removeChild(x))
+    Array.from(document.querySelectorAll('[oldid="' + id + '"]')).forEach(x => x.parentNode.removeChild(x))
     // Select last selection
-    sel.forEach((x) => { toggle_selected(document.getElementById(x.id)) })
-    extra.forEach((x) => { toggle_selected(document.getElementById(x.id), true) })
+    sel.forEach(x => toggle_selected(document.getElementById(x.id), false))
+    extra.forEach(x => toggle_selected(document.getElementById(x.id), true))
     redo_actions.push([what, [type, id], sel, extra])
   } else if (what == 'delete relation') {
     var removed = elems
-    removed.forEach((x) => {
+    removed.forEach(x => {
       x[1].insertBefore(x[0], x[2])
       let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]))
       let rel = get_class_from_classlist(x[0]) == 'relation'
@@ -76,8 +77,8 @@ export function do_undo() {
       }
     })
     // Select last selection
-    sel.forEach((x) => { toggle_selected(x) })
-    extra.forEach((x) => { toggle_selected(x, true) })
+    sel.forEach(x => toggle_selected(x, false))
+    extra.forEach(x => toggle_selected(x, true))
     redo_actions.push([what, [], sel, extra])
 
   } else if (what == 'change relation type') {
@@ -94,12 +95,12 @@ export function do_undo() {
       mei_he.getElementsByTagName('label')[0].setAttribute('type', from)
       hes.forEach(toggle_shade)
     })
-    sel.forEach((x) => { toggle_selected(x) })
-    extra.forEach((x) => { toggle_selected(x, true) })
+    sel.forEach(x => toggle_selected(x, false))
+    extra.forEach(x => toggle_selected(x, true))
     redo_actions.push([what, type, sel, extra])
   } else if (what == 'add note') {
     var [mei_elems, graphicals] = elems
-    graphicals.forEach((x) => x.parentNode.removeChild(x))
+    graphicals.forEach(x => x.parentNode.removeChild(x))
     let pname = mei_elems[0].getAttribute('pname')
     let oct = mei_elems[0].getAttribute('oct')
     let id = mei_elems[0].getAttribute('xml:id')
@@ -131,14 +132,14 @@ export function do_redo() {
     return
   }
   // Deselect the current selection, if any
-  selected.forEach(toggle_selected)
-  extraselected.forEach((x) => { toggle_selected(x, true) })
+  selected.forEach(x => toggle_selected(x, false))
+  extraselected.forEach(x => toggle_selected(x, true))
 
   const [what, params, sel, extra] = redo_actions.pop()
 
   // Select the same things that were selected previously
-  sel.forEach((x) => toggle_selected(document.getElementById(x.id)))
-  extra.forEach((x) => { toggle_selected(document.getElementById(x.id), true) })
+  sel.forEach(x => toggle_selected(document.getElementById(x.id), false))
+  extra.forEach(x => toggle_selected(document.getElementById(x.id), true))
 
   let type, id
   switch (what) {

@@ -14,7 +14,6 @@ export function naturalize_notes() {
   var sel = selected.concat(extraselected)
   sel.forEach(naturalize_note)
   sel.forEach(toggle_selected)
-
 }
 
 const naturalizeNotesButton = document.getElementById('naturalizebutton')

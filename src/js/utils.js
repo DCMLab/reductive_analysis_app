@@ -656,7 +656,7 @@ function get_measure(elem) { if (elem.tagName == 'measure') return elem; else re
 // If we have a single note selected, find all other notes of the same
 // pitch in this measure, and select them as secondary, and the previously
 // selected one as primary
-function select_samenote() {
+export function select_samenote() {
   console.debug('Using globals: document, mei to find elems')
   if ((selected.length == 1 || extraselected.length == 1)
    && !(selected.length == 1 && extraselected.length == 1)) {
@@ -706,19 +706,19 @@ function getBoundingBoxTop (elem) {
 
 // Get the Interesting class from a classlist
 export function get_class_from_classlist(elem) {
-  // TODO: If more things can be selected etc., it should be reflected here
-  if (typeof (elem) != 'undefined') {
-    var ci = ''
-    if (elem.classList.contains('note'))
-      ci = 'note'
-    else if (elem.classList.contains('relation'))
-      ci = 'relation'
-    else if (elem.classList.contains('metarelation'))
-      ci = 'metarelation'
-    return ci
-  } else {
+  if (typeof (elem) == 'undefined') {
     return false
   }
+
+  // TODO: If more things can be selected etc., it should be reflected here
+  if (elem.classList.contains('note'))
+    return 'note'
+  if (elem.classList.contains('relation'))
+    return 'relation'
+  if (elem.classList.contains('metarelation'))
+    return 'metarelation'
+
+  return ''
 }
 
 // Get the center of the bounding box

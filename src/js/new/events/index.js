@@ -110,6 +110,7 @@ class EventsManager {
     this.app.ui?.filters?.onChange(e)
     this.app.ui?.mainMenu?.onChange(e)
     this.app.ui?.startScreen?.onChange(e)
+    this.app.ui?.selection?.mode?.onChange(e)
   }
 
   // Forms events
@@ -176,6 +177,13 @@ class EventsManager {
       return this.app.ui.newNote.enable()
     }
 
+    /**
+     * Use primary selection (Shift)
+     */
+    if (isKey(e, 'shift') && pressedModifiers(e).length === 1) {
+      return this.app.ui.selection.mode.set('primary')
+    }
+
     // All shortcuts starting here don’t need modifiers.
 
     if (isModifier(e)) { return }
@@ -194,6 +202,13 @@ class EventsManager {
      */
     if (isKey(e, 'control')) {
       return this.app.ui.newNote.disable()
+    }
+
+    /**
+     * Leave primary selection mode (Shift)
+     */
+    if (isKey(e, 'shift')) {
+      return this.app.ui.selection.mode.set('secondary')
     }
 
     // All shortcuts starting here don’t need modifiers.

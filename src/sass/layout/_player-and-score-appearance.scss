@@ -19,15 +19,17 @@
 }
 
 .relation-width {
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: start;
-  gap: 1.4rem;
+  width: 12rem;
 
-  font-size: 1.1rem;
-  line-height: 1;
+  position: relative;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  font-size: 1.3rem;
 }
 
-.relation-width__progresss {
+.relation-width__progress-range {
   width: 100%;
 }

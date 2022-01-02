@@ -1,0 +1,87 @@
+.progress-range {
+  --progress: 0;
+  --progress-percent: var(--progress) * 100%;
+  --progress-thumb: .8rem;
+  --progress-track-h: .4rem;
+  --progress-track-radius: calc(var(--progress-track-h) / 2);
+
+  position: relative;
+  pointer-events: none;
+
+  // track
+  height: v(progress-track-h);
+  background: $lacquered-licorice;
+  border-radius: v(progress-track-radius);
+
+  // Keep interactivity on <input type="range"> when it’s inside `.progress`.
+  .progress-range__input {
+    pointer-events: auto;
+  }
+}
+
+.progress-range__input {
+  position: absolute;
+  inset: 0;
+  size: 100%;
+
+  cursor: ew-resize;
+  opacity: 0;
+}
+
+/**
+ * Progress container with hidden overflow. The `overlow: hidden` can’t be on
+ * `.progress`, otherwise it would have hide the sliding thumb.
+ */
+.progress-range__bar {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  background: $lacquered-licorice;
+  border-radius: v(progress-track-radius);
+
+  // progress
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+
+    background: currentColor;
+
+    // Position the progress bar and compensate for the clamped thumb.
+    transform: translateX(calc(
+      -100% /* base position is off screen, on the left, thus invisible */
+      + var(--progress-percent) /* partly visible depending on progress */
+      + (var(--progress) - .5) * (var(--progress-thumb) * -.5)
+      /* 👆 slightly adjust for the thumb: */
+      /* -1/4 thumb when progress is 0 */
+      /*  0         when progress is 0.5 */
+      /* +1/4 thumb when progress is 1 */
+    ));
+  }
+}
+
+// The pseudo element is the real thumb. The container helps the translation.
+.progress-range__thumb {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(var(--progress-percent) - 100%));
+
+  // thumb
+  &::after {
+    content: '';
+    size: v(progress-thumb);
+
+    position: absolute;
+    top: 50%;
+    right: 0;
+
+    // Clamp thumb progress so it never goes beyond the track.
+    --progress-thumb-x: calc(100% - var(--progress-percent));
+    transform: translate(var(--progress-thumb-x, 0), -50%);
+
+    background: currentColor;
+    border-radius: 50%;
+  }
+}

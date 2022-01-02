@@ -56,8 +56,6 @@ import { metaRelationTypes, relationTypes } from './new/modules/Relations/config
 
 var non_notes_hidden = false
 
-var shades = true
-
 // Hovering and adding notes
 var placing_note = ''
 
@@ -437,10 +435,6 @@ export function handle_keypress(ev) {
     do_paste()
   } else if (ev.key == action_conf.reduce_relations) { // Reduce relations
     do_reduce_pre(current_draw_context)
-  } else if (ev.key == action_conf.show_hide_notation) { // Show/hide ties etc.
-    toggle_equalize()
-  } else if (ev.key == action_conf.toggle_type_shades) { // Toggle type-dependent shades
-    toggle_shades()
   } else if (ev.key == action_conf.select_same_notes) { // Select same notes in the measure
     select_samenote()
     do_relation('repeat')
@@ -499,22 +493,16 @@ export function toggle_equalize() {
 
 function set_non_note_visibility(hidden) {
   console.debug('Using globals: document for element selection')
-  Array.from(document.getElementsByClassName('beam')).forEach((x) => {
-    Array.from(x.children).forEach((x) => {
-      if (x.tagName == 'polygon') {
-        hidden ? x.classList.add('hidden') : x.classList.remove('hidden')
-      }
-    })
-  })
-  hide_classes.forEach((cl) => {
-    Array.from(document.getElementsByClassName(cl)).forEach((x) => {
-      hidden ? x.classList.add('hidden') : x.classList.remove('hidden')
-    })
-  })
-}
 
-const equalizeButton = document.getElementById('equalizebutton')
-equalizeButton.addEventListener('click', toggle_equalize)
+  Array.from(document.getElementsByClassName('beam'), x => Array.from(x.children))
+    .filter(x => x.tagName == 'polygon')
+    .forEach(x => x.classList.toggle('hidden', hidden))
+
+  hide_classes.forEach(cl =>
+    Array.from(document.getElementsByClassName(cl))
+      .forEach(x => x.classList.toggle('hidden', hidden))
+  )
+}
 
 /**
  * Toggle the current relation having a type-dependent shade.
@@ -534,15 +522,6 @@ export function toggle_shade(element) {
   const color = rootStyles.getPropertyValue(`--relation-${colorIndex}`)
   element.setAttribute('color', color)
 }
-
-// Toggle type-dependent shades for relations and buttons
-export function toggle_shades() {
-  shades = !shades
-  doc.classList.toggle('shades-alternate', !shades)
-}
-
-const toggleShadesButton = document.getElementById('shadesbutton')
-toggleShadesButton.addEventListener('click', toggle_shades)
 
 /* Small UI functions */
 
@@ -931,18 +910,12 @@ function show_all_notes() {
   Array.from(document.querySelectorAll('g.note')).forEach(e => e.classList.remove('hidden'))
 }
 
-function toggle_orphan_notes() {
+export function toggle_orphan_notes() {
   show_orphans = !show_orphans
   show_orphans ? show_all_notes() : hide_orphan_notes()
 }
 
-const orphanNotesButton = document.getElementById('orphannotesbutton')
-orphanNotesButton.addEventListener('click', toggle_orphan_notes)
-
 // Functions helping to interact with variable declared here from other files.
-export const getShades = () => shades
-export const setShades = value => shades = value
-
 export const getTooltip = () => tooltip
 
 export const getPlacingNote = () => placing_note

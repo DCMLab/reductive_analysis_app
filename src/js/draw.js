@@ -1,6 +1,7 @@
+import newApp from './new/app'
 import { getMeiGraph } from './app'
 import { captureEvent } from './new/events/options'
-import { getShades, toggle_selected, toggle_shade } from './ui'
+import { toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
   average,
@@ -62,7 +63,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   elem.setAttribute('type', type)
 
   // Are we running with type-specific shades?
-  if (getShades())
+  if (newApp.ui.scoreSettings.brightShades)
     toggle_shade(elem)
 
   // Relations can be scrolled
@@ -176,7 +177,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     g_elem.appendChild(line_elem)
   })
   // Type-dependent shades
-  if (getShades())
+  if (newApp.ui.scoreSettings.brightShades)
     toggle_shade(g_elem)
   // We can scroll among metarelations as well
   g_elem.addEventListener('wheel', e => {

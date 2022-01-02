@@ -192,6 +192,20 @@ class EventsManager {
     if (isModifier(e)) { return }
 
     /**
+     * Toggle shades (H)
+     */
+    if (isKey(e, 'h')) {
+      return this.app.ui.scoreSettings.toggleShades()
+    }
+
+    /**
+     * Toggle stems (S)
+     */
+    if (isKey(e, 's')) {
+      return this.app.ui.scoreSettings.toggleStems()
+    }
+
+    /**
      * Toggle “New Note” cursor (X)
      */
     if (isKey(e, 'x')) {

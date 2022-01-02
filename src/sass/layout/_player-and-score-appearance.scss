@@ -5,7 +5,7 @@
   transform: translateX(-50%);
 
   display: grid;
-  grid-template-columns: auto auto; // should switch to grid auto layout
+  grid-auto-flow: column; /* tell the grid to grow horizontally */
   // align-items: start;
   gap: 1.5rem;
 }

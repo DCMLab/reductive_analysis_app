@@ -1,5 +1,6 @@
+import newApp from './new/app'
 import { getMeiGraph } from './app'
-import { adjust_top, clear_top, getShades, toggle_selected, toggle_shade } from './ui'
+import { adjust_top, clear_top, toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
   circle,
@@ -123,11 +124,11 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
 
     elem.setAttribute('type', type)
 
-    var shades = getShades()
-
     // Are we running with type-specific shades?
-    if (shades)
+    if (newApp.ui.scoreSettings.brightShades) {
       toggle_shade(elem)
+    }
+
     elem.onclick = ev => toggle_selected(elem_in_score)
 
     elem.onmouseover = function () {

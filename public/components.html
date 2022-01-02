@@ -28,7 +28,7 @@
     </style>
 </head>
 
-<body>
+<body style="height: unset;">
 
     <!-- Loading -->
     <div>
@@ -561,6 +561,20 @@
         </svg>
         Naturalize note
     </button>
+
+    <button class="more-options | btn btn--small btn--hollow" type="button">
+        More <br>options
+        <span class="more-options__dots" aria-hidden="true">•••</span>
+    </button>
+
+    <label class="relation-width | btn btn--small btn--plain" for="relation-width">
+        Relation <br>width
+        <div class="relation-width__progresss | progresss" style="--progress: .35;">
+            <input class="progresss__inputRange relation-width__range" type="range" min="20" value="85" max="200" name="relation-width" id="relation-width">
+            <span class="progresss__progress"></span>
+            <span class="progresss__thumb"></span>
+        </div>
+    </label>
 
     <!-- Spritesheet -->
 

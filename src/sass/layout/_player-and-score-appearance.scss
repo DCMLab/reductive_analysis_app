@@ -1,0 +1,33 @@
+.more-options {
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: .7rem;
+
+  font-size: 1.1rem;
+  line-height: 1;
+
+  &:hover,
+  &:focus {
+    --dot-gap: .2rem;
+  }
+}
+
+.more-options__dots {
+  letter-spacing: v(dot-gap, .01em);
+  transition: letter-spacing .3s $out-quad;
+}
+
+.relation-width {
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: 1.4rem;
+
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.relation-width__progresss {
+  width: 100%;
+}

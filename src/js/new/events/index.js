@@ -31,6 +31,7 @@ class EventsManager {
 
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
+    document.addEventListener('input', this.onInput.bind(this), captureEvent)
     document.addEventListener('blur', this.onBlur.bind(this), captureEvent)
 
     // core app events
@@ -113,7 +114,9 @@ class EventsManager {
     this.app.ui?.selection?.mode?.onChange(e)
   }
 
-  // Forms events
+  onInput(e) {
+    this.app.ui?.relationWidth?.onInput(e)
+  }
 
   onBlur(e) {
     this.app.ui?.relations?.onBlur(e)

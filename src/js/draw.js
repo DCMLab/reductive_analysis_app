@@ -1,4 +1,5 @@
 import { getMeiGraph } from './app'
+import { captureEvent } from './new/events/options'
 import { getShades, toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
@@ -65,12 +66,11 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
     toggle_shade(elem)
 
   // Relations can be scrolled
-  elem.onwheel = (ev) => {
-    var elem1 = ev.target
-    flip_to_bg(elem1)
-    elem.onmouseout()
-    return false
-  }
+  elem.addEventListener('wheel', e => {
+    e.preventDefault()
+    flip_to_bg(e.target)
+    e.target.onmouseout()
+  }, captureEvent)
 
   function undraw_meta_or_relation(draw_context, g_elem) {
     let mei_id = get_id(g_elem)
@@ -179,12 +179,11 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   if (getShades())
     toggle_shade(g_elem)
   // We can scroll among metarelations as well
-  g_elem.onwheel = (e) => {
-    var elem1 = e.target
-    flip_to_bg(elem1.closest('g'))
-    g_elem.onmouseout()
-    return false
-  }
+  g_elem.addEventListener('wheel', e => {
+    e.preventDefault()
+    flip_to_bg(e.target.closest('g'))
+    e.target.onmouseout()
+  }, captureEvent)
 
   // Decorate with onclick and onmouseover handlers
   g_elem.onclick = () => toggle_selected(g_elem)

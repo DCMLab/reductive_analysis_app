@@ -140,12 +140,11 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
     }
 
     // Relations can be scrolled
-    elem.onwheel = (ev) => {
-      var elem1 = ev.target
-      flip_to_bg(elem1)
-      elem.onmouseout()
-      return false
-    }
+    elem.addEventListener('wheel', e => {
+      e.preventDefault()
+      flip_to_bg(e.target)
+      e.target.onmouseout()
+    }, captureEvent)
 
     // Add it to the SVG
     g_elem.appendChild(elem)

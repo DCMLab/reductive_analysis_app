@@ -477,6 +477,29 @@
             </button>
         </div>
 
+        <!-- Player and score visual options -->
+
+        <div id="score-and-score-appearance" class="score-and-score-appearance">
+
+            <button id="score-options" class="more-options | btn btn--small btn--hollow" type="button">
+                More <br>options
+                <span class="more-options__dots" aria-hidden="true">•••</span>
+            </button>
+
+            <!-- Relation width -->
+            <label class="relation-width | btn btn--small btn--plain" for="relation-width">
+                Relation width
+
+                <input class="progress-range__input relation-width__range" type="range" min="20" value="200" max="200" step="2" name="relation-width" id="relation-width">
+
+                <div class="relation-width__progress-range | progress-range" id="relation-width-progress-ctn">
+                    <span class="progress-range__bar"></span>
+                    <span class="progress-range__thumb"></span>
+                </div>
+            </label>
+
+        </div>
+
         <!-- Metadata and new note -->
 
         <div id="metadata-and-note-toggle" class="metadata-and-note-toggle">
@@ -539,11 +562,8 @@
                     <!-- Manipulate the timeline -->
                     <input class="progress__range" id="player-timeline-input" type="range" min="0" value="0" step="1">
                 </div>
+            </div>
 
-            </div>
-            <div id="hull_controller_container">
-                <input type="range" min="20" max="200" class="slider" id="hull_controller">
-            </div>
             <input type="button" id="equalizebutton" value="Toggle (s)tems etc.">
             <input type="button" id="shadesbutton" value="Toggle type s(h)ades.">
             <input type="button" id="orphannotesbutton" value="Toggle non-related tones.">

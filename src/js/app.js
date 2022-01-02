@@ -55,7 +55,6 @@ import {
   drag_selector_installer,
   getShades,
   handle_click,
-  handle_hull_controller,
   handle_keydown,
   handle_keypress,
   handle_keyup,
@@ -156,7 +155,6 @@ window.addEventListener('beforeunload', function (e) {
 $(document).ready(function() {
   document.getElementsByTagName('html')[0].classList.remove('loader')
 
-  $('#hull_controller').on('change', handle_hull_controller)
   handle_relations_panel(document.getElementById('relations_panel'))
   minimap()
   initialize_panel()
@@ -415,8 +413,7 @@ function load_finish(loader_modal) {
   layer_contexts = []
   document.getElementById('layers').innerHTML = ''
 
-  $('#hull_controller').val(200)
-  draw_contexts.hullPadding = $('#hull_controller').val()
+  draw_contexts.hullPadding = 200
 
   // Segment existing layers
   var layers = Array.from(mei.getElementsByTagName('body')[0].getElementsByTagName('score'))

@@ -1,3 +1,15 @@
+.score-and-score-appearance {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: grid;
+  grid-template-columns: auto auto; // should switch to grid auto layout
+  // align-items: start;
+  gap: 1.5rem;
+}
+
 .more-options {
   flex-direction: column;
   align-items: flex-start;

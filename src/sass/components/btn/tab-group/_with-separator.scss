@@ -53,10 +53,10 @@
         position: absolute;
         left: -.1rem;
 
-        background: $alto;
-        border-radius: .1rem;
-
         pointer-events: none;
+
+        background: v(tab-separator, unset);
+        border-radius: .1rem;
       }
     }
 

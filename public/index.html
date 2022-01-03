@@ -479,15 +479,15 @@
 
         <!-- Player and score visual settings -->
 
-        <div id="score-and-score-appearance" class="score-and-score-appearance">
+        <div id="player-and-score-appearance" class="player-and-score-appearance">
 
-            <button id="score-options" class="more-options | btn btn--small btn--hollow" type="button">
+            <button id="score-settings-toggle" class="more-options | btn btn--small btn--hollow" type="button">
                 More <br>options
                 <span class="more-options__dots" aria-hidden="true">•••</span>
             </button>
 
             <!-- Score settings -->
-            <div class="btn-tabs btn-tabs--with-separator">
+            <div id="score-settings" class="score-setting-hidden btn-tabs btn-tabs--with-separator">
 
                 <!-- Stems, etc -->
                 <button id="settings-stems" class="btn btn--plain btn-tabs__btn" type="button">
@@ -516,7 +516,7 @@
             </div>
 
             <!-- Relation width -->
-            <label class="relation-width | btn btn--small btn--plain" for="relation-width">
+            <label class="relation-width score-setting-hidden | btn btn--small btn--plain" for="relation-width">
                 Relation width
 
                 <input class="progress-range__input relation-width__range" type="range" min="20" value="200" max="200" step="2" name="relation-width" id="relation-width">
@@ -753,11 +753,20 @@
         </symbol>
 
         <symbol id="note-shades-path" viewBox="0 0 21 22" fill="currentColor">
+            <defs>
+                <style>
+                    .note-shades-lines { filter: var(--note-shades-icon-filter, unset); }
+                    .note-shades-lines:nth-of-type(2) { fill: var(--relation-3, currentColor); }
+                    .note-shades-lines:nth-of-type(3) { fill: var(--relation-7, currentColor); }
+                    .note-shades-lines:nth-of-type(4) { fill: var(--relation-5, currentColor); }
+                    .note-shades-lines:nth-of-type(5) { fill: var(--relation-6, currentColor); }
+                </style>
+            </defs>
             <path d="M14.0925 1.0179V16.037c-.4135-.3244-.9752-.4941-1.599-.5081-.7154-.0162-1.5202.1719-2.2981.5747l-.0004.0002c-.8856.4629-1.5666 1.1246-1.9491 1.8257-.3822.7005-.4712 1.4513-.148 2.0768.3234.6257.9865.9841 1.7771 1.0721.7913.088 1.7218-.0922 2.6075-.5551 1.4328-.7477 2.3413-2.0295 2.2918-3.154V5.7206c.2274.2142.5214.4154.8439.6189.1414.0892.2883.179.4387.2707.2955.1805.6045.3692.9123.579.9254.6309 1.802 1.429 2.1254 2.6613.3395 1.3119-.0419 2.6923-.5031 3.7704-.2299.5375-.4779.9959-.662 1.3289l-.0519.0938c-.0687.1239-.1266.2283-.167.3079-.0248.049-.0453.0931-.0575.1286a.2449.2449 0 0 0-.0137.0595c-.0014.0166-.0028.0625.0339.0987.0386.038.0862.0344.1096.029a.1919.1919 0 0 0 .0589-.0261c.0309-.0196.0656-.0498.1018-.0854.0737-.0725.169-.1831.2776-.325.218-.2845.496-.7026.7708-1.212.5488-1.0171 1.0906-2.4088 1.1075-3.8335.0155-1.3107-.307-2.307-.8354-3.1406-.5268-.8308-1.2554-1.4953-2.0431-2.1461a10.126 10.126 0 0 1-2.8521-3.868l-.001-.0023c-.0121-.027-.034-.0702-.0685-.0981a.1278.1278 0 0 0-.1017-.0285c-.0465.0077-.0746.0392-.0893.062l-.0159.0248v.0294Z" stroke="currentColor" stroke-width=".2"/>
-            <path d="M.7692 2.5385H10a.7695.7695 0 0 0 .7692-.7693A.7695.7695 0 0 0 10 1H.7692A.7695.7695 0 0 0 0 1.7692c0 .4246.3446.7693.7692.7693Z"/>
-            <path d="M.7692 7.154H10a.7695.7695 0 0 0 .7692-.7693A.7695.7695 0 0 0 10 5.6155H.7692A.7695.7695 0 0 0 0 6.3847c0 .4246.3446.7692.7692.7692Z"/>
-            <path d="M5.3846 10.2307H.7692A.7695.7695 0 0 0 0 10.9999c0 .4247.3446.7693.7692.7693h4.6154a.7695.7695 0 0 0 .7693-.7693.7695.7695 0 0 0-.7693-.7692Z"/>
-            <path d="M5.3846 14.8462H.7692A.7695.7695 0 0 0 0 15.6154c0 .4246.3446.7693.7692.7693h4.6154a.7696.7696 0 0 0 .7693-.7693.7695.7695 0 0 0-.7693-.7692Z"/>
+            <path class="note-shades-lines" d="M.7692 2.5385H10a.7695.7695 0 0 0 .7692-.7693A.7695.7695 0 0 0 10 1H.7692A.7695.7695 0 0 0 0 1.7692c0 .4246.3446.7693.7692.7693Z"/>
+            <path class="note-shades-lines" d="M.7692 7.154H10a.7695.7695 0 0 0 .7692-.7693A.7695.7695 0 0 0 10 5.6155H.7692A.7695.7695 0 0 0 0 6.3847c0 .4246.3446.7692.7692.7692Z"/>
+            <path class="note-shades-lines" d="M5.3846 10.2307H.7692A.7695.7695 0 0 0 0 10.9999c0 .4247.3446.7693.7692.7693h4.6154a.7695.7695 0 0 0 .7693-.7693.7695.7695 0 0 0-.7693-.7692Z"/>
+            <path class="note-shades-lines" d="M5.3846 14.8462H.7692A.7695.7695 0 0 0 0 15.6154c0 .4246.3446.7693.7692.7693h4.6154a.7696.7696 0 0 0 .7693-.7693.7695.7695 0 0 0-.7693-.7692Z"/>
         </symbol>
 
         <symbol id="treble-clef-on-stave-path" viewBox="0 0 20 20" fill="currentColor">

@@ -1,4 +1,4 @@
-.score-and-score-appearance {
+.player-and-score-appearance {
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -28,6 +28,10 @@
 .more-options__dots {
   letter-spacing: v(dot-gap, .01em);
   transition: letter-spacing .3s $out-quad;
+}
+
+html.shades-alternate {
+  --note-shades-icon-filter: saturate(0%) brightness(300%);
 }
 
 .relation-width {

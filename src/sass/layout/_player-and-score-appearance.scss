@@ -1,3 +1,15 @@
+.hidden-when-score-settings-not-visible {
+  html:not(.ui-score-settings-visible) & {
+    display: none;
+  }
+}
+
+.hidden-when-score-settings-visible {
+  html.ui-score-settings-visible & {
+    display: none;
+  }
+}
+
 .player-and-score-appearance {
   position: absolute;
   bottom: 0;
@@ -5,8 +17,7 @@
   transform: translateX(-50%);
 
   display: grid;
-  grid-auto-flow: column; /* tell the grid to grow horizontally */
-  // align-items: start;
+  grid-auto-flow: column;
   gap: 1.5rem;
 }
 
@@ -30,6 +41,11 @@
   transition: letter-spacing .3s $out-quad;
 }
 
+.score-setting {
+  font-size: 1.3rem;
+  text-align: left;
+}
+
 html.shades-alternate {
   --note-shades-icon-filter: saturate(0%) brightness(300%);
 }
@@ -42,8 +58,6 @@ html.shades-alternate {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-
-  font-size: 1.3rem;
 }
 
 .relation-width__progress-range {

@@ -481,42 +481,42 @@
 
         <div id="player-and-score-appearance" class="player-and-score-appearance">
 
-            <button id="score-settings-toggle" class="more-options | btn btn--small btn--hollow" type="button">
+            <button id="score-settings-toggle" class="more-options | hidden-when-score-settings-visible | btn btn--small btn--hollow" type="button">
                 More <br>options
                 <span class="more-options__dots" aria-hidden="true">•••</span>
             </button>
 
             <!-- Score settings -->
-            <div id="score-settings" class="score-setting-hidden btn-tabs btn-tabs--with-separator">
+            <div id="score-settings" class="btn-tabs btn-tabs--with-separator btn-tabs--big-separator | hidden-when-score-settings-not-visible">
 
                 <!-- Stems, etc -->
-                <button id="settings-stems" class="btn btn--plain btn-tabs__btn" type="button">
+                <button id="settings-stems" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
                     <svg class="btn__icon" width="20" height="20">
                         <use xlink:href="#framed-note-path"/>
                     </svg>
-                    Stems, etc
+                    Stems,<br> etc.
                 </button>
 
                 <!-- Shades -->
-                <button id="settings-shades" class="btn btn--plain btn-tabs__btn" type="button">
+                <button id="settings-shades" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
                     <svg class="btn__icon" width="20" height="20">
                         <use xlink:href="#note-shades-path"/>
                     </svg>
-                    Shades types
+                    Shades <br>types
                 </button>
 
                 <!-- Non-related tones -->
-                <button id="settings-non-related-tones" class="btn btn--plain btn-tabs__btn" type="button">
+                <button id="settings-non-related-tones" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
                     <svg class="btn__icon" width="20" height="20">
                         <use xlink:href="#treble-clef-on-stave-path"/>
                     </svg>
-                    Non-related tones
+                    Non-related <br>tones
                 </button>
 
             </div>
 
             <!-- Relation width -->
-            <label class="relation-width score-setting-hidden | btn btn--small btn--plain" for="relation-width">
+            <label class="score-setting relation-width | hidden-when-score-settings-not-visible | btn btn--small btn--plain" for="relation-width">
                 Relation width
 
                 <input class="progress-range__input relation-width__range" type="range" min="20" value="200" max="200" step="2" name="relation-width" id="relation-width">
@@ -595,6 +595,7 @@
 
         </div>
     </div>
+
     <!-- Draggable relations panel -->
     <div id="relations_panel">
         <div id="relations_panel_header">

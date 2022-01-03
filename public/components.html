@@ -567,35 +567,35 @@
         <span class="more-options__dots" aria-hidden="true">•••</span>
     </button>
 
-    <div class="btn-tabs btn-tabs--with-separator">
+    <div class="btn-tabs btn-tabs--with-separator btn-tabs--big-separator">
 
         <!-- Stems, etc -->
-        <button id="settings-stems" class="btn btn--plain btn-tabs__btn" type="button">
+        <button id="settings-stems" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
             <svg class="btn__icon" width="20" height="20">
                 <use xlink:href="#framed-note-path"/>
             </svg>
-            Stems, etc
+            Stems,<br> etc.
         </button>
 
         <!-- Shades -->
-        <button id="settings-shades" class="btn btn--plain btn-tabs__btn" type="button">
+        <button id="settings-shades" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
             <svg class="btn__icon" width="20" height="20">
                 <use xlink:href="#note-shades-path"/>
             </svg>
-            Shades types
+            Shades <br>types
         </button>
 
         <!-- Non-related tones -->
-        <button id="settings-non-related-tones" class="btn btn--plain btn-tabs__btn" type="button">
+        <button id="settings-non-related-tones" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
             <svg class="btn__icon" width="20" height="20">
                 <use xlink:href="#treble-clef-on-stave-path"/>
             </svg>
-            Non-related tones
+            Non-related <br>tones
         </button>
 
     </div>
 
-    <label class="relation-width | btn btn--small btn--plain" for="relation-width">
+    <label class="score-setting relation-width | btn btn--small btn--plain" for="relation-width">
         Relation width
         <div class="relation-width__progress-range | progress-range" style="--progress: .35;">
             <input class="progress-range__input relation-width__range" type="range" min="20" value="85" max="200" name="relation-width" id="relation-width">

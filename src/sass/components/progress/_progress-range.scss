@@ -19,6 +19,15 @@
   }
 }
 
+/**
+ * The progress bar can’t have a radius when it has a thumb (related to the
+ * overflow situation explained at `.progress-range__bar`). That’s why a
+ * dedicated class is needed to have a radius on the bar.
+ */
+.progress-range--without-thumb {
+  --progress-bar-radius: var(--progress-track-radius);
+}
+
 .progress-range__input {
   position: absolute;
   inset: 0;
@@ -48,6 +57,7 @@
     inset: 0;
 
     background: currentColor;
+    border-radius: v(progress-bar-radius, 0);
 
     // Position the progress bar and compensate for the clamped thumb.
     transform: translateX(calc(

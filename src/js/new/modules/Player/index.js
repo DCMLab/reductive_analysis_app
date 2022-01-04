@@ -14,6 +14,8 @@ class Player {
   constructor() {
     this.midiId = null // active track
     this.playhead = 0 // playback position, not in seconds but in “ticks”
+    this.activeNotes = {} // notes that are currently being played
+    this.instrument // the soundfont player
 
     // DOM elements
     this.playBtn = document.getElementById('player-play')
@@ -128,24 +130,30 @@ class Player {
 
   stop() {
     midiPlayer.stop()
+    this.instrument.stop()
     this.updateProgress()
     this.playhead = 0
   }
 
   pause() {
     this.playhead = midiPlayer.getCurrentTick()
+    this.instrument.stop()
     midiPlayer.pause()
   }
 
   init() {
     Soundfont.instrument(audioContext, '/instruments/acoustic-grand-piano-mp3.js')
       .then(instrument => {
+        this.instrument = instrument
         midiPlayer = new MidiPlayer.Player(event => {
           if (event.name == 'Note on' && event.velocity > 0) {
-            instrument.play(event.noteName, audioContext.currentTime, {
-              gain: event.velocity / 100
+            this.activeNotes[event.noteName + event.track] = instrument.play(event.noteNumber, audioContext.currentTime, {
+              gain: event.velocity / 127
             })
-          }
+          } else if (event.name == 'Note off' || 
+	             (event.name == 'Note on' && event.velocity == 0)) {
+	    this.activeNotes[event.noteName + event.track].stop()
+	  }
 
           this.updateProgress()
         })

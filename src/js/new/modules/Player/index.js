@@ -4,6 +4,7 @@
 import MidiPlayer from 'midi-player-js'
 import Soundfont from 'soundfont-player'
 import { getOrigMidi } from '../../../app'
+import { clamp, round } from '../../utils/math'
 import ProgressBar from './progress'
 
 const audioContext = new AudioContext()
@@ -97,7 +98,16 @@ class Player {
       remainingTime = 0
     }
 
-    const elapsedTime = duration - remainingTime
+    /**
+     * There’s probably a bug in midi-player-js (or in the Verovio toolkit)
+     * causing the remaining time to be bigger than the duration. Likely
+     * an issue with `getSongTimeRemaining()`. Should be reported on:
+     * https://github.com/grimmdude/MidiPlayerJS. In the meantime,
+     * `clamp()` makes sure it stays in the boundaries [0, xx].
+     */
+    remainingTime = clamp(remainingTime, 0, duration)
+
+    const elapsedTime = round(duration - remainingTime, 2)
 
     this.progressBar.update(elapsedTime, duration)
 

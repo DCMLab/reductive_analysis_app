@@ -42,9 +42,12 @@ export default class ProgressBar {
 
   // Example: `63` (seconds) becomes `1:03`
   formatTime(seconds) {
+    seconds = round(seconds) // drop milliseconds
+
     const minutes = Math.floor(seconds / 60)
-    const secondsLeft = seconds % 60
-    return `${minutes}:${secondsLeft.toString().padStart(2, 0)}`
+    seconds = seconds % 60
+
+    return `${p(minutes)}:${p(seconds)}`
   }
 
   reset() {
@@ -58,3 +61,12 @@ export default class ProgressBar {
     this.max = 0
   }
 }
+
+/**
+ * padStart a stringable variable by the provided number of 0.
+ *
+ * @param {*} value A stringable value (string, number…).
+ * @param {number=} [length=2] The number of 0 at the beginning of the result.
+ * @returns {string}
+ */
+const p = (value, length = 2) => value.toString().padStart(length, '0')

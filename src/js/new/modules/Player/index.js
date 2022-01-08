@@ -4,6 +4,7 @@
 import MidiPlayer from 'midi-player-js'
 import Soundfont from 'soundfont-player'
 import { getOrigMidi } from '../../../app'
+import { setAttributes } from '../../utils/dom'
 import { clamp, round } from '../../utils/math'
 import ProgressBar from './progress'
 
@@ -14,12 +15,13 @@ class Player {
   constructor() {
     this.midiId = null // active track
     this.playhead = 0 // playback position, not in seconds but in “ticks”
-    this.activeNotes = {} // notes that are currently being played
     this.instrument // the soundfont player
+    this.status = 'paused' // 'playing', 'paused', or 'stopped'
+    this.activeNotes = {} // notes that are currently being played
 
     // DOM elements
-    this.playBtn = document.getElementById('player-play')
-    this.pauseBtn = document.getElementById('player-pause')
+    this.ctn = document.getElementById('player')
+    this.playPauseBtn = document.getElementById('player-play-pause')
     this.stopBtn = document.getElementById('player-stop')
     this.timelineRange = document.getElementById('player-timeline-input')
 
@@ -49,28 +51,27 @@ class Player {
 
   onTap({ target }) {
 
-    // Play button
+    // Play/pause button
 
-    if (target == this.playBtn && !midiPlayer.isPlaying()) {
+    if (target == this.playPauseBtn) {
+
+      // Pause
+      if (midiPlayer.isPlaying()) {
+        return this.pause()
+      }
+
+      //  Play
       const base64Midi = getOrigMidi()
       if (this.midiId != 'original') {
         this.loadSound(base64Midi, 'original')
       }
 
-      this.play()
-      return
-    }
-
-    // Pause button
-
-    if (target == this.pauseBtn && midiPlayer.isPlaying()) {
-      this.pause()
-      return
+      return this.play()
     }
 
     // Stop button
 
-    if (target == this.stopBtn && midiPlayer.isPlaying()) {
+    if (target == this.stopBtn && this.status != 'stopped') {
       this.stop()
     }
   }
@@ -126,6 +127,8 @@ class Player {
     }
 
     midiPlayer.play()
+
+    this.updateControls('playing')
   }
 
   stop() {
@@ -133,12 +136,36 @@ class Player {
     this.instrument.stop()
     this.updateProgress()
     this.playhead = 0
+
+    this.updateControls('stopped')
   }
 
   pause() {
     this.playhead = midiPlayer.getCurrentTick()
     this.instrument.stop()
     midiPlayer.pause()
+
+    this.updateControls('paused')
+  }
+
+  updateControls(newStatus) {
+    this.status = newStatus
+
+    // Update play/pause HTML
+
+    let playingLabel = newStatus == 'playing' ? 'Pause' : 'Play'
+    playingLabel = this.playPauseBtn.dataset[`label${playingLabel}`]
+
+    setAttributes(this.playPauseBtn, {
+      title: playingLabel,
+      ariaLabel: playingLabel,
+    });
+
+    // Swap play/pause icons
+
+    ['stopped', 'playing', 'paused'].forEach(status =>
+      this.ctn.classList.toggle(`player--${status}`, newStatus == status)
+    )
   }
 
   init() {
@@ -165,6 +192,7 @@ class Player {
         midiPlayer.on('endOfFile', () => this.stop())
       })
 
+    this.updateControls('stopped')
     this.progressBar = new ProgressBar('player')
   }
 }

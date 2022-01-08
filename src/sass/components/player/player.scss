@@ -14,6 +14,15 @@
   color: v(bg);
 }
 
+.player--paused,
+.player--stopped {
+  .player__pauseIcon { display: none }
+}
+
+.player--playing {
+  .player__playIcon { display: none }
+}
+
 .player__controls {
   position: relative;
   inset-inline-start: -.7rem;

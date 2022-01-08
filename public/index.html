@@ -483,20 +483,21 @@
 
             <!-- MIDI Player -->
 
-            <div id="player" class="player | fly-out">
+            <div id="player" class="player player--stopped | fly-out">
 
                 <!-- Controls -->
                 <div class="player__controls">
-                    <button class="btn btn--plain btn--small" type="button" id="player-play" title="Play original">
-                        <span class="visually-hidden">Play original</span>
-                        <svg class="btn__icon" width="10" height="11">
+                    <button
+                        class="btn btn--plain btn--small"
+                        type="button"
+                        id="player-play-pause"
+                        data-label-play="Play original"
+                        data-label-pause="Pause"
+                    >
+                        <svg class="player__playIcon btn__icon" width="10" height="11">
                             <use xlink:href="#audio-play-path"/>
                         </svg>
-                    </button>
-
-                    <button class="btn btn--plain btn--small" type="button" id="player-pause" title="Pause">
-                        <span class="visually-hidden">Pause</span>
-                        <svg class="btn__icon" width="10" height="12">
+                        <svg class="player__pauseIcon btn__icon" width="10" height="12">
                             <use xlink:href="#audio-pause-path"/>
                         </svg>
                     </button>

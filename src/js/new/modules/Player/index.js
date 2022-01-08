@@ -146,14 +146,18 @@ class Player {
       .then(instrument => {
         this.instrument = instrument
         midiPlayer = new MidiPlayer.Player(event => {
+          const noteKey = event.noteName + event.track
+
           if (event.name == 'Note on' && event.velocity > 0) {
-            this.activeNotes[event.noteName + event.track] = instrument.play(event.noteNumber, audioContext.currentTime, {
-              gain: event.velocity / 127
+            this.activeNotes[noteKey] = instrument.play(event.noteNumber, audioContext.currentTime, {
+              gain: event.velocity / 127,
             })
-          } else if (event.name == 'Note off' || 
-	             (event.name == 'Note on' && event.velocity == 0)) {
-	    this.activeNotes[event.noteName + event.track].stop()
-	  }
+          } else if (
+            event.name == 'Note off' ||
+            (event.name == 'Note on' && event.velocity == 0) // synonym of `Note off`
+          ) {
+	          this.activeNotes[noteKey]?.stop()
+	        }
 
           this.updateProgress()
         })

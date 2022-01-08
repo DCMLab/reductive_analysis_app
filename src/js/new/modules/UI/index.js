@@ -18,6 +18,7 @@ class UI {
 
   onTap(e) {
     this.relations?.onTap(e)
+    this.scoreSettings?.onTap(e)
 
     if (!e.composedPath().includes(this.ctn)) { return }
 
@@ -28,7 +29,6 @@ class UI {
     this.navigation?.onTap(e)
     this.filters?.onTap(e)
     this.newNote?.onTap(e)
-    this.scoreSettings?.onTap(e)
   }
 
   /**

@@ -3,6 +3,7 @@ import { doc } from '../../../utils/document'
 
 class ScoreSettings {
   constructor() {
+    this.ctn = document.getElementById('player-and-score-appearance')
     this.toggleVisibilityBtn = document.getElementById('score-settings-toggle')
 
     this.toggleShadesBtn = document.getElementById('settings-shades')
@@ -13,20 +14,25 @@ class ScoreSettings {
     this.brightShades = true
   }
 
-  onTap({ target }) {
-    if (target == this.toggleVisibilityBtn) {
+  onTap(e) {
+    // Compact when clicked outside.
+    if (!e.composedPath().includes(this.ctn)) {
+      return this.toggleVisibility(false)
+    }
+
+    if (e.target == this.toggleVisibilityBtn) {
       return this.toggleVisibility(true)
     }
 
-    if (target == this.toggleShadesBtn) {
+    if (e.target == this.toggleShadesBtn) {
       return this.toggleShades()
     }
 
-    if (target == this.toggleStemsBtn) {
+    if (e.target == this.toggleStemsBtn) {
       return this.toggleStems()
     }
 
-    if (target == this.toggleTonesBtn) {
+    if (e.target == this.toggleTonesBtn) {
       return toggle_orphan_notes()
     }
   }

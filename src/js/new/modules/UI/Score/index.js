@@ -5,7 +5,7 @@ const AUTO_CLOSE_TIMEOUT = 10000 // in milliseconds
 
 class ScoreSettings {
   constructor() {
-    this.ctn = document.getElementById('player-and-score-appearance')
+    this.ctn = document.getElementById('player-and-score-settings')
     this.toggleVisibilityBtn = document.getElementById('score-settings-toggle')
 
     this.toggleShadesBtn = document.getElementById('settings-shades')
@@ -25,7 +25,7 @@ class ScoreSettings {
   }
 
   hasInteractionWith(el) {
-    // See .player-and-score-appearance documentation in .scss file.
+    // See .player-and-score-settings documentation in .scss file.
     return getComputedStyle(el).getPropertyValue('--in-player-and-score-settings').trim() == '1'
   }
 

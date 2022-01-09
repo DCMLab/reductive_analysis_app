@@ -195,6 +195,12 @@ class Player {
     this.updateControls('stopped')
     this.progressBar = new ProgressBar('player')
   }
+
+  reset() {
+    this.stop()
+    this.midiId = null
+    this.activeNotes = {}
+  }
 }
 
 const player = new Player()

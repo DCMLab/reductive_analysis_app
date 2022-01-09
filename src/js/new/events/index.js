@@ -131,6 +131,7 @@ class EventsManager {
   onScoreLoad(e) {
     this.app.score?.onScoreLoad(e)
     this.app.ui?.onScoreLoad(e)
+    this.app.player?.reset()
 
     if (this.app.ui.startScreen) {
       this.app.ui.startScreen.destroy()

@@ -1,7 +1,6 @@
 // A button belonging to a tab group.
 
 .btn-tabs__btn {
-  --btn-border: #{$alto};
   --btn-transition: .4s;
 
   position: relative;
@@ -22,6 +21,17 @@
     border-start-end-radius: v(btn-default-radius);
     border-end-end-radius: v(btn-default-radius);
     border-inline-end-width: .2rem;
+  }
+
+  // Colors for borders, tabs separators and disabled state.
+
+  &:not(.btn--plain) {
+    --btn-border: #{$alto};
+    --tab-separator: #{$alto};
+  }
+
+  &.btn--plain {
+    --tab-separator: #{$lacquered-licorice};
   }
 
   &[disabled] {

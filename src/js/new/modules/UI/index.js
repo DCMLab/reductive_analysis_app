@@ -1,4 +1,4 @@
-import startScreen   from './StartScreen'
+import startScreen from './StartScreen'
 import mainMenu   from './MainMenu'
 import filters    from './Filters'
 import metadata   from './Metadata'
@@ -7,6 +7,8 @@ import relations  from './Relations'
 import selection  from './Selection'
 import zoom       from './Zoom'
 import newNote    from './Note'
+import relationWidth from './RelationWidth'
+import scoreSettings from './Score'
 
 class UI {
   constructor() {
@@ -16,6 +18,7 @@ class UI {
 
   onTap(e) {
     this.relations?.onTap(e)
+    this.scoreSettings?.onTap(e)
 
     if (!e.composedPath().includes(this.ctn)) { return }
 
@@ -73,6 +76,8 @@ class UI {
     this.filters = filters
     this.relations = relations
     this.newNote = newNote
+    this.relationWidth = relationWidth
+    this.scoreSettings = scoreSettings
   }
 }
 

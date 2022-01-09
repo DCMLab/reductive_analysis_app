@@ -31,6 +31,7 @@ import { combo_conf } from 'expose-loader?exposes=combo_conf|combo_conf!./conf'
 import { type_full_conf } from 'expose-loader?exposes=type_full_conf|type_full_conf!./conf'
 import { meta_full_conf } from 'expose-loader?exposes=meta_full_conf|meta_full_conf!./conf'
 
+import newApp from './new/app'
 import { downloadAs } from './new/utils/file'
 
 // Exposing relations functions to the global scope (for tests purpose)
@@ -53,9 +54,7 @@ import { draw_relation, draw_metarelation } from './draw'
 import {
   add_buttons,
   drag_selector_installer,
-  getShades,
   handle_click,
-  handle_hull_controller,
   handle_keydown,
   handle_keypress,
   handle_keyup,
@@ -64,7 +63,6 @@ import {
   music_tooltip_installer,
   toggle_selected,
   toggle_shade,
-  toggle_shades,
   tooltip_update,
 } from './ui'
 
@@ -156,7 +154,6 @@ window.addEventListener('beforeunload', function (e) {
 $(document).ready(function() {
   document.getElementsByTagName('html')[0].classList.remove('loader')
 
-  $('#hull_controller').on('change', handle_hull_controller)
   handle_relations_panel(document.getElementById('relations_panel'))
   minimap()
   initialize_panel()
@@ -357,7 +354,7 @@ export function draw_graph(draw_context) {
 
 // Do all of this when we have the MEI in memory
 function load_finish(loader_modal) {
-  console.debug('Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action, shades')
+  console.debug('Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action')
 
   // Parse the original document
   var parser = new DOMParser()
@@ -415,8 +412,7 @@ function load_finish(loader_modal) {
   layer_contexts = []
   document.getElementById('layers').innerHTML = ''
 
-  $('#hull_controller').val(200)
-  draw_contexts.hullPadding = $('#hull_controller').val()
+  draw_contexts.hullPadding = 200
 
   // Segment existing layers
   var layers = Array.from(mei.getElementsByTagName('body')[0].getElementsByTagName('score'))
@@ -470,10 +466,8 @@ function load_finish(loader_modal) {
 
   rerendered_after_action = 0
 
-  var shades = getShades()
+  newApp.ui.scoreSettings.toggleShades(true)
 
-  if (!shades)
-    toggle_shades()
   document.onkeypress = function(ev) { handle_keypress(ev) }
   document.onkeydown = handle_keydown
   document.onkeyup = handle_keyup
@@ -628,9 +622,6 @@ function initialize_panel() {
   const buttons = [
     // conf.js label    ->        <input> element id
     ['add_bookmark', 'addbookmarkbutton'],
-    ['show_hide_notation', 'equalizebutton'],
-    ['toggle_type_shades', 'shadesbutton'],
-    ['toggle_add_note', 'addnotebutton'],
     ['jump_to_next_bookmark', 'previousbookmarkbutton'],
     ['jump_to_previous_bookmark', 'nextbookmarkbutton'],
     ['jump_to_context_below', 'previouscontextbutton'],

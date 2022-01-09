@@ -1,5 +1,6 @@
+import newApp from './new/app'
 import { getMeiGraph } from './app'
-import { adjust_top, clear_top, getShades, toggle_selected, toggle_shade } from './ui'
+import { adjust_top, clear_top, toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
   circle,
@@ -123,11 +124,15 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
 
     elem.setAttribute('type', type)
 
-    var shades = getShades()
-
+    /**
+     * Hacky way of having the shades properly initialiazed (`color` attribute).
+     * Should be improved later.
+     */
     // Are we running with type-specific shades?
-    if (shades)
+    toggle_shade(elem)
+    if (!newApp.ui.scoreSettings.brightShades)
       toggle_shade(elem)
+
     elem.onclick = ev => toggle_selected(elem_in_score)
 
     elem.onmouseover = function () {
@@ -140,12 +145,11 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
     }
 
     // Relations can be scrolled
-    elem.onwheel = (ev) => {
-      var elem1 = ev.target
-      flip_to_bg(elem1)
-      elem.onmouseout()
-      return false
-    }
+    elem.addEventListener('wheel', e => {
+      e.preventDefault()
+      flip_to_bg(e.target)
+      e.target.onmouseout()
+    }, captureEvent)
 
     // Add it to the SVG
     g_elem.appendChild(elem)

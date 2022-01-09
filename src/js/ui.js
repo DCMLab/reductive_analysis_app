@@ -56,8 +56,6 @@ import { metaRelationTypes, relationTypes } from './new/modules/Relations/config
 
 var non_notes_hidden = false
 
-var shades = true
-
 // Hovering and adding notes
 var placing_note = ''
 
@@ -437,10 +435,6 @@ export function handle_keypress(ev) {
     do_paste()
   } else if (ev.key == action_conf.reduce_relations) { // Reduce relations
     do_reduce_pre(current_draw_context)
-  } else if (ev.key == action_conf.show_hide_notation) { // Show/hide ties etc.
-    toggle_equalize()
-  } else if (ev.key == action_conf.toggle_type_shades) { // Toggle type-dependent shades
-    toggle_shades()
   } else if (ev.key == action_conf.select_same_notes) { // Select same notes in the measure
     select_samenote()
     do_relation('repeat')
@@ -499,22 +493,16 @@ export function toggle_equalize() {
 
 function set_non_note_visibility(hidden) {
   console.debug('Using globals: document for element selection')
-  Array.from(document.getElementsByClassName('beam')).forEach((x) => {
-    Array.from(x.children).forEach((x) => {
-      if (x.tagName == 'polygon') {
-        hidden ? x.classList.add('hidden') : x.classList.remove('hidden')
-      }
-    })
-  })
-  hide_classes.forEach((cl) => {
-    Array.from(document.getElementsByClassName(cl)).forEach((x) => {
-      hidden ? x.classList.add('hidden') : x.classList.remove('hidden')
-    })
-  })
-}
 
-const equalizeButton = document.getElementById('equalizebutton')
-equalizeButton.addEventListener('click', toggle_equalize)
+  Array.from(document.getElementsByClassName('beam'), x => Array.from(x.children))
+    .filter(x => x.tagName == 'polygon')
+    .forEach(x => x.classList.toggle('hidden', hidden))
+
+  hide_classes.forEach(cl =>
+    Array.from(document.getElementsByClassName(cl))
+      .forEach(x => x.classList.toggle('hidden', hidden))
+  )
+}
 
 /**
  * Toggle the current relation having a type-dependent shade.
@@ -535,21 +523,7 @@ export function toggle_shade(element) {
   element.setAttribute('color', color)
 }
 
-// Toggle type-dependent shades for relations and buttons
-export function toggle_shades() {
-  shades = !shades
-  doc.classList.toggle('shades-alternate', !shades)
-}
-
-const toggleShadesButton = document.getElementById('shadesbutton')
-toggleShadesButton.addEventListener('click', toggle_shades)
-
 /* Small UI functions */
-
-function show_buttons() {
-  $('#load_save')[0].classList.remove('hidden')
-  $('#hidden_buttons')[0].classList.add('hidden')
-}
 
 export function toggle_buttons() {
   if (!$('#relations_panel').hasClass('collapsed')) {
@@ -596,22 +570,22 @@ function getReducedMidi(draw_context = null) {
   return midi
 }
 
-export function handle_hull_controller() {
+export function handle_hull_controller(value) {
   var mei_graph = getMeiGraph()
   var draw_contexts = getDrawContexts()
   do_deselect()
   $('.relation').remove()
   $('.metarelation').remove()
   var nodes_array = Array.from(mei_graph.getElementsByTagName('node'))
-  var relations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'relation' })
-  var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'metarelation' })
+  var relations_nodes = nodes_array.filter(x => x.getAttribute('type') == 'relation')
+  var metarelations_nodes = nodes_array.filter(x => x.getAttribute('type') == 'metarelation')
   draw_contexts.forEach(draw_context => {
-    relations_nodes.forEach((g_elem) => {
-      unmark_secondaries(draw_context, mei_graph, g_elem)
-    })
+    relations_nodes.forEach(
+      g_elem => unmark_secondaries(draw_context, mei_graph, g_elem)
+    )
   })
-  draw_contexts.hullPadding = $('#hull_controller').val()
-  draw_contexts.forEach(context => draw_graph(context))
+  draw_contexts.hullPadding = value
+  draw_contexts.forEach(draw_graph)
   draw_contexts.forEach(context => {
     if (context.svg_elem.getRootNode().getElementById('hier' + context.id_prefix))
       draw_hierarchy_graph(context)
@@ -679,8 +653,8 @@ export function drag_selector_installer(svg_elem) {
       &&
       !document.getElementById('minimap').classList.contains('dragging')
     ) {
-      if ($('.ds-selector').height() > 10 || $('.ds-selector').width() > 10 && document.activeElement.id != 'hull_controller') {
-        $('#load_save, #metadata_input, #relations_panel, .sidebar, #minimap').fadeOut(300)
+      if ($('.ds-selector').height() > 10 || $('.ds-selector').width() > 10) {
+        $('#metadata_input, #relations_panel, .sidebar, #minimap').fadeOut(300)
         // Icon credit: pixel-perfect (flaticon.com).
         document.getElementById('layers').style.cursor = 'url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjJwdCIgaGVpZ2h0PSIyMnB0IiB2aWV3Qm94PSIwIDAgMjIgMjIiIHZlcnNpb249IjEuMSI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMCUsMCUsMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA0LjQ0OTIxOSAxNC44MDA3ODEgQyA0LjI2OTUzMSAxNC42MjEwOTQgMy45ODA0NjkgMTQuNjIxMDk0IDMuODAwNzgxIDE0LjgwMDc4MSBDIDMuNjIxMDk0IDE0Ljk4MDQ2OSAzLjYyMTA5NCAxNS4yNjk1MzEgMy44MDA3ODEgMTUuNDQ5MjE5IEMgNS43Njk1MzEgMTcuNDE3OTY5IDUuNzY5NTMxIDE5LjI1IDMuODAwNzgxIDIxLjIxODc1IEMgMy42MjEwOTQgMjEuMzk4NDM4IDMuNjIxMDk0IDIxLjY4NzUgMy44MDA3ODEgMjEuODY3MTg4IEMgMy44OTA2MjUgMjEuOTU3MDMxIDQuMDA3ODEyIDIyIDQuMTI1IDIyIEMgNC4yNDIxODggMjIgNC4zNTkzNzUgMjEuOTU3MDMxIDQuNDQ5MjE5IDIxLjg2NzE4OCBDIDYuNzU3ODEyIDE5LjU1NDY4OCA2Ljc1NzgxMiAxNy4xMTMyODEgNC40NDkyMTkgMTQuODAwNzgxIFogTSA0LjQ0OTIxOSAxNC44MDA3ODEgIi8+CjxwYXRoIHN0eWxlPSIgc3Ryb2tlOm5vbmU7ZmlsbC1ydWxlOm5vbnplcm87ZmlsbDpyZ2IoMCUsMCUsMCUpO2ZpbGwtb3BhY2l0eToxOyIgZD0iTSA0LjEyNSAxMS45MTc5NjkgQyAzLjExMzI4MSAxMS45MTc5NjkgMi4yOTI5NjkgMTIuNzM4MjgxIDIuMjkyOTY5IDEzLjc1IEMgMi4yOTI5NjkgMTQuNzYxNzE5IDMuMTEzMjgxIDE1LjU4MjAzMSA0LjEyNSAxNS41ODIwMzEgQyA1LjEzNjcxOSAxNS41ODIwMzEgNS45NTcwMzEgMTQuNzYxNzE5IDUuOTU3MDMxIDEzLjc1IEMgNS45NTcwMzEgMTIuNzM4MjgxIDUuMTM2NzE5IDExLjkxNzk2OSA0LjEyNSAxMS45MTc5NjkgWiBNIDQuMTI1IDE0LjY2Nzk2OSBDIDMuNjIxMDk0IDE0LjY2Nzk2OSAzLjIwNzAzMSAxNC4yNTM5MDYgMy4yMDcwMzEgMTMuNzUgQyAzLjIwNzAzMSAxMy4yNDYwOTQgMy42MjEwOTQgMTIuODMyMDMxIDQuMTI1IDEyLjgzMjAzMSBDIDQuNjI4OTA2IDEyLjgzMjAzMSA1LjA0Mjk2OSAxMy4yNDYwOTQgNS4wNDI5NjkgMTMuNzUgQyA1LjA0Mjk2OSAxNC4yNTM5MDYgNC42Mjg5MDYgMTQuNjY3OTY5IDQuMTI1IDE0LjY2Nzk2OSBaIE0gNC4xMjUgMTQuNjY3OTY5ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDAlLDAlLDAlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMjEuNzY1NjI1IDEzLjgwODU5NCBMIDEzLjUxNTYyNSA5LjIyMjY1NiBDIDEzLjM0Mzc1IDkuMTI4OTA2IDEzLjEzNjcxOSA5LjE1MjM0NCAxMi45ODgyODEgOS4yODEyNSBDIDEyLjg0Mzc1IDkuNDEwMTU2IDEyLjc5Mjk2OSA5LjYxMzI4MSAxMi44NjcxODggOS43OTY4NzUgTCAxNi41MzEyNSAxOC45NjA5MzggQyAxNi42MDE1NjIgMTkuMTMyODEyIDE2Ljc2OTUzMSAxOS4yNSAxNi45NTMxMjUgMTkuMjUgQyAxNi45NTMxMjUgMTkuMjUgMTYuOTU3MDMxIDE5LjI1IDE2Ljk1NzAzMSAxOS4yNSBDIDE3LjE0MDYyNSAxOS4yNSAxNy4zMDg1OTQgMTkuMTQwNjI1IDE3LjM3ODkwNiAxOC45NzI2NTYgTCAxOC42ODM1OTQgMTUuOTMzNTk0IEwgMjEuNzIyNjU2IDE0LjYyODkwNiBDIDIxLjg4MjgxMiAxNC41NjI1IDIxLjk4ODI4MSAxNC40MDYyNSAyMiAxNC4yMzA0NjkgQyAyMi4wMDc4MTIgMTQuMDU4NTk0IDIxLjkxNzk2OSAxMy44OTQ1MzEgMjEuNzY1NjI1IDEzLjgwODU5NCBaIE0gMjEuNzY1NjI1IDEzLjgwODU5NCAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYigwJSwwJSwwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDUuNjY0MDYyIDEyLjc2NTYyNSBDIDUuNTc4MTI1IDEyLjYyODkwNiA1LjQ3MjY1NiAxMi41MDc4MTIgNS4zNTU0NjkgMTIuNDAyMzQ0IEMgNS4zMzk4NDQgMTIuMzg2NzE5IDUuMzI0MjE5IDEyLjM3NSA1LjMwODU5NCAxMi4zNjMyODEgQyA1LjIxMDkzOCAxMi4yNzczNDQgNS4xMDU0NjkgMTIuMjA3MDMxIDQuOTkyMTg4IDEyLjE0NDUzMSBDIDQuOTYwOTM4IDEyLjEyODkwNiA0LjkyOTY4OCAxMi4xMDkzNzUgNC44OTg0MzggMTIuMDkzNzUgQyA0Ljc3MzQzOCAxMi4wMzUxNTYgNC42NDQ1MzEgMTEuOTg4MjgxIDQuNTA3ODEyIDExLjk1NzAzMSBDIDQuNDY4NzUgMTEuOTQ5MjE5IDQuNDI1NzgxIDExLjk0OTIxOSA0LjM4MjgxMiAxMS45NDE0MDYgQyA0LjI2OTUzMSAxMS45MjU3ODEgNC4xNTIzNDQgMTEuOTE3OTY5IDQuMDM5MDYyIDExLjkyNTc4MSBDIDMuNjMyODEyIDExLjk0NTMxMiAzLjI2NTYyNSAxMi4wOTc2NTYgMi45Njg3NSAxMi4zMzU5MzggQyAzLjE5MTQwNiAxMi40OTYwOTQgMy40MTQwNjIgMTIuNjQ4NDM4IDMuNjU2MjUgMTIuNzkyOTY5IEMgMy43NSAxMi44NDc2NTYgMy44NTkzNzUgMTIuODY3MTg4IDMuOTY4NzUgMTIuODUxNTYyIEMgNC4zNDc2NTYgMTIuNzg1MTU2IDQuNzUzOTA2IDEyLjk3NjU2MiA0LjkzNzUgMTMuMzM1OTM4IEMgNC45ODgyODEgMTMuNDMzNTk0IDUuMDcwMzEyIDEzLjUxMTcxOSA1LjE2Nzk2OSAxMy41NTA3ODEgQyA1LjQyMTg3NSAxMy42NTYyNSA1LjY4NzUgMTMuNzM4MjgxIDUuOTQ5MjE5IDEzLjgyODEyNSBDIDUuOTQ5MjE5IDEzLjgwMDc4MSA1Ljk1NzAzMSAxMy43NzczNDQgNS45NTcwMzEgMTMuNzUgQyA1Ljk1NzAzMSAxMy4zODY3MTkgNS44NDc2NTYgMTMuMDUwNzgxIDUuNjY0MDYyIDEyLjc2NTYyNSBaIE0gNS42NjQwNjIgMTIuNzY1NjI1ICIvPgo8cGF0aCBzdHlsZT0iIHN0cm9rZTpub25lO2ZpbGwtcnVsZTpub256ZXJvO2ZpbGw6cmdiKDAlLDAlLDAlKTtmaWxsLW9wYWNpdHk6MTsiIGQ9Ik0gMTMuMzgyODEyIDEzLjU1ODU5NCBDIDExLjE5MTQwNiAxMy44OTg0MzggOC44NTkzNzUgMTMuNzUgNi44MDQ2ODggMTMuMTUyMzQ0IEMgNi44NDc2NTYgMTMuMzQzNzUgNi44NzUgMTMuNTQyOTY5IDYuODc1IDEzLjc1IEMgNi44NzUgMTMuODcxMDk0IDYuODU1NDY5IDEzLjk4ODI4MSA2LjgzOTg0NCAxNC4xMDkzNzUgQyA4LjE1NjI1IDE0LjQ2ODc1IDkuNTY2NDA2IDE0LjY2Nzk2OSAxMSAxNC42Njc5NjkgQyAxMS45MjU3ODEgMTQuNjY3OTY5IDEyLjgzOTg0NCAxNC41ODIwMzEgMTMuNzM0Mzc1IDE0LjQyOTY4OCBaIE0gMTMuMzgyODEyIDEzLjU1ODU5NCAiLz4KPHBhdGggc3R5bGU9IiBzdHJva2U6bm9uZTtmaWxsLXJ1bGU6bm9uemVybztmaWxsOnJnYigwJSwwJSwwJSk7ZmlsbC1vcGFjaXR5OjE7IiBkPSJNIDExIDAgQyA0LjkzMzU5NCAwIDAgMy4yODkwNjIgMCA3LjMzMjAzMSBDIDAgOC45NDE0MDYgMC44MDQ2ODggMTAuNDkyMTg4IDIuMjM4MjgxIDExLjc1NzgxMiBDIDIuNDY4NzUgMTEuNTM5MDYyIDIuNzM4MjgxIDExLjM1NTQ2OSAzLjAzNTE1NiAxMS4yMjY1NjIgQyAxLjY3OTY4OCAxMC4xMDkzNzUgMC45MTc5NjkgOC43MzgyODEgMC45MTc5NjkgNy4zMzIwMzEgQyAwLjkxNzk2OSAzLjc5Njg3NSA1LjQ0MTQwNiAwLjkxNzk2OSAxMSAwLjkxNzk2OSBDIDE2LjU1ODU5NCAwLjkxNzk2OSAyMS4wODIwMzEgMy43OTY4NzUgMjEuMDgyMDMxIDcuMzMyMDMxIEMgMjEuMDgyMDMxIDguNzUzOTA2IDIwLjM0Mzc1IDEwLjEwMTU2MiAxOC45ODgyODEgMTEuMjE4NzUgTCAxOS44Mzk4NDQgMTEuNjg3NSBDIDIxLjIyNjU2MiAxMC40Mzc1IDIyIDguOTEwMTU2IDIyIDcuMzMyMDMxIEMgMjIgMy4yODkwNjIgMTcuMDY2NDA2IDAgMTEgMCBaIE0gMTEgMCAiLz4KPC9nPgo8L3N2Zz4K), auto'
       }
@@ -711,7 +685,7 @@ export function drag_selector_installer(svg_elem) {
   drag_selector.subscribe('callback', ({ items, event, isDragging }) => {
     document.getElementById('layers').style.cursor = 'default'
     $('.ds-selector-area').hide()
-    $('#load_save, #metadata_input, #relations_panel, .sidebar, #minimap').fadeIn(300)
+    $('#metadata_input, #relations_panel, .sidebar, #minimap').fadeIn(300)
   })
 }
 
@@ -931,18 +905,12 @@ function show_all_notes() {
   Array.from(document.querySelectorAll('g.note')).forEach(e => e.classList.remove('hidden'))
 }
 
-function toggle_orphan_notes() {
+export function toggle_orphan_notes() {
   show_orphans = !show_orphans
   show_orphans ? show_all_notes() : hide_orphan_notes()
 }
 
-const orphanNotesButton = document.getElementById('orphannotesbutton')
-orphanNotesButton.addEventListener('click', toggle_orphan_notes)
-
 // Functions helping to interact with variable declared here from other files.
-export const getShades = () => shades
-export const setShades = value => shades = value
-
 export const getTooltip = () => tooltip
 
 export const getPlacingNote = () => placing_note

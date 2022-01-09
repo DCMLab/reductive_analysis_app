@@ -14,10 +14,10 @@ export const action_conf = {
   'add_bookmark':            '^',
   'move_relation_to_front':  'z',
   'reduce_relations':        'r',
-  'show_hide_notation':      's',
-  'toggle_type_shades':      'h',
+  // 'show_hide_notation':      's',
+  // 'toggle_type_shades':      'h',
   'select_same_notes':       '+',
-  'toggle_add_note':         'x',
+  // 'toggle_add_note':         'x',
   'naturalize_note':         'Z',
   'copy':                    'C',
   'paste':                   'V'

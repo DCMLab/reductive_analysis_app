@@ -49,14 +49,14 @@
     @include all-but(1) {
       &::before {
         content: v(with-separator, unset);
-        size: .2rem 2rem;
+        size: .2rem v(tab-separator-height, 2rem);
         position: absolute;
         left: -.1rem;
 
-        background: $alto;
-        border-radius: .1rem;
-
         pointer-events: none;
+
+        background: v(tab-separator, unset);
+        border-radius: .1rem;
       }
     }
 
@@ -65,4 +65,8 @@
       --btn-color: var(--bg);
     }
   }
+}
+
+.btn-tabs--big-separator {
+  --tab-separator-height: 3rem;
 }

@@ -11,6 +11,8 @@ const keys = Object.freeze({
 
   // characters
   a: 65,
+  h: 72,
+  s: 83,
   x: 88,
   z: 90,
 })

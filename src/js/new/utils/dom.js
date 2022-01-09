@@ -41,3 +41,18 @@ export const getDOMRect = (el, includedProps = null) => {
 export class NodeType {
   static isElement = node => node.nodeType == 1
 }
+
+/**
+ * Set element attributes in batch.
+ *
+ * @param {HTMLElement} el HTML element
+ * @param {Object} attrs A pair of attributes
+ */
+export const setAttributes = (el, attrs) => {
+  Object.entries(attrs).forEach(([name, value]) => {
+    if (value == null) {
+      return el.removeAttribute(name)
+    }
+    el.setAttribute(name, value)
+  })
+}

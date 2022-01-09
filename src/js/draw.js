@@ -1,5 +1,7 @@
+import newApp from './new/app'
 import { getMeiGraph } from './app'
-import { getShades, toggle_selected, toggle_shade } from './ui'
+import { captureEvent } from './new/events/options'
+import { toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
   average,
@@ -60,17 +62,21 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   elem.classList.add('relation')
   elem.setAttribute('type', type)
 
+  /**
+   * Hacky way of having the shades properly initialiazed (`color` attribute).
+   * Should be improved later.
+   */
   // Are we running with type-specific shades?
-  if (getShades())
+  toggle_shade(elem)
+  if (!newApp.ui.scoreSettings.brightShades)
     toggle_shade(elem)
 
   // Relations can be scrolled
-  elem.onwheel = (ev) => {
-    var elem1 = ev.target
-    flip_to_bg(elem1)
-    elem.onmouseout()
-    return false
-  }
+  elem.addEventListener('wheel', e => {
+    e.preventDefault()
+    flip_to_bg(e.target)
+    e.target.onmouseout()
+  }, captureEvent)
 
   function undraw_meta_or_relation(draw_context, g_elem) {
     let mei_id = get_id(g_elem)
@@ -113,7 +119,6 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   // Remember what we're adding
   added.push(elem)
   return added
-
 }
 
 function redraw_relation(draw_context, g_elem) {
@@ -175,16 +180,22 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     var line_elem = line([x, y], crds)
     g_elem.appendChild(line_elem)
   })
+
+  /**
+   * Hacky way of having the shades properly initialiazed (`color` attribute).
+   * Should be improved later.
+   */
   // Type-dependent shades
-  if (getShades())
+  toggle_shade(g_elem)
+  if (!newApp.ui.scoreSettings.brightShades)
     toggle_shade(g_elem)
+
   // We can scroll among metarelations as well
-  g_elem.onwheel = (e) => {
-    var elem1 = e.target
-    flip_to_bg(elem1.closest('g'))
-    g_elem.onmouseout()
-    return false
-  }
+  g_elem.addEventListener('wheel', e => {
+    e.preventDefault()
+    flip_to_bg(e.target.closest('g'))
+    e.target.onmouseout()
+  }, captureEvent)
 
   // Decorate with onclick and onmouseover handlers
   g_elem.onclick = () => toggle_selected(g_elem)

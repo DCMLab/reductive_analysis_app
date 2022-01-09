@@ -31,6 +31,7 @@ class EventsManager {
 
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
+    document.addEventListener('input', this.onInput.bind(this), captureEvent)
     document.addEventListener('blur', this.onBlur.bind(this), captureEvent)
 
     // core app events
@@ -113,7 +114,9 @@ class EventsManager {
     this.app.ui?.selection?.mode?.onChange(e)
   }
 
-  // Forms events
+  onInput(e) {
+    this.app.ui?.relationWidth?.onInput(e)
+  }
 
   onBlur(e) {
     this.app.ui?.relations?.onBlur(e)
@@ -128,6 +131,7 @@ class EventsManager {
   onScoreLoad(e) {
     this.app.score?.onScoreLoad(e)
     this.app.ui?.onScoreLoad(e)
+    this.app.player?.reset()
 
     if (this.app.ui.startScreen) {
       this.app.ui.startScreen.destroy()
@@ -187,6 +191,20 @@ class EventsManager {
     // All shortcuts starting here don’t need modifiers.
 
     if (isModifier(e)) { return }
+
+    /**
+     * Toggle shades (H)
+     */
+    if (isKey(e, 'h')) {
+      return this.app.ui.scoreSettings.toggleShades()
+    }
+
+    /**
+     * Toggle stems (S)
+     */
+    if (isKey(e, 's')) {
+      return this.app.ui.scoreSettings.toggleStems()
+    }
 
     /**
      * Toggle “New Note” cursor (X)

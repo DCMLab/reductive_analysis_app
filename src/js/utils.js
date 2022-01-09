@@ -25,20 +25,19 @@ var unitNormal = function (p0, p1) {
   return [n[0] / nLength, n[1] / nLength]
 }
 
+// Returns the path for a rounded hull around a single point (a circle).
 var roundedHull1 = function (polyPoints, hullPadding) {
-  // Returns the path for a rounded hull around a single point (a
-  // circle).
+  const p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding]
+  const p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)]
 
-  var p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding]
-  var p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)]
-
-  return 'M ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-    + ' A ' + [hullPadding, hullPadding, '0,0,0', p1].join(',')
+  return `M ${p1} A `
+    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
+    + ' A '
+    + [hullPadding, hullPadding, '0,0,0', p1].join(',')
 }
 
+// Returns the path for a rounded hull around two points (a "capsule" shape).
 var roundedHull2 = function (polyPoints, hullPadding) {
-  // Returns the path for a rounded hull around two points (a "capsule" shape).
-
   var offsetVector = vecScale(hullPadding, unitNormal(polyPoints[0], polyPoints[1]))
   var invOffsetVector = vecScale(-1, offsetVector)
   // around that note coordinates are not at the centroids
@@ -48,13 +47,14 @@ var roundedHull2 = function (polyPoints, hullPadding) {
   var p2 = vecSum(polyPoints[1], invOffsetVector)
   var p3 = vecSum(polyPoints[0], invOffsetVector)
 
-  return 'M ' + p0
-    + ' L ' + p1 + ' A ' + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-    + ' L ' + p3 + ' A ' + [hullPadding, hullPadding, '0,0,0', p0].join(',')
+  return `M ${p0} L ${p1} A `
+    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
+    + ` L ${p3} A `
+    + [hullPadding, hullPadding, '0,0,0', p0].join(',')
 }
 
+// Returns the SVG path data string representing the polygon, expanded and rounded.
 var roundedHullN = function (polyPoints, hullPadding) {
-  // Returns the SVG path data string representing the polygon, expanded and rounded.
 
   // Handle special cases
   if (!polyPoints || polyPoints.length < 1) return ''
@@ -190,13 +190,15 @@ export function tspan(text, p, dy, dx = 0) {
   return newElement
 }
 
+/**
+ * Send given SVG to the background and refresh the tooltip.
+ * Probably could be replaced by cycling CSS `z-index`.
+ */
 export function flip_to_bg(elem) {
   var tooltip = getTooltip()
-  // Shifts the SVG element to be drawn first (e.g. in the background)
-  var paren = elem.parentElement
-  paren.removeChild(elem)
-  paren.insertBefore(elem, paren.children[0])
-  tooltip.close(); tooltip.open() // Refresh the tooltip.
+  elem.parentElement.prepend(elem)
+  tooltip.close()
+  tooltip.open()
 }
 
 export function add_to_svg_bg(svg_elem, newElement) {

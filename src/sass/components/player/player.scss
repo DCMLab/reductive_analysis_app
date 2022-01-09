@@ -1,6 +1,42 @@
 .player {
   width: 100%;
+  min-width: 22rem;
+  max-width: 25rem;
+
+  padding: .6rem 1.5rem 1.5rem;
 
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  row-gap: .1rem;
+
+  color: v(bg);
+}
+
+.player--paused,
+.player--stopped {
+  .player__pauseIcon { display: none }
+}
+
+.player--playing {
+  .player__playIcon { display: none }
+}
+
+.player__controls {
+  position: relative;
+  inset-inline-start: -.7rem;
+
+  display: grid;
+  grid-auto-flow: column;
+  gap: .2rem;
+}
+
+.player__progress {
+  width: 100%;
+  margin-top: .2rem;
+}
+
+.player__timestamps {
+  font-variant-numeric: tabular-nums;
 }

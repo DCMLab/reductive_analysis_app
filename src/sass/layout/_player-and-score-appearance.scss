@@ -19,6 +19,17 @@
   display: grid;
   grid-auto-flow: column;
   gap: 1.5rem;
+
+  /**
+   * Used by JavaScript to determine if the user is interacting with a setting,
+   * in a form of a control being focused or a pointer in the settings area.
+   * The `.more-options` button, though invisible, keeps the focus. So it
+   * has to be excluded from the definition.
+   */
+  &:hover,
+  > *:focus-within:not(.more-options) {
+    --in-player-and-score-settings: 1;
+  }
 }
 
 .more-options {

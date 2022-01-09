@@ -1,6 +1,8 @@
 import { toggle_equalize, toggle_orphan_notes } from '../../../../ui'
 import { doc } from '../../../utils/document'
 
+const AUTO_CLOSE_TIMEOUT = 10000 // in milliseconds
+
 class ScoreSettings {
   constructor() {
     this.ctn = document.getElementById('player-and-score-appearance')
@@ -11,7 +13,34 @@ class ScoreSettings {
     this.toggleTonesBtn = document.getElementById('settings-non-related-tones')
 
     this.expanded = false
+    this.autoCloseTimer = null
+
     this.brightShades = true
+  }
+
+  get interacting() {
+    const isHover = this.hasInteractionWith(this.ctn)
+    const hasFocusWithin = this.hasInteractionWith(document.activeElement)
+    return isHover || hasFocusWithin
+  }
+
+  hasInteractionWith(el) {
+    // See .player-and-score-appearance documentation in .scss file.
+    return getComputedStyle(el).getPropertyValue('--in-player-and-score-settings').trim() == '1'
+  }
+
+  // Compact the settings panel when idle.
+  startAutoCloseTimer() {
+    clearTimeout(this.autoCloseTimer)
+    this.autoCloseTimer = setTimeout(() => {
+
+      // extend timer
+      if (this.interacting) {
+        return this.startAutoCloseTimer()
+      }
+
+      this.toggleVisibility(false)
+    }, AUTO_CLOSE_TIMEOUT)
   }
 
   onTap(e) {
@@ -19,6 +48,8 @@ class ScoreSettings {
     if (!e.composedPath().includes(this.ctn)) {
       return this.toggleVisibility(false)
     }
+
+    this.startAutoCloseTimer()
 
     if (e.target == this.toggleVisibilityBtn) {
       return this.toggleVisibility(true)

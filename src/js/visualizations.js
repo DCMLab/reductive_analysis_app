@@ -124,10 +124,14 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
 
     elem.setAttribute('type', type)
 
+    /**
+     * Hacky way of having the shades properly initialiazed (`color` attribute).
+     * Should be improved later.
+     */
     // Are we running with type-specific shades?
-    if (newApp.ui.scoreSettings.brightShades) {
+    toggle_shade(elem)
+    if (!newApp.ui.scoreSettings.brightShades)
       toggle_shade(elem)
-    }
 
     elem.onclick = ev => toggle_selected(elem_in_score)
 

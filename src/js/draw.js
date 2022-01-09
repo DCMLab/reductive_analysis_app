@@ -180,9 +180,16 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     var line_elem = line([x, y], crds)
     g_elem.appendChild(line_elem)
   })
+
+  /**
+   * Hacky way of having the shades properly initialiazed (`color` attribute).
+   * Should be improved later.
+   */
   // Type-dependent shades
-  if (newApp.ui.scoreSettings.brightShades)
+  toggle_shade(g_elem)
+  if (!newApp.ui.scoreSettings.brightShades)
     toggle_shade(g_elem)
+
   // We can scroll among metarelations as well
   g_elem.addEventListener('wheel', e => {
     e.preventDefault()

@@ -494,9 +494,9 @@ export function toggle_equalize() {
 function set_non_note_visibility(hidden) {
   console.debug('Using globals: document for element selection')
 
-  Array.from(document.getElementsByClassName('beam'), x => Array.from(x.children))
+  Array.from(document.getElementsByClassName('beam')).forEach(x => Array.from(x.children)
     .filter(x => x.tagName == 'polygon')
-    .forEach(x => x.classList.toggle('hidden', hidden))
+    .forEach(x => x.classList.toggle('hidden', hidden)))
 
   hide_classes.forEach(cl =>
     Array.from(document.getElementsByClassName(cl))
@@ -898,7 +898,6 @@ function hide_orphan_notes() {
     if (!gn_ids.includes(`#gn-${ii}`))
       document.getElementById(i).classList.add('hidden')
   })
-  if (!non_notes_hidden) toggle_equalize()
 }
 
 function show_all_notes() {

@@ -34,8 +34,32 @@ const notifierPluginOptions = {
     ${errorCount} ${status}${errorCount === 1 ? '' : 's'} – ${filepath.replace(thePath() + '/', '')}`,
 }
 
+// Significantly increase startup time after first run.
+const webpackCacheOptions = {
+  type: 'filesystem',
+}
+
+/**
+ * Use the empty object until this issue is fixed:
+ * https://github.com/babel/babel-loader/issues/690
+ * In other words, the babel cache is currently disabled, which slows a bit the
+ * build process. A PR for this is well advanced:
+ * https://github.com/babel/babel/pull/11741
+ *
+ * Reason: when the list of supported browsers changes (browserslist), the
+ * cache doesn’t get cleared, which may lead to broken code that should
+ * work (or stop to work) while testing on various browsers/devices.
+ */
+// const babelLoaderOptions = {}
+const babelLoaderOptions = {
+  cacheCompression: false,
+  cacheDirectory: !isProd,
+}
+
 // ESLint Options
 const esLintPluginOptions = {
+  cache: true, // cache is cleaned on `npm install`
+  cacheStrategy: 'content',
   fix: env.ES_LINT_AUTOFIX == 'true',
   formatter: env.ES_LINT_FORMATTER,
 }
@@ -94,9 +118,12 @@ configJs = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+        options: babelLoaderOptions,
       },
     ]
   },
+
+  cache: isProd ? false : webpackCacheOptions,
 
   optimization: {
     minimize: isProd,
@@ -117,7 +144,7 @@ configJs = {
   },
 
   plugins: [
-    new EsLintPlugin(esLintPluginOptions),
+    ...(isProd ? [] : [new EsLintPlugin(esLintPluginOptions)]),
     new FriendlyErrorsPlugin(),
     new NotifierPlugin({ title: 'JS', ...notifierPluginOptions }),
   ],

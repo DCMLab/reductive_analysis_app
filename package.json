@@ -16,7 +16,8 @@
     "lint": "npx eslint src/js/**/*",
     "lint-fix": "npx eslint src/js/**/* --fix",
     "start": "lite-server",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "rm -f .eslintcache"
   },
   "repository": {
     "type": "git",

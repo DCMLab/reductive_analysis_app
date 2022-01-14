@@ -61,7 +61,7 @@ const esLintPluginOptions = {
   cache: true, // cache is cleaned on `npm install`
   cacheStrategy: 'content',
   fix: env.ES_LINT_AUTOFIX == 'true',
-  formatter: env.ES_LINT_FORMATTER,
+  formatter: env.ES_LINT_FORMATTER ?? 'stylish',
 }
 
 /**
@@ -161,7 +161,10 @@ configJs = {
     hints: false,
   },
 
-  stats: {
+  stats: !isProd ? 'errors-warnings' : {
+    publicPath: true,
+    hash: false,
+    performance: false,
     modules: false,
     version: false,
     // excludeAssets: [
@@ -190,7 +193,7 @@ configCSS = {
         test: /\.scss$/,
         include: thePath(`${assets}/sass`),
         use: [
-          MiniCssExtractPlugin.loader,
+          { loader: MiniCssExtractPlugin.loader, options: { esModule: false, } },
           { loader: 'css-loader', options: { importLoaders: 2, url: false, sourceMap: true } },
           { loader: 'postcss-loader', options: { sourceMap: true } },
           { loader: 'sass-loader', options: {

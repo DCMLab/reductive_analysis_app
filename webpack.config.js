@@ -25,7 +25,7 @@ const EsLintPlugin = require('eslint-webpack-plugin')
 
 // Notifications options
 const notifierPluginOptions = {
-  logo: thePath('src/manifest/android-chrome-192x192.png'),
+  logo: thePath('src/manifest/apple-touch-icon.png'),
   sound: false,
   notifyOptions: { timeout: 2 },
 
@@ -251,7 +251,7 @@ configCSS.plugins.push(
   new CopyPlugin({ patterns: [
     { from: `${assets}/other-css/`, to: thePath('public/css/vendor') },
     { from: `${assets}/fonts/`, to: thePath('public/fonts') },
-    // { from: `${assets}/manifest/`, to: thePath('public') },
+    { from: `${assets}/manifest/`, to: thePath('public') },
   ]}),
   new BrowserSyncPlugin({
     https: browserSyncHttps,

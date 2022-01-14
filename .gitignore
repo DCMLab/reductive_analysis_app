@@ -1,5 +1,8 @@
+/public
+!public/*.html
+!public/*.css
+!public/*.js
+
 .env
 /node_modules
-/public/**/*.map
-
 .eslintcache

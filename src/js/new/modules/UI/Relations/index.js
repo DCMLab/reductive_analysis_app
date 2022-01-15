@@ -19,7 +19,7 @@ import { DraggableFlyOut } from '../FlyOut'
 import RelationsGroup from './group'
 
 // Assign form id looks like `free-field-something-form`
-const assignFormRegex = new RegExp(/^free-field-\w+-form$/)
+const freeFieldFormRegex = new RegExp(/^free-field-(\w+)-form$/)
 
 class RelationsFlyOut extends DraggableFlyOut {
   constructor() {
@@ -66,16 +66,15 @@ class RelationsFlyOut extends DraggableFlyOut {
   }
 
   onSubmit(e) {
-    const { id } = e.target
+    const relationType = e.target.id.match(freeFieldFormRegex)?.[1]
 
-    if (!assignFormRegex.test(id)) { return }
+    if (!relationType) { return }
 
     e.preventDefault()
 
-    const type = id.replace('free-field-', '').replace('-form', '')
-    const { value } = this[type].freeField
+    const { value } = this[relationType]?.freeField
     if (value) {
-      this[type].eventCallbacks.tap(value)
+      this[relationType].eventCallbacks.tap(value)
     }
   }
 

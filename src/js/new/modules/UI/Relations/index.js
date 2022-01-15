@@ -18,6 +18,9 @@ import score from '../../Score'
 import { DraggableFlyOut } from '../FlyOut'
 import RelationsGroup from './group'
 
+// Assign form id looks like `free-field-something-form`
+const assignFormRegex = new RegExp(/^free-field-\w+-form$/)
+
 class RelationsFlyOut extends DraggableFlyOut {
   constructor() {
     super('relations-menu')
@@ -62,24 +65,17 @@ class RelationsFlyOut extends DraggableFlyOut {
     }
   }
 
-  onBlur({ target: { dataset, value, id }, target }) {
+  onSubmit(e) {
+    const { id } = e.target
 
-    /**
-     * Early return.
-     *
-     * We can’t directly check `!('relationType' in dataset)` because it
-     * crashes on `document` blur (it has no `dataset`). Two options:
-     * 1. if (!dataset || !('relationType' in dataset))
-     * 2. if (!dataset?.hasOwnProperty('relationType'))
-     *
-     * `hasOwnProperty` is preferred: it allows optional chaining.
-     */
-    if (!dataset?.hasOwnProperty('relationType')) { return }
+    if (!assignFormRegex.test(id)) { return }
 
-    const { relationType } = dataset
+    e.preventDefault()
 
-    if (value && id == `free-field-${relationType}`) {
-      return this[relationType].eventCallbacks.tap(value)
+    const type = id.replace('free-field-', '').replace('-form', '')
+    const { value } = this[type].freeField
+    if (value) {
+      this[type].eventCallbacks.tap(value)
     }
   }
 

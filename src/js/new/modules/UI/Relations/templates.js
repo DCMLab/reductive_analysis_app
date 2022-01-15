@@ -43,7 +43,21 @@ export const createShowMoreBtn = type => `
   </button>
 `
 
-export const createFillable = (id, { label, placeholder = '' }) => `
+export const createDatalistFillable = (config, type) => `
+  <form
+      class="btn-group btn-group--free-field hide-when-compact"
+      id="free-field-${type}-form"
+  >
+      ${createFillable(type, { label: 'Or type a ' + config.name })}
+      ${createDatalist(config.additional, type)}
+
+      <button class="btn btn--plain btn--small">
+          Select <span class="visually-hidden>${type}</span>
+      </button>
+  </form>
+`
+
+const createFillable = (id, { label, placeholder = '' }) => `
   <label
       class="fillable fly-out__relationsField ${CSS.hideIfCompact}"
       for="free-field-${id}"
@@ -66,7 +80,7 @@ export const createFillable = (id, { label, placeholder = '' }) => `
   </label>
 `
 
-export const createDatalist = (types, id) => `
+const createDatalist = (types, id) => `
   <datalist id="datalist-${id}">${createOptions(types)}</datalist>
 `
 

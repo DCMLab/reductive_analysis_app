@@ -1,7 +1,6 @@
 import {
   createBtn,
-  createDatalist,
-  createFillable,
+  createDatalistFillable,
   createShowMoreBtn,
   createTitle
 } from './templates'
@@ -57,15 +56,10 @@ export default class RelationsGroup {
 
     btnsHtml = `<div class="btn-group">${btnsHtml}</div>`
 
-    let additionalRelations = ''
-    if ('additional' in config) {
-      additionalRelations +=
-
-        // free field with autocomplete proposals for even more relations…
-        // @Todo: handle this input change events from somewhere…
-        createFillable(this.type, { label: 'Or type a ' + this.name })
-        + createDatalist(config.additional, this.type)
-    }
+    // free field with autocomplete proposals for even more relations…
+    const additionalRelations = 'additional' in config
+      ? createDatalistFillable(config, this.type)
+      : ''
 
     this.ctn = document.getElementById(`${this.type}-btns`)
     this.ctn.innerHTML = titleHtml + btnsHtml + additionalRelations

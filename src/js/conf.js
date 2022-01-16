@@ -32,8 +32,8 @@ export const navigation_conf = {
   'jump_to_context_below':      ',',
   'jump_to_context_above':      '.',
   'toggle_palette':             '-',
-  'zoom_out':                   '(',
-  'zoom_in':                    ')',
+  // 'zoom_out':                   '(',
+  // 'zoom_in':                    ')',
   'switch_context_on_hover':    false
 }
 

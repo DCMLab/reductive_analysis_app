@@ -342,22 +342,6 @@ function add_filters(draw_context) {
   div.classList.add('filterdiv')
   div.innerHTML = `&#9776;&nbsp;L${draw_context.layer_number}&nbsp;V${draw_context.view_number}<br/></br>`
   sidebar.prepend(div)
-
-  var zoomdiv = document.createElement('div')
-  zoomdiv.classList.add('zoom_buttons')
-  var zoomin = button('+')
-  zoomin.classList.add('zoominbutton')
-  zoomin.id = (draw_context.id_prefix + 'zoominbutton')
-  var zoomout = button('–')
-  zoomout.classList.add('zoomoutbutton')
-  zoomout.id = (draw_context.id_prefix + 'zoomoutbutton')
-  zoomin.onclick = () => { zoom_in(draw_context) }
-  zoomout.onclick = () => { zoom_out(draw_context) }
-
-  zoomdiv.appendChild(zoomin)
-  zoomdiv.appendChild(zoomout)
-
-  div.appendChild(zoomdiv)
 }
 
 function onclick_select_functions(draw_context) {
@@ -440,10 +424,6 @@ export function handle_keypress(ev) {
     do_relation('repeat')
   } else if (ev.key == action_conf.naturalize_note) { // Naturalize note.
     naturalize_notes()
-  } else if (ev.key == navigation_conf.zoom_out) { // Zoom out.
-    zoom_out(current_draw_context)
-  } else if (ev.key == navigation_conf.zoom_in) { // Zoom in.
-    zoom_in(current_draw_context)
   } else if (ev.key == navigation_conf.jump_to_next_bookmark) { // Jump to previous bookmark in current context.
     jump_to_adjacent_bookmark(-1)
   } else if (ev.key == navigation_conf.jump_to_previous_bookmark) { // Jump to next bookmark in current context.
@@ -537,19 +517,6 @@ export function toggle_buttons() {
 
 const relationsPanelToggleButton = document.getElementById('relations_panel_toggle')
 relationsPanelToggleButton.addEventListener('click', toggle_buttons)
-
-function zoom_in(draw_context) {
-  if (typeof (draw_context) != 'undefined') {
-    draw_context.zoom = draw_context.zoom * 1.1
-    draw_context.svg_elem.style.transform = 'scale(' + draw_context.zoom + ')'
-  }
-}
-function zoom_out(draw_context) {
-  if (typeof (draw_context) != 'undefined') {
-    draw_context.zoom = draw_context.zoom * 0.90909090909090
-    draw_context.svg_elem.style.transform = 'scale(' + draw_context.zoom + ')'
-  }
-}
 
 export function do_deselect() {
   selected.forEach(x => toggle_selected(x, false))

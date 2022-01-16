@@ -79,11 +79,11 @@ class RelationsFlyOut extends DraggableFlyOut {
   }
 
   onScoreSelection() {
-    const hasSelection = score.hasSelection
+    const { hasSelection, selectionType, selectedRelationTypes } = score
 
     // Update selected buttons.
-    this.relations.select(score.relationTypes)
-    this.metarelations.select(score.relationTypes)
+    this.relations.select(selectionType == 'relation' ? selectedRelationTypes : new Set())
+    this.metarelations.select(selectionType == 'metarelation' ? selectedRelationTypes : new Set())
 
     // Hide if nothing is selected.
     this.toggleVisibility(hasSelection)
@@ -94,17 +94,12 @@ class RelationsFlyOut extends DraggableFlyOut {
     this.relations.show()
 
     // Show metarelations unless a note is selected.
-    this.metarelations.toggleVisibility(score.selectionType != 'note')
-
-    // // selected items are relations or metarelations
-    // if (/relation/.test(score.selectionType)) {
-    //   this[score.selectionType + 's'].show()
-    // }
+    this.metarelations.toggleVisibility(selectionType != 'note')
 
     this.compact()
 
     // Disable the delete button unless a relation is selected.
-    this.deleteBtn.disabled = !hasSelection || score.selectionType == 'note'
+    this.deleteBtn.disabled = !hasSelection || selectionType == 'note'
 
     /**
      * The dimensions of the fly-out may change if the selected item isn’t the

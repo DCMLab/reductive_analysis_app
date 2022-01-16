@@ -46,8 +46,8 @@ class Score {
     })
   }
 
-  get relationTypes() {
-    return this.#cache.remember('relationTypes', () => {
+  get selectedRelationTypes() {
+    return this.#cache.remember('selectedRelationTypes', () => {
       if (!this.hasSelection || this.selectionType == 'note') { return null }
 
       return new Set(this.flatSelection.map(el => el.getAttribute('type')).filter(type => type))

@@ -21,6 +21,14 @@
   margin: 2rem 0;
 }
 
+// If not focused, make it look a bit like a button when marked as selected.
+.fly-out__relationsField--selected {
+  .fillable__input:not(:focus):not(:hover) {
+    --fillable-border: var(--accent-alt);
+    background: v(fillable-border);
+  }
+}
+
 // Compact mode.
 
 .fly-out--relations-compact {

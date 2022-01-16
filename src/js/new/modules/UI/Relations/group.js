@@ -31,14 +31,32 @@ export default class RelationsGroup {
 
     if (!types) { return }
 
-    Array.from(this.btns)
-      .filter(btn => types.has(btn.dataset.relationName))
-      .forEach(btn => btn.classList.add('btn--selected'))
+    // Mark buttons as selected
+    const btns = Array.from(this.btns).filter(btn => types.has(btn.dataset.relationName))
+    btns.forEach(btn => btn.classList.add('btn--selected'))
+
+    if (types.size <= btns.length) { return }
+
+    // Search for custom relations
+    const btnsTypes = btns.map(btn => btn.dataset.relationName)
+    const customTypes = [...types].filter(type => !btnsTypes.includes(type))
+
+    // If there’s exactly 1 custom relation, mark the free field as selected
+    if (customTypes.length == 1) {
+      this.freeFieldCtn.classList.add('fly-out__relationsField--selected')
+      this.freeField.value = customTypes[0]
+    }
   }
 
   unselect() {
+
+    // Unselect buttons
     Array.from(this.selectedBtns)
       .forEach(btn => btn.classList.remove('btn--selected'))
+
+    // free field
+    this.freeFieldCtn.classList.remove('fly-out__relationsField--selected')
+    this.freeField.value = ''
   }
 
   initHtml(config) {
@@ -67,5 +85,6 @@ export default class RelationsGroup {
     this.btns = this.ctn.getElementsByClassName('btn--relation')
     this.selectedBtns = this.ctn.getElementsByClassName('btn--selected')
     this.freeField = this.ctn.querySelector(`#free-field-${this.type}`)
+    this.freeFieldCtn = this.freeField?.parentElement
   }
 }

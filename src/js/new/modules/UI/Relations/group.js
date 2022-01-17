@@ -41,9 +41,11 @@ export default class RelationsGroup {
     const btnsTypes = btns.map(btn => btn.dataset.relationName)
     const customTypes = [...types].filter(type => !btnsTypes.includes(type))
 
-    // If there’s exactly 1 custom relation, mark the free field as selected
+    // Mark the free field as selected
+    this.freeFieldCtn.classList.add('fly-out__relationsField--selected')
+
+    // If exactly 1 custom relation is selected, prefill the free field
     if (customTypes.length == 1) {
-      this.freeFieldCtn.classList.add('fly-out__relationsField--selected')
       this.freeField.value = customTypes[0]
     }
   }

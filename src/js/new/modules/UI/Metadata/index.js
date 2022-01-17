@@ -7,7 +7,7 @@ import { createField, createRolesFields, createUpdateBtn } from './templates'
 const parser = new DOMParser()
 
 // Assign button id looks like `metadata-something-assign`
-const assignBtnRegex = new RegExp(/^metadata-\w+-assign$/)
+const assignBtnRegex = new RegExp(/^metadata-(\w+)-assign$/)
 
 /**
  * @todo later: evaluate opportunity to move roles to a dedicated module
@@ -49,8 +49,8 @@ class Metadata {
     }
 
     // Update a metadata
-    if (assignBtnRegex.test(target.id)) {
-      const name = target.id.replace('metadata-', '').replace('-assign', '')
+    let name = target.id.match(assignBtnRegex)?.[1]
+    if (name) {
       this.updateScoreMetadata(name)
     }
   }

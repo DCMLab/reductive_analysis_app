@@ -32,7 +32,7 @@ class EventsManager {
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
     document.addEventListener('input', this.onInput.bind(this), captureEvent)
-    document.addEventListener('blur', this.onBlur.bind(this), captureEvent)
+    document.addEventListener('submit', this.onSubmit.bind(this), captureEvent)
 
     // core app events
     document.addEventListener('undoredo', this.onUndoRedo.bind(this))
@@ -118,8 +118,8 @@ class EventsManager {
     this.app.ui?.relationWidth?.onInput(e)
   }
 
-  onBlur(e) {
-    this.app.ui?.relations?.onBlur(e)
+  onSubmit(e) {
+    this.app.ui?.relations?.onSubmit(e)
   }
 
   // App custom events

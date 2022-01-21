@@ -19,6 +19,7 @@ import {
   tspan,
 } from './utils'
 import { calc_reduce } from './reductions'
+import { captureEvent } from './new/events/options'
 
 // Returns a list of list of IDs
 function calc_hierarchy(notes, relations, roots_low = true) {

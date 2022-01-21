@@ -653,6 +653,43 @@
 
     </div>
 
+    <!-- Layers -->
+
+    <button class="layers-menu__toggleBtn | btn btn--plain flex-center" type="button">
+        <span class="visually-hidden">Show layers menu</span>
+        <svg class="btn__icon" width="20" height="22">
+            <use xlink:href="#layers-path"/>
+        </svg>
+    </button>
+
+
+    <button class="layers-menu__toggleBtn | btn btn--plain flex-center" type="button">
+        <span class="visually-hidden">Hide layers menu</span>
+        <svg width="11" height="11">
+            <use xlink:href="#cross-path"/>
+        </svg>
+    </button>
+
+    <div class="layers-menu__nav">
+
+        <h3 class="layers-menu__title"><abbr title="Layer">L</abbr>1</h3>
+
+        <button class="layers-menu__navBtn | btn" type="button">
+            <span class="visually-hidden">Previous layer</span>
+            <svg class="btn__icon" width="10" height="8">
+                <use xlink:href="#triangle-path"/>
+            </svg>
+        </button>
+
+        <button class="layers-menu__navBtn | btn" type="button">
+            <span class="visually-hidden">Next layer</span>
+            <svg class="btn__icon layers-menu__navIcon--next" width="10" height="8">
+                <use xlink:href="#triangle-path"/>
+            </svg>
+        </button>
+
+    </div>
+
     <!-- Spritesheet -->
 
     <svg style="display: none;">
@@ -753,6 +790,30 @@
 
         <symbol id="audio-stop-path" viewBox="0 0 10 11" fill="currentColor">
             <rect width="10" height="11" rx="2" fill="white"/>
+        </symbol>
+
+        <symbol id="layers-sub-path" viewBox="0 0 20 6" fill="currentColor">
+            <path d="M19.94.62A.79.79 0 0 0 18.9.2L10 4.03 1.1.2a.78.78 0 1 0-.62 1.45L9.69 5.6a.79.79 0 0 0 .62 0l9.21-3.95c.4-.17.59-.63.42-1.03Z"/>
+        </symbol>
+
+        <symbol id="layers-path" viewBox="0 0 20 22">
+            <style>
+                .layers-sub-path {
+                    transform:
+                        translateY(calc(var(--layers-sub-path-y, 0) * var(--layers-sub-path-animate, 0)))
+                        rotate(var(--layers-sub-path-deg, 0deg));
+                    transition: transform .2s var(--in-out-quad);
+                }
+
+                .layers-sub-path:nth-of-type(1) { --layers-sub-path-y: -6%; --layers-sub-path-deg: 180deg; }
+                .layers-sub-path:nth-of-type(2) { --layers-sub-path-y: -6%; }
+                .layers-sub-path:nth-of-type(4) { --layers-sub-path-y: 6%; }
+            </style>
+
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="6" transform-origin="50% 50%" />
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="-1.6"/>
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="2.1"/>
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="6"/>
         </symbol>
 
     </svg>

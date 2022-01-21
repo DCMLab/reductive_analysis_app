@@ -1,0 +1,59 @@
+.layers-menu__toggleBtn {
+  size: 4rem;
+  padding: 0;
+
+  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+
+  &:hover,
+  &:focus {
+    --layers-sub-path-animate: 1;
+  }
+}
+
+.layers-menu__nav {
+  position: relative;
+
+  display: grid;
+  grid-template-rows: 4.2rem 4.2rem;
+  justify-items: center;
+
+  text-align: center;
+
+  --layers-nav-bg: #{$alto};
+  background: v(layers-nav-bg);
+  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+}
+
+.layers-menu__navBtn {
+  --btn-bg: var(--layers-nav-bg);
+  --btn-border: var(--layers-nav-bg);
+  --btn-radius: none;
+
+  &:first-of-type {
+    border-top-right-radius: v(btn-default-radius);
+    border-bottom: none;
+  }
+
+  &:last-of-type {
+    border-top: none;
+    border-bottom-right-radius: v(btn-default-radius);
+  }
+
+  &:hover,
+  &:focus {
+    --btn-bg: #{$gallery};
+    --btn-border: #{$gallery};
+  }
+}
+
+.layers-menu__navIcon--next {
+  transform: rotate(180deg);
+}
+
+.layers-menu__title {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  pointer-events: none;
+}

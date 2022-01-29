@@ -1,5 +1,5 @@
 import { getMeiGraph } from './app'
-import { clear_top } from './ui'
+import { clear_top, adjust_top } from './ui'
 import { add_to_svg_bg, average, g, get_by_id, get_id, id_in_svg, line, note_coords, rect, text } from './utils'
 
 function calculate_initial_y(node, baseline, min_dist) {
@@ -204,7 +204,7 @@ export function align_tree(draw_context) {
     console.log('Wrong length of list, expected ' + leaves.length + ' got ' + list.length)
     return
   }
-  for (i in leaves) {
+  for (let i in leaves) {
     leaves[i].x = list[i][0]
     leaves[i].note_id = list[i][1].id
   }

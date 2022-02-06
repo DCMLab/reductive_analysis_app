@@ -1,8 +1,9 @@
 {
+    "root": true,
     "env": {
         "es2021": true
     },
-    "ignorePatterns": ["src/js/vendor/**/*"],
+    "ignorePatterns": ["src/public/**/*"],
     // "extends": "eslint:recommended",
     "parser": "@babel/eslint-parser",
     "parserOptions": {

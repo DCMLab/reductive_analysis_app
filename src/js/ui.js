@@ -1,13 +1,16 @@
+import $ from 'jquery'
 import pagemap from 'pagemap'
 import DragSelect from 'dragselect'
-import newApp from './new/app'
 import jBox from 'jbox'
+
+import newApp from './new/app'
 
 import {
   combo_keys,
   hide_classes,
   meta_keys,
   type_keys,
+  navigation_conf,
 } from './conf'
 
 import {

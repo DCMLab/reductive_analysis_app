@@ -1,42 +1,16 @@
-/**
- * Globally exposed modules (functions, variables, objects…) can be used with
- * their direct `moduleName` or `window.moduleName` once imported using the
- * expose-loader (https://webpack.js.org/loaders/expose-loader/). Beware:
- * when exposed by expose-loader, variables are read-only. If you need
- * to modify a variable, expose it using `window.varName = varName`.
- *
- * The way it works after `from 'expose-loader?exposes=` is the following.
- *
- * In `expose-loader?exposes={wantedModuleName}|{nameInModule}!{module}`:
- * - `wantedModuleName`, ending up accessible as `window.wantedModulename`;
- * - (optional) `nameInModule` is the original name of the module;
- * - {module} is the module exporting `nameInModule` (`export nameInModule`).
- *
- * For modules having a default export:
- * - `import defaultExportedModule from 'expose-loader?exposes=defaultExportedModule!./new/app'`
- *
- * For modules having several exports:
- * - `import { clamp } from 'expose-loader?exposes=clamp|clamp!./new/utils/math'`
- * - `import { iLovePotatoes } from 'expose-loader?exposes=iLovePotatoes|potatoes!potatoes'`
- */
-import $ from 'expose-loader?exposes=$,jQuery!jquery'
+import '/public/css/select2.min.css'
+import '/public/css/jbox.css'
+import '/public/css/style.css'
+import '/sass/app.scss'
 
-// Exposing configuration files to the global scope (for tests purpose)
-import { action_conf } from 'expose-loader?exposes=action_conf|action_conf!./conf'
-import { navigation_conf } from 'expose-loader?exposes=navigation_conf|navigation_conf!./conf'
-import { custom_conf } from 'expose-loader?exposes=custom_conf|custom_conf!./conf'
-import { meta_conf } from 'expose-loader?exposes=meta_conf|meta_conf!./conf'
-import { type_conf } from 'expose-loader?exposes=type_conf|type_conf!./conf'
-import { combo_conf } from 'expose-loader?exposes=combo_conf|combo_conf!./conf'
-import { type_full_conf } from 'expose-loader?exposes=type_full_conf|type_full_conf!./conf'
-import { meta_full_conf } from 'expose-loader?exposes=meta_full_conf|meta_full_conf!./conf'
+import $ from 'jquery'
+
+import { action_conf } from './conf'
+import { navigation_conf } from './conf'
+import { custom_conf } from './conf'
 
 import newApp from './new/app'
 import { downloadAs } from './new/utils/file'
-
-// Exposing relations functions to the global scope (for tests purpose)
-import { relation_get_notes } from 'expose-loader?exposes=relation_get_notes|relation_get_notes!./utils'
-import { relation_get_notes_separated } from 'expose-loader?exposes=relation_get_notes_separated|relation_get_notes_separated!./utils'
 
 // Clicking selects, exposed globally
 window.selected = []
@@ -90,7 +64,6 @@ import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
 import { comboRelationTypes } from './new/modules/Relations/config'
 
-require('./accidentals')
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 
 // GLOBALS

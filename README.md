@@ -153,20 +153,25 @@ Musicology. Additionally, the members of the Digital and Cognitive
 Musicology Lab (DCML) have contributed valuable insights through
 discussions and user testing.
 
-## Development
+## Building the app
 
-(To be completed.)
+The app is in `/src`. Assets called by the app needs to be compiled using some front-end tooling, detailed below.
 
-The app is in `/public/index.html`. Assets called by the app needs to be compiled using some front-end tooling.
+### Development
 
-1. duplicate `.env.example` to `.env` and (optionally) edit it.
-2. `npm install` (Node > 12.13) to install all the required packages and tools.
-3. `npm run prod` to compile assets with optimizations. Alternatively:
-    - (recommended for development) `npm run watch` to compile assets and automatically reload your browser while developing;
-    - `npm run dev` to compile assets without optimizations.
-4. **Before pushing to the repository**, update the modified build (`npm run prod`).
+1. Duplicate `.env.example` to `.env` and edit it.
+2. Run `npm install` (Node > 12.13) to install all the required packages and tools.
+3. Run `npm run dev` and open the URL returned by the CLI.
+4. **After a code merge in the main branch**, update the modified build (`npm run build`) and push it, too.
 
-Various:
-- You can also enforce JavaScript syntax using `npm run lint` to check it or `npm run lint-fix` to directly fix it.
-- Run tests with `npm run test`.
-- If you need to expose some modules or variables to the global scope, see documentation and examples at the start of `src/js/app.js`.
+### Production
+
+1. Duplicate `.env.example` to `.env` and edit it.
+2. Run `npm install` (Node > 12.13) to install all the required packages and tools.
+3. Run `npm run build` to compile the app. The compiled app goes in `/public`.
+
+### Various
+
+- Files in `/src/public` are copied as is (respecting the directory structure in `/src/public`) in the build directory.
+- Lint JavaScript: `npm run lint`.
+- (currently broken) Run tests with `npm run test`.

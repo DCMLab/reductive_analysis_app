@@ -1,3 +1,4 @@
+import $ from 'jquery'
 import { polygonHull } from 'd3-polygon'
 // import fuzzysearch from 'fuzzysearch'
 

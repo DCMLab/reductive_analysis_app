@@ -1,3 +1,36 @@
+.layers-menu {
+  max-width: 50rem; // temp for development
+
+  position: relative;
+
+  transition: transform .3s $in-out-quad;
+
+  &:not(.layers-menu--visible) {
+    transform: translateX(calc(-100% - 2rem));
+
+    .hide-when-not-visible {
+      display: none;
+    }
+  }
+}
+
+.layers-menu--visible {
+  .hide-when-visible {
+    display: none;
+  }
+}
+
+.layers-menu__controls {
+  position: absolute;
+  top: 4rem;
+  right: 0;
+  transform: translateX(100%);
+
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+}
+
 .layers-menu__toggleBtn {
   size: 4rem;
   padding: 0;
@@ -44,10 +77,6 @@
     --btn-bg: #{$gallery};
     --btn-border: #{$gallery};
   }
-}
-
-.layers-menu__navIcon--next {
-  transform: rotate(180deg);
 }
 
 .layers-menu__title {

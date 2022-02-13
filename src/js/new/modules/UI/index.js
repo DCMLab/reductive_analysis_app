@@ -9,6 +9,7 @@ import zoom       from './Zoom'
 import newNote    from './Note'
 import relationWidth from './RelationWidth'
 import scoreSettings from './Score'
+import layersMenu  from './LayersMenu'
 
 class UI {
   constructor() {
@@ -29,6 +30,7 @@ class UI {
     this.navigation?.onTap(e)
     this.filters?.onTap(e)
     this.newNote?.onTap(e)
+    this.layersMenu?.onTap(e)
   }
 
   /**
@@ -78,6 +80,7 @@ class UI {
     this.newNote = newNote
     this.relationWidth = relationWidth
     this.scoreSettings = scoreSettings
+    this.layersMenu = layersMenu
   }
 }
 

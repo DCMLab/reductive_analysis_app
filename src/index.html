@@ -620,21 +620,6 @@
 
             <div class="layers-menu__controls">
 
-                <button
-                    class="layers-menu__toggleBtn | btn btn--plain flex-center"
-                    id="layers-menu-toggle"
-                    type="button"
-                >
-                    <!-- <span class="visually-hidden">Show layers menu</span> -->
-                    <!-- <span class="visually-hidden">Hide layers menu</span> -->
-                    <svg class="hide-when-visible" width="20" height="22">
-                        <use xlink:href="#layers-path"/>
-                    </svg>
-                    <svg class="hide-when-not-visible" width="11" height="11">
-                        <use xlink:href="#cross-path"/>
-                    </svg>
-                </button>
-
                 <div class="layers-menu__nav">
 
                     <h3 class="layers-menu__title"><abbr title="Layer">L</abbr>1</h3>
@@ -648,12 +633,30 @@
 
                     <button class="layers-menu__navBtn | btn" type="button">
                         <span class="visually-hidden">Next layer</span>
-                        <svg class="btn__icon layers-menu__navIcon--next" width="10" height="8">
+                        <svg class="btn__icon triangle triangle--down" width="10" height="8">
                             <use xlink:href="#triangle-path"/>
                         </svg>
                     </button>
 
                 </div>
+
+                <button
+                    class="layers-menu__toggleBtn | btn btn--plain flex-center"
+                    id="layers-menu-toggle"
+                    type="button"
+                >
+                    <!-- Show layers -->
+                    <span class="hide-when-visible visually-hidden">Show layers menu</span>
+                    <svg class="hide-when-visible" width="20" height="22">
+                        <use xlink:href="#layers-path"/>
+                    </svg>
+
+                    <!-- Hide layers -->
+                    <span class="hide-when-not-visible visually-hidden">Hide layers menu</span>
+                    <svg class="hide-when-not-visible" width="11" height="11">
+                        <use xlink:href="#cross-path"/>
+                    </svg>
+                </button>
 
             </div>
 

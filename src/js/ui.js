@@ -26,7 +26,7 @@ import {
   getDrawContexts,
 } from './app'
 
-import { do_reduce_pre, undo_reduce } from './reductions'
+import { do_reduce_pre } from './reductions'
 import { draw_hierarchy_graph } from './visualizations'
 
 import { align_tree, draw_tree, load_tree, save_tree } from './trees'
@@ -52,7 +52,7 @@ import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
 import { naturalize_notes } from './accidentals'
 import { isFieldFocused } from './new/utils/forms'
-import { doc, rootStyles } from './new/utils/document'
+import { rootStyles } from './new/utils/document'
 import { metaRelationTypes, relationTypes } from './new/modules/Relations/config'
 
 /* UI globals */
@@ -203,15 +203,6 @@ export function add_buttons(draw_context) {
   var tiedcheck = checkbox('Tied')
   tiedcheck.id = (draw_context.id_prefix + 'tiedcb')
   tiedcheck.checked = false
-  var reducebutton = button('Reduce')
-  reducebutton.classList.add('reducebutton')
-  reducebutton.id = (draw_context.id_prefix + 'reducebutton')
-  var unreducebutton = button('Unreduce')
-  unreducebutton.classList.add('unreducebutton')
-  unreducebutton.id = (draw_context.id_prefix + 'unreducebutton')
-  var playbutton = button('Play reduction')
-  playbutton.classList.add('midireducebutton')
-  playbutton.id = (draw_context.id_prefix + 'midireducebutton')
   var hierbutton = button('Show/update hierarchy')
   hierbutton.classList.add('hierarchybutton')
   hierbutton.id = (draw_context.id_prefix + 'hierarchybutton')
@@ -227,16 +218,7 @@ export function add_buttons(draw_context) {
   var edit_layer = checkbox('Edit layer')
   edit_layer.id = (draw_context.id_prefix + 'editcb')
   edit_layer.checked = false
-  unreducebutton.onclick = () => { undo_reduce(new_draw_context) }
-  reducebutton.onclick = () => { do_reduce_pre(new_draw_context) }
   newlayerbutton.onclick = () => { create_new_layer(new_draw_context, slicecheck.checked, tiedcheck.checked) }
-
-  playbutton.onclick = () => {
-    newApp.player.loadSound(
-      getReducedMidi(new_draw_context), new_draw_context.id_prefix
-    )
-    newApp.player.play()
-  }
 
   hierbutton.onclick = () => { draw_hierarchy_graph(new_draw_context, 50, hiercheck.checked) }
   hidetopbutton.onclick = () => { hide_top(new_draw_context) }
@@ -269,12 +251,6 @@ export function add_buttons(draw_context) {
     edit_layer.checked = true
   }
 
-  buttondiv.appendChild(unreducebutton)
-  buttondiv.appendChild(document.createElement('br'))
-
-  buttondiv.appendChild(reducebutton)
-  buttondiv.appendChild(document.createElement('br'))
-
   buttondiv.appendChild(newlayerbutton)
   buttondiv.appendChild(document.createElement('br'))
   buttondiv.appendChild(slicecheck)
@@ -287,10 +263,6 @@ export function add_buttons(draw_context) {
   tied_label.htmlFor = draw_context.id_prefix + 'tiedcb'
   tied_label.appendChild(document.createTextNode('Tied'))
   buttondiv.append(tied_label)
-  buttondiv.appendChild(document.createElement('br'))
-  buttondiv.appendChild(document.createElement('br'))
-
-  buttondiv.appendChild(playbutton)
   buttondiv.appendChild(document.createElement('br'))
   buttondiv.appendChild(document.createElement('br'))
 
@@ -526,7 +498,7 @@ export function do_deselect() {
   extraselected.forEach(x => toggle_selected(x, true))
 }
 
-function getReducedMidi(draw_context = null) {
+export function getReducedMidi(draw_context = null) {
   if (!draw_context) {
     draw_context = getDrawContexts()[0]
   }

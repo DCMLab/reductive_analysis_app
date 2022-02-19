@@ -5,10 +5,15 @@ import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space, cho
 
 // Each layer is represented by a <score> element in the MEI - the
 // surface being the first, and each subsequent layer making up a separate
-// <score> element. Notes that reoccur in analysed layers from the surface
+// <score> element. 
+
+// DEPRECATED: Notes that reoccur in analysed layers from the surface
 // should be connected using @copyof attributes, while the <score> elements
 // could use @sameas to indicate that they represent the same pieces of
 // music, just under different levels of abstraction.
+
+// NEW: Notes and other elements are connected to their more original
+// corresponding elements using the @corresp attribute
 
 function layer_clone_element(changes, elem, new_children) {
   const no_notes_below = new_children.findIndex(
@@ -23,11 +28,15 @@ function layer_clone_element(changes, elem, new_children) {
   if (elem.tagName == 'chord' && no_notes_below)
     return chord_to_space(mei, elem)
   var new_elem = elem.cloneNode()
+  new_elem.setAttribute('corresp', elem.getAttribute('xml:id'))
+// We no longer make a difference between copies and not-copies
+/*
   if (changes) {
     new_elem.setAttribute('corresp', elem.getAttribute('xml:id'))
   } else {
     new_elem.setAttribute('copyof', elem.getAttribute('xml:id'))
   }
+*/
   new_children.forEach((e) => new_elem.appendChild(e))
   return new_elem
 }

@@ -72,7 +72,7 @@ function obj_tree_to_xml(json_tree) {
   console.log(json_tree.note_id)
   if (json_tree.note_id) {
     var nt = mei.createElement('note')
-    nt.setAttribute('sameas', '#' + json_tree.note_id)
+    nt.setAttribute('corresp', '#' + json_tree.note_id)
     lbl.appendChild(nt)
   }
 
@@ -107,9 +107,9 @@ function xml_subtree_to_obj(elem) {
     'label': lbl.textContent,
   }
   if (lbl.children.length != 0) {
-    // Assume our structure - any label child is a note sameas
+    // Assume our structure - any label child is a note corresp
     // TODO: fix, obviously
-    obj.note_id = lbl.querySelector('note').getAttribute('sameas').replace('#', '')
+    obj.note_id = lbl.querySelector('note').getAttribute('corresp').replace('#', '')
   }
   var chlds = Array.from(elem.children)
   chlds.shift() // Get rid of the label

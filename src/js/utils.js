@@ -403,7 +403,7 @@ export function node_referred_to(id) {
 function node_to_note_id_layer(layer_context, node) {
   var id = node.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
-    getAttribute('sameas')
+    getAttribute('corresp')
   var pair = layer_context.id_mapping.find((x) => ('#' + x[1]) == id)
   if (pair)
     return pair[0]
@@ -424,7 +424,7 @@ function node_to_note_id_drawn(draw_context, note) {
 function node_to_note_id_prefix(prefix, note) {
   return note.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
-    getAttribute('sameas').replace('#', '#' + prefix)
+    getAttribute('corresp').replace('#', '#' + prefix)
 }
 
 // From MEI graph node to the ID string for its referred note.
@@ -433,7 +433,7 @@ export function node_to_note_id(note) {
     return note.getAttribute('xml:id')
   return note.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
-    getAttribute('sameas').replace('#', '')
+    getAttribute('corresp').replace('#', '')
 }
 
 // Always-positive modulo
@@ -558,7 +558,7 @@ export function add_mei_node_for(mei_graph, note) {
   // This node represent that note
   var label = mei_graph.getRootNode().createElement('label')
   var note = mei_graph.getRootNode().createElement('note')
-  note.setAttribute('sameas', '#' + id)
+  note.setAttribute('corresp', '#' + id)
   elem.appendChild(label)
   label.appendChild(note)
   // But should have a separate XML ID
@@ -764,7 +764,7 @@ function is_empty_relation(elem) {
 // Are we looking a a single note?
 function is_note_node(elem) {
   notes = elem.getElementsByTagName('note')
-  return elem.tagName = 'node' && notes.length == 1 && notes[0].getAttribute('sameas')
+  return elem.tagName == 'node' && notes.length == 1 && notes[0].getAttribute('corresp')
 }
 
 // Clean up in the graph to remove empty relations
@@ -910,7 +910,7 @@ export function prefix_ids(elem, prefix) {
   if (elem.getAttribute('xml:id')) {
     // MEI modification
     // No need to set oldid - we have already made links using
-    // copyof/sameas
+    // corresp
     elem.setAttribute('xml:id', prefix + elem.getAttribute('xml:id'))
   }
   if (elem.getAttribute('startid'))

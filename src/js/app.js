@@ -70,6 +70,7 @@ import {
   add_mei_node_for,
   check_for_duplicate_relations,
   fix_synonyms,
+  fix_corresp,
   get_by_id,
   get_by_oldid,
   get_class_from_classlist,
@@ -395,7 +396,10 @@ function load_finish(loader_modal) {
       return false
     }
   } else {
-    mei = fix_synonyms(mei)
+    // We got a MEI, it could be from a previous version of the app, so we
+    // should fix previous, now deprecated practises, if present.
+    fix_synonyms(mei)
+    fix_corresp(mei.children[0])
   }
 
   try {

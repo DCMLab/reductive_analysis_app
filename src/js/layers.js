@@ -29,8 +29,8 @@ function layer_clone_element(changes, elem, new_children) {
     return chord_to_space(mei, elem)
   var new_elem = elem.cloneNode()
   new_elem.setAttribute('corresp', elem.getAttribute('xml:id'))
-// We no longer make a difference between copies and not-copies
-/*
+  // We no longer make a difference between copies and not-copies
+  /*
   if (changes) {
     new_elem.setAttribute('corresp', elem.getAttribute('xml:id'))
   } else {

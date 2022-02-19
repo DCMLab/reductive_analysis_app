@@ -818,29 +818,28 @@ export function fix_synonyms(mei) {
 
 // sameas/copyof for layers and graphs is deprecated, all should be corresp
 export function fix_corresp(mei_elem) {
-  Array.from(mei_elem.children).forEach(fix_corresp) //recurse
+  Array.from(mei_elem.children).forEach(fix_corresp) // recurse
   let attr = mei_elem.hasAttribute('sameas') ? 'sameas' :
-             mei_elem.hasAttribute('copyof') ? 'copyof' : ''
-  if(attr){
-    if(mei_elem.closest('graph') || mei_elem.closest('eTree')){
+    mei_elem.hasAttribute('copyof') ? 'copyof' : ''
+  if (attr) {
+    if (mei_elem.closest('graph') || mei_elem.closest('eTree')) {
       // We're in the analysis, any sameas/copyof should be a corresp
       mei_elem.setAttribute('corresp', mei_elem.getAttribute(attr))
       mei_elem.removeAttribute(attr)
-    }else{
+    } else {
       // We're in a score
       let target = get_by_id(mei, mei_elem.getAttribute(attr))
-      if(target.closest('score') != mei_elem.closest('score')){
-	// TODO: Bump this check another level up (to <mdiv>) once the change
-	// goes through that that's where layers live
-	// We're referring outside the score, this is probably another layer
-	mei_elem.setAttribute('corresp', mei_elem.getAttribute(attr))
-	mei_elem.removeAttribute(attr)
+      if (target.closest('score') != mei_elem.closest('score')) {
+        // TODO: Bump this check another level up (to <mdiv>) once the change
+        // goes through that that's where layers live
+        // We're referring outside the score, this is probably another layer
+        mei_elem.setAttribute('corresp', mei_elem.getAttribute(attr))
+        mei_elem.removeAttribute(attr)
       }
     }
     // Probably a legit use of sameas/copyof
   }
 }
-
 
 var attributes = ['dur',
   'n',

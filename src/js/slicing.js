@@ -13,7 +13,7 @@ import { get_by_id, get_id, note_coords, prefix_ids } from './utils'
 // Add the notes of that slice
 //  by onset (schenkerian)
 //  or by presence, tied (protovoice)
-// Take care when adding to only add one "note" per pitch (use @sameas)
+// Take care when adding to only add one "note" per pitch (use @corresp)
 // Optionally do verticalisations
 function slicify(draw_context, score_elem, tied = false) {
   var vrvToolkit = getVerovioToolkit()

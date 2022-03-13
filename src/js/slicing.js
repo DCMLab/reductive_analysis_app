@@ -15,10 +15,11 @@ import { get_by_id, get_id, note_coords, prefix_ids } from './utils'
 //  or by presence, tied (protovoice)
 // Take care when adding to only add one "note" per pitch (use @corresp)
 // Optionally do verticalisations
-function slicify(draw_context, score_elem, tied = false) {
+function slicify(draw_context, mdiv_elem, tied = false) {
   var vrvToolkit = getVerovioToolkit()
   var mei2 = rerender_mei(true, draw_context)
   var data2 = new XMLSerializer().serializeToString(mei2)
+  var score_elem = mdiv_elem.children[0]
   vrvToolkit.loadData(data2)
   vrvToolkit.renderToMIDI()
   var notes = Array.from(mei2.getElementsByTagName('note'))
@@ -43,10 +44,13 @@ function slicify(draw_context, score_elem, tied = false) {
 
   var modified_scoreDef = score_elem.getElementsByTagName('scoreDef')[0].cloneNode(true)
   var staffDefs = modified_scoreDef.getElementsByTagName('staffDef')
+  var new_mdiv_elem = mei.createElement('mdiv')
+  new_mdiv_elem.setAttribute('xml:id', mdiv_elem.getAttribute('xml:id') + '-sliced')
   var new_score_elem = mei.createElement('score')
   new_score_elem.setAttribute('xml:id', score_elem.getAttribute('xml:id') + '-sliced')
   var new_section_elem = mei.createElement('section')
   new_section_elem.setAttribute('xml:id', score_elem.getAttribute('xml:id') + '-slicedsection')
+  new_mdiv_elem.appendChild(new_score_elem)
   new_score_elem.appendChild(modified_scoreDef)
   new_score_elem.appendChild(new_section_elem)
   var ts = Object.keys(time_id_map)
@@ -139,18 +143,19 @@ function slicify(draw_context, score_elem, tied = false) {
     }
 
   };
-  return new_score_elem
+  return new_mdiv_elem
 }
 
 export function new_sliced_layer(draw_context, tied = false) {
-  var score_elem = draw_context.mei_score
-  var new_score_elem = slicify(draw_context, score_elem, tied)
-  var n_layers = score_elem.parentElement.getElementsByTagName('score').length
+  var mdiv_elem = draw_context.mei_mdiv
+  var new_mdiv_elem = slicify(draw_context, mdiv_elem, tied)
+  // TODO: this is not entirely accurate, since there may be 
+  var n_layers = mdiv_elem.parentElement.getElementsByTagName('mdiv').length 
   var prefix = n_layers + '-' // TODO: better prefix computation
   // The - is there to not clash with view
 			     // prefixes
-  prefix_ids(new_score_elem, prefix) // Compute a better prefix
+  prefix_ids(new_mdiv_elem, prefix) // Compute a better prefix
   // Insert after the previous
-  score_elem.parentNode.insertBefore(new_score_elem, score_elem.nextSibling)
-  return new_score_elem
+  mdiv_elem.parentNode.insertBefore(new_mdiv_elem, mdiv_elem.nextSibling)
+  return new_mdiv_elem
 }

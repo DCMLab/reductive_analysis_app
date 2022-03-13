@@ -1,4 +1,5 @@
 import { CacheMap } from '../../utils/cache'
+import layersMenu from '../UI/Layers'
 
 const SELECTABLE_TYPES = ['note', 'relation', 'metarelation']
 
@@ -15,6 +16,7 @@ class Score {
   constructor() {
     this.loaded = false
     this.mei = null
+    this.layersCtn = document.getElementById('layers')
   }
 
   // `selection` uses a getter in order to flush the cache on selection change.
@@ -60,10 +62,22 @@ class Score {
     this.loaded = true
     this.mei = window.mei
     this.#cache.clear()
+    layersMenu.setCurrentLayer(1)
   }
 
   onScoreSelection({ detail }) {
     this.selection = detail
+  }
+
+  onTap(e) {
+    if (!this.loaded || !e.composedPath().includes(this.layersCtn)) { return }
+
+    // Select layer on tap (touch screens)
+
+    const layer = e.composedPath().find(el => el.classList.contains('layer'))
+    if (layer) {
+      layersMenu.setCurrentLayer(parseInt(layer.dataset.position))
+    }
   }
 }
 

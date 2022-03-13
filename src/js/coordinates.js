@@ -340,7 +340,7 @@ export function do_note(pname, oct, note, offset, id, redoing = false) {
 export function place_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
-  if (placing_note != '' && (get_by_id(document, current_draw_context.id_prefix + 'editcb').checked)) {
+  if (placing_note != '' && current_draw_context.canEdit) {
     let [pname, oct, note] = note_params()
     if (!pname)
       return
@@ -352,7 +352,7 @@ export function start_placing_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
   if (typeof (current_draw_context) != 'undefined') {
-    if (!(get_by_id(document, current_draw_context.id_prefix + 'editcb').checked))
+    if (!current_draw_context.canEdit)
       return
     let [pname, oct, note] = note_params()
     placing_note = 'temp' + random_id()
@@ -376,7 +376,7 @@ export function stop_placing_note() {
 export function toggle_placing_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
-  if ((get_by_id(document, current_draw_context.id_prefix + 'editcb').checked)) {
+  if (current_draw_context.canEdit) {
     if (placing_note) {
       stop_placing_note()
       return false
@@ -389,7 +389,7 @@ export function toggle_placing_note() {
 
 export function update_placing_note() {
   var current_draw_context = getCurrentDrawContext()
-  if (!(get_by_id(document, current_draw_context.id_prefix + 'editcb').checked)) {
+  if (!current_draw_context.canEdit) {
     return
   }
   let [pname, oct, note] = note_params()

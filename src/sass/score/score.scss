@@ -1,0 +1,26 @@
+.layer {
+  position: relative;
+  display: flex; // see comment in `.layer-intersection-landmark`
+  align-items: stretch;
+}
+
+/**
+ * This element is used for accurate IntersectionObserver measurements. It is
+ * needed because the intersection ratio of the layer containing the score
+ * is often very small because the layer is wider than the viewport. At
+ * the end, the observer fails to intersect at the defined threshold
+ * but it can be solved using an element havng the same height as
+ * a layer but a 1px width that will never mess with the ratio.
+ * The use of flex and sticky isn’t ideal but is currently a
+ * okay-temp way to intersect while panning horizontally.
+ */
+.layer-intersection-landmark {
+  order: -1;
+
+  position: sticky;
+  left: 0;
+
+  width: 1px;
+
+  pointer-events: none;
+}

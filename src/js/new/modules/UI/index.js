@@ -9,7 +9,7 @@ import zoom       from './Zoom'
 import newNote    from './Note'
 import relationWidth from './RelationWidth'
 import scoreSettings from './Score'
-import layersMenu  from './LayersMenu'
+import layersMenu from './Layers'
 
 class UI {
   constructor() {
@@ -61,6 +61,7 @@ class UI {
   onScoreLoad(e) {
     this.filters?.onScoreLoad(e)
     this.metadata?.onScoreLoad(e)
+    this.layersMenu?.onScoreLoad(e)
   }
 
   onScoreSelection({ detail }) {

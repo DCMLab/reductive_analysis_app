@@ -929,6 +929,7 @@ export function new_layer_element() {
   var new_layer = document.createElement('div')
   new_layer.id = 'layer' + layers_element.children.length
   new_layer.classList.add('layer')
+  new_layer.classList.add('layer-new-ui')
   layers_element.appendChild(new_layer)
   return new_layer
 }
@@ -958,24 +959,6 @@ export function button(value) {
   button.setAttribute('type', 'button')
   button.setAttribute('value', value)
   return button
-}
-
-export function indicate_current_context() {
-  // Visually indicate the current context. This cannot be done in CSS alone
-  // because the relations palette is not a child of .view elements.
-  // TODO: Find a more economical solution. This is becoming a hefty `onmousemove`.
-  // Note regarding this 👆: could maybe changed on mouseenter of the view. To test: apply `pointer-events: none;` (CSS) on direct children (or on all children) of non-active views, so that mouseenter doesn’t reach children elements of the view.
-  var current_draw_context = getCurrentDrawContext()
-  if (!(typeof (current_draw_context) == 'undefined')) {
-
-    // Lighten the background of the current context.
-    $('.view').removeClass('view--active')
-    current_draw_context.view_elem.classList.add('view--active')
-
-    // Mark the sidebar of the current context.
-    $('.sidebar').removeClass('sidebar_active')
-    current_draw_context.view_elem.children[0].classList.add('sidebar_active')
-  }
 }
 
 function sanitize_mei(mei) {
@@ -1036,9 +1019,5 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
 }
 
 export function draw_context_of(elem) {
-  var dc = getDrawContexts().filter((dc) => dc.svg_elem.contains(elem))
-  if (dc.length == 0)
-    return null
-  else
-    return dc[0]
+  return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }

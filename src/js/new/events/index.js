@@ -59,6 +59,7 @@ class EventsManager {
   // Click event. It can happen with mouse and touch, so better name it tap!
 
   onTap(e) {
+    this.app.score?.onTap(e)
     this.app.player?.onTap(e)
     this.app.ui?.onTap(e)
     this.app.history?.onTap(e)
@@ -112,6 +113,7 @@ class EventsManager {
     this.app.ui?.mainMenu?.onChange(e)
     this.app.ui?.startScreen?.onChange(e)
     this.app.ui?.selection?.mode?.onChange(e)
+    this.app.ui?.layersMenu?.onChange(e)
   }
 
   onInput(e) {
@@ -120,6 +122,7 @@ class EventsManager {
 
   onSubmit(e) {
     this.app.ui?.relations?.onSubmit(e)
+    this.app.ui?.layersMenu?.jsonTree?.onSubmit(e)
   }
 
   // App custom events

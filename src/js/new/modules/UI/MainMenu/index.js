@@ -1,7 +1,7 @@
 /**
  * @todo This main menu, the filters menu and the metadata menu have in common
  * the same way to expand and collapse. It could be good to have a class in
- * ordet to do that (e.g. CollapsibleFlyOut extending the FlyOut class).
+ * order to do that (e.g. CollapsibleFlyOut extending the FlyOut class).
  */
 
 import { load, savesvg, save_orig } from '../../../../app'

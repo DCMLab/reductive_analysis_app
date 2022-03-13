@@ -26,7 +26,6 @@ import { new_sliced_layer } from './slicing'
 import { draw_relation, draw_metarelation } from './draw'
 
 import {
-  add_buttons,
   drag_selector_installer,
   handle_click,
   handle_keydown,
@@ -51,7 +50,6 @@ import {
   get_id_pairs,
   id_in_svg,
   id_or_oldid,
-  indicate_current_context,
   mark_secondaries,
   new_layer_element,
   new_view_elements,
@@ -265,7 +263,7 @@ function save() {
 export function save_orig() {
   var mei_clone = mei.cloneNode(true)
   for (var dc of draw_contexts) {
-    if (!(get_by_id(document, dc.id_prefix + 'savecb').checked)) {
+    if (!dc.canSave) {
       console.log('Trying to remove layer', dc)
       var layer_elem = get_by_id(mei_clone, dc.mei_score.getAttribute('xml:id'))
       layer_elem.parentElement.removeChild(layer_elem)
@@ -297,9 +295,12 @@ export function load(event) {
       data = reader.result
       load_finish(null)
       music_tooltip_installer()
-      indicate_current_context()
     }
     reader.readAsText(files[0])
+
+    /**
+     * move this to the MAIN MENU
+     */
     filename = files[0].name.split('.').slice(0, -1).join('.')
     if (filename == '')
       filename = files[0].name
@@ -410,21 +411,31 @@ function load_finish(loader_modal) {
       'number_of_views': 1
     }
 
+    const isFirstLayer = i == 0
+
     layer_contexts.push(layer_context)
     var draw_context = {
       // TODO: One draw context per existing score element
       // already on load.
-      'mei_score': score_elem,
-      'svg_elem': svg_element,
-      'view_elem': view_element,
-      'layer': layer_context,
-      'layer_number': 0,
-      'view_number': 0,
-      'id_prefix': '',
-      'zoom': 1,
-      'reductions': [] }
+      mei_score: score_elem,
+      svg_elem: svg_element,
+      view_elem: view_element,
+      layer: layer_context,
+      layer_number: 0,
+      id_prefix: '',
+      zoom: 1,
+      reductions: [],
 
-    if (i == 0) {
+      // first layer is always saved and never editable
+      forceSaveLayer: isFirstLayer,
+      lockLayer: isFirstLayer,
+
+      // by default, all layers are saved and editable, but the first isn’t editable
+      canSave: true,
+      canEdit: !isFirstLayer,
+    }
+
+    if (isFirstLayer) {
       midi = vrvToolkit.renderToMIDI()
       orig_midi = midi
     } else
@@ -514,15 +525,20 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   var new_draw_context = {
     // TODO: One draw context per existing score element
     // already on load.
-    'mei_score': new_score_elem,
-    'svg_elem': new_svg_elem,
-    'view_elem': new_view_elem,
-    'layer': layer_context,
-    'layer_number': layer_context.layer_number,
-    'view_number': 0,
-    'id_prefix': '',
-    'zoom': 1,
-    'reductions': [] }
+    mei_score: new_score_elem,
+    svg_elem: new_svg_elem,
+    view_elem: new_view_elem,
+    layer: layer_context,
+    layer_number: layer_context.layer_number,
+    id_prefix: '',
+    zoom: 1,
+    reductions: [],
+
+    forceSaveLayer: false,
+    lockLayer: false,
+    canSave: true,
+    canEdit: true,
+  }
 
   // prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length
@@ -530,21 +546,21 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
 }
 
 function finalize_draw_context(new_draw_context) {
-
   new_draw_context.measure_map = compute_measure_map(new_draw_context)
   draw_contexts.reverse()
   draw_contexts.push(new_draw_context)
   draw_contexts.reverse()
-  add_buttons(new_draw_context)
   for (let n of new_draw_context.svg_elem.getElementsByClassName('note')) {
     n.onclick = () => toggle_selected(n)
   }
+  console.groupCollapsed('notes output from `pitch_grid()`')
   for (let s of new_draw_context.svg_elem.getElementsByClassName('staff')) {
     // TODO: handle staves with no notes in them
     let [y_to_p, p_to_y] = pitch_grid(s)
     s.y_to_p = y_to_p
     s.p_to_y = p_to_y
   }
+  console.groupEnd()
   draw_graph(new_draw_context)
   minimap()
 }
@@ -579,10 +595,12 @@ function render_mei(mei) {
     'view_elem': new_view_elem,
     'layer': draw_context.layer,
     'layer_number': draw_context.layer.layer_number,
-    'view_number': draw_context.layer.number_of_views - 1,
     'id_prefix': '',
     'zoom': 1,
-    'reductions': [] }
+    'reductions': []
+
+    // if this function 👆 is uncommented: add `forceSaveLayer`, `lockLayer`, `canSave` and `canEdit`
+  }
 
   new_draw_context.id_prefix = draw_contexts.length
   prefix_ids(new_draw_context.svg_elem, new_draw_context.id_prefix)

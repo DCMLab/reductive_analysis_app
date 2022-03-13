@@ -73,7 +73,7 @@ export function do_paste() {
     }
   }
 
-  let dc = draw_context_of(sel[0])
+  const dc = draw_context_of(sel[0])
   toggle_selected(sel[0])
   for (var r of copy.rels) {
     let rel = get_by_id(mei, get_id(r))

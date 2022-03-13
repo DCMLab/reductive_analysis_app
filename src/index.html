@@ -622,16 +622,16 @@
 
                 <div class="layers-menu__nav">
 
-                    <h3 class="layers-menu__title"><abbr title="Layer">L</abbr>1</h3>
+                    <span class="layers-menu__visibleLayer" id="visible-layer">1</span>
 
-                    <button class="layers-menu__navBtn | btn" type="button">
+                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-previous">
                         <span class="visually-hidden">Previous layer</span>
                         <svg class="btn__icon" width="10" height="8">
                             <use xlink:href="#triangle-path"/>
                         </svg>
                     </button>
 
-                    <button class="layers-menu__navBtn | btn" type="button">
+                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-next">
                         <span class="visually-hidden">Next layer</span>
                         <svg class="btn__icon triangle triangle--down" width="10" height="8">
                             <use xlink:href="#triangle-path"/>
@@ -665,14 +665,16 @@
 
             <div id="main-menu" class="fly-out fly-out--dark  fly-out--layers-menu">
 
-                <div class="fly-out__inner" style="--fly-out-max-height: 51.4rem;">
-                    <!-- <h4 class="fly-out__title">File</h4> -->
+                <div class="fly-out__inner" style="--fly-out-max-height: 40rem;">
+                    <div class="layers-menu__layerTitle | fly-out__headerRow">
+                        <h4 class="fly-out__title fly-out__title--big">Current layer: <span id="current-layer">1</span></h4>
+                    </div>
 
-                    <div id="layer-menu-new" class="btn-group">
+                    <!-- Should save layer and can edit it. Not available for the first layer. -->
+                    <div id="layer-menu-settings" class="layers-menu__saveSettings">
 
-                        <!-- Save the layer: only starting the second layer -->
                         <label class="checkable" for="should-save-layer">
-                            Save the layer
+                            Save this layer
                             <input class="checkable__input" type="checkbox" id="should-save-layer">
                             <span class="checkbox">
                                 <svg class="checkable__icon btn__icon" width="12" height="10">
@@ -688,6 +690,14 @@
                                 <use xlink:href="#lock-path"/>
                             </svg>
                         </button>
+
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+
+                    <!-- New layer settings. Only shows starting the second layer. -->
+                    <div id="layer-menu-new" class="btn-group">
 
                         <label class="checkable" for="layer-sliced">
                             Sliced
@@ -741,7 +751,7 @@
 
                     <!-- Hierarchy tree visibility -->
 
-                    <div>
+                    <div class="btn-group">
                         <label class="checkable" for="relations-tree-roots-low">
                             Draw roots low
                             <input class="checkable__input" type="checkbox" id="relations-tree-roots-low">
@@ -774,26 +784,29 @@
                         </div>
                     </div>
 
+                    <hr class="fly-out__hr">
 
-                    <!-- <hr class="fly-out__hr"> -->
+                    <form class="ssbtn-group ssbtn-group--free-field" id="json-tree-form">
+                        Draw tree <!-- turn this into a heading -->
 
-                    <!-- <form class="btn-group btn-group--free-field" id="json-tree"> -->
-                        <!-- Draw tree --> <!-- turn this into a heading -->
+                        <div class="btn-group btn-group--free-field">
+                            <label class="fillable fly-out__relationsField" for="json-tree">
+                                <span class="visually-hidden">Draw tree</span>
 
-                        <!-- <label class="fillable fly-out__relationsField" for="json-tree">
-                            <span class="visually-hidden">Draw tree</span>
+                                <!-- @todo transform into a textarea in a modal, actually move the whole feature into a modal because JSON editing requires a bit of space -->
+                                <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree" required>
+                            </label>
 
-                            <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree">
-                        </label>
+                            <button class="btn btn--plain btn--small">Draw</button>
+                        </div>
 
-                        <button class="btn btn--plain btn--small">Draw</button>
+                        <div class="btn-group">
+                            <button id="json-tree-save" class="btn btn--plain btn--small" type="button">Save tree</button>
+                            <button id="json-tree-load" class="btn btn--plain btn--small" type="button">Load tree</button>
+                            <button id="json-tree-align" class="btn btn--plain btn--small" type="button">Align tree to selection</button>
+                        </div>
+
                     </form>
-
-                    <div class="btn-group">
-                        <button id="" class="btn btn--plain btn--small" type="button">Save tree</button>
-                        <button id="" class="btn btn--plain btn--small" type="button">Load tree</button>
-                        <button id="" class="btn btn--plain btn--small" type="button">Align tree to selection</button>
-                    </div> -->
 
                 </div>
 

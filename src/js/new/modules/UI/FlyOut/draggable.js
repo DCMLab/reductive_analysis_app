@@ -53,8 +53,8 @@ export default class DraggableFlyOut extends FlyOut {
   updatePosition(x = this.x, y = this.y) {
     this.x = x - this.ctn.handleDeltaX
     this.y = y - this.ctn.handleDeltaY
-    this.ctn.el.style.setProperty('--fly-out-x', pxToRem(this.x))
-    this.ctn.el.style.setProperty('--fly-out-y', pxToRem(this.y))
+    this.ctn.el.style.setProperty('--fly-out-x', pxToRem(this.x, 2))
+    this.ctn.el.style.setProperty('--fly-out-y', pxToRem(this.y, 2))
   }
 
   toggleDragging(state = !this.#dragging) {

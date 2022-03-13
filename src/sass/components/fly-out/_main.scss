@@ -1,5 +1,6 @@
 .fly-out {
   position: relative;
+  display: flow-root; // prevent margin collapse on first children
   padding-block-end: v(fly-out-inner-space, 2rem);
 
   background: v(fly-out-bg, $cod-gray);

@@ -69,8 +69,7 @@ html {
   background: v(bg);
   color: v(primary);
 
-  scroll-behavior: smooth;
-
+  // Use variable font if supported.
   @supports (font-variation-settings: normal) {
     font-family: $body-font;
   }
@@ -78,6 +77,10 @@ html {
   // @media (--tablet-9) {
     font-size: 62.5%;
   // }
+
+  @media (--motion) {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

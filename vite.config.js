@@ -26,6 +26,7 @@ const esLintOptions = {
 
 export default defineConfig({
   root: 'src',
+
   build: {
     envDir: './',
     outDir: `../${outDir}`,
@@ -44,13 +45,20 @@ export default defineConfig({
       // ],
     }
   },
+
   // envPrefix: ['VITE_'],
+
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
     },
   },
+
   plugins: [
     ...(isProd ? [] : [eslintPlugin(esLintOptions)]),
   ],
+
+  server: {
+    open: env.BROWSER_OPEN == 'true',
+  },
 })

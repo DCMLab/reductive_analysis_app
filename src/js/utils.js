@@ -404,7 +404,7 @@ export function node_referred_to(id) {
 function node_to_note_id_layer(layer_context, node) {
   var id = node.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
-    getAttribute('sameas')
+    getAttribute('corresp')
   var pair = layer_context.id_mapping.find((x) => ('#' + x[1]) == id)
   if (pair)
     return pair[0]
@@ -425,7 +425,7 @@ function node_to_note_id_drawn(draw_context, note) {
 function node_to_note_id_prefix(prefix, note) {
   return note.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
-    getAttribute('sameas').replace('#', '#' + prefix)
+    getAttribute('corresp').replace('#', '#' + prefix)
 }
 
 // From MEI graph node to the ID string for its referred note.
@@ -434,7 +434,7 @@ export function node_to_note_id(note) {
     return note.getAttribute('xml:id')
   return note.getElementsByTagName('label')[0].
     getElementsByTagName('note')[0].
-    getAttribute('sameas').replace('#', '')
+    getAttribute('corresp').replace('#', '')
 }
 
 // Always-positive modulo
@@ -559,7 +559,7 @@ export function add_mei_node_for(mei_graph, note) {
   // This node represent that note
   var label = mei_graph.getRootNode().createElement('label')
   var note = mei_graph.getRootNode().createElement('note')
-  note.setAttribute('sameas', '#' + id)
+  note.setAttribute('corresp', '#' + id)
   elem.appendChild(label)
   label.appendChild(note)
   // But should have a separate XML ID
@@ -765,7 +765,7 @@ function is_empty_relation(elem) {
 // Are we looking a a single note?
 function is_note_node(elem) {
   notes = elem.getElementsByTagName('note')
-  return elem.tagName = 'node' && notes.length == 1 && notes[0].getAttribute('sameas')
+  return elem.tagName == 'node' && notes.length == 1 && notes[0].getAttribute('corresp')
 }
 
 // Clean up in the graph to remove empty relations
@@ -815,6 +815,65 @@ export function fix_synonyms(mei) {
       elem.setAttribute('type', 'metarelation')
   })
   return mei
+}
+
+// sameas/copyof for layers and graphs is deprecated, all should be corresp
+export function fix_corresp(mei_elem) {
+  Array.from(mei_elem.children).forEach(fix_corresp) // recurse
+  let attr = mei_elem.hasAttribute('sameas') ? 'sameas' :
+    mei_elem.hasAttribute('copyof') ? 'copyof' : ''
+  if (attr) {
+    if (mei_elem.closest('graph') || mei_elem.closest('eTree')) {
+      // We're in the analysis, any sameas/copyof should be a corresp
+      mei_elem.setAttribute('corresp', mei_elem.getAttribute(attr))
+      mei_elem.removeAttribute(attr)
+    } else {
+      // We're in a score
+      let target = get_by_id(mei, mei_elem.getAttribute(attr))
+      if (target.closest('score') != mei_elem.closest('score')) {
+        // TODO: Bump this check another level up (to <mdiv>) once the change
+        // goes through that that's where layers live
+        // We're referring outside the score, this is probably another layer
+        mei_elem.setAttribute('corresp', mei_elem.getAttribute(attr))
+        mei_elem.removeAttribute(attr)
+      }
+    }
+    // Probably a legit use of sameas/copyof
+  }
+}
+
+export function fix_layers(mei) {
+  // Find all mdivs
+  // If they have more than one score among its children (i.e. the app did it)
+  // For each score
+  // Create a new mdiv for the score and move it
+  Array.from(mei.getElementsByTagName('mdiv')).forEach((mdiv_elem) => {
+    let prefix_re = /(\d+)-.*/
+    let sliced_re = /-sliced$/
+    let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')
+    if (scs.length > 1) {
+      let mdiv_id = mdiv_elem.getAttribute('xml:id')
+      for (scix in scs) {
+	  if (scix == 0)
+	    continue
+	  let score_elem = scs[scix]
+	  let score_id = score_elem.getAttribute('xml:id')
+	  if (prefix_re.test(score_id)) {
+	    // We almost certainly have a layer thingy
+	    let score_prefix = prefix_re.exec(score_id)[1]
+	    let mdiv_id = score_prefix + '-' + mdiv_id
+	    var new_mdiv_elem = mei.createElement('mdiv')
+	    if (sliced_re.test(score_id))
+	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
+	    else 
+	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
+	    mdiv_elem.parentElement.append(new_mdiv_elem)
+	    new_mdiv_elem.append(score_elem)
+	  }
+      }
+
+    }
+  })
 }
 
 var attributes = ['dur',
@@ -885,7 +944,7 @@ export function prefix_ids(elem, prefix) {
   if (elem.getAttribute('xml:id')) {
     // MEI modification
     // No need to set oldid - we have already made links using
-    // copyof/sameas
+    // corresp
     elem.setAttribute('xml:id', prefix + elem.getAttribute('xml:id'))
   }
   if (elem.getAttribute('startid'))

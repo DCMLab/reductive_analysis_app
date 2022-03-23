@@ -43,6 +43,8 @@ import {
   add_mei_node_for,
   check_for_duplicate_relations,
   fix_synonyms,
+  fix_corresp,
+  fix_layers,
   get_by_id,
   get_by_oldid,
   get_class_from_classlist,
@@ -265,7 +267,7 @@ export function save_orig() {
   for (var dc of draw_contexts) {
     if (!dc.canSave) {
       console.log('Trying to remove layer', dc)
-      var layer_elem = get_by_id(mei_clone, dc.mei_score.getAttribute('xml:id'))
+      var layer_elem = get_by_id(mei_clone, dc.mei_mdiv.getAttribute('xml:id'))
       layer_elem.parentElement.removeChild(layer_elem)
       console.log('Found and tried to remove ', layer_elem)
     }
@@ -369,7 +371,11 @@ function load_finish(loader_modal) {
       return false
     }
   } else {
-    mei = fix_synonyms(mei)
+    // We got a MEI, it could be from a previous version of the app, so we
+    // should fix previous, now deprecated practises, if present.
+    fix_synonyms(mei)
+    fix_corresp(mei.children[0])
+    fix_layers(mei)
   }
 
   try {
@@ -389,10 +395,11 @@ function load_finish(loader_modal) {
   draw_contexts.hullPadding = 200
 
   // Segment existing layers
-  var layers = Array.from(mei.getElementsByTagName('body')[0].getElementsByTagName('score'))
+  var layers = Array.from(mei.getElementsByTagName('body')[0].getElementsByTagName('mdiv'))
   for (let i in layers) {
-    let score_elem = layers[i]
-    let new_mei = mei_for_layer(mei, score_elem)
+    let mdiv_elem = layers[i]
+    let score_elem = mdiv_elem.children[0]
+    let new_mei = mei_for_layer(mei, mdiv_elem)
     let [new_data, new_svg] = render_mei(new_mei)
     if (!new_svg) {
       console.log('Verovio could not generate SVG from MEI.')
@@ -406,8 +413,9 @@ function load_finish(loader_modal) {
       'mei': new_mei,
       'layer_elem': layer_element,
       'layer_number': 0,
+      'mdiv_elem': mdiv_elem,
       'score_elem': score_elem,
-      'id_mapping': get_id_pairs(score_elem),
+      'id_mapping': get_id_pairs(mdiv_elem),
       'number_of_views': 1
     }
 
@@ -417,6 +425,8 @@ function load_finish(loader_modal) {
     var draw_context = {
       // TODO: One draw context per existing score element
       // already on load.
+
+      mei_mdiv: mdiv_elem,
       mei_score: score_elem,
       svg_elem: svg_element,
       view_elem: view_element,
@@ -468,7 +478,7 @@ function load_finish(loader_modal) {
 export function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
 //  var mei = draw_context.mei;
   var svg_elem = draw_context.svg_elem
-  var mei2 = mei_for_layer(mei, draw_context.layer.score_elem)
+  var mei2 = mei_for_layer(mei, draw_context.layer.mdiv_elem)
 
   Array.from(mei2.getElementsByTagName('note')).forEach((n) => {
     let x = document.getElementById(id_in_svg(draw_context, get_id(n)))
@@ -498,12 +508,13 @@ export function rerender_mei(replace_with_rests = false, draw_context = draw_con
 }
 
 export function create_new_layer(draw_context, sliced = false, tied = false) {
-  var new_score_elem
+  var new_mdiv_elem
   if (sliced)
-    new_score_elem = new_sliced_layer(draw_context, tied)
+    new_mdiv_elem = new_sliced_layer(draw_context, tied)
   else
-    new_score_elem = new_layer(draw_context)
-  let new_mei = mei_for_layer(mei, new_score_elem)
+    new_mdiv_elem = new_layer(draw_context)
+  let new_score_elem = new_mdiv_elem.children[0]
+  let new_mei = mei_for_layer(mei, new_mdiv_elem)
   var [new_data, new_svg] = render_mei(new_mei)
   if (!new_svg) {
     console.log('Verovio could not generate SVG from MEI.')
@@ -517,8 +528,9 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     'mei': new_mei,
     'layer_elem': layer_element,
     'layer_number': layer_contexts.length,
+    'mdiv_elem': new_mdiv_elem,
     'score_elem': new_score_elem,
-    'id_mapping': get_id_pairs(new_score_elem),
+    'id_mapping': get_id_pairs(new_mdiv_elem),
     'number_of_views': 1,
   }
   layer_contexts.push(layer_context)
@@ -526,6 +538,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     // TODO: One draw context per existing score element
     // already on load.
     mei_score: new_score_elem,
+    mei_mdiv: new_mdiv_elem,
     svg_elem: new_svg_elem,
     view_elem: new_view_elem,
     layer: layer_context,

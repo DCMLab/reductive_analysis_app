@@ -58,16 +58,17 @@ export function new_layer(draw_context = null) {
   if (!draw_context) {
     draw_context = getDrawContexts()[0]
   }
-  var score_elem = draw_context.mei_score
-  var [new_score_elem, changed] = layerify(draw_context, score_elem)
-  var n_layers = score_elem.parentElement.getElementsByTagName('score').length
+  var mdiv_elem = draw_context.mei_mdiv
+  var score_elem = mdiv_elem.children[0]
+  var [new_mdiv_elem, changed] = layerify(draw_context, mdiv_elem)
+  var n_layers = mdiv_elem.parentElement.getElementsByTagName('mdiv').length
   var prefix = n_layers + '-' // TODO: better prefix computation
   // The - is there to not clash with view
 			     // prefixes
 
-  prefix_ids(new_score_elem, prefix) // Compute a better prefix
+  prefix_ids(new_mdiv_elem, prefix) // Compute a better prefix
   // Insert after the previous
-  score_elem.parentNode.insertBefore(new_score_elem, score_elem.nextSibling)
+  mdiv_elem.parentNode.insertBefore(new_mdiv_elem, mdiv_elem.nextSibling)
   // The basic algorithm is to take the last score element (if we're doing
   // a linear order of layers, otherwise we need the score element to build
   // off of to be given as an argument), to clone it using cloneNode(), and
@@ -91,26 +92,26 @@ export function new_layer(draw_context = null) {
   // tree address in preparation of hierarchical layer arrangements) and
   // attach it as a sibling to the previous score element, and potentially
   // modify the scoreDef appropriately.
-  return new_score_elem
+  return new_mdiv_elem
 }
 
-export function mei_for_layer(mei, score_elem) {
-  if (!mei.contains(score_elem)) {
-    console.log('Score element not in MEI, aborting')
+export function mei_for_layer(mei, mdiv_elem) {
+  if (!mei.contains(mdiv_elem)) {
+    console.log('MDiv element not in MEI, aborting')
     return null
   }
   var new_mei = clone_mei(mei)
-  var our_score
-  if (!score_elem.hasAttribute('xml:id'))
-    our_score = new_mei.getElementsByTagName('score')[0]
+  var our_mdiv
+  if (!mdiv_elem.hasAttribute('xml:id'))
+    our_mdiv = new_mei.getElementsByTagName('mdiv')[0]
   else
-    our_score = get_by_id(new_mei, score_elem.getAttribute('xml:id'))
-  var paren = our_score.parentElement
-  for (let score of Array.from(paren.getElementsByTagName('score'))) {
-    if (score === our_score)
+    our_mdiv = get_by_id(new_mei, mdiv_elem.getAttribute('xml:id'))
+  var paren = our_mdiv.parentElement
+  for (let mdiv of Array.from(paren.getElementsByTagName('mdiv'))) {
+    if (mdiv === our_mdiv)
       continue
     else
-      paren.removeChild(score)
+      paren.removeChild(mdiv)
   }
   return new_mei
 }

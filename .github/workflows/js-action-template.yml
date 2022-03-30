@@ -1,9 +1,0 @@
-on: workflow_dispatch
-
-jobs:
-    prepend_license:
-        runs-on: ubuntu-latest
-        name: Prepend license to every relevant file.
-        steps:
-            - uses: actions/checkout@v2
-            - uses: DCMLab/add-file-header-action@v1

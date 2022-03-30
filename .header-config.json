@@ -1,0 +1,35 @@
+{
+    "srcFolders": ["./"],
+    "rules": [
+        {
+            "match": [".*\\.html"],
+            "skipIfContains": "MuseReduce is free software",
+            "comments": {
+                "start": "<!--",
+                "line": "   ~ ",
+                "end": "-->"
+            },
+            "content": "default_license_header.txt"
+        },
+        {
+            "match": [".*\\.js"],
+            "skipIfContains": "MuseReduce is free software",
+            "comments": {
+                "start": "/*",
+                "line": "   ~ ",
+                "end": "*/"
+            },
+            "content": "default_license_header.txt"
+        },
+        {
+            "match": [".*\\.scss"],
+            "skipIfContains": "MuseReduce is free software",
+            "comments": {
+                "start": "/*",
+                "line": "   ~ ",
+                "end": "*/"
+            },
+            "content": "default_license_header.txt"
+        }
+    ]
+}

@@ -53,6 +53,7 @@ import { draw_relation, draw_metarelation } from './draw'
 
 import {
   add_buttons,
+  getCurrentDrawContext,
   drag_selector_installer,
   handle_click,
   handle_keydown,
@@ -307,7 +308,8 @@ export function save_orig() {
 
 // Download the current SVG, including graph elements
 export function savesvg() {
-  var saved = new XMLSerializer().serializeToString($('#svg_output')[0])
+  var dc = getCurrentDrawContext()
+  var saved = new XMLSerializer().serializeToString(dc.svg_elem.children[0])
   downloadAs(saved, filename + '.svg', 'text/xml')
 }
 

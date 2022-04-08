@@ -49,6 +49,7 @@
     "dotenv": "^8",
     "double-dash.scss": "^0.8",
     "easings.scss": "^0.3",
+    "esbuild": "0.14.21",
     "eslint": "^8",
     "eslint-formatter-codeframe": "^7.32.1",
     "family.scss": "^1.0",
@@ -66,7 +67,7 @@
     "puppeteer": "^7.1.0",
     "sass": "^1.49.0",
     "v.scss": "^1.2.1",
-    "vite": "^2.8",
+    "vite": "~2.8.0",
     "vite-plugin-eslint": "^1.3.0"
   }
 }

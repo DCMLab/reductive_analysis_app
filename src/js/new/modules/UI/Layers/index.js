@@ -53,6 +53,7 @@ class LayersMenu {
     if (e.target == this.previousLayerBtn) { return this.moveBy(-1) }
 
     if (e.target == this.$lockBtn) { return this.toggleLock() }
+    if (e.target == this.$shouldSave) { return this.toggleSave() }
 
     this.new.onTap(e)
 
@@ -97,6 +98,7 @@ class LayersMenu {
       this.activeLayer = layerPosition
       this.updateLayersCount()
       this.checkLockState(layer.canEdit)
+      this.checkSaveState(layer.canSave)
       this.tree.updateToggles(layer)
     }
   }
@@ -195,6 +197,16 @@ class LayersMenu {
 
   markAsCurrent(e) {
     this.setCurrentLayer(parseInt(e.target.dataset.position))
+  }
+
+  toggleSave(state = !getCurrentDrawContext().canSave) {
+    getCurrentDrawContext().canSave = state
+    this.checkSaveState(state)
+  }
+
+  // Only the “visible” one
+  checkSaveState(state) {
+    this.$shouldSave.checked = state
   }
 
   toggleLock(state = !getCurrentDrawContext().canEdit) {

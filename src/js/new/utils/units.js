@@ -1,4 +1,4 @@
-import { round } from "./math";
+import { round } from './math'
 
 /**
  * Amount of pixels to make 1 rem.

@@ -57,11 +57,7 @@ class LayersMenu {
 
     this.new.onTap(e)
 
-    // Update `data-position` attribute based on DOM order.
-    Array.from(this.layersEls).forEach((layer, index) => {
-      layer.dataset.position = index + 1
-    })
-
+    this.setDataPosition()
     this.addMouseListeners()
     this.observe()
     this.updateNavigation()
@@ -80,6 +76,7 @@ class LayersMenu {
 
   onScoreLoad() {
     this.addMouseListeners()
+    this.setDataPosition()
     this.updateLayersCount()
     this.tree.onScoreLoad()
   }
@@ -87,6 +84,13 @@ class LayersMenu {
   toggleVisibility(state = !this.#visible) {
     this.#visible = state
     this.ctn.classList.toggle('layers-menu--visible', state)
+  }
+
+  // Update `data-position` attribute based on DOM order.
+  setDataPosition() {
+    Array.from(this.layersEls).forEach((layer, index) => {
+      layer.dataset.position = index + 1
+    })
   }
 
   setCurrentLayer(layerPosition = 1) {

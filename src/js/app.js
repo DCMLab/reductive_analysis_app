@@ -664,8 +664,6 @@ function initialize_panel() {
     ['add_bookmark', 'addbookmarkbutton'],
     ['jump_to_next_bookmark', 'previousbookmarkbutton'],
     ['jump_to_previous_bookmark', 'nextbookmarkbutton'],
-    ['jump_to_context_below', 'previouscontextbutton'],
-    ['jump_to_context_above', 'nextcontextbutton']
   ]
 
   buttons.forEach(b => document.getElementById(b[1]) .setAttribute('title',

@@ -23,8 +23,8 @@ export const navigation_conf = {
   'pan_right':                  ']',
   'jump_to_next_bookmark':      '{',
   'jump_to_previous_bookmark':  '}',
-  'jump_to_context_below':      ',',
-  'jump_to_context_above':      '.',
+  'jump_to_context_below':      ',', // next layer
+  'jump_to_context_above':      '.', // previous layer
   'toggle_palette':             '-',
   // 'zoom_out':                   '(',
   // 'zoom_in':                    ')',

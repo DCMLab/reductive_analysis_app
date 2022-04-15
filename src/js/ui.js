@@ -245,10 +245,6 @@ export function handle_keypress(ev) {
     jump_to_adjacent_bookmark(-1)
   } else if (ev.key == navigation_conf.jump_to_previous_bookmark) { // Jump to next bookmark in current context.
     jump_to_adjacent_bookmark(+1)
-  } else if (ev.key == navigation_conf.jump_to_context_below) { // Jump to next context.
-    jump_to_adjacent_context(+1)
-  } else if (ev.key == navigation_conf.jump_to_context_above) { // Jump to previous context.
-    jump_to_adjacent_context(-1)
   } else if (ev.key == action_conf.deselect_all) { // Deselect all.
     do_deselect()
   } else if (ev.key == action_conf.delete_all) { // Delete relations.
@@ -649,31 +645,6 @@ previousBookmarkButton.addEventListener('click', () => jump_to_adjacent_bookmark
 
 const nextBookmarkButton = document.getElementById('nextbookmarkbutton')
 nextBookmarkButton.addEventListener('click', () => jump_to_adjacent_bookmark(1))
-
-export function jump_to_adjacent_context(direction = 1) {
-  function moveTo(el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
-  }
-
-  var contexts = getDrawContexts().sort((a, b) => a.view_elem.getBoundingClientRect().y - b.view_elem.getBoundingClientRect().y)
-
-  var contexts_map_y = contexts.map(c => c.view_elem.getBoundingClientRect().y)
-  var contexts_map_bottom = contexts.map(c => c.view_elem.getBoundingClientRect().bottom)
-
-  var element_index
-  if (direction == 1) {
-    element_index = contexts_map_bottom.findIndex(c => c > window.innerHeight)
-  } else if (direction == -1) {
-    element_index = contexts_map_y.filter(c => c < 0).length - 1
-  } else return false
-  if (element_index != -1) moveTo(contexts[element_index].view_elem)
-}
-
-const previousContextButton = document.getElementById('previouscontextbutton')
-previousContextButton.addEventListener('click', () => jump_to_adjacent_context(-1))
-
-const nextContextButton = document.getElementById('nextcontextbutton')
-nextContextButton.addEventListener('click', () => jump_to_adjacent_context(1))
 
 function hide_orphan_notes() {
   var mei_graph = getMeiGraph()

@@ -10,7 +10,6 @@ import {
   relationTypes,
   metaRelationTypes,
   comboRelationTypes,
-  menuOrderByType,
   getMenuOrder,
 } from '../../Relations/config'
 

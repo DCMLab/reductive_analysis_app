@@ -2,7 +2,7 @@
  * The order in which the groups of relations are presented in the relations
  * menu for a given selection type.
  */
-export const menuOrderByType = {
+const menuOrderByType = {
   note: [
     'relations',
     'metarelations',

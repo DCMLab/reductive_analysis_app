@@ -68,6 +68,6 @@
     "sass": "^1.49.0",
     "v.scss": "^1.2.1",
     "vite": "~2.8.0",
-    "vite-plugin-eslint": "^1.3.0"
+    "vite-plugin-eslint": "1.3.0"
   }
 }

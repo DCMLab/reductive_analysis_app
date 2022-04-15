@@ -138,13 +138,16 @@ export function load_tree(draw_context) {
   }
   var obj = xml_tree_to_obj(elem)
   var str = JSON.stringify(obj)
-  var input = document.getElementById(draw_context.id_prefix + 'treeinput')
+  var input = document.getElementById('json-tree')
   input.value = str
 
 }
 
 function get_tree_from_input(draw_context) {
-  var input = document.getElementById(draw_context.id_prefix + 'treeinput')
+  // temporary, see src/js/new/modules/UI/Layers/relationsTree.js / `onSubmit`
+  return JSON.parse(document.getElementById('json-tree').value)
+
+  var input = document.getElementById('json-tree')
   if (input.value == '') {
     console.log('No tree to be parsed')
     return
@@ -181,7 +184,7 @@ export function align_tree(draw_context) {
   if (!obj)
     return
 
-  var input = document.getElementById(draw_context.id_prefix + 'treeinput')
+  var input = document.getElementById('json-tree')
   // Extracting a list of x coordinates from a set of notes
   var notelist = selected.concat(extraselected)
   if (selected.length == 0) {

@@ -1,4 +1,5 @@
 import { capitalize } from '../../../utils/string'
+import score from '../../Score'
 
 /**
  * A group of filters for a category of relations.
@@ -13,7 +14,7 @@ export default class FilterGroup {
     this.namespace = namespace
 
     this.ctn = document.getElementById(options.filterCtnId)
-    this.paths = options.svgCtn.getElementsByClassName(namespace)
+    this.paths = score.layersCtn.getElementsByClassName(namespace)
     this.fields = []
   }
 
@@ -77,5 +78,4 @@ export default class FilterGroup {
  * @typedef FilterGroupOptions
  *
  * @property {string} filterCtnId The ID of the HTML container of the group.
- * @property {HTMLElement} svgCtn The HTML element containing all the scores.
  */

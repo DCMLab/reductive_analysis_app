@@ -11,13 +11,8 @@
     <meta name="supported-color-schemes" content="light only"> <!-- macOS 10.14.4 compat -->
     <meta name="color-scheme" content="light only">
 
-    <link type="text/css" rel="stylesheet" href="css/vendor/normalize.css">
-    <link type="text/css" rel="stylesheet" href="css/vendor/select2.min.css">
-    <link type="text/css" rel="stylesheet" href="css/vendor/jbox.css">
-    <link type="text/css" rel="stylesheet" href="css/vendor/style.css">
-    <link type="text/css" rel="stylesheet" href="css/app.css">
-    <script type="text/javascript" src="js/vendor/verovio-toolkit-wasm.js" defer></script>
-    <script type="text/javascript" src="js/app.js" defer></script>
+    <script type="text/javascript" src="js/verovio-toolkit-wasm.js" defer></script>
+    
 
     <script>
         document.documentElement.classList.replace('no-js', 'js');
@@ -35,6 +30,10 @@
     <meta name="theme-color" content="#fff" media="(prefers-color-scheme: no-preference)">
     <meta name="theme-color" content="#fff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000" media="(prefers-color-scheme: dark)">
+  <script type="module" crossorigin src="/assets/app.a219e674.js"></script>
+  <link rel="modulepreload" href="/assets/app.9e857949.js">
+  <link rel="modulepreload" href="/assets/vendor.20d4a5ae.js">
+  <link rel="stylesheet" href="/assets/style.7e8b6d9b.css">
 </head>
 
 <body>
@@ -123,7 +122,6 @@
     <!-- UI -->
 
     <div id="ui" class="ui">
-
 
         <!-- Menu and filters -->
 
@@ -617,6 +615,209 @@
 
         </div>
 
+
+        <!-- Menu and filters -->
+
+        <div id="layers-menu" class="layers-menu">
+
+            <!-- Toggle button and layers navigation -->
+
+            <div class="layers-menu__controls">
+
+                <div class="layers-menu__nav">
+
+                    <span class="layers-menu__visibleLayer" id="visible-layer">1</span>
+
+                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-previous">
+                        <span class="visually-hidden">Previous layer</span>
+                        <svg class="btn__icon" width="10" height="8">
+                            <use xlink:href="#triangle-path"/>
+                        </svg>
+                    </button>
+
+                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-next">
+                        <span class="visually-hidden">Next layer</span>
+                        <svg class="btn__icon triangle triangle--down" width="10" height="8">
+                            <use xlink:href="#triangle-path"/>
+                        </svg>
+                    </button>
+
+                </div>
+
+                <button
+                    class="layers-menu__toggleBtn | btn btn--plain flex-center"
+                    id="layers-menu-toggle"
+                    type="button"
+                >
+                    <!-- Show layers -->
+                    <span class="hide-when-visible visually-hidden">Show layers menu</span>
+                    <svg class="hide-when-visible" width="20" height="22">
+                        <use xlink:href="#layers-path"/>
+                    </svg>
+
+                    <!-- Hide layers -->
+                    <span class="hide-when-not-visible visually-hidden">Hide layers menu</span>
+                    <svg class="hide-when-not-visible" width="11" height="11">
+                        <use xlink:href="#cross-path"/>
+                    </svg>
+                </button>
+
+            </div>
+
+
+            <!-- Main menu fly-out -->
+
+            <div id="main-menu" class="fly-out fly-out--dark  fly-out--layers-menu">
+
+                <div class="fly-out__inner" style="--fly-out-max-height: 40rem;">
+                    <div class="layers-menu__layerTitle | fly-out__headerRow">
+                        <h4 class="fly-out__title fly-out__title--big">Current layer: <span id="current-layer">1</span></h4>
+                    </div>
+
+                    <!-- Should save layer and can edit it. Not available for the first layer. -->
+                    <div id="layer-menu-settings" class="layers-menu__saveSettings">
+
+                        <label class="checkable" for="should-save-layer">
+                            Save this layer
+                            <input class="checkable__input" type="checkbox" id="should-save-layer">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+                        <button id="layer-lock" class="lock-path--unlocked | btn flex-center" type="button">
+                            <span class="visually-hidden">Unlock</span>
+                            <span class="visually-hidden">Lock</span>
+                            <svg width="13" height="18">
+                                <use xlink:href="#lock-path"/>
+                            </svg>
+                        </button>
+
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+
+                    <!-- New layer settings. Only shows starting the second layer. -->
+                    <div id="layer-menu-new" class="btn-group">
+
+                        <label class="checkable" for="layer-sliced">
+                            Sliced
+                            <input class="checkable__input" type="checkbox" id="layer-sliced">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+                        <label class="checkable" for="layer-tied">
+                            Tied
+                            <input class="checkable__input" type="checkbox" id="layer-tied">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+                        <button id="layer-new" class="btn btn--plain btn--small" type="button">
+                            Create new layer
+                        </button>
+
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+                    <!-- Reductions -->
+
+                    <div id="layers-menu-reductions" class="btn-group">
+                        <!-- (2nd+ layer) -->
+                        <button id="layers-menu-reduce" class="btn btn--plain btn--small" type="button">Reduce</button>
+                        <!-- (2nd+ layer) -->
+                        <button id="layers-menu-unreduce" class="btn btn--plain btn--small" type="button">Unreduce</button>
+
+                        <button
+                            id="layers-menu-play-reduction"
+                            class="btn btn--plain btn--small btn--small-icon"
+                            type="button"
+                        >
+                            Play reduction
+                            <svg class="btn__icon triangle triangle--right" width="10" height="8">
+                                <use xlink:href="#triangle-path"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+                    <!-- Hierarchy tree visibility -->
+
+                    <div class="btn-group">
+                        <label class="checkable" for="relations-tree-roots-low">
+                            Draw roots low
+                            <input class="checkable__input" type="checkbox" id="relations-tree-roots-low">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use xlink:href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+
+                        <div class="checkable">
+                            <h4>Hierarchy tree</h4>
+                            <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
+                                <legend class="visually-hidden">Hierarchy tree visibility</legend>
+
+                                <!-- On -->
+                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-on" data-label="On">
+                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-on" value="on">
+                                    <span class="btn btn--hollow btn-tabs__accent">On</span>
+                                </label>
+
+                                <!-- Off -->
+                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-off" data-label="Off">
+                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-off" value="off" checked>
+                                    <span class="btn btn--hollow btn-tabs__accent">Off</span>
+                                </label>
+
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+                    <form class="ssbtn-group ssbtn-group--free-field" id="json-tree-form">
+                        Draw tree <!-- turn this into a heading -->
+
+                        <div class="btn-group btn-group--free-field">
+                            <label class="fillable fly-out__relationsField" for="json-tree">
+                                <span class="visually-hidden">Draw tree</span>
+
+                                <!-- @todo transform into a textarea in a modal, actually move the whole feature into a modal because JSON editing requires a bit of space -->
+                                <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree" required>
+                            </label>
+
+                            <button class="btn btn--plain btn--small">Draw</button>
+                        </div>
+
+                        <div class="btn-group">
+                            <button id="json-tree-save" class="btn btn--plain btn--small" type="button">Save tree</button>
+                            <button id="json-tree-load" class="btn btn--plain btn--small" type="button">Load tree</button>
+                            <button id="json-tree-align" class="btn btn--plain btn--small" type="button">Align tree to selection</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
     <!-- Draggable relations panel -->
@@ -777,13 +978,7 @@
 
         <symbol id="note-shades-path" viewBox="0 0 21 22" fill="currentColor">
             <defs>
-                <style>
-                    .note-shades-lines { filter: var(--note-shades-icon-filter, unset); }
-                    .note-shades-lines:nth-of-type(2) { fill: var(--relation-3, currentColor); }
-                    .note-shades-lines:nth-of-type(3) { fill: var(--relation-7, currentColor); }
-                    .note-shades-lines:nth-of-type(4) { fill: var(--relation-5, currentColor); }
-                    .note-shades-lines:nth-of-type(5) { fill: var(--relation-6, currentColor); }
-                </style>
+                
             </defs>
             <path d="M14.0925 1.0179V16.037c-.4135-.3244-.9752-.4941-1.599-.5081-.7154-.0162-1.5202.1719-2.2981.5747l-.0004.0002c-.8856.4629-1.5666 1.1246-1.9491 1.8257-.3822.7005-.4712 1.4513-.148 2.0768.3234.6257.9865.9841 1.7771 1.0721.7913.088 1.7218-.0922 2.6075-.5551 1.4328-.7477 2.3413-2.0295 2.2918-3.154V5.7206c.2274.2142.5214.4154.8439.6189.1414.0892.2883.179.4387.2707.2955.1805.6045.3692.9123.579.9254.6309 1.802 1.429 2.1254 2.6613.3395 1.3119-.0419 2.6923-.5031 3.7704-.2299.5375-.4779.9959-.662 1.3289l-.0519.0938c-.0687.1239-.1266.2283-.167.3079-.0248.049-.0453.0931-.0575.1286a.2449.2449 0 0 0-.0137.0595c-.0014.0166-.0028.0625.0339.0987.0386.038.0862.0344.1096.029a.1919.1919 0 0 0 .0589-.0261c.0309-.0196.0656-.0498.1018-.0854.0737-.0725.169-.1831.2776-.325.218-.2845.496-.7026.7708-1.212.5488-1.0171 1.0906-2.4088 1.1075-3.8335.0155-1.3107-.307-2.307-.8354-3.1406-.5268-.8308-1.2554-1.4953-2.0431-2.1461a10.126 10.126 0 0 1-2.8521-3.868l-.001-.0023c-.0121-.027-.034-.0702-.0685-.0981a.1278.1278 0 0 0-.1017-.0285c-.0465.0077-.0746.0392-.0893.062l-.0159.0248v.0294Z" stroke="currentColor" stroke-width=".2"/>
             <path class="note-shades-lines" d="M.7692 2.5385H10a.7695.7695 0 0 0 .7692-.7693A.7695.7695 0 0 0 10 1H.7692A.7695.7695 0 0 0 0 1.7692c0 .4246.3446.7693.7692.7693Z"/>
@@ -808,6 +1003,26 @@
 
         <symbol id="audio-stop-path" viewBox="0 0 10 11" fill="currentColor">
             <rect width="10" height="11" rx="2" fill="white"/>
+        </symbol>
+
+        <symbol id="layers-sub-path" viewBox="0 0 20 6" fill="currentColor">
+            <path d="M19.94.62A.79.79 0 0 0 18.9.2L10 4.03 1.1.2a.78.78 0 1 0-.62 1.45L9.69 5.6a.79.79 0 0 0 .62 0l9.21-3.95c.4-.17.59-.63.42-1.03Z"/>
+        </symbol>
+
+        <symbol id="layers-path" viewBox="0 0 20 22">
+            
+
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="6" transform-origin="50% 50%" />
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="-1.6"/>
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="2.1"/>
+            <use xlink:href="#layers-sub-path" class="layers-sub-path" y="6"/>
+        </symbol>
+
+        <symbol id="lock-path" viewBox="0 0 13 18" fill="currentColor">
+            
+            <path d="M10.608 8.357h-9A1.625 1.625 0 0 0 .001 9.964s-.002 2.575 0 4.5C.003 16.42 1.611 17.998 3.537 18H8.68a3.553 3.553 0 0 0 3.535-3.536v-4.5a1.625 1.625 0 0 0-1.607-1.607Zm-3.536 4.702v2.048a.33.33 0 0 1-.321.321H5.465a.33.33 0 0 1-.321-.321v-2.048c-.699-.792-.193-2.099.964-2.136 1.143.037 1.663 1.344.964 2.136Z"/>
+            <path d="M6.108 0C3.483.003 1.29 2.197 1.287 4.821v2.893h1.928V4.821c0-1.575 1.317-2.892 2.893-2.892 1.576 0 2.893 1.317 2.893 2.892 0 .17.15.322.321.322h1.286a.33.33 0 0 0 .322-.322C10.927 2.197 8.733.003 6.108 0Z"/>
+            <path class="lock-locked-path" d="M9 4.8h1.93v2.91H9z"/>
         </symbol>
 
     </svg>

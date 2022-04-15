@@ -19,9 +19,6 @@ class Filters {
     this.ctn = document.getElementById('filters')
     this.toggleBtn = document.getElementById('filters-toggle')
 
-    // Score SVG container
-    this.svgCtn = document.getElementById('layers')
-
     this.observer = this.createMutationObserver() // adapt it
     this.groups = this.createFiltersGroups()
   }
@@ -64,14 +61,8 @@ class Filters {
   }
 
   createFiltersGroups = () => [
-    new Group('relation', {
-      filterCtnId: 'relations-filters',
-      svgCtn: this.svgCtn,
-    }),
-    new Group('metarelation', {
-      filterCtnId: 'meta-relations-filters',
-      svgCtn: this.svgCtn,
-    }),
+    new Group('relation', { filterCtnId: 'relations-filters' }),
+    new Group('metarelation', { filterCtnId: 'meta-relations-filters' }),
   ]
 
   createMutationObserver = () => new MutationObserver(mutations => {

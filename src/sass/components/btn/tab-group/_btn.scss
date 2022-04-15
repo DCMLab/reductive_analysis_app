@@ -34,7 +34,7 @@
     --tab-separator: #{$lacquered-licorice};
   }
 
-  &[disabled] {
+  &:disabled {
     color: $alto;
   }
 }

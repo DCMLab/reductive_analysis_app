@@ -1,4 +1,4 @@
-.view {
+.layer {
 
   &::before {
     content: '';
@@ -14,7 +14,7 @@
   }
 }
 
-.view--active {
+.layer--active {
   &::before {
     opacity: 0;
   }

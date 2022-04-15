@@ -1,3 +1,5 @@
+import $ from 'jquery'
+
 import { getDrawContexts, getMeiGraph, getUndoActions } from './app'
 import { toggle_selected, tooltip_update } from './ui'
 import { flush_redo } from './undo_redo'

@@ -1,42 +1,16 @@
-/**
- * Globally exposed modules (functions, variables, objects…) can be used with
- * their direct `moduleName` or `window.moduleName` once imported using the
- * expose-loader (https://webpack.js.org/loaders/expose-loader/). Beware:
- * when exposed by expose-loader, variables are read-only. If you need
- * to modify a variable, expose it using `window.varName = varName`.
- *
- * The way it works after `from 'expose-loader?exposes=` is the following.
- *
- * In `expose-loader?exposes={wantedModuleName}|{nameInModule}!{module}`:
- * - `wantedModuleName`, ending up accessible as `window.wantedModulename`;
- * - (optional) `nameInModule` is the original name of the module;
- * - {module} is the module exporting `nameInModule` (`export nameInModule`).
- *
- * For modules having a default export:
- * - `import defaultExportedModule from 'expose-loader?exposes=defaultExportedModule!./new/app'`
- *
- * For modules having several exports:
- * - `import { clamp } from 'expose-loader?exposes=clamp|clamp!./new/utils/math'`
- * - `import { iLovePotatoes } from 'expose-loader?exposes=iLovePotatoes|potatoes!potatoes'`
- */
-import $ from 'expose-loader?exposes=$,jQuery!jquery'
+import '/public/css/select2.min.css'
+import '/public/css/jbox.css'
+import '/public/css/style.css'
+import '/sass/app.scss'
 
-// Exposing configuration files to the global scope (for tests purpose)
-import { action_conf } from 'expose-loader?exposes=action_conf|action_conf!./conf'
-import { navigation_conf } from 'expose-loader?exposes=navigation_conf|navigation_conf!./conf'
-import { custom_conf } from 'expose-loader?exposes=custom_conf|custom_conf!./conf'
-import { meta_conf } from 'expose-loader?exposes=meta_conf|meta_conf!./conf'
-import { type_conf } from 'expose-loader?exposes=type_conf|type_conf!./conf'
-import { combo_conf } from 'expose-loader?exposes=combo_conf|combo_conf!./conf'
-import { type_full_conf } from 'expose-loader?exposes=type_full_conf|type_full_conf!./conf'
-import { meta_full_conf } from 'expose-loader?exposes=meta_full_conf|meta_full_conf!./conf'
+import $ from 'jquery'
+
+import { action_conf } from './conf'
+import { navigation_conf } from './conf'
+import { custom_conf } from './conf'
 
 import newApp from './new/app'
 import { downloadAs } from './new/utils/file'
-
-// Exposing relations functions to the global scope (for tests purpose)
-import { relation_get_notes } from 'expose-loader?exposes=relation_get_notes|relation_get_notes!./utils'
-import { relation_get_notes_separated } from 'expose-loader?exposes=relation_get_notes_separated|relation_get_notes_separated!./utils'
 
 // Clicking selects, exposed globally
 window.selected = []
@@ -52,8 +26,8 @@ import { new_sliced_layer } from './slicing'
 import { draw_relation, draw_metarelation } from './draw'
 
 import {
-  add_buttons,
   drag_selector_installer,
+  getCurrentDrawContext,
   handle_click,
   handle_keydown,
   handle_keypress,
@@ -79,7 +53,6 @@ import {
   get_id_pairs,
   id_in_svg,
   id_or_oldid,
-  indicate_current_context,
   mark_secondaries,
   new_layer_element,
   new_view_elements,
@@ -91,8 +64,8 @@ import {
 import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
 import { comboRelationTypes } from './new/modules/Relations/config'
+import { setAttributes } from './new/utils/dom'
 
-require('./accidentals')
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 
 // GLOBALS
@@ -294,7 +267,7 @@ function save() {
 export function save_orig() {
   var mei_clone = mei.cloneNode(true)
   for (var dc of draw_contexts) {
-    if (!(get_by_id(document, dc.id_prefix + 'savecb').checked)) {
+    if (!dc.canSave) {
       console.log('Trying to remove layer', dc)
       var layer_elem = get_by_id(mei_clone, dc.mei_mdiv.getAttribute('xml:id'))
       layer_elem.parentElement.removeChild(layer_elem)
@@ -305,10 +278,44 @@ export function save_orig() {
   downloadAs(saved, filename + '.mei', 'text/xml')
 }
 
-// Download the current SVG, including graph elements
+const inlineStyles = element => {
+  const styles = getComputedStyle(element)
+  setAttributes(element, {
+    'fill': styles.fill,
+    'fill-opacity': styles.fillOpacity,
+    'opacity': styles.opacity,
+    'stroke': styles.stroke,
+    'stroke-opacity': styles.strokeOpacity,
+    'stroke-width': styles.strokeWidth,
+  })
+}
+
+/**
+ * Download the current SVG, including graph elements.
+ *
+ * Before saving the SVG, we need to style it by inlining presentation
+ * attributes (fill, stroke, opacity…). To do that, we clone it and
+ * add it in the spritesheet block. This way, it can inherit the
+ * global CSS while remaining hidden (spritesheet is hidden).
+ */
 export function savesvg() {
-  var saved = new XMLSerializer().serializeToString($('#svg_output')[0])
-  downloadAs(saved, filename + '.svg', 'text/xml')
+  const svg = getCurrentDrawContext().svg_elem.children[0]
+
+  // Append cloned SVG.
+  const cloneSvgElement = svg.cloneNode(true)
+  document.getElementById('svg-spreadsheet').append(cloneSvgElement)
+
+  // Inline its relations and metarelations styles (it includes graphs).
+  const relations = cloneSvgElement.getElementsByClassName('relation')
+  const metarelations = cloneSvgElement.getElementsByClassName('metarelation')
+  Array.from(relations).forEach(inlineStyles)
+  Array.from(metarelations).forEach(inlineStyles)
+
+  // Get SVG string and remove the clone from the DOM.
+  const cloneSvgStr = new XMLSerializer().serializeToString(cloneSvgElement)
+  cloneSvgElement.remove()
+
+  downloadAs(cloneSvgStr, filename + '.svg', 'text/xml')
 }
 
 // Load a new MEI
@@ -326,9 +333,12 @@ export function load(event) {
       data = reader.result
       load_finish(null)
       music_tooltip_installer()
-      indicate_current_context()
     }
     reader.readAsText(files[0])
+
+    /**
+     * move this to the MAIN MENU
+     */
     filename = files[0].name.split('.').slice(0, -1).join('.')
     if (filename == '')
       filename = files[0].name
@@ -445,22 +455,33 @@ function load_finish(loader_modal) {
       'number_of_views': 1
     }
 
+    const isFirstLayer = i == 0
+
     layer_contexts.push(layer_context)
     var draw_context = {
       // TODO: One draw context per existing score element
       // already on load.
-      'mei_mdiv': mdiv_elem,
-      'mei_score': score_elem,
-      'svg_elem': svg_element,
-      'view_elem': view_element,
-      'layer': layer_context,
-      'layer_number': 0,
-      'view_number': 0,
-      'id_prefix': '',
-      'zoom': 1,
-      'reductions': [] }
 
-    if (i == 0) {
+      mei_mdiv: mdiv_elem,
+      mei_score: score_elem,
+      svg_elem: svg_element,
+      view_elem: view_element,
+      layer: layer_context,
+      layer_number: 0,
+      id_prefix: '',
+      zoom: 1,
+      reductions: [],
+
+      // first layer is always saved and never editable
+      forceSaveLayer: isFirstLayer,
+      lockLayer: isFirstLayer,
+
+      // by default, all layers are saved and editable, but the first isn’t editable
+      canSave: true,
+      canEdit: !isFirstLayer,
+    }
+
+    if (isFirstLayer) {
       midi = vrvToolkit.renderToMIDI()
       orig_midi = midi
     } else
@@ -552,16 +573,21 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   var new_draw_context = {
     // TODO: One draw context per existing score element
     // already on load.
-    'mei_score': new_score_elem,
-    'mei_mdiv': new_mdiv_elem,
-    'svg_elem': new_svg_elem,
-    'view_elem': new_view_elem,
-    'layer': layer_context,
-    'layer_number': layer_context.layer_number,
-    'view_number': 0,
-    'id_prefix': '',
-    'zoom': 1,
-    'reductions': [] }
+    mei_score: new_score_elem,
+    mei_mdiv: new_mdiv_elem,
+    svg_elem: new_svg_elem,
+    view_elem: new_view_elem,
+    layer: layer_context,
+    layer_number: layer_context.layer_number,
+    id_prefix: '',
+    zoom: 1,
+    reductions: [],
+
+    forceSaveLayer: false,
+    lockLayer: false,
+    canSave: true,
+    canEdit: true,
+  }
 
   // prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length
@@ -569,21 +595,21 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
 }
 
 function finalize_draw_context(new_draw_context) {
-
   new_draw_context.measure_map = compute_measure_map(new_draw_context)
   draw_contexts.reverse()
   draw_contexts.push(new_draw_context)
   draw_contexts.reverse()
-  add_buttons(new_draw_context)
   for (let n of new_draw_context.svg_elem.getElementsByClassName('note')) {
     n.onclick = () => toggle_selected(n)
   }
+  console.groupCollapsed('notes output from `pitch_grid()`')
   for (let s of new_draw_context.svg_elem.getElementsByClassName('staff')) {
     // TODO: handle staves with no notes in them
     let [y_to_p, p_to_y] = pitch_grid(s)
     s.y_to_p = y_to_p
     s.p_to_y = p_to_y
   }
+  console.groupEnd()
   draw_graph(new_draw_context)
   minimap()
 }
@@ -618,10 +644,12 @@ function render_mei(mei) {
     'view_elem': new_view_elem,
     'layer': draw_context.layer,
     'layer_number': draw_context.layer.layer_number,
-    'view_number': draw_context.layer.number_of_views - 1,
     'id_prefix': '',
     'zoom': 1,
-    'reductions': [] }
+    'reductions': []
+
+    // if this function 👆 is uncommented: add `forceSaveLayer`, `lockLayer`, `canSave` and `canEdit`
+  }
 
   new_draw_context.id_prefix = draw_contexts.length
   prefix_ids(new_draw_context.svg_elem, new_draw_context.id_prefix)

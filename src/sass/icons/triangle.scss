@@ -1,0 +1,8 @@
+// default direction: up
+.triangle {
+  transform: rotate(calc(var(--triangle-deg, 0) * 1deg));
+}
+
+.triangle--right { --triangle-deg: 90; }
+.triangle--down { --triangle-deg: 180; }
+// .triangle--left { --triangle-deg: -90; }

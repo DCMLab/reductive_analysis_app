@@ -27,6 +27,7 @@ import { draw_relation, draw_metarelation } from './draw'
 
 import {
   drag_selector_installer,
+  getCurrentDrawContext,
   handle_click,
   handle_keydown,
   handle_keypress,
@@ -278,7 +279,8 @@ export function save_orig() {
 
 // Download the current SVG, including graph elements
 export function savesvg() {
-  var saved = new XMLSerializer().serializeToString($('#svg_output')[0])
+  var dc = getCurrentDrawContext()
+  var saved = new XMLSerializer().serializeToString(dc.svg_elem.children[0])
   downloadAs(saved, filename + '.svg', 'text/xml')
 }
 

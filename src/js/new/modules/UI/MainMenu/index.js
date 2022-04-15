@@ -30,7 +30,7 @@ class MainMenu {
     }
 
     if (target == this.saveAsSvg) {
-      savesvg() // currently not working
+      savesvg()
     }
   }
 

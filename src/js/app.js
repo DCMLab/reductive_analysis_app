@@ -64,6 +64,7 @@ import {
 import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
 import { comboRelationTypes } from './new/modules/Relations/config'
+import { setAttributes } from './new/utils/dom'
 
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 
@@ -277,11 +278,44 @@ export function save_orig() {
   downloadAs(saved, filename + '.mei', 'text/xml')
 }
 
-// Download the current SVG, including graph elements
+const inlineStyles = element => {
+  const styles = getComputedStyle(element)
+  setAttributes(element, {
+    'fill': styles.fill,
+    'fill-opacity': styles.fillOpacity,
+    'opacity': styles.opacity,
+    'stroke': styles.stroke,
+    'stroke-opacity': styles.strokeOpacity,
+    'stroke-width': styles.strokeWidth,
+  })
+}
+
+/**
+ * Download the current SVG, including graph elements.
+ *
+ * Before saving the SVG, we need to style it by inlining presentation
+ * attributes (fill, stroke, opacity…). To do that, we clone it and
+ * add it in the spritesheet block. This way, it can inherit the
+ * global CSS while remaining hidden (spritesheet is hidden).
+ */
 export function savesvg() {
-  var dc = getCurrentDrawContext()
-  var saved = new XMLSerializer().serializeToString(dc.svg_elem.children[0])
-  downloadAs(saved, filename + '.svg', 'text/xml')
+  const svg = getCurrentDrawContext().svg_elem.children[0]
+
+  // Append cloned SVG.
+  const cloneSvgElement = svg.cloneNode(true)
+  document.getElementById('svg-spreadsheet').append(cloneSvgElement)
+
+  // Inline its relations and metarelations styles (it includes graphs).
+  const relations = cloneSvgElement.getElementsByClassName('relation')
+  const metarelations = cloneSvgElement.getElementsByClassName('metarelation')
+  Array.from(relations).forEach(inlineStyles)
+  Array.from(metarelations).forEach(inlineStyles)
+
+  // Get SVG string and remove the clone from the DOM.
+  const cloneSvgStr = new XMLSerializer().serializeToString(cloneSvgElement)
+  cloneSvgElement.remove()
+
+  downloadAs(cloneSvgStr, filename + '.svg', 'text/xml')
 }
 
 // Load a new MEI

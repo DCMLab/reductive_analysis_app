@@ -52,7 +52,7 @@ export const createDatalistFillable = (config, type) => `
       ${createDatalist(config.additional, type)}
 
       <button class="btn btn--plain btn--small">
-          Assign <span class="visually-hidden>${type}</span>
+          Assign <span class="visually-hidden">${type}</span>
       </button>
   </form>
 `

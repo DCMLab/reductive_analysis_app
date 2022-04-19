@@ -1,6 +1,3 @@
-export const type_shades = {}
-export const meta_shades = {}
-export const button_shades = {}
 
 // General action shortcuts.
 export const action_conf = {

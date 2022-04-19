@@ -14,7 +14,113 @@ const configFiles = [
   'meta_full_conf',
 ]
 
-jest.setTimeout(10000); // 20 second timeout for promise resolution.
+// Make tests deterministic
+Date.now = jest.fn(() => 1482363367071);
+
+jest.setTimeout(15000); // 20 second timeout for promise resolution.
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms) )
+}
+
+var useful = `
+function get_by_id(doc, id) {
+  if (!id)
+    return null
+  if (id[0] == '#') { id = id.slice(1) }
+  var elem = doc.querySelector('[*|id=\\'' + id + '\\']')
+  if (elem) {
+    return elem
+  } else {
+    return Array.from(doc.getElementsByTagName('*')).find((x) => { return x.getAttribute('id') == id || x.getAttribute('xml:id') == id })
+  }
+}
+
+// From any relation element to list of MEI note elements
+function relation_get_notes(mei,he) {
+  he = get_by_id(mei, get_id(he))
+  var note_nodes = relation_allnodes(mei, he)
+  var notes = note_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
+  return notes
+
+}
+// From any relation element to list of MEI note elements
+function relation_get_notes_separated(mei, he) {
+  he = get_by_id(mei, get_id(he))
+  var prim_nodes = relation_primaries(mei, he)
+  var prims = prim_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
+  var sec_nodes = relation_secondaries(mei, he)
+  var secs = sec_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
+  return [prims, secs]
+}
+
+// Get the MEI-graph nodes that are adjacent to a relation
+function relation_allnodes(mei, he) {
+  var arcs_array = Array.from(mei.getElementsByTagName('arc'))
+  var nodes = []
+  arcs_array.forEach((a) => {
+    if (a.getAttribute('from') == '#' + he.getAttribute('xml:id')) {
+      nodes.push(get_by_id(mei, a.getAttribute('to')))
+    }
+  })
+  return nodes
+}
+
+function get_id(elem) {
+  if (document.contains(elem)) {
+    // SVG traversal
+    if (!elem.hasAttribute('oldid'))
+      return elem.id
+    else
+      return get_id(document.getElementById(elem.getAttribute('oldid')))
+  } else if (elem.hasAttribute('xml:id')) {
+    // MEI traversal
+    if (elem.hasAttribute('sameas'))
+      return get_id(get_by_id(window.mei, elem.getAttribute('sameas')))
+    else if (elem.hasAttribute('corresp'))
+      return get_id(get_by_id(window.mei, elem.getAttribute('corresp')))
+    else if (elem.hasAttribute('copyof'))
+      return get_id(get_by_id(window.mei, elem.getAttribute('copyof')))
+    else if (elem.hasAttribute('xml:id'))
+      return elem.getAttribute('xml:id')
+  }
+}
+
+function node_to_note_id(note) {
+  if (note.getElementsByTagName('label')[0].children.length == 0)
+    return note.getAttribute('xml:id')
+  return note.getElementsByTagName('label')[0].
+    getElementsByTagName('note')[0].
+    getAttribute('corresp').replace('#', '')
+}
+
+// Get the MEI-graph nodes that are adjacent and primary to a relation
+function relation_primaries(mei_graph, he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
+  var nodes = []
+  arcs_array.forEach((a) => {
+    if (a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
+       a.getAttribute('type') == 'primary') {
+      nodes.push(get_by_id(mei_graph.getRootNode(), a.getAttribute('to')))
+    }
+  })
+  return nodes
+}
+// Get the MEI-graph nodes that are adjacent and secondary to a relation
+function relation_secondaries(mei_graph, he) {
+  var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
+  var nodes = []
+  arcs_array.forEach((a) => {
+    if (a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
+       a.getAttribute('type') == 'secondary') {
+      nodes.push(get_by_id(mei_graph.getRootNode(), a.getAttribute('to')))
+    }
+  })
+  return nodes
+}
+
+`
+
 
 const verbose = false;
 let log = () => null
@@ -50,13 +156,15 @@ describe('reductive_analysis_test_suite', () => {
 
   beforeAll(async () => {
     await page.goto("http://localhost:8000");
+    // Make tests deterministic
+    await wait(1000)
+    await page.evaluate('Date.now = () => 1482363367071')
+    await page.evaluate(useful)
 
-    // Import relevant webapp globals into the testing environment.
-    await page.evaluate('type_conf');
-    await page.evaluate('meta_conf');
     if (verbose) {
       log = console.log
     }
+
 
     log("DOM fully loaded and parsed?");
   });
@@ -66,11 +174,20 @@ describe('reductive_analysis_test_suite', () => {
     //await expect(page).toMatch(/Primaries.*Secondaries/s, {timeout: 30000});
   });
 
-  it('should parse conf.js without throwing an exception', function () {
+/*  it('should parse conf.js without throwing an exception', function () {
     configFiles.forEach(async filename => {
       await expect(page.evaluate(filename)).resolves.toBeTruthy();
     })
+  });*/
+
+  it('should load the example MEI', async function() {
+    await expect(page).toUploadFile(
+      'input[type=file]',
+      path.join(__dirname, 'test_scores', 'mozart13.xml')
+    );
+    await expect(page).toMatchElement('div.layer'); 
   });
+
 
   it('should set up all buttons with expected element IDs and attributes', async function () {
 
@@ -102,14 +219,6 @@ describe('reductive_analysis_test_suite', () => {
     })
   });
 
-  it('should load the example MEI', async function() {
-    await expect(page).toUploadFile(
-      'input[type=file]',
-      path.join(__dirname, 'test_scores', 'mozart13.xml')
-    );
-    await expect(page).toMatchElement('div.layer'); 
-  });
-
   it('should have loaded view-specific buttons', async function  () {
     await expect(async () => {
       button_test('reducebutton', {'class': 'reducebutton'});
@@ -124,7 +233,7 @@ describe('reductive_analysis_test_suite', () => {
 
   it('should produce a directed <graph> within <mei>', async function () {
     await page.waitForTimeout(3300);
-    await expect(page.evaluate(`$(window.mei).find('graph').attr('type')`)).resolves
+    await expect(page.evaluate(`window.mei.querySelector('graph').getAttribute('type')`)).resolves
       .toMatch(/^directed$/);
   });
 
@@ -132,7 +241,7 @@ describe('reductive_analysis_test_suite', () => {
 
     expect.addSnapshotSerializer(snapshotSerializer);
 
-    var mei_to_str = await page.evaluate(`$(window.mei).children()[0].outerHTML`);
+    var mei_to_str = await page.evaluate(`window.mei.children[0].outerHTML`);
 
     // Prevent false positives by stripping out conversion timestamps (in case of XML->MEI).
     mei_to_str = mei_to_str.replace(/isodate="\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d"/gm, '');
@@ -148,7 +257,8 @@ describe('reductive_analysis_test_suite', () => {
 
     expect.addSnapshotSerializer(snapshotSerializer);
 
-    var svg_to_str = await page.evaluate(`$('svg')[1].outerHTML`);
+    var svg_to_str = await
+    page.evaluate(`window.document.querySelector('div.svg_container').children[0].outerHTML`);
 
     // Prevent false positives by stripping out Verovio-generated random attributes.
     svg_to_str = svg_to_str.replace(/id="\w+-\d+"/gm, '');
@@ -160,8 +270,8 @@ describe('reductive_analysis_test_suite', () => {
   it('should ensure that (the very last) note IDs of the MEI and the SVG match', async function () {
 
     // There is probably a better way to test this.
-    var mei_id = await page.evaluate(`$(window.mei).find('note').last().attr('xml:id')`);
-    var svg_id = await page.evaluate(`$($('svg')[1]).find('g.note').last().attr('id')`);
+    var mei_id = await page.evaluate(`window.mei.querySelector('note').getAttribute('xml:id')`);
+    var svg_id = await page.evaluate(`window.document.querySelector('g.note').getAttribute('id')`);
 
     expect(mei_id).toMatch(svg_id);
   })
@@ -169,7 +279,7 @@ describe('reductive_analysis_test_suite', () => {
   it('should toggle a note, ensuring that the relevant array is updated and the note styled accordingly', async function () {
 
     log(`About to toggle a note`);
-    var svg_first_note_id = await page.evaluate(`$($('svg')[1]).find('g.note').first().attr('id')`);
+    var svg_first_note_id = await page.evaluate(`window.document.querySelector('g.note').getAttribute('id')`);
     var svg_first_note_selector = `#${svg_first_note_id}`;
     var svg_first_notehead_selector = `#${svg_first_note_id} .notehead`;
 
@@ -182,8 +292,10 @@ describe('reductive_analysis_test_suite', () => {
     // so checking for DOM changes before global state seems generally prudent. This might be worth revisiting.)
     await expect(page).toMatchElement(svg_first_note_selector + `[class*="selectednote"]`);
 
+    log(await page.evaluate('selected[0]'))
+
     // Confirm that the selected note has been added to the `selected` array.
-    await expect(page.evaluate(`$(selected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
+    await expect(page.evaluate(`window.selected[0].getAttribute('id')`)).resolves.toEqual(svg_first_note_id)
 
     // Simulate second click on first note (deselecting it).
     log('Deselecting note.')
@@ -193,14 +305,14 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page).toMatchElement(svg_first_note_selector + `:not([class*="selectednote"])`);
 
     // Confirm that the selected note has been added to the `selected` array.
-    await expect(page.evaluate(`$(selected[0]).attr('id')`)).resolves.toBeFalsy();
+    await expect(page.evaluate(`window.selected[0]`)).resolves.toBeFalsy();
  });
 
 
   it('should extra-toggle a note, ensuring that the relevant array is updated and the note styled accordingly', async function () {
 
     log(`About to extra-toggle a note`);
-    var svg_first_note_id = await page.evaluate(`$($('svg')[1]).find('g.note').first().attr('id')`);
+    var svg_first_note_id = await page.evaluate(`window.document.querySelector('g.note').getAttribute('id')`);
     var svg_first_note_selector = `#${svg_first_note_id}`;
     var svg_first_notehead_selector = `#${svg_first_note_id} .notehead`;
 
@@ -216,7 +328,7 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page).toMatchElement(svg_first_note_selector + `[class*="extraselectednote"]`);
 
     // Confirm that the selected note has been added to the `selected` array.
-    await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toEqual(svg_first_note_id);
+    await expect(page.evaluate(`window.extraselected[0].getAttribute('id')`)).resolves.toEqual(svg_first_note_id);
 
     // Simulate second click on first note (deselecting it).
     log('Deselecting note.')
@@ -228,14 +340,14 @@ describe('reductive_analysis_test_suite', () => {
     await expect(page).toMatchElement(svg_first_note_selector + `:not([class*="extraselectednote"])`);
 
     // Confirm that the selected note has been added to the `selected` array.
-    await expect(page.evaluate(`$(extraselected[0]).attr('id')`)).resolves.toBeFalsy();
+    await expect(page.evaluate(`window.extraselected[0]`)).resolves.toBeFalsy();
   });
 
   it('should toggle a new relation between structurally unequal notes', async function () {
 
     // Pick the first two notes for this test.
-    var primary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[0].id`);
-    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+    var primary_id = await page.evaluate(`window.document.querySelectorAll('g.note')[0].id`);
+    var secondary_id = await page.evaluate(`window.document.querySelectorAll('g.note')[1].id`);
 
     log(`About to create relationship between primary #${primary_id} and secondary #${secondary_id}.`);
 
@@ -282,14 +394,14 @@ describe('reductive_analysis_test_suite', () => {
     // Assert relation <arc>'s for primary and secondary notes.
     // TODO: This should likely be revisited for compliance with the TEI-derived standard.
     // See https://github.com/DCMLab/reductive_analysis_app/issues/48.
-    var expected_relation_id = await page.evaluate(`$(window.mei)
-      .find('arc[to="#gn-${primary_id}"][type="primary"]')
-      .attr('from')
+    var expected_relation_id = await page.evaluate(`window.mei
+      .querySelector('arc[to="#gn-${primary_id}"][type="primary"]')
+      .getAttribute('from')
       .substring(1)`); // remove the hash prefix from the ID, for consistency.
     log(`Expecting to match the primary-node arc with relation id: #${expected_relation_id}.`);
 
-    await expect(page.evaluate(`$(window.mei)
-      .find('arc[to="#gn-${secondary_id}"][type="secondary"][from="#${expected_relation_id}"]')`)).resolves
+    await expect(page.evaluate(`window.mei
+      .querySelector('arc[to="#gn-${secondary_id}"][type="secondary"][from="#${expected_relation_id}"]')`)).resolves
       .toBeTruthy();
     log(`Found a matching secondary-node arc with the expected relation id: #${expected_relation_id}.`);
 
@@ -308,7 +420,7 @@ describe('reductive_analysis_test_suite', () => {
 
     // Assert that notes are retrievable from the test relation (`relation_get_notes`).
     await expect(page.evaluate(`
-      window.test_notes = relation_get_notes(
+      window.test_notes = relation_get_notes(window.mei,
         window.test_relation
       ).map(n => n.getAttribute('xml:id'))
     `)).resolves.toBeTruthy();
@@ -322,7 +434,7 @@ describe('reductive_analysis_test_suite', () => {
 
     // Assert that primary and secondary notes are retrievable from relations (`relation_get_notes_separated`).
     await expect(page.evaluate(`
-      window.test_notes_separated = relation_get_notes_separated(
+      window.test_notes_separated = relation_get_notes_separated(window.mei,
         window.test_relation
       ).map(n => n[0].getAttribute('xml:id'))
     `)).resolves.toBeTruthy();
@@ -368,23 +480,25 @@ describe('reductive_analysis_test_suite', () => {
     // Find and click the reduce button
 
     // First we need to get the reducebutton to be shown
-    var buttons_id = "view_buttons";
+    await page.keyboard.press('-');
+    var buttons_id = "layers-menu-toggle";
     await expect(page).toClick(`#${buttons_id}`);
-    var reducebutton_id = "reducebutton";
+    await wait(1000)
+    var reducebutton_id = "layers-menu-reduce";
     await expect(page).toClick(`#${reducebutton_id}`);
 
     log('Reduced the test relation.');
 
     // Check that the secondary note has been hidden
-    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+    var secondary_id = await page.evaluate(`window.document.querySelectorAll('g.note')[1].id`);
     await expect(page.evaluate(`
 	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
       )).resolves.toBeTruthy();
 
     // And also the relation
-    var expected_relation_id = await page.evaluate(`$(window.mei)
-      .find('arc[to="#gn-${secondary_id}"][type="secondary"]')
-      .attr('from')
+    var expected_relation_id = await page.evaluate(`window.mei
+      .querySelector('arc[to="#gn-${secondary_id}"][type="secondary"]')
+      .getAttribute('from')
       .substring(1)`); // remove the hash prefix from the ID, for consistency.
     await expect(page.evaluate(`
 	document.querySelectorAll('path[id="${expected_relation_id}"]')[0].classList.contains("hidden") `
@@ -393,27 +507,27 @@ describe('reductive_analysis_test_suite', () => {
 
   it('should unreduce the relation, showing it again', async function () {
     // Find and click the unreducebutton
-    var unreducebutton_id = "unreducebutton";
+    var unreducebutton_id = "layers-menu-unreduce";
     await expect(page).toClick(`#${unreducebutton_id}`);
 
     log('Unreduced the test relation.');
 
     // Check that the secondary note is shown again
-    var secondary_id = await page.evaluate(`$($('svg')[1]).find('g.note')[1].id`);
+    var secondary_id = await page.evaluate(`window.document.querySelectorAll('g.note')[1].id`);
     await expect(page.evaluate(`
 	document.querySelectorAll('g[id="${secondary_id}"]')[0].classList.contains("hidden") `
       )).resolves.toBeFalsy();
 
     // And also the relation
-    var expected_relation_id = await page.evaluate(`$(window.mei)
-      .find('arc[to="#gn-${secondary_id}"][type="secondary"]')
-      .attr('from')
+    var expected_relation_id = await page.evaluate(`window.mei
+      .querySelector('arc[to="#gn-${secondary_id}"][type="secondary"]')
+      .getAttribute('from')
       .substring(1)`); // remove the hash prefix from the ID, for consistency.
     await expect(page.evaluate(`
 	document.querySelectorAll('path[id="${expected_relation_id}"]')[0].classList.contains("hidden") `
       )).resolves.toBeFalsy();
 
-    var reducebutton_id = "reducebutton";
+    var reducebutton_id = "layers-menu-reduce";
 
     await expect(page).toClick(`#${reducebutton_id}`);
 

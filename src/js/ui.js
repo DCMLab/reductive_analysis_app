@@ -6,10 +6,11 @@ import jBox from 'jbox'
 import newApp from './new/app'
 import {
   action_conf,
-  combo_keys,
+  custom_conf,
+  combo_conf,
   hide_classes,
-  meta_keys,
-  type_keys,
+  meta_conf,
+  type_conf,
   navigation_conf,
 } from './conf'
 
@@ -213,6 +214,7 @@ export function handle_click(ev) {
 
 // We have keyboard commands!
 export function handle_keypress(ev) {
+  var e;
   console.debug('Using globals: meta_keys, type_keys')
 
   if (isFieldFocused()) { return }
@@ -264,12 +266,12 @@ export function handle_keypress(ev) {
     var was_collapsed = $('#relations_panel').hasClass('collapsed')
     if (was_collapsed) toggle_buttons()
     // $('#meta_custom_type').select2('open')
-  } else if (type_keys[ev.key]) { // Add a relation
-    do_relation(type_keys[ev.key])
-  } else if (meta_keys[ev.key]) { // Add a metarelation
-    do_metarelation(meta_keys[ev.key])
-  } else if (combo_keys[ev.key]) { // Add a comborelation
-    do_comborelation(combo_keys[ev.key])
+  } else if (e = Object.entries(type_conf).find((c) => c[1].key == ev.key)) { // Add a relation
+    do_relation(e[0])
+  } else if (e = Object.entries(meta_conf).find((c) => c[1].key == ev.key)) { // Add a metarelation
+    do_metarelation(e[0])
+  } else if (e = Object.entries(combo_conf).find((c) => c[1].key == ev.key)) { // Add a comborelation
+    do_comborelation(e[0])
   } else if (ev.key == navigation_conf.toggle_palette) { // Toggle the relations palette
     toggle_buttons()
   } else {

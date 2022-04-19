@@ -215,7 +215,6 @@ export function handle_click(ev) {
 // We have keyboard commands!
 export function handle_keypress(ev) {
   var e;
-  console.debug('Using globals: meta_keys, type_keys')
 
   if (isFieldFocused()) { return }
 

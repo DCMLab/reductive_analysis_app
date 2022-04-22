@@ -66,6 +66,16 @@ import { do_redo, do_undo, flush_redo } from './undo_redo'
 import { comboRelationTypes } from './new/modules/Relations/config'
 import { setAttributes } from './new/utils/dom'
 
+/**
+ * JS polyfill for the CSS `:has` pseudo-selector. It completes the PostCSS
+ * plugin doing the transformation (see `postcss.config.js`).
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/:has
+ * - https://github.com/csstools/postcss-plugins/tree/main/experimental
+ */
+import cssHasPseudo from '@csstools/css-has-pseudo-experimental/browser'
+// const cssHasPseudo = require('css-has-pseudo/browser') // defect
+cssHasPseudo(document)
+
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 
 // GLOBALS

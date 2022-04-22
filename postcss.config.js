@@ -1,6 +1,20 @@
 const postcssPresetEnv = require('postcss-preset-env')
 const postcssSafeArea = require('postcss-safe-area')
 const postcssShortSize = require('postcss-short-size')
+
+/**
+ * Experimental plugin the CSS `:has` pseudo-selector. It requires to run the
+ * following on the browser side:
+ *
+ * ```js
+ * import cssHasPseudo from '@csstools/css-has-pseudo-experimental/browser'
+ * cssHasPseudo(document)
+ * ```
+ *
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/:has
+ * - https://github.com/csstools/postcss-plugins/tree/main/experimental
+ */
+const cssHasPseudoExperimental = require('@csstools/css-has-pseudo-experimental')
 const cssNano = require('cssnano')
 
 const postcssPresetEnvOptions = {
@@ -13,6 +27,7 @@ const postcssPresetEnvOptions = {
     'focus-visible-pseudo-class': false,
     'logical-properties-and-values': { dir: 'ltr' },
     'prefers-color-scheme-query': false,
+    'has-pseudo-class': false, // defect, experimental version used instead
   },
 }
 
@@ -23,6 +38,7 @@ module.exports = ({ options, env }) => ({
     postcssShortSize(),
     postcssSafeArea(),
     postcssPresetEnv(postcssPresetEnvOptions),
+    cssHasPseudoExperimental(),
     env === 'production' ? cssNano(cssNanoOptions) : false,
   ],
 })

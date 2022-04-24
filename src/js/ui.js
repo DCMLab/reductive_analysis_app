@@ -47,6 +47,9 @@ import { do_redo, do_undo } from './undo_redo'
 import { isFieldFocused } from './new/utils/forms'
 import { rootStyles } from './new/utils/document'
 import { metaRelationTypes, relationTypes } from './new/modules/Relations/config'
+import accidentals from './new/modules/UI/Accidentals'
+import bookmarks from './new/modules/UI/Bookmarks'
+import layersMenu from './new/modules/UI/Layers'
 
 /* UI globals */
 
@@ -216,7 +219,7 @@ export function handle_click(ev) {
 
 // We have keyboard commands!
 export function handle_keypress(ev) {
-  var e;
+  var e
 
   if (isFieldFocused()) { return }
 
@@ -241,6 +244,16 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.select_same_notes) { // Select same notes in the measure
     select_samenote()
     do_relation('repeat')
+  } else if (ev.key == action_conf.naturalize_note) { // Naturalize note.
+    accidentals.naturalize()
+  } else if (ev.key == navigation_conf.jump_to_next_bookmark) { // Jump to previous bookmark in current context.
+    bookmarks.goTo(-1)
+  } else if (ev.key == navigation_conf.jump_to_previous_bookmark) { // Jump to next bookmark in current context.
+    bookmarks.goTo(1)
+  } else if (ev.key == navigation_conf.jump_to_context_below) { // Jump to next context.
+    layersMenu.moveBy(1)
+  } else if (ev.key == navigation_conf.jump_to_context_above) { // Jump to previous context.
+    layersMenu.moveBy(-1)
   } else if (ev.key == action_conf.deselect_all) { // Deselect all.
     do_deselect()
   } else if (ev.key == action_conf.delete_all) { // Delete relations.

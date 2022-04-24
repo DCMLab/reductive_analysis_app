@@ -7,9 +7,14 @@ import score from '../../Score'
 
 class Accidentals {
   onTap({ target }) {
+    if (target == this.btn) {
+      this.naturalize()
+    }
+  }
+
+  naturalize() {
     if (
-      target == this.btn
-      && score.selectionType == 'note'
+      score.selectionType == 'note'
       && draw_context_of(score.flatSelection[0]).canEdit
     ) {
       score.flatSelection.forEach(naturalize_note)

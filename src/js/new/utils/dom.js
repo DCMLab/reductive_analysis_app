@@ -27,14 +27,14 @@ export const getDOMRect = (el, includedProps = null) => {
 
 /**
  * @typedef {Object} IterableDOMRect
- * @property {number} x - Element X coordinate
- * @property {number} y - Element Y coordinate
+ * @property {number} x - Distance from viewport left to element left
+ * @property {number} y - Distance from viewport top to element top
  * @property {number} width - Element width
  * @property {number} height - Element height
- * @property {number} top - Element width
- * @property {number} right - Element height
- * @property {number} bottom - Element width
- * @property {number} left - Element height
+ * @property {number} top - Distance from viewport top to element top
+ * @property {number} right - Distance from viewport left to element right
+ * @property {number} bottom - Distance from viewport top to element bottom
+ * @property {number} left - Distance from viewport left to element left
  */
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType

@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import { getDrawContexts, getMeiGraph, getUndoActions } from './app'
-import { toggle_selected, tooltip_update } from './ui'
+import { toggle_selected } from './ui'
 import { flush_redo } from './undo_redo'
 import { get_by_id, get_class_from_classlist, get_id, unmark_secondaries } from './utils'
 
@@ -43,7 +43,6 @@ function delete_relation(elem) {
     return elems
   })
 
-  tooltip_update()
   return action_removed
 }
 

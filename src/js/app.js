@@ -1,5 +1,4 @@
 import '/public/css/select2.min.css'
-import '/public/css/jbox.css'
 import '/public/css/style.css'
 import '/sass/app.scss'
 
@@ -34,10 +33,8 @@ import {
   handle_keyup,
   handle_relations_panel,
   minimap,
-  music_tooltip_installer,
   toggle_selected,
   toggle_shade,
-  tooltip_update,
 } from './ui'
 
 import {
@@ -198,7 +195,6 @@ export function do_relation(type, id, redoing = false) {
   }
   if (!redoing)
     flush_redo()
-  tooltip_update()
 }
 
 export function do_comborelation(type) {
@@ -218,7 +214,6 @@ export function do_comborelation(type) {
   selected = all
 
   do_relation(comboRelationTypes.main[type].total)
-  tooltip_update()
 }
 
 export function do_metarelation(type, id, redoing = false) {
@@ -245,7 +240,6 @@ export function do_metarelation(type, id, redoing = false) {
 
   undo_actions.push(['metarelation', added, selected, extraselected])
   selected.concat(extraselected).forEach(toggle_selected) // De-select
-  tooltip_update()
   if (!redoing)
     flush_redo()
 }
@@ -342,7 +336,6 @@ export function load(event) {
     reader.onload = function (e) {
       data = reader.result
       load_finish(null)
-      music_tooltip_installer()
     }
     reader.readAsText(files[0])
 

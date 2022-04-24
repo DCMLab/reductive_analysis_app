@@ -1,10 +1,9 @@
-import $ from 'jquery'
 import { polygonHull } from 'd3-polygon'
 // import fuzzysearch from 'fuzzysearch'
 
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
-import { getCurrentDrawContext, getTooltip, toggle_selected } from './ui'
+import { getCurrentDrawContext, toggle_selected } from './ui'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
@@ -192,14 +191,11 @@ export function tspan(text, p, dy, dx = 0) {
 }
 
 /**
- * Send given SVG to the background and refresh the tooltip.
+ * Send given SVG to the background.
  * Probably could be replaced by cycling CSS `z-index`.
  */
 export function flip_to_bg(elem) {
-  var tooltip = getTooltip()
   elem.parentElement.prepend(elem)
-  tooltip.close()
-  tooltip.open()
 }
 
 export function add_to_svg_bg(svg_elem, newElement) {
@@ -865,7 +861,7 @@ export function fix_layers(mei) {
 	    var new_mdiv_elem = mei.createElement('mdiv')
 	    if (sliced_re.test(score_id))
 	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
-	    else 
+	    else
 	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
 	    mdiv_elem.parentElement.append(new_mdiv_elem)
 	    new_mdiv_elem.append(score_elem)

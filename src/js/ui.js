@@ -1,7 +1,6 @@
 import $ from 'jquery'
 import pagemap from 'pagemap'
 import DragSelect from 'dragselect'
-import jBox from 'jbox'
 
 import newApp from './new/app'
 import {
@@ -66,8 +65,6 @@ var mouseY
 
 export const getMouseX = () => mouseX
 export const getMouseY = () => mouseY
-
-var tooltip
 
 // Last-selected entity in the current selection.
 var last_selected = null
@@ -471,49 +468,6 @@ export function drag_selector_installer(svg_elem) {
   })
 }
 
-export function tooltip_update() {
-  // return $('.jBox-Mouse').hide()
-  if (mouseX == undefined)
-    return
-  var update = [document.elementFromPoint(mouseX, mouseY)]
-    .map(x => {
-      if (x) {
-        switch (x.tagName) {
-          case 'path':
-            return x
-          case 'use':
-            return x.parentElement.parentElement
-          case 'circle':
-            return x.parentElement
-          default:
-            return false
-        }
-      }
-    })
-    .filter(x => {
-      if (typeof (x) == 'undefined' || typeof (x.classList) == 'undefined') return false
-      return (x.classList.contains('relation') && !x.classList.contains('relation--filtered'))
-        || (x.classList.contains('metarelation'))
-    })[0]
-  update = update ? update.getAttribute('type') : ''
-  if (update) {
-    $('.jBox-Mouse').show()
-    tooltip.setContent(update)
-  } else {
-    $('.jBox-Mouse').hide()
-  }
-}
-
-// A tooltip for displaying relationship and meta-relationship types.
-export function music_tooltip_installer() {
-  if (typeof (tooltip) != 'undefined') tooltip.destroy()
-  tooltip = new jBox('Mouse', {
-    attach: '#layers',
-    trigger: 'mouseenter',
-    onPosition: tooltip_update
-  })
-}
-
 export function clear_top(draw_context) {
   var svg_elem = draw_context.svg_elem
   var id_prefix = draw_context.id_prefix
@@ -667,8 +621,6 @@ export function toggle_orphan_notes() {
 }
 
 // Functions helping to interact with variable declared here from other files.
-export const getTooltip = () => tooltip
-
 export const getPlacingNote = () => placing_note
 export const setPlacingNote = value => placing_note = value
 

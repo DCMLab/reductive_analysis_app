@@ -1,9 +1,3 @@
-export const type_keys = {}
-export const type_shades = {}
-export const meta_keys = {}
-export const meta_shades = {}
-export const combo_keys = {}
-export const button_shades = {}
 
 // General action shortcuts.
 export const action_conf = {

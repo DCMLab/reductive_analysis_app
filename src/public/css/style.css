@@ -573,14 +573,13 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 
 
 #minimap {
-    position: fixed;
-    bottom: 50;
-    right: 10;
-    width: 100px;
-    height: 100%;
-    z-index: 90;
-}
+  position: absolute;
+  bottom: 5rem;
+  right: 0;
 
+  /* overwrite pagemap inline styles */
+  width: 14rem !important;
+  height: auto !important;
 }
 
 .select2-container {

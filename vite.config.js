@@ -70,7 +70,7 @@ export default defineConfig({
       thirdParty: {
         includePrivate: true,
         output: {
-          file: path.join(__dirname, 'dist', 'dependencies.txt'),
+          file: path.join(__dirname, 'public/assets', 'dependencies.txt'),
         },
       },
     }),

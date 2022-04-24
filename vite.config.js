@@ -24,7 +24,7 @@ const esLintOptions = {
   cache: true, // cache is cleaned on `npm install`
   cacheStrategy: 'content',
   fix: env.ES_LINT_AUTOFIX == 'true',
-  //  formatter: env.ES_LINT_FORMATTER ?? 'stylish',
+  formatter: env.ES_LINT_FORMATTER ?? 'stylish',
 }
 
 export default defineConfig({

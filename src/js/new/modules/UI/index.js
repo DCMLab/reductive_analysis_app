@@ -7,6 +7,7 @@ import relations  from './Relations'
 import selection  from './Selection'
 import zoom       from './Zoom'
 import bookmarks  from './Bookmarks'
+import accidentals  from './Accidentals'
 import newNote    from './Note'
 import relationWidth from './RelationWidth'
 import scoreSettings from './Score'
@@ -21,6 +22,7 @@ class UI {
   onTap(e) {
     this.relations?.onTap(e)
     this.bookmarks?.onTap(e)
+    this.accidentals?.onTap(e)
     this.scoreSettings?.onTap(e)
 
     if (!e.composedPath().includes(this.ctn)) { return }
@@ -81,12 +83,14 @@ class UI {
     this.filters = filters
     this.relations = relations
     this.bookmarks = bookmarks
+    this.accidentals = accidentals
     this.newNote = newNote
     this.relationWidth = relationWidth
     this.scoreSettings = scoreSettings
     this.layersMenu = layersMenu
 
     this.bookmarks.init()
+    this.accidentals.init()
   }
 }
 

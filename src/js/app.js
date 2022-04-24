@@ -31,7 +31,6 @@ import {
   handle_keydown,
   handle_keypress,
   handle_keyup,
-  handle_relations_panel,
   minimap,
   toggle_selected,
   toggle_shade,
@@ -136,9 +135,7 @@ window.addEventListener('beforeunload', function (e) {
 $(document).ready(function() {
   document.getElementsByTagName('html')[0].classList.remove('loader')
 
-  handle_relations_panel(document.getElementById('relations_panel'))
   minimap()
-  initialize_panel()
 })
 
 // Catch-all exception handler.
@@ -658,21 +655,6 @@ function render_mei(mei) {
   prefix_ids(new_draw_context.svg_elem, new_draw_context.id_prefix)
   finalize_draw_context(new_draw_context)
 } */
-
-function initialize_panel() {
-  // Add shortcut tooltips to the panel buttons.
-
-  const buttons = [
-    // conf.js label    ->        <input> element id
-    ['add_bookmark', 'addbookmarkbutton'],
-    ['jump_to_next_bookmark', 'previousbookmarkbutton'],
-    ['jump_to_previous_bookmark', 'nextbookmarkbutton'],
-  ]
-
-  buttons.forEach(b => document.getElementById(b[1]) .setAttribute('title',
-    custom_conf[b[0]] || navigation_conf[b[0]] || action_conf[b[0]])
-  )
-}
 
 console.log('Main webapp library is loaded')
 

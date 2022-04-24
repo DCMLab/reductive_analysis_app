@@ -1,5 +1,3 @@
-import $ from 'jquery'
-
 import { getDrawContexts, getMeiGraph, getUndoActions } from './app'
 import { toggle_selected } from './ui'
 import { flush_redo } from './undo_redo'
@@ -36,7 +34,8 @@ function delete_relation(elem) {
     // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
     // This is necessary when deleting via they keyboard (therefore while hovering).
     try {
-      $(`g #${x.getAttribute('to').substring(4)}`).removeClass().addClass('note')
+      const element = document.querySelector(`g #${x.getAttribute('to').substring(4)}`)
+      element.setAttribute('class', 'note')
     } catch (e) {
     }
     x.parentElement.removeChild(x)

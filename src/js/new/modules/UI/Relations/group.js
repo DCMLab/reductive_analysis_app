@@ -83,6 +83,7 @@ export default class RelationsGroup {
 
     let specifics = ''
 
+    // Note bookmarks and naturalize ; shouldn’t be there
     if (config.name == 'relation') {
       specifics = `
         <hr class="fly-out__hr visible-when-selection-is-note">
@@ -99,9 +100,22 @@ export default class RelationsGroup {
                 </svg>
                 <span class="hide-when-compact">Bookmark note</span>
             </button>
+            <button
+                class="fly-out__secondaryBtn | btn btn--hollow btn--small-icon hidden-when-in-layer-1 hidden-when-can-not-edit-layer"
+                type="button"
+                id="naturalize-note"
+                aria-label="Naturalize note"
+                title="Naturalize note"
+            >
+                <svg class="btn__icon" width="15" height="15">
+                    <use href="#note-purple-bg-path"/>
+                </svg>
+                <span class="hide-when-compact">Naturalize note</span>
+            </button>
         </div>
       `
     }
+
     this.ctn = document.getElementById(`${this.type}-btns`)
     this.ctn.innerHTML = titleHtml + btnsHtml + additionalRelations + specifics
 

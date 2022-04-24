@@ -1,25 +1,7 @@
 import { getDrawContexts } from './app'
-import { toggle_selected } from './ui'
-import { draw_context_of, get_by_id, get_id, note_coords } from './utils'
+import { get_by_id, get_id } from './utils'
 
-export function naturalize_notes() {
-  if (!selected[0].classList.contains('note')) {
-    console.log('Can only naturalize notes.')
-    return
-  }
-  if (!draw_context_of(selected[0]).canEdit) {
-    console.log('No modifications allowed to non-editable layer.')
-    return
-  }
-  var sel = selected.concat(extraselected)
-  sel.forEach(naturalize_note)
-  sel.forEach(toggle_selected)
-}
-
-const naturalizeNotesButton = document.getElementById('naturalizebutton')
-naturalizeNotesButton.addEventListener('click', naturalize_notes)
-
-function naturalize_note(elem) {
+export function naturalize_note(elem) {
   let svg_accid = elem.querySelector('.accid')
   if (!svg_accid) {
     console.log('No accidental to remove')

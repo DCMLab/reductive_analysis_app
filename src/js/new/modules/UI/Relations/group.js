@@ -81,8 +81,29 @@ export default class RelationsGroup {
       ? createDatalistFillable(config, this.type)
       : ''
 
+    let specifics = ''
+
+    if (config.name == 'relation') {
+      specifics = `
+        <hr class="fly-out__hr visible-when-selection-is-note">
+        <div class="fly-out__noteActions btn-group visible-when-selection-is-note">
+            <button
+                class="fly-out__secondaryBtn | btn btn--hollow btn--small-icon"
+                type="button"
+                id="bookmark-note"
+                aria-label="Bookmark note"
+                title="Bookmark note"
+            >
+                <svg class="btn__icon" width="12" height="16">
+                    <use href="#bookmark-path"/>
+                </svg>
+                <span class="hide-when-compact">Bookmark note</span>
+            </button>
+        </div>
+      `
+    }
     this.ctn = document.getElementById(`${this.type}-btns`)
-    this.ctn.innerHTML = titleHtml + btnsHtml + additionalRelations
+    this.ctn.innerHTML = titleHtml + btnsHtml + additionalRelations + specifics
 
     this.btns = this.ctn.getElementsByClassName('btn--relation')
     this.selectedBtns = this.ctn.getElementsByClassName('btn--selected')

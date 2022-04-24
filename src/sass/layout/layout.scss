@@ -7,3 +7,33 @@
 @import 'player-and-score-settings';
 @import 'layers-menu';
 @import 'ui/relations';
+
+.hidden-when-has-1-layer {
+  html.has-1-layer & {
+    display: none;
+  }
+}
+
+.hidden-when-has-many-layers {
+  html.has-many-layer & {
+    display: none;
+  }
+}
+
+.hidden-when-in-layer-1 {
+  html.in-layer-1 & {
+    display: none;
+  }
+}
+
+.hidden-when-not-in-layer-1 {
+  html.not-in-layer-1 & {
+    display: none;
+  }
+}
+
+.hidden-when-can-not-edit-layer {
+  html:not(.can-edit-layer) & {
+    display: none;
+  }
+}

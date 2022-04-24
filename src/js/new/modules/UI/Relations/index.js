@@ -5,6 +5,7 @@ import {
 } from '../../../../app'
 
 import { delete_relations } from '../../../../delete'
+import { doc } from '../../../utils/document'
 
 import {
   relationTypes,
@@ -90,16 +91,19 @@ class RelationsFlyOut extends DraggableFlyOut {
 
     this.reorder()
 
+    const selectionIsNote = selectionType == 'note'
+    doc.classList.toggle('selection-is-note', selectionIsNote)
+
     // Always show the relations buttons.
     this.relations.show()
 
     // Show metarelations unless a note is selected.
-    this.metarelations.toggleVisibility(selectionType != 'note')
+    this.metarelations.toggleVisibility(!selectionIsNote)
 
     this.compact()
 
     // Disable the delete button unless a relation is selected.
-    this.deleteBtn.disabled = !hasSelection || selectionType == 'note'
+    this.deleteBtn.disabled = !hasSelection || selectionIsNote
 
     /**
      * The dimensions of the fly-out may change if the selected item isn’t the

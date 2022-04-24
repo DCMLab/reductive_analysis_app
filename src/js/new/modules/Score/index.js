@@ -1,3 +1,5 @@
+import { getCurrentDrawContext } from '../../../ui'
+import { draw_context_of } from '../../../utils'
 import { CacheMap } from '../../utils/cache'
 import layersMenu from '../UI/Layers'
 
@@ -17,6 +19,7 @@ class Score {
     this.loaded = false
     this.mei = null
     this.layersCtn = document.getElementById('layers')
+    this.lastSelected = null
   }
 
   // `selection` uses a getter in order to flush the cache on selection change.
@@ -62,11 +65,21 @@ class Score {
     this.loaded = true
     this.mei = window.mei
     this.#cache.clear()
-    layersMenu.setCurrentLayer(1)
+    layersMenu.setCurrentLayer(0)
   }
 
   onScoreSelection({ detail }) {
-    this.selection = detail
+    this.selection = detail.selection
+    this.lastSelected = detail.lastSelected
+
+    if (!this.flatSelection.length) { return }
+
+    const currentDrawContext = getCurrentDrawContext()
+    const selectionDrawContext = draw_context_of(this.flatSelection[0])
+
+    if (currentDrawContext.layer_number != selectionDrawContext.layer_number) {
+      layersMenu.setCurrentLayer(selectionDrawContext.layer_number)
+    }
   }
 
   onTap(e) {

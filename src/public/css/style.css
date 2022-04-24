@@ -571,6 +571,7 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   color: darkgreen;
 }
 
+
 #minimap {
     position: fixed;
     bottom: 50;
@@ -580,10 +581,6 @@ body:not(.mousedown) #relations_panel_toggle:hover {
     z-index: 90;
 }
 
-.bookmark {
-  fill: rgba(255, 0, 0, 0.65);
-  stroke: red;
-  stroke-width: 5
 }
 
 .select2-container {

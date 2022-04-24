@@ -28,8 +28,6 @@ import {
 import { do_reduce_pre } from './reductions'
 import { draw_hierarchy_graph } from './visualizations'
 
-import { align_tree, draw_tree, load_tree, save_tree } from './trees'
-
 import { do_copy, do_paste }  from './copy_paste'
 
 import {
@@ -151,8 +149,16 @@ export function toggle_selected(item, extra = null) {
 
   // Dispatch selection changes.
 
+  const selection = {
+    selected: selected,
+    extraselected: extraselected,
+  }
+
   document.dispatchEvent(new CustomEvent('scoreselection', {
-    detail: { selected: selected, extraselected: extraselected }
+    detail: {
+      selection,
+      lastSelected: last_selected,
+    },
   }))
 }
 
@@ -530,38 +536,6 @@ export function minimap() {
   })
 }
 
-//  Bookmarks.
-var bookmarks = []
-
-export function add_bookmark() {
-  // Get selection.
-  if (!last_selected) {
-    return false
-  } else if (!last_selected.classList.contains('note')) {
-    return false
-  } else {
-    var note = last_selected
-    var bookmark = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-    var context = current_draw_context.id_prefix ? current_draw_context.id_prefix : '0'
-    bookmark.dataset.draw_context = context
-    bookmark.classList.add('bookmark')
-    bookmark.setAttribute('fill', 'red')
-    bookmark.setAttribute('width', '500px')
-    bookmark.setAttribute('height', '1500px')
-    bookmark.setAttribute('transform', 'translate(-120 -750)')
-    bookmark.setAttribute('x', note.children[0].children[0].getAttribute('x'))
-    bookmark.setAttribute('y', note.children[0].children[0].getAttribute('y'))
-    $(current_draw_context.svg_elem).find('.page-margin')[0].prepend(bookmark)
-    bookmarks.push(bookmark)
-    bookmarks.sort(function (a, b) {
-      return a.getAttribute('x') - b.getAttribute('x')
-    })
-  }
-}
-
-const addBookmarkButton = document.getElementById('addbookmarkbutton')
-addBookmarkButton.addEventListener('click', add_bookmark)
-
 export function jump_to_adjacent_bookmark(direction = 1) {
   var current_draw_context = getCurrentDrawContext()
 
@@ -625,8 +599,8 @@ export const getPlacingNote = () => placing_note
 export const setPlacingNote = value => placing_note = value
 
 export const getCurrentDrawContext = () => current_draw_context
-export const setCurrentDrawContext = value => {
+export const setCurrentDrawContext = drawContext => {
   current_draw_context?.layer.layer_elem.classList.remove('layer--active')
-  current_draw_context = value
+  current_draw_context = drawContext
   current_draw_context.layer.layer_elem.classList.add('layer--active')
 }

@@ -7,6 +7,7 @@ import RelationsTree  from './relationsTree'
 import { navigation_conf } from '../../../../conf'
 import { getCurrentDrawContext, setCurrentDrawContext } from '../../../../ui'
 import { doc } from '../../../utils/document'
+import bookmarks from '../Bookmarks'
 
 class LayersMenu {
   #visible = false
@@ -89,29 +90,32 @@ class LayersMenu {
   // Update `data-position` attribute based on DOM order.
   setDataPosition() {
     Array.from(this.layersEls).forEach((layer, index) => {
-      layer.dataset.position = index + 1
+      layer.dataset.position = index
     })
   }
 
-  setCurrentLayer(layerPosition = 1) {
-    console.log(layerPosition)
-    const layer = this.contexts.find(layer => layer.layer.layer_number + 1 == layerPosition)
-    if (layer) {
-      setCurrentDrawContext(layer)
-      this.$currentLayer.innerHTML = layerPosition
-      this.activeLayer = layerPosition
-      this.updateLayersCount()
-      this.checkLockState(layer.canEdit)
-      this.checkSaveState(layer.canSave)
-      this.tree.updateToggles(layer)
-    }
+  setCurrentLayer(layerPosition = 0) {
+    const layer = this.contexts.find(layer => layer.layer.layer_number == layerPosition)
+
+    if (!layer) { return }
+
+    setCurrentDrawContext(layer)
+    this.$currentLayer.innerHTML = layerPosition + 1
+    this.activeLayer = layerPosition
+    this.updateLayersCount()
+    this.checkLockState(layer.canEdit)
+    this.checkSaveState(layer.canSave)
+    this.tree.updateToggles(layer)
   }
 
   updateLayersCount() {
     const hasOneLayer = this.contexts.length == 1
     doc.classList.toggle('has-1-layer', hasOneLayer)
     doc.classList.toggle('has-many-layers', !hasOneLayer)
-    this.$saveSettingsCtn.classList.toggle('layers-menu__saveSettings--hidden', hasOneLayer || this.activeLayer == 1)
+
+    const layerOneIsActive = this.activeLayer == 0
+    doc.classList.toggle('in-layer-1', layerOneIsActive)
+    doc.classList.toggle('not-in-layer-1', !layerOneIsActive)
   }
 
   updateNavigation() {
@@ -143,7 +147,7 @@ class LayersMenu {
          */
         if (layer.layer.layer_elem.childElementCount == 1) {
           layer.layer.layer_elem.insertAdjacentHTML('beforeend',
-            `<div class="layer-intersection-landmark" data-position="${layer.layer.layer_number + 1}"></div>`
+            `<div class="layer-intersection-landmark" data-position="${layer.layer.layer_number}"></div>`
           )
         }
         this.observer.observe(layer.layer.layer_elem.querySelector('.layer-intersection-landmark'))
@@ -154,9 +158,9 @@ class LayersMenu {
   initObserver() {
     this.observer = new IntersectionObserver(entries => {
 
-      // Store the height of the layer visible in the viewport.
+      // Store the height of the layer being visible in the viewport.
       entries.forEach(entry => {
-        const layer = this.contexts.find(layer => entry.target.dataset.position == layer.layer.layer_number + 1)
+        const layer = this.contexts.find(layer => entry.target.dataset.position == layer.layer.layer_number)
         if (layer) {
           layer.visibleHeight = entry.intersectionRect.height ?? 0
         }
@@ -165,7 +169,7 @@ class LayersMenu {
       // The most visible layer is marked as current.
       const highestVisibility = Math.max(...this.contexts.map(layer => layer.visibleHeight))
       const mostVisibleLayer = this.contexts.find(layer => layer.visibleHeight == highestVisibility)
-      this.visibleLayer = parseInt(mostVisibleLayer.layer.layer_elem.dataset.position)
+      this.visibleLayer = parseInt(mostVisibleLayer.layer.layer_elem.dataset.position) + 1
       this.updateNavigation()
     }, {
       threshold: [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1],
@@ -175,11 +179,10 @@ class LayersMenu {
   moveBy(distance = 0) {
     const destinationLayer = this.visibleLayer + distance
 
-    if (clamp(destinationLayer, 1, this.contexts.length) == destinationLayer) {
-      const layerEl = this.contexts.reverse()[destinationLayer - 1].layer.layer_elem
-      this.contexts.reverse() // re-reverse array (reverse modifies the original…)
-      layerEl.scrollIntoView()
-    }
+    const layerEl = this.contexts.reverse()[destinationLayer - 1].layer.layer_elem
+    this.contexts.reverse() // re-reverse array (reverse modifies the original…)
+
+    layerEl.scrollIntoView()
   }
 
   addMouseListeners() {
@@ -221,6 +224,7 @@ class LayersMenu {
   // Only the “visible” one
   checkLockState(state) {
     this.$lockBtn.classList.toggle('lock-path--unlocked', state)
+    doc.classList.toggle('can-edit-layer', state)
   }
 }
 

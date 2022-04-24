@@ -14,6 +14,7 @@ import {
 } from '../../Relations/config'
 
 import score from '../../Score'
+import viewport from '../../Viewport'
 import { DraggableFlyOut } from '../FlyOut'
 import RelationsGroup from './group'
 
@@ -159,6 +160,8 @@ class RelationsFlyOut extends DraggableFlyOut {
     })
 
     this.title = this.ctn.el.querySelector('.fly-out__title')
+    this.updatePosition((viewport.w - this.ctn.el.clientWidth) / 2, 120)
+    this.snapInViewport()
   }
 }
 

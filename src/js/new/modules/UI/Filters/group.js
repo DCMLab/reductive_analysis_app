@@ -66,7 +66,7 @@ export default class FilterGroup {
             <input class="checkable__input" type="checkbox" id="${this.namespace}-filter-${type}" data-type="${type}" ${checked ? 'checked' : ''}>
             <span class="checkbox checkbox--colored">
                 <svg class="checkable__icon btn__icon" width="12" height="10">
-                    <use xlink:href="#check-path"/>
+                    <use href="#check-path"/>
                 </svg>
             </span>
         </label>

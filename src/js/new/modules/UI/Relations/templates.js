@@ -65,7 +65,7 @@ const createFillable = (id, { label, placeholder = '' }) => `
       <span class="fillable__label">
           <span class="fillable__label__text">${label}</span>
           <svg class="fillable__label__triangle | btn__icon" width="10" height="8">
-              <use xlink:href="#triangle-path"/>
+              <use href="#triangle-path"/>
           </svg>
       </span>
 

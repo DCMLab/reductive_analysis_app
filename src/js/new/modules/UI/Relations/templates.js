@@ -36,7 +36,8 @@ export const createBtn = (name, type, index) => `
 export const createShowMoreBtn = type => `
   <button
       type="button"
-      class="fly-out__showMore ${CSS.hideIfNotCompact} | btn btn--hollow"
+      class="fly-out__secondaryBtn fly-out__showMore ${CSS.hideIfNotCompact} | btn btn--hollow"
+      title="View more ${type}"
   >
       <span class="visually-hidden">View more ${type}</span>
       &hellip;

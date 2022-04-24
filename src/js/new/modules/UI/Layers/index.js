@@ -106,6 +106,7 @@ class LayersMenu {
     this.checkLockState(layer.canEdit)
     this.checkSaveState(layer.canSave)
     this.tree.updateToggles(layer)
+    bookmarks.setCount()
   }
 
   updateLayersCount() {

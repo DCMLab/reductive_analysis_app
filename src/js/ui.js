@@ -536,44 +536,6 @@ export function minimap() {
   })
 }
 
-export function jump_to_adjacent_bookmark(direction = 1) {
-  var current_draw_context = getCurrentDrawContext()
-
-  function moveTo(el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-  }
-
-  if (current_draw_context) {
-    // TODO: Remove or adapt the following line once the initial draw context has a defined id_prefix.
-    var context = current_draw_context.id_prefix ? current_draw_context.id_prefix : '0'
-
-    var context_bookmarks = bookmarks.filter(b => b.dataset.draw_context == context)
-
-    var context_bookmarks_map_x = context_bookmarks
-      .map(b => b.getBoundingClientRect().x)
-
-    var next_bookmark_index = context_bookmarks_map_x.findIndex(x => x >= window.innerWidth)
-    var previous_bookmark_index = context_bookmarks_map_x.filter(x => x <= 0).length - 1
-
-    if (direction == 1 && next_bookmark_index != -1) {
-      var element = context_bookmarks[next_bookmark_index]
-    } else if (direction == -1 && previous_bookmark_index != -1) {
-      var element = context_bookmarks[previous_bookmark_index]
-    } else {
-      return false
-    }
-
-    moveTo(element)
-  }
-
-}
-
-const previousBookmarkButton = document.getElementById('previousbookmarkbutton')
-previousBookmarkButton.addEventListener('click', () => jump_to_adjacent_bookmark(-1))
-
-const nextBookmarkButton = document.getElementById('nextbookmarkbutton')
-nextBookmarkButton.addEventListener('click', () => jump_to_adjacent_bookmark(1))
-
 function hide_orphan_notes() {
   var mei_graph = getMeiGraph()
   var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id)

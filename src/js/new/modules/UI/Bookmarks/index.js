@@ -174,6 +174,7 @@ class Bookmarks {
 
   init() {
     this.btn = document.getElementById('bookmark-note')
+    this.items = []
   }
 }
 

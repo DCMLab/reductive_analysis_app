@@ -497,6 +497,7 @@ function load_finish(loader_modal) {
   rerendered_after_action = 0
 
   newApp.ui.scoreSettings.toggleShades(true)
+  newApp.ui.bookmarks.init()
 
   document.onkeypress = function(ev) { handle_keypress(ev) }
   document.onkeydown = handle_keydown

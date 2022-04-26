@@ -1,3 +1,10 @@
+/*
+This file is part of MuseReduce, a webapp for graph-based musical analysis
+
+Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Digital and Cognitive Musicology Lab (DCML).
+
+MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
+*/
 import { getDrawContexts } from './app'
 import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space, chord_to_space } from './utils'
 
@@ -5,7 +12,7 @@ import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space, cho
 
 // Each layer is represented by a <score> element in the MEI - the
 // surface being the first, and each subsequent layer making up a separate
-// <score> element. 
+// <score> element.
 
 // DEPRECATED: Notes that reoccur in analysed layers from the surface
 // should be connected using @copyof attributes, while the <score> elements

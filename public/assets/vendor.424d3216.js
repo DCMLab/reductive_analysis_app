@@ -1,4 +1,12 @@
-var fr=typeof globalThis!="undefined"?globalThis:typeof window!="undefined"?window:typeof global!="undefined"?global:typeof self!="undefined"?self:{};function Ii(l){return l&&l.__esModule&&Object.prototype.hasOwnProperty.call(l,"default")?l.default:l}function Oi(l){if(l.__esModule)return l;var p=Object.defineProperty({},"__esModule",{value:!0});return Object.keys(l).forEach(function(h){var f=Object.getOwnPropertyDescriptor(l,h);Object.defineProperty(p,h,f.get?f:{enumerable:!0,get:function(){return l[h]}})}),p}function qn(l){throw new Error('Could not dynamically require "'+l+'". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.')}var Rr={exports:{}};/*!
+/*!
+ * =====
+ * This file is part of MuseReduce, a webapp for graph-based musical analysis
+ *
+ * Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Digital and Cognitive Musicology Lab (DCML).
+ *
+ * MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
+ * =====
+ */var fr=typeof globalThis!="undefined"?globalThis:typeof window!="undefined"?window:typeof global!="undefined"?global:typeof self!="undefined"?self:{};function Ii(l){return l&&l.__esModule&&Object.prototype.hasOwnProperty.call(l,"default")?l.default:l}function Oi(l){if(l.__esModule)return l;var p=Object.defineProperty({},"__esModule",{value:!0});return Object.keys(l).forEach(function(h){var f=Object.getOwnPropertyDescriptor(l,h);Object.defineProperty(p,h,f.get?f:{enumerable:!0,get:function(){return l[h]}})}),p}function qn(l){throw new Error('Could not dynamically require "'+l+'". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.')}var Rr={exports:{}};/*!
  * jQuery JavaScript Library v3.6.0
  * https://jquery.com/
  *

@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import eslintPlugin from 'vite-plugin-eslint'
+// license banners
+const path = require('path')
+const license = require('rollup-plugin-license')
 
 // env
 const env = require('dotenv').config().parsed
@@ -55,6 +58,22 @@ export default defineConfig({
   },
 
   plugins: [
+    license({
+      sourcemap: true,
+      banner: {
+        commentStyle: 'ignored',
+        content: {
+          file: path.join(__dirname, 'LICENSE'),
+        },
+      },
+
+      thirdParty: {
+        includePrivate: true,
+        output: {
+          file: path.join(__dirname, 'public/assets', 'dependencies.txt'),
+        },
+      },
+    }),
     ...(isProd ? [] : [eslintPlugin(esLintOptions)]),
   ],
 

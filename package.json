@@ -65,6 +65,7 @@
     "postcss-safe-area": "0.1",
     "postcss-short-size": "^4.0",
     "puppeteer": "^7.1.0",
+    "rollup-plugin-license": "^2.7.0",
     "sass": "^1.49.0",
     "v.scss": "^1.2.1",
     "vite": "~2.8.0",

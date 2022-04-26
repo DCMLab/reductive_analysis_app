@@ -169,15 +169,15 @@ class EventsManager {
     if (isFieldFocused()) { return }
 
     /**
-     * Redo (Cmd/Ctrl + Shift + Z)
-     * Undo (Cmd/Ctrl + Z)
+     * Redo (Ctrl + Shift + Z)
+     * Undo (Ctrl + Z)
      */
     if (isKey(e, 'z')) {
-      if (isModifier(e, [shortcutMeta, 'shift'])) {
+      if (isModifier(e, ['ctrl', 'shift'])) {
         return this.app.history.redo()
       }
 
-      if (isModifier(e, shortcutMeta)) {
+      if (isModifier(e, 'ctrl')) {
         return this.app.history.undo()
       }
     }

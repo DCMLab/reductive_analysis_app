@@ -72,6 +72,9 @@ var last_selected = null
 // Show non-related ("orphan") notes by default.
 var show_orphans = true
 
+// Stack of note selection. Helps to retrieve the really last selected note.
+const selectedNotesIds = []
+
 // Toggle if a thing (for now: note or relation) is selected or not.
 export function toggle_selected(item, extra = null) {
   const itemType = get_class_from_classlist(item)
@@ -120,15 +123,29 @@ export function toggle_selected(item, extra = null) {
 
   // Select note.
 
-  if (itemType == 'note' && !isAlreadySelected) {
-    if (extra) {
-      item.classList.add('extraselectednote')
-      extraselected.push(item)
-    } else {
-      item.classList.add('selectednote')
-      selected.push(item)
+  if (itemType == 'note') {
+    if (!isAlreadySelected) {
+      selectedNotesIds.push(item.id)
+
+      if (extra) {
+        item.classList.add('extraselectednote')
+        extraselected.push(item)
+      } else {
+        item.classList.add('selectednote')
+        selected.push(item)
+      }
+
     }
-    last_selected = item
+    else {
+      const noteIdIndex = selectedNotesIds.findIndex(id => item.id == id)
+      selectedNotesIds.splice(noteIdIndex, 1)
+    }
+
+    const selectionSize = selectedNotesIds.length
+
+    last_selected = selectionSize
+      ? document.getElementById(selectedNotesIds[selectionSize - 1])
+      : null
   }
 
   // Select relation.

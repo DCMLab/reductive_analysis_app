@@ -259,7 +259,7 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.delete_all) { // Delete relations.
     delete_relations()
   } else if (ev.key == action_conf.add_bookmark) { // Add bookmark.
-    add_bookmark()
+    bookmarks.toggle()
   } else if (ev.key == custom_conf.relation) { // Custom relations.
     ev.preventDefault()
     var was_collapsed = $('#relations_panel').hasClass('collapsed')

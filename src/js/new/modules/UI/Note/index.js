@@ -28,18 +28,18 @@ class NewNote {
     /**
      * @todo: update active styles of this button on press + kb shortcut
      */
-    this.btn.classList.toggle('btn--something-active-for-new-note', this.isActive)
+    this.btn.classList.toggle('btn--placing-new-note', this.isActive)
   }
 
   enable() {
     start_placing_note()
-    this.btn.classList.add('btn--something-active-for-new-note')
+    this.btn.classList.add('btn--placing-new-note')
     this.isActive = true
   }
 
   disable() {
     stop_placing_note()
-    this.btn.classList.remove('btn--something-active-for-new-note')
+    this.btn.classList.remove('btn--placing-new-note')
     this.isActive = false
   }
 

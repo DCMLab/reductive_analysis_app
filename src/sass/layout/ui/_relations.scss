@@ -66,3 +66,14 @@
     display: none;
   }
 }
+
+// Secondary button, with less visible border
+.fly-out__secondaryBtn {
+  --btn-border: hsl(0, 0%, 100%, .1);
+}
+
+// Actions for a single note in the relations fly-out (naming not ideal)
+
+.fly-out__noteActions {}
+
+.fly-out__noteActions__btn {}

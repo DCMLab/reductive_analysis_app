@@ -29,13 +29,12 @@
     "dragselect": "2.2.1",
     "expect-puppeteer": "^4.4.0",
     "fuzzysearch": "^1.0.3",
-    "jbox": "^1.3.3",
     "jquery": "^3.6.0",
     "midi-player-js": "^2.0.14",
     "normalize.css": "^8.0",
     "pagemap": "^1.4.0",
     "soundfont-player": "^0.12.0",
-    "verovio": "^3.4.1"
+    "verovio": "~3.8.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.4",
@@ -43,6 +42,7 @@
     "@babel/eslint-parser": "^7.15.4",
     "@babel/plugin-transform-runtime": "^7.16.8",
     "@babel/preset-env": "^7.15.6",
+    "@csstools/css-has-pseudo-experimental": "^0.4.0",
     "@testing-library/dom": "^7.29.4",
     "@testing-library/jest-dom": "^5.11.9",
     "cssnano": "^5",
@@ -69,6 +69,6 @@
     "sass": "^1.49.0",
     "v.scss": "^1.2.1",
     "vite": "~2.8.0",
-    "vite-plugin-eslint": "^1.3.0"
+    "vite-plugin-eslint": "^1.5"
   }
 }

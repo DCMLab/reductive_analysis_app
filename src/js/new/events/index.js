@@ -10,6 +10,7 @@ import { isKey, isModifier, pressedModifiers, shortcutMeta } from './keyCodes'
 import { captureEvent } from './options'
 import MouseMoveTick from './mousemove'
 import debounceResize from './resize'
+import tooltip from '../modules/Score/tooltip'
 
 class EventsManager {
   constructor(app) {
@@ -23,6 +24,7 @@ class EventsManager {
 
     // mouse
     document.addEventListener('click', this.onTap.bind(this), captureEvent)
+    document.addEventListener('mouseenter', this.onMouseEnter.bind(this), captureEvent)
     document.addEventListener('mousedown', this.onTapStart.bind(this), captureEvent)
     document.addEventListener('mousemove', this.onMouseMove.bind(this), captureEvent)
     document.addEventListener('mouseup', this.onTapEnd.bind(this), captureEvent)
@@ -95,8 +97,13 @@ class EventsManager {
 
   onMouseMove(e) {
     MouseMoveTick.tick(e, ({ x, y }) => {
+      this.app.viewport?.onMouseMove(x, y)
       this.app.ui?.onTapMove(x, y)
     })
+  }
+
+  onMouseEnter(e) {
+    tooltip?.onMouseEnter(e)
   }
 
   // Touch-only events

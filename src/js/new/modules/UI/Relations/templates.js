@@ -36,7 +36,8 @@ export const createBtn = (name, type, index) => `
 export const createShowMoreBtn = type => `
   <button
       type="button"
-      class="fly-out__showMore ${CSS.hideIfNotCompact} | btn btn--hollow"
+      class="fly-out__secondaryBtn fly-out__showMore ${CSS.hideIfNotCompact} | btn btn--hollow"
+      title="View more ${type}"
   >
       <span class="visually-hidden">View more ${type}</span>
       &hellip;
@@ -52,7 +53,7 @@ export const createDatalistFillable = (config, type) => `
       ${createDatalist(config.additional, type)}
 
       <button class="btn btn--plain btn--small">
-          Assign <span class="visually-hidden>${type}</span>
+          Assign <span class="visually-hidden">${type}</span>
       </button>
   </form>
 `
@@ -65,7 +66,7 @@ const createFillable = (id, { label, placeholder = '' }) => `
       <span class="fillable__label">
           <span class="fillable__label__text">${label}</span>
           <svg class="fillable__label__triangle | btn__icon" width="10" height="8">
-              <use xlink:href="#triangle-path"/>
+              <use href="#triangle-path"/>
           </svg>
       </span>
 

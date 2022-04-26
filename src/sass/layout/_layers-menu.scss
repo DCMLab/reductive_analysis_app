@@ -106,14 +106,10 @@
   pointer-events: none;
 }
 
-.layers-menu__saveSettings {
+.layers-menu__saveLayer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.layers-menu__saveSettings--hidden {
-  display: none;
 }
 
 .layers-menu__layerTitle {

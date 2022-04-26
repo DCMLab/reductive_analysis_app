@@ -1,5 +1,7 @@
 // import { doc } from '../../utils/document'
 
+import { doc } from '../../utils/document'
+
 class Viewport {
   constructor() {
     this.update()
@@ -7,6 +9,13 @@ class Viewport {
 
   onResize() {
     this.update()
+  }
+
+  onMouseMove(x, y) {
+    // this.x = x
+    // this.y = y
+    doc.style.setProperty('--mouse-x', x)
+    doc.style.setProperty('--mouse-y', y)
   }
 
   update() {

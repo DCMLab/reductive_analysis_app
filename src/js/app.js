@@ -6,7 +6,6 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import '/public/css/select2.min.css'
-import '/public/css/jbox.css'
 import '/public/css/style.css'
 import '/sass/app.scss'
 
@@ -39,12 +38,9 @@ import {
   handle_keydown,
   handle_keypress,
   handle_keyup,
-  handle_relations_panel,
   minimap,
-  music_tooltip_installer,
   toggle_selected,
   toggle_shade,
-  tooltip_update,
 } from './ui'
 
 import {
@@ -72,6 +68,16 @@ import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
 import { comboRelationTypes } from './new/modules/Relations/config'
 import { setAttributes } from './new/utils/dom'
+
+/**
+ * JS polyfill for the CSS `:has` pseudo-selector. It completes the PostCSS
+ * plugin doing the transformation (see `postcss.config.js`).
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/:has
+ * - https://github.com/csstools/postcss-plugins/tree/main/experimental
+ */
+import cssHasPseudo from '@csstools/css-has-pseudo-experimental/browser'
+// const cssHasPseudo = require('css-has-pseudo/browser') // defect
+cssHasPseudo(document)
 
 // require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 
@@ -136,9 +142,7 @@ window.addEventListener('beforeunload', function (e) {
 $(document).ready(function() {
   document.getElementsByTagName('html')[0].classList.remove('loader')
 
-  handle_relations_panel(document.getElementById('relations_panel'))
   minimap()
-  initialize_panel()
 })
 
 // Catch-all exception handler.
@@ -195,7 +199,6 @@ export function do_relation(type, id, redoing = false) {
   }
   if (!redoing)
     flush_redo()
-  tooltip_update()
 }
 
 export function do_comborelation(type) {
@@ -215,7 +218,6 @@ export function do_comborelation(type) {
   selected = all
 
   do_relation(comboRelationTypes.main[type].total)
-  tooltip_update()
 }
 
 export function do_metarelation(type, id, redoing = false) {
@@ -242,7 +244,6 @@ export function do_metarelation(type, id, redoing = false) {
 
   undo_actions.push(['metarelation', added, selected, extraselected])
   selected.concat(extraselected).forEach(toggle_selected) // De-select
-  tooltip_update()
   if (!redoing)
     flush_redo()
 }
@@ -318,6 +319,10 @@ export function savesvg() {
   Array.from(relations).forEach(inlineStyles)
   Array.from(metarelations).forEach(inlineStyles)
 
+  // Remove bookmarks.
+  const bookmarks = cloneSvgElement.getElementsByClassName('bookmark')
+  Array.from(bookmarks).forEach(bookmark => bookmark.remove())
+
   // Get SVG string and remove the clone from the DOM.
   const cloneSvgStr = new XMLSerializer().serializeToString(cloneSvgElement)
   cloneSvgElement.remove()
@@ -339,7 +344,6 @@ export function load(event) {
     reader.onload = function (e) {
       data = reader.result
       load_finish(null)
-      music_tooltip_installer()
     }
     reader.readAsText(files[0])
 
@@ -504,6 +508,7 @@ function load_finish(loader_modal) {
   rerendered_after_action = 0
 
   newApp.ui.scoreSettings.toggleShades(true)
+  newApp.ui.bookmarks.init()
 
   document.onkeypress = function(ev) { handle_keypress(ev) }
   document.onkeydown = handle_keydown
@@ -662,23 +667,6 @@ function render_mei(mei) {
   prefix_ids(new_draw_context.svg_elem, new_draw_context.id_prefix)
   finalize_draw_context(new_draw_context)
 } */
-
-function initialize_panel() {
-  // Add shortcut tooltips to the panel buttons.
-
-  const buttons = [
-    // conf.js label    ->        <input> element id
-    ['add_bookmark', 'addbookmarkbutton'],
-    ['jump_to_next_bookmark', 'previousbookmarkbutton'],
-    ['jump_to_previous_bookmark', 'nextbookmarkbutton'],
-    ['jump_to_context_below', 'previouscontextbutton'],
-    ['jump_to_context_above', 'nextcontextbutton']
-  ]
-
-  buttons.forEach(b => document.getElementById(b[1]) .setAttribute('title',
-    custom_conf[b[0]] || navigation_conf[b[0]] || action_conf[b[0]])
-  )
-}
 
 console.log('Main webapp library is loaded')
 

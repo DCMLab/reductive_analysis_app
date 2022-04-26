@@ -5,16 +5,17 @@ import {
 } from '../../../../app'
 
 import { delete_relations } from '../../../../delete'
+import { doc } from '../../../utils/document'
 
 import {
   relationTypes,
   metaRelationTypes,
   comboRelationTypes,
-  menuOrderByType,
   getMenuOrder,
 } from '../../Relations/config'
 
 import score from '../../Score'
+import viewport from '../../Viewport'
 import { DraggableFlyOut } from '../FlyOut'
 import RelationsGroup from './group'
 
@@ -90,16 +91,19 @@ class RelationsFlyOut extends DraggableFlyOut {
 
     this.reorder()
 
+    const selectionIsNote = selectionType == 'note'
+    doc.classList.toggle('selection-is-note', selectionIsNote)
+
     // Always show the relations buttons.
     this.relations.show()
 
     // Show metarelations unless a note is selected.
-    this.metarelations.toggleVisibility(selectionType != 'note')
+    this.metarelations.toggleVisibility(!selectionIsNote)
 
     this.compact()
 
     // Disable the delete button unless a relation is selected.
-    this.deleteBtn.disabled = !hasSelection || selectionType == 'note'
+    this.deleteBtn.disabled = !hasSelection || selectionIsNote
 
     /**
      * The dimensions of the fly-out may change if the selected item isn’t the
@@ -160,6 +164,8 @@ class RelationsFlyOut extends DraggableFlyOut {
     })
 
     this.title = this.ctn.el.querySelector('.fly-out__title')
+    this.updatePosition((viewport.w - this.ctn.el.clientWidth) / 2, 120)
+    this.snapInViewport()
   }
 }
 

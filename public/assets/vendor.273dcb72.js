@@ -1,4 +1,12 @@
-var commonjsGlobal=typeof globalThis!="undefined"?globalThis:typeof window!="undefined"?window:typeof global!="undefined"?global:typeof self!="undefined"?self:{};function getDefaultExportFromCjs(c){return c&&c.__esModule&&Object.prototype.hasOwnProperty.call(c,"default")?c.default:c}function getAugmentedNamespace(c){if(c.__esModule)return c;var f=Object.defineProperty({},"__esModule",{value:!0});return Object.keys(c).forEach(function(m){var p=Object.getOwnPropertyDescriptor(c,m);Object.defineProperty(f,m,p.get?p:{enumerable:!0,get:function(){return c[m]}})}),f}function commonjsRequire(c){throw new Error('Could not dynamically require "'+c+'". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.')}var jquery={exports:{}};/*!
+/*!
+ * =====
+ * This file is part of MuseReduce, a webapp for graph-based musical analysis
+ *
+ * Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Digital and Cognitive Musicology Lab (DCML).
+ *
+ * MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
+ * =====
+ */var commonjsGlobal=typeof globalThis!="undefined"?globalThis:typeof window!="undefined"?window:typeof global!="undefined"?global:typeof self!="undefined"?self:{};function getDefaultExportFromCjs(c){return c&&c.__esModule&&Object.prototype.hasOwnProperty.call(c,"default")?c.default:c}function getAugmentedNamespace(c){if(c.__esModule)return c;var f=Object.defineProperty({},"__esModule",{value:!0});return Object.keys(c).forEach(function(m){var p=Object.getOwnPropertyDescriptor(c,m);Object.defineProperty(f,m,p.get?p:{enumerable:!0,get:function(){return c[m]}})}),f}function commonjsRequire(c){throw new Error('Could not dynamically require "'+c+'". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.')}var jquery={exports:{}};/*!
  * jQuery JavaScript Library v3.6.0
  * https://jquery.com/
  *

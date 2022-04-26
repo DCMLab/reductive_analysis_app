@@ -1,3 +1,10 @@
+/*
+This file is part of MuseReduce, a webapp for graph-based musical analysis
+
+Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Digital and Cognitive Musicology Lab (DCML).
+
+MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
+*/
 import { getVerovioToolkit, rerender_mei } from './app'
 import { get_by_id, get_id, note_coords, prefix_ids } from './utils'
 
@@ -149,8 +156,8 @@ function slicify(draw_context, mdiv_elem, tied = false) {
 export function new_sliced_layer(draw_context, tied = false) {
   var mdiv_elem = draw_context.mei_mdiv
   var new_mdiv_elem = slicify(draw_context, mdiv_elem, tied)
-  // TODO: this is not entirely accurate, since there may be 
-  var n_layers = mdiv_elem.parentElement.getElementsByTagName('mdiv').length 
+  // TODO: this is not entirely accurate, since there may be
+  var n_layers = mdiv_elem.parentElement.getElementsByTagName('mdiv').length
   var prefix = n_layers + '-' // TODO: better prefix computation
   // The - is there to not clash with view
 			     // prefixes

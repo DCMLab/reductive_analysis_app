@@ -312,6 +312,10 @@ export function savesvg() {
   Array.from(relations).forEach(inlineStyles)
   Array.from(metarelations).forEach(inlineStyles)
 
+  // Remove bookmarks.
+  const bookmarks = cloneSvgElement.getElementsByClassName('bookmark')
+  Array.from(bookmarks).forEach(bookmark => bookmark.remove())
+
   // Get SVG string and remove the clone from the DOM.
   const cloneSvgStr = new XMLSerializer().serializeToString(cloneSvgElement)
   cloneSvgElement.remove()

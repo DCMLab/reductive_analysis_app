@@ -20,6 +20,7 @@ jobs:
           cache: 'npm'
       - run: cp .env.example .env
       - run: sed -ie "s/HEADLESS = false/HEADLESS = true/" jest-puppeteer.config.js
+      - run: sed -ie "s/defineConfig({/defineConfig({ base: '\/reductive_analysis_app\/',/" vite.config.js
       - run: npm install
       - run: npm run build
 #     - run: npm test

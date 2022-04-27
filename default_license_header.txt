@@ -1,0 +1,10 @@
+=====
+This file is part of MuseReduce, a webapp for graph-based music analysis.
+Copyright (C) 2022 Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Digital and Cognitive Musicology Lab (DCML).
+
+MuseReduce is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation.
+
+MuseReduce is distributed without any warranty. See the GNU Affero General Public License for more details.
+
+https://www.gnu.org/licenses/agpl-3.0.en.html
+=====

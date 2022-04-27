@@ -285,13 +285,9 @@ export function handle_keypress(ev) {
     bookmarks.toggle()
   } else if (ev.key == custom_conf.relation) { // Custom relations.
     ev.preventDefault()
-    var was_collapsed = $('#relations_panel').hasClass('collapsed')
-    if (was_collapsed) toggle_buttons()
     // $('#custom_type').select2('open')
   } else if (ev.key == custom_conf.meta_relation) { // Custom meta-relations.
     ev.preventDefault()
-    var was_collapsed = $('#relations_panel').hasClass('collapsed')
-    if (was_collapsed) toggle_buttons()
     // $('#meta_custom_type').select2('open')
   } else if (e = Object.entries(type_conf).find((c) => c[1].key == ev.key)) { // Add a relation
     do_relation(e[0])
@@ -299,8 +295,6 @@ export function handle_keypress(ev) {
     do_metarelation(e[0])
   } else if (e = Object.entries(combo_conf).find((c) => c[1].key == ev.key)) { // Add a comborelation
     do_comborelation(e[0])
-  } else if (ev.key == navigation_conf.toggle_palette) { // Toggle the relations palette
-    toggle_buttons()
   } else {
     console.log(ev)
   }

@@ -297,6 +297,17 @@ describe('reductive_analysis_test_suite', () => {
     // Confirm that the selected note has been added to the `selected` array.
     await expect(page.evaluate(`window.selected[0].getAttribute('id')`)).resolves.toEqual(svg_first_note_id)
 
+    // The relations menu covers the notes we want to poke at, so we should
+    // move it down
+    const drag_box_x = await page.evaluate('document.querySelector(`.fly-out__drag`).getBoundingClientRect().x')
+    const drag_box_width = await page.evaluate('document.querySelector(`.fly-out__drag`).getBoundingClientRect().width')
+    const drag_box_y = await page.evaluate('document.querySelector(`.fly-out__drag`).getBoundingClientRect().y')
+    const drag_box_height = await page.evaluate('document.querySelector(`.fly-out__drag`).getBoundingClientRect().height')
+    await page.mouse.move(drag_box_x + drag_box_width / 2, drag_box_y + drag_box_height /2 )
+    await page.mouse.down()
+    await page.mouse.move(drag_box_x + drag_box_width / 2, drag_box_y + drag_box_height /2 + 300)
+    await page.mouse.up()
+
     // Simulate second click on first note (deselecting it).
     log('Deselecting note.')
     await expect(page).toClick(svg_first_notehead_selector);

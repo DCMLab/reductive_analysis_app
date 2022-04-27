@@ -1,0 +1,76 @@
+.hidden-when-score-settings-not-visible {
+  html:not(.ui-score-settings-visible) & {
+    display: none;
+  }
+}
+
+.hidden-when-score-settings-visible {
+  html.ui-score-settings-visible & {
+    display: none;
+  }
+}
+
+.player-and-score-settings {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: grid;
+  grid-auto-flow: column;
+  gap: 1.5rem;
+
+  /**
+   * Used by JavaScript to determine if the user is interacting with a setting,
+   * in a form of a control being focused or a pointer in the settings area.
+   * The `.more-options` button, though invisible, keeps the focus. So it
+   * has to be excluded from the definition.
+   */
+  &:hover,
+  > *:focus-within:not(.more-options) {
+    --in-player-and-score-settings: 1;
+  }
+}
+
+.more-options {
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: .7rem;
+
+  font-size: 1.1rem;
+  line-height: 1;
+
+  &:hover,
+  &:focus {
+    --dot-gap: .2rem;
+  }
+}
+
+.more-options__dots {
+  letter-spacing: v(dot-gap, .01em);
+  transition: letter-spacing .3s $out-quad;
+}
+
+.score-setting {
+  font-size: 1.3rem;
+  text-align: left;
+}
+
+html.shades-alternate {
+  --note-shades-icon-filter: saturate(0%) brightness(300%);
+}
+
+.relation-width {
+  width: 12rem;
+
+  position: relative;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.relation-width__progress-range {
+  width: 100%;
+}

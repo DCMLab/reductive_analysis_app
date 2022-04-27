@@ -1,0 +1,41 @@
+// The fly-out handle.
+
+.fly-out__drag {
+  --btn-radius: 1rem 0rem 1rem 0rem;
+
+  &:hover { cursor: grab; }
+  .fly-out--grabbing & { cursor: grabbing; }
+
+  .dragging-fly-out :not(&) {
+    pointer-events: none;
+  }
+}
+
+.fly-out--draggable {
+
+  // Custom properties set in JavaScript.
+  transform: translate(var(--fly-out-x, 0), var(--fly-out-y, 0));
+
+  .dragging-fly-out & {
+    pointer-events: auto;
+  }
+}
+
+/**
+ * This should be the single pointer-events rule needed here, but it seems it
+ * disables the `grabbing` cursor, at least on Chromium. @todo: check why…
+ */
+// // Disable all app pointer-events on drag, excepted on fly-out and its handle.
+
+// .dragging-fly-out :not(.fly-out--grabbing):not(.fly-out__drag) {
+//   pointer-events: none;
+// }
+
+.fly-out--snapping {
+  --fly-out-transition-easing: #{$out-back};
+  --fly-out-transition-properties: transform;
+
+  @media (--no-motion) {
+    --fly-out-transition-duration: .01s;
+  }
+}

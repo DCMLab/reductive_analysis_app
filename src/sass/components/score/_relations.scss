@@ -1,0 +1,27 @@
+.relation,
+.metarelation {
+  transform-box: fill-box;
+  transform-origin: 50% 50% !important; // overwrite `.svg__container svg *`
+
+  transition: .2s $in-out-quad;
+  transition-property: fill, stroke;
+
+  /**
+   * Stagger apparition on filtering.
+   * Must be reviewed following the addition of the fill-stroke transition.
+   */
+  // @media (--motion) {
+  //   transition: .3s $out-back;
+  //   transition-property: opacity, transform, visibility;
+
+  //   @include transition-split(6, .1);
+  // }
+}
+
+.relation--filtered {
+  opacity: 0;
+  transform: scale(.95);
+  visibility: hidden;
+
+  transition-timing-function: $in-quint;
+}

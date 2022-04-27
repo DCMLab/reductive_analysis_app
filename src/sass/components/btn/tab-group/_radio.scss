@@ -1,0 +1,36 @@
+.btn-tabs--radio {
+  padding: 0;
+  gap: 0;
+
+  &:focus-within {
+    --btn-border: var(--primary); // overwrite default hover/focus
+    --btn-transition: .1s;
+  }
+}
+
+.btn-tabs__radio {
+  position: absolute;
+  opacity: 0;
+
+  &:checked {
+    + .btn-tabs__accent {
+      --btn-bg: var(--btn-checked, var(--bg));
+      --btn-border: transparent;
+      --btn-color: var(--bg);
+
+      z-index: 1;
+
+      outline: .2rem solid;
+    }
+  }
+}
+
+.btn-tabs__accent {
+  --btn-transition: 0s;
+  --btn-bg: transparent;
+  --btn-border: transparent;
+
+  margin: -.2rem;
+
+  pointer-events: none;
+}

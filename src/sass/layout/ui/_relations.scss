@@ -1,0 +1,79 @@
+.fly-out--relations {
+  max-width: 37rem;
+
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+
+  &:not(.fly-out--relations-compact) {
+    .hide-when-not-compact {
+      display: none;
+    }
+  }
+
+  .fly-out__inner {
+    position: relative;
+  }
+}
+
+.fly-out__relationsField {
+  margin: 2rem 0;
+}
+
+// If not focused, make it look a bit like a button when marked as selected.
+.fly-out__relationsField--selected {
+  .fillable__input:not(:focus):not(:hover) {
+    --fillable-border: var(--accent-alt);
+    background: v(fillable-border);
+  }
+}
+
+// Compact mode.
+
+.fly-out--relations-compact {
+  max-width: none;
+  --fly-out-half-inner-space: 3rem;
+
+  .hide-when-compact {
+    display: none;
+  }
+
+  .fly-out__relationsBtnsCtn {
+    &:not(:first-of-type) {
+      display: none;
+    }
+  }
+}
+
+// Button collapsing the menu.
+.fly-out__compact {
+  --btn-radius: 1rem 1rem 0rem 0rem;
+  --primary: #{$moonless-night};
+
+  margin-right: 1.5rem;
+}
+
+.fly-out__relationsBtnsCtn {
+  @include all-but(1) {
+    margin-top: 3rem;
+    padding-top: 2rem;
+
+    border-top: .1rem solid hsl(0, 0%, 100%, .1);
+  }
+
+  &:not(.fly-out__relationsBtnsCtn--visible) {
+    display: none;
+  }
+}
+
+// Secondary button, with less visible border
+.fly-out__secondaryBtn {
+  --btn-border: hsl(0, 0%, 100%, .1);
+}
+
+// Actions for a single note in the relations fly-out (naming not ideal)
+
+.fly-out__noteActions {}
+
+.fly-out__noteActions__btn {}

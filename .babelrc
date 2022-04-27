@@ -1,0 +1,15 @@
+{
+    "comments": true,
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "bugfixes": true,
+                // "useBuiltIns": true,
+                // "loose": true,
+                // "debug": true,
+            }
+        ]
+    ],
+    "plugins": ["@babel/plugin-transform-runtime"],
+}

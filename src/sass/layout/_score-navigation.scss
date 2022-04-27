@@ -1,0 +1,49 @@
+.score-navigation {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  display: inline-flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.navigation-arrow {
+  size: 4rem;
+  justify-content: center;
+
+  border-radius: 50%;
+}
+
+.bookmarks-nav {
+  margin-right: 5rem;
+
+  display: inline-grid;
+  gap: 1rem;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto auto;
+
+  html:not(.has-bookmarks-in-context) & {
+    display: none;
+  }
+}
+
+.bookmarks-nav__count {
+  grid-column: -1 / 1;
+}
+
+.bookmarks-nav__countNumber {
+  position: relative;
+  top: -1.6rem;
+  left: -0.9rem;
+
+  size: 2rem;
+
+  font-size: 1.2rem;
+  line-height: 1;
+
+  background: var(--bg);
+  color: var(--primary);
+  border: .1rem solid;
+  border-radius: 50%;
+}

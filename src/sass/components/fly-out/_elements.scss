@@ -1,0 +1,68 @@
+.fly-out__hr {
+  flex: 1 0 100%;
+  margin: 2rem 0;
+
+  border: none;
+  border-block: .1rem solid;
+  opacity: .1;
+}
+
+.fly-out__headerRow {
+  order: -2;
+  margin-bottom: 1.6rem;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fly-out__headerActions {
+  position: absolute;
+  inset-inline-end: -.7rem;
+
+  gap: 1rem;
+
+  > :not(:hover):not(:focus),
+  > :disabled {
+    opacity: .4;
+    transition: opacity .2s $in-out-quad;
+  }
+}
+
+.fly-out__headerActionBtn {
+  size: 3rem;
+}
+
+.fly-out__title {
+  margin: 1rem 0;
+}
+
+.fly-out__title--big {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.fly-out__headerBinIcon {
+  transform: translateY(-.15rem); // fix icon optical vertical center
+}
+
+.fly-out__notch {
+  --notch: var(--fly-out-bg);
+
+  position: absolute;
+  z-index: 122;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -3%); // -3% is a workaround: there’s a positionning issue (all browsers but at different levels, likely a rounding issue) where the notch doesn’t stick to the fly-out box.
+}
+
+.fly-out__footerActions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.fly-out__footerActionBtn {
+  size: 4rem;
+  padding: 0;
+}

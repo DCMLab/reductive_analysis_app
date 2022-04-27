@@ -1,0 +1,37 @@
+/*
+ * ELEMENT RATIO
+ *
+ * Use:
+ * @include ratio(40em)
+ * @include ratio(40em, img)
+ * @include ratio(56.25%, table, 50% null null 50%)
+ * @include ratio-only(130%)
+ *
+ * Parameters:
+ *  $val: valid CSS-unit for padding
+ *  $selector ('div' by default): a selector for a direct children
+ *  $offset (null by default): Bourbon-like (e.g. 0 null null 0)
+ *  $only (false by default): only target screens (`@media only screen`)
+ */
+
+@mixin ratio($val, $selector: div, $offset: null) {
+
+  &::before {
+    content: '';
+    display: block;
+    padding-top: $val;
+  }
+
+  > #{$selector} {
+    @include position(absolute, $offset);
+  }
+}
+
+@mixin ratio-only($val) {
+
+  &::before {
+    content: '';
+    display: block;
+    padding-top: $val;
+  }
+}

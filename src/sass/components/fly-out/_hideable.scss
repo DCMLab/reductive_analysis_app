@@ -1,0 +1,6 @@
+.fly-out--hideable {
+  &:not(.fly-out--visible) {
+    visibility: hidden;
+    opacity: 0;
+  }
+}

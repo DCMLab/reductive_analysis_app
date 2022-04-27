@@ -1,0 +1,122 @@
+.layers-menu {
+  --fly-out-inner-space: 2rem;
+  max-width: 36rem; // design: :26rem, but design scale is lower
+
+  position: absolute;
+  top: 12rem;
+  left: 0;
+
+  transition: transform .4s $in-out-quad;
+
+  &.layers-menu--visible {
+    transition: transform .3s $out-cubic;
+
+    .hide-when-visible {
+      display: none;
+    }
+  }
+
+  &:not(.layers-menu--visible) {
+    transform: translateX(calc(-100% - 2rem)); // -2rem for container (.ui) offset
+    transition: transform .3s $out-back;
+
+    .hide-when-not-visible {
+      display: none;
+    }
+  }
+}
+
+.has-many-layers {
+  --layers-nav-hidden: 0;
+}
+
+.layers-menu__controls {
+  position: absolute;
+  top: 4rem;
+  right: 0;
+  transform: translateX(100%);
+
+  display: grid;
+  grid-template-rows: auto auto;
+  // display: flex;
+  // flex-direction: column-reverse;
+  gap: 1.5rem;
+}
+
+.layers-menu__toggleBtn {
+  size: 4rem;
+  padding: 0;
+
+  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+
+  &:hover,
+  &:focus {
+    --layers-sub-path-animate: 1;
+  }
+}
+
+.layers-menu__nav {
+  position: relative;
+
+  display: grid;
+  grid-template-rows: 4.2rem 4.2rem;
+  justify-items: center;
+
+  text-align: center;
+
+  --layers-nav-bg: #{$alto};
+  background: v(layers-nav-bg);
+  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+
+  transition: transform 1s $in-out-quad;
+  transform: translateX(calc(-100% * var(--layers-nav-hidden, 1)));
+}
+
+.layers-menu__navBtn {
+  --btn-bg: var(--layers-nav-bg);
+  --btn-border: var(--layers-nav-bg);
+  --btn-radius: none;
+
+  &:first-of-type {
+    border-top-right-radius: v(btn-default-radius);
+    border-bottom: none;
+  }
+
+  &:last-of-type {
+    border-top: none;
+    border-bottom-right-radius: v(btn-default-radius);
+  }
+
+  &:hover,
+  &:focus {
+    --btn-bg: #{$gallery};
+    --btn-border: #{$gallery};
+  }
+
+  &:disabled {
+    --btn-color: #{$silver};
+  }
+}
+
+.layers-menu__visibleLayer {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  pointer-events: none;
+}
+
+.layers-menu__saveLayer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.layers-menu__layerTitle {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  background: v(bg);
+  border-bottom: .1rem solid $lacquered-licorice;
+}

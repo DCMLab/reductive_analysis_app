@@ -3,5 +3,6 @@
   "ui": {
     "port": 8001
   },
-  "open": false
+  "open": false,
+  "server": { "baseDir": ["public"] }
 }

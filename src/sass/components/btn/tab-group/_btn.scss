@@ -1,0 +1,40 @@
+// A button belonging to a tab group.
+
+.btn-tabs__btn {
+  --btn-transition: .4s;
+
+  position: relative;
+
+  // 1. Remove inner borders
+  // 2. Only exterior elements have rounded borders.
+
+  border-inline-width: 0;
+  border-radius: 0;
+
+  &:first-child {
+    border-start-start-radius: v(btn-default-radius);
+    border-end-start-radius: v(btn-default-radius);
+    border-inline-start-width: .2rem; // should be `revert` but it weirdly gives 3px…
+  }
+
+  &:last-child {
+    border-start-end-radius: v(btn-default-radius);
+    border-end-end-radius: v(btn-default-radius);
+    border-inline-end-width: .2rem;
+  }
+
+  // Colors for borders, tabs separators and disabled state.
+
+  &:not(.btn--plain) {
+    --btn-border: #{$alto};
+    --tab-separator: #{$alto};
+  }
+
+  &.btn--plain {
+    --tab-separator: #{$lacquered-licorice};
+  }
+
+  &:disabled {
+    color: $alto;
+  }
+}

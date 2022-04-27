@@ -1,0 +1,51 @@
+/*
+ * ANIMATION SPLIT
+ *
+ * Splits a animation duration across several elements.
+ * Require family.scss (https://github.com/LukyVj/family.scss).
+ *
+ * Use:
+ * @include animation-split(4, 12);
+ * @include animation-split(12, 1.2, 4, null, '.mk8__kart');
+ *
+ * Parameters:
+ *  $nb-items: number of items to split the animation across.
+ *  $total-duration
+ *  $base-delay (0 by default)
+ *  $from ('start' by default): 'start' goes from first to last-child, whatever else do backwards.
+ *  $selector (optional): splits animation between children targeted by $selector.
+ */
+
+@mixin animation-split($nb-items, $total-duration, $base-delay: 0, $from: 'start', $selector: '') {
+  $split-delay: $total-duration / $nb-items;
+
+  @for $i from 1 through $nb-items {
+    $delay: #{$base-delay + round($i * $split-delay * 1000) / 1000}s;
+
+    @if $from != 'start' {
+
+      @include from-end(#{$i}) {
+        @if $selector != '' {
+          #{$selector} { animation-delay: $delay; }
+        }
+        @else {
+          animation-delay: $delay;
+        }
+      }
+    }
+
+    @else {
+
+      &:nth-child(#{$i}) {
+        @if $selector != '' {
+          #{$selector} { animation-delay: $delay; }
+        }
+        @else {
+          animation-delay: $delay;
+        }
+      }
+    }
+
+    @content;
+  }
+}

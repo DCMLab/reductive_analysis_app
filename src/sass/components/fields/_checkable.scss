@@ -1,0 +1,90 @@
+.checkable {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1rem;
+
+  color: v(primary);
+
+  @media (--hidpi) {
+    font-size: 1.3rem; // only renders fine on high pixel density screens
+  }
+
+  &:hover {
+    .checkbox::before {
+      opacity: 1;
+      transition: none;
+    }
+  }
+}
+
+.checkable__input {
+  opacity: 0;
+
+  &:not(:checked) {
+    + .checkbox {
+      .checkable__icon {
+        transform: scale(0);
+        transition-timing-function: $in-quint;
+      }
+    }
+  }
+
+  @include supports-focus-visible {
+    &:focus-visible {
+      + .checkbox::before { opacity: 1; }
+    }
+  }
+
+  @include supports-focus-visible(false) {
+    &:focus {
+      + .checkbox::before { opacity: 1; }
+    }
+  }
+}
+
+.checkbox {
+  --checkbox-radius: .4rem;
+
+  flex-shrink: 0;
+  position: relative;
+  order: -1;
+
+  size: 2rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  pointer-events: none;
+
+  background: v(relation, checkbox, rgba(245, 245, 245, 0.05));
+  border-radius: v(checkbox-radius);
+
+  // Outer border
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+
+    background: v(primary);
+    border-radius: v(checkbox-radius);
+    opacity: .1;
+  }
+
+  // Inner background with radius (= the reason we have pseudo-elements here).
+  &::after {
+    content: '';
+    position: absolute;
+    inset: calc(var(--checkbox-radius) / 2);
+
+    background: v(relation, checkbox, $young-night);
+    border-radius: calc(var(--checkbox-radius) / 2);
+  }
+}
+
+.checkable__icon {
+  z-index: 1;
+  margin-left: 0.1rem;
+
+  transition: .3s transform $out-back;
+}

@@ -1,0 +1,23 @@
+.tooltip {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 2;
+
+  opacity: var(--tooltip-opacity, 0);
+
+  transform: translate(calc(v(mouse-x, 0) * 1px), calc(v(mouse-y, 0) * 1px));
+  --fly-out-transition-properties: none;
+}
+
+.tooltip__content {
+  margin-inline-end: 0;
+  padding-inline-end: 1rem;
+
+  overflow: initial;
+}
+
+// Show tooltip on relation hover.
+html:has(.relation:hover, .metarelation circle:hover) {
+  --tooltip-opacity: 1;
+}

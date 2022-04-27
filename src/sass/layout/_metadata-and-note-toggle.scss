@@ -1,0 +1,27 @@
+.metadata-and-note-toggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  display: inline-grid;
+  gap: 1rem;
+  justify-items: start;
+}
+
+.btn--placing-new-note {
+  --btn-bg: var(--accent-alt);
+  --btn-border: var(--accent-alt);
+  --btn-color: var(--white);
+
+  &:hover,
+  &:focus {
+    --btn-bg: var(--accent-alt);
+    --btn-border: var(--accent-alt);
+    --btn-color: var(--white);
+  }
+
+  &:active {
+    --btn-bg: #{$gallery};
+    --btn-transition: 0s;
+  }
+}

@@ -1,0 +1,30 @@
+.btn--relation {
+  --btn-border: var(--relation, #{$alto});
+
+  &.btn--selected,
+  &:hover,
+  &:focus {
+    --btn-bg: var(--relation);
+    --btn-color: var(--white);
+    --btn-border: var(--relation, #{$alto});
+  }
+}
+
+// @todo move this somewhere else…
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+}
+
+.btn-group--free-field {
+  flex-wrap: nowrap; // keep the field and the button on the same row
+
+  // avoid stretching the “assign” relation button in the free form field
+  align-items: center;
+}
+
+.btn-group--vertical {
+  flex-direction: column;
+}

@@ -1,0 +1,8 @@
+// default direction: right
+.chevron {
+  transform: rotate(calc(var(--chevron-deg, 0) * 1deg));
+}
+
+.chevron--top { --chevron-deg: -90; }
+// .chevron--down { --chevron-deg: 90; }
+.chevron--left { --chevron-deg: 180; }

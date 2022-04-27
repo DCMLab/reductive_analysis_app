@@ -1,0 +1,26 @@
+@keyframes bookmark-appear {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bookmark {
+  opacity: 0;
+
+  // Would have loved a bounce animation using scale, but Safari says no.
+  transform: translateY(5rem);
+
+  animation: bookmark-appear .3s $out-quad forwards;
+
+  // selector needed to increase specificity and overwrite
+  .svg_container & {
+    pointer-events: none;
+  }
+}
+
+.visible-when-selection-is-note {
+  html:not(.selection-is-note) & {
+    display: none;
+  }
+}

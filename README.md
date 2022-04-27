@@ -4,6 +4,19 @@ This is an app to facilitate analysing scores using a reductive paradigm.
 
 It is currently very much under construction, but can be tested [here](https://dcmlab.github.io/reductive_analysis_app/index.html)
 
+## Table of contents
+
+- [The basics](#the-basics)
+- [A short example](#a-short-example)
+- [Hierarchical analysis](#hierarchical-analysis)
+  - [Showcase: Schenkerian analysis](#showcase-schenkerian-analysis)
+  - [Showcase: GTTM Tree](#showcase-gttm-Tree)
+  - [Showcase: MOP annotation](#showcase-mop-annotation)
+- [Funding and publications](#funding-and-publications)
+- [Development](#development)
+
+## The basics
+
 The basics are as follows:
  
  * Clicking selects notes. Shift-click selects them as _primary_
@@ -121,8 +134,6 @@ illustrative gifs were produced, showcasing some more advanced ideas:
 
 ![](images/gttm.gif?raw=true)
 
-
-
 ### Showcase: MOP annotation
 
 ![](images/mop.gif?raw=true)
@@ -142,3 +153,25 @@ Musicology. Additionally, the members of the Digital and Cognitive
 Musicology Lab (DCML) have contributed valuable insights through
 discussions and user testing.
 
+## Building the app
+
+The app is in `/src`. Assets called by the app needs to be compiled using some front-end tooling, detailed below.
+
+### Development
+
+1. Duplicate `.env.example` to `.env` and edit it.
+2. Run `npm install` (Node > 12.13) to install all the required packages and tools.
+3. Run `npm run dev` and open the URL returned by the CLI.
+4. **After a code merge in the main branch**, update the modified build (`npm run build`) and push it, too.
+
+### Production
+
+1. Duplicate `.env.example` to `.env` and edit it.
+2. Run `npm install` (Node > 12.13) to install all the required packages and tools.
+3. Run `npm run build` to compile the app. The compiled app goes in `/public`.
+
+### Various
+
+- Files in `/src/public` are copied as is (respecting the directory structure in `/src/public`) in the build directory.
+- Lint JavaScript: `npm run lint`.
+- (currently broken) Run tests with `npm run test`.

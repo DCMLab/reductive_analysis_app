@@ -1,0 +1,37 @@
+.fly-out--collapsed {
+  /**
+   * Prevent a rounding glitch where the fly-out background slightly overflows
+   * the button background.
+   */
+  --fly-out-bg: none;
+
+  padding-block-end: 0;
+
+  > :not(.fly-out__toggle),
+  .fly-out__hideIfCollapsed {
+    display: none;
+  }
+
+  .fly-out__toggle {
+    --primary: var(--black);
+  }
+}
+
+.fly-out--expanded {
+  .fly-out__toggle {
+    --btn-radius: 1rem 0rem 1rem 0rem;
+    --primary: #{$moonless-night};
+
+    .btn__icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  .fly-out__hideIfExpanded {
+    display: none;
+  }
+}
+
+.fly-out__toggleBtn {
+  --bg: var(--white);
+}

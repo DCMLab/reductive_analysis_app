@@ -1,0 +1,1051 @@
+<!-- This file is part of MuseReduce, a webapp for graph-based musical analysis -->
+<!-- Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Digital and Cognitive Musicology Lab (DCML). -->
+<!-- MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details. -->
+
+<!doctype html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DCML Reductive Analysis Webapp / Redusic / MuseReduce</title>
+    <!-- <meta name="description" content="To be completed"> -->
+    <!-- <meta name="keywords" content="musical scores, analysis, Digital and Cognitive Musicology Lab, École polytechnique fédérale de Lausanne"> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="supported-color-schemes" content="light only"> <!-- macOS 10.14.4 compat -->
+    <meta name="color-scheme" content="light only">
+
+    <script type="text/javascript" src="js/verovio-toolkit-wasm.js" defer></script>
+    
+
+    <script>
+        document.documentElement.classList.replace('no-js', 'js');
+        document.documentElement.classList.add('loading');
+    </script>
+
+    <!-- Web Manifest -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#fff">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="theme-color" content="#fff" media="(prefers-color-scheme: no-preference)">
+    <meta name="theme-color" content="#fff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000" media="(prefers-color-scheme: dark)">
+  <script type="module" crossorigin src="/assets/app.c6dabc8c.js"></script>
+  <link rel="modulepreload" href="/assets/app.9e857949.js">
+  <link rel="modulepreload" href="/assets/vendor.424d3216.js">
+  <link rel="stylesheet" href="/assets/style.66d4e6c2.css">
+</head>
+
+<body>
+
+    <!-- Start screen -->
+
+    <div id="start-screen" class="start-screen">
+        <!-- @todo: add musical notes in the background in .start-screen__bg -->
+        <!-- <div class="start-screen__bg"></div> -->
+
+        <div class="start-screen__main">
+
+            <!-- Title -->
+            <h1 class="start-screen__title">MuseReduce</h1>
+
+            <!-- Loading -->
+            <div id="start-screen-loading-spinner" class="start-screen__loading">
+                <div class="loading-spinner">
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                    <div class="loading-spinner__disc"></div>
+                </div>
+                <p>Loading</p>
+            </div>
+
+            <!-- Pick a score -->
+            <p class="start-screen__instructions"><strong class="f500">Start by picking a <abbr title="Music Encoding Initiative">MEI</abbr> file on your device.</strong></p>
+            <label class="start-screen__filePicker file | btn btn--plain btn--big" for="start-screen-score-file-picker">
+                <span>
+                    Select a score
+                    <input class="file__input" id="start-screen-score-file-picker" type="file" accept=".mei,.mxl,.musicxml,.xml,.abc">
+                </span>
+            </label>
+
+            <noscript>
+                <p>This app requires JavaScript to be enabled.</p>
+            </noscript>
+        </div>
+
+        <!-- About -->
+        <footer class="start-screen__footer">
+            <p>
+                MuseReduce is an <a href="https://github.com/DCMLab/reductive_analysis_app" target="_blank" rel="noopener" title="code repository">open-source</a> project
+                by the <a href="https://www.epfl.ch/labs/dcml" target="_blank" rel="noopener"><abbr title="Digital and Cognitive Musicology Lab">DCML</abbr></a>.
+            </p>
+            <p>
+                Distributed under the terms of the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" target="_blank" rel="noopener" title="license notice">GNU Affero General Public License 3 or later.</a>.
+            </p>
+        </footer>
+    </div>
+
+    <!-- Filters used on the score (?) -->
+
+    <svg width="0" height="0" style="display:block;">
+        <filter id="glowFilter">
+            <feFlood result="flood" flood-color="#444444" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
+            <feMorphology in="mask" operator="dilate" radius="2" result="thickened" />
+            <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="selectFilter">
+            <feFlood result="flood" flood-color="green" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
+            <feMorphology in="mask" operator="dilate" radius="2" result="thickened" />
+            <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        <filter id="extraFilter">
+            <feFlood result="flood" flood-color="red" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
+            <feMorphology in="mask" operator="dilate" radius="10" result="thickened" />
+            <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </svg>
+
+    <!-- UI -->
+
+    <div id="ui" class="ui">
+
+        <!-- Menu and filters -->
+
+        <div id="menu-and-filters" class="menu-and-filters">
+
+            <!-- Main menu fly-out -->
+
+            <div id="main-menu" class="fly-out fly-out--dark fly-out--collapsible fly-out--collapsed fly-out--main-menu">
+
+                <!-- Collapsed, in case the expanded menu must overlap the filters one.
+                    For that, 1) make the expanded version by position: absolute,
+                    2) make this one disabled 3) hide it (opacity 0)
+                 -->
+                <!-- <h3 class="fly-out__toggle">
+                    <button id="menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                        Menu
+                        <svg class="btn__icon" width="15" height="10">
+                            <use href="#menu-path"/>
+                        </svg>
+                    </button>
+                </h3> -->
+
+                <!-- Expanded -->
+                <h3 class="fly-out__toggle">
+                    <button id="main-menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                        Menu
+                        <!-- Expanded -->
+                        <svg class="fly-out__hideIfCollapsed" width="11" height="11">
+                            <use href="#cross-path"/>
+                        </svg>
+                        <!-- Collapsed -->
+                        <svg class="fly-out__hideIfExpanded" width="15" height="10">
+                            <use href="#menu-path"/>
+                        </svg>
+                    </button>
+                </h3>
+
+                <div class="fly-out__inner">
+                    <h4 class="fly-out__title">File</h4>
+
+                    <div class="btn-group">
+                        <button id="save-file" class="btn btn--plain btn--small" type="button">Save file</button>
+
+                        <button id="save-file-svg" class="btn btn--plain btn--small" type="button">
+                            <span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span>
+                        </button>
+
+                        <label class="file | btn btn--plain btn--small" for="score-file-picker">
+                            <span>
+                                Select a <abbr title="Music Encoding Initiative">MEI</abbr> file
+                                <input class="file__input" id="score-file-picker" type="file" accept=".mei,.mxl,.musicxml,.xml,.abc">
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div id="filters" class="fly-out fly-out--dark fly-out--collapsible fly-out--collapsed">
+
+                <h3 class="fly-out__toggle">
+                    <button id="filters-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                        Filters
+                        <svg class="btn__icon" width="20" height="10">
+                            <use href="#filter-path"/>
+                        </svg>
+                    </button>
+                </h3>
+
+                <div class="fly-out__inner" style="--fly-out-max-height: 39rem;">
+
+                    <fieldset>
+                        <legend class="fly-out__title">Relations</legend>
+                        <ul class="btn-group btn-group--vertical noselect" id="relations-filters">
+                            <li class id="relation-filter-repeat">
+                                <label class="checkable color-relation-repeat" for="filter-repeat">
+                                    Repeat
+                                    <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
+                                    <span class="checkbox checkbox--colored">
+                                        <svg class="checkable__icon btn__icon" width="12" height="10">
+                                            <use href="#check-path"/>
+                                        </svg>
+                                    </span>
+                                </label>
+                            </li>
+                            <label class="checkable color-relation-passing" for="filter-passing">
+                                Passing
+                                <input class="checkable__input" type="checkbox" id="filter-passing" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-neighbour" for="filter-neighbour">
+                                Neighbour
+                                <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-harmonic" for="filter-harmonic">
+                                Harmonic
+                                <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-arpeggio" for="filter-arpeggio">
+                                Arpeggio
+                                <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-urlinie" for="filter-urlinie">
+                                Urlinie
+                                <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
+                                Bassbrechung
+                                <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable" for="filter-something-else">
+                                Something else
+                                <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
+                                <span class="checkbox">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                        </ul>
+                    </fieldset>
+
+                    <hr class="fly-out__hr">
+
+                    <fieldset>
+                        <legend class="fly-out__title">Meta-relations</legend>
+                        <ul class="btn-group btn-group--vertical noselect" id="meta-relations-filters">
+                            <label class="checkable color-relation-repeat" for="filter-repeat">
+                                Repeat
+                                <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-passing" for="filter-passing">
+                                Passing
+                                <input class="checkable__input" type="checkbox" id="filter-passing" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-neighbour" for="filter-neighbour">
+                                Neighbour
+                                <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-harmonic" for="filter-harmonic">
+                                Harmonic
+                                <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-arpeggio" for="filter-arpeggio">
+                                Arpeggio
+                                <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-urlinie" for="filter-urlinie">
+                                Urlinie
+                                <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable color-relation-bassbrechung" for="filter-bassbrechung">
+                                Bassbrechung
+                                <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
+                                <span class="checkbox checkbox--colored">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                            <label class="checkable" for="filter-something-else">
+                                Something else
+                                <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
+                                <span class="checkbox">
+                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <use href="#check-path"/>
+                                    </svg>
+                                </span>
+                            </label>
+                        </ul>
+                    </fieldset>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Undo, redo, (un)select all, primary/secondary -->
+
+        <div id="history-and-selection" class="history-and-selection | flex-center">
+
+            <div class="btn-tabs btn-tabs--with-separator">
+
+                <!-- Undo -->
+                <button id="undo" class="undo | btn btn--small btn-tabs__btn" type="button">
+                    <svg class="btn__icon" width="20" height="20">
+                        <use href="#undo-path"/>
+                    </svg>
+                    <span class="visually-hidden">Undo</span>
+                </button>
+
+                <!-- Redo -->
+                <button id="redo" class="redo | btn btn--small btn-tabs__btn" type="button">
+                    <svg class="redo__icon btn__icon" width="20" height="20">
+                        <use href="#undo-path"/>
+                    </svg>
+                    <span class="visually-hidden">Redo</span>
+                </button>
+
+            </div>
+
+            <!-- (Un)select all -->
+            <button id="select-all" class="btn btn--hollow" type="button">Select visible relations</button>
+            <button id="unselect-all" class="btn btn--hollow" type="button">Unselect all</button>
+
+            <!-- Selection mode -->
+            <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
+
+                <!-- Primary -->
+                <label
+                    class="btn-tabs__btn"
+                    style="--btn-checked: hsl(4, 81%, 49%);"
+                    for="selection-mode-primary"
+                    data-label="Primary"
+                >
+                    <input class="btn-tabs__radio" type="radio" name="selection-mode" id="selection-mode-primary" value="primary">
+                    <span class="btn btn--hollow btn-tabs__accent">Primary</span>
+                </label>
+
+                <!-- Secondary -->
+                <label
+                    class="btn-tabs__btn"
+                    style="--btn-checked: hsl(199, 98%, 55%);"
+                    for="selection-mode-secondary"
+                    data-label="Secondary"
+                >
+                    <input class="btn-tabs__radio" type="radio" name="selection-mode" id="selection-mode-secondary" value="secondary">
+                    <span class="btn btn--hollow btn-tabs__accent">Secondary</span>
+                </label>
+
+            </fieldset>
+
+        </div>
+
+        <!-- Selection legend and zoom controls -->
+
+        <div id="selection-legend-and-zoom" class="selection-legend-and-zoom">
+
+            <!-- Selection legend -->
+
+            <div id="selection-legend" class="selection-legend | fly-out fly-out--small fly-out--dark fly-out--hideable">
+                <div class="fly-out__inner" style="--fly-out-max-height: 10rem;">
+
+                    <h2 id="selection-type" class="visually-hidden">Selection</h2>
+
+                    <div class="selection" id="selection-primary">
+                        <h3 class="selection__title selection__title--primary">Primary</h3>
+                        <ul class="selection__list" id="selection-list-primary"></ul>
+                    </div>
+
+                    <div class="selection" id="selection-secondary">
+                        <h3 class="selection__title selection__title--secondary">Secondary</h3>
+                        <ul class="selection__list" id="selection-list-secondary"></ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Zoom -->
+
+            <div id="zoom" class="zoom">
+                <button id="zoom-reset" class="btn btn--plain zoom__reset" type="button">
+                    <span class="visually-hidden">Reset zoom</span>
+
+                    <!-- @todo: Check semantic of button > label + output -->
+                    <label for="zoom-level" class="visually-hidden">Current zoom level:</label>
+                    <output id="zoom-level" for="zoom-in zoom-out">100%</output>
+                </button>
+
+                <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
+                    <svg class="btn__icon" width="12" height="12">
+                        <use href="#plus-path"/>
+                    </svg>
+                    <span class="visually-hidden">Zoom in</span>
+                </button>
+
+                <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
+                    <svg class="btn__icon" width="12" height="12">
+                        <use href="#minus-path"/>
+                    </svg>
+                    <span class="visually-hidden">Zoom out</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- In-score navigation -->
+
+        <div id="score-navigation" class="score-navigation">
+
+            <!-- Bookmarks count and navigation -->
+
+            <div class="bookmarks-nav">
+                <output class="bookmarks-nav__count">
+                    <svg class="btn__icon" width="15" height="20">
+                        <use href="#bookmark-path"></use>
+                    </svg>
+                    <span id="bookmarks-count" class="bookmarks-nav__countNumber | flex-center">0</span>
+                </output>
+
+                <button class="btn btn--small btn--hollow navigation-arrow" id="previous-bookmark" type="button">
+                    <svg class="btn__icon chevron chevron--left" width="6" height="8">
+                        <use href="#chevron-path"/>
+                    </svg>
+                    <span class="visually-hidden">To previous bookmark</span>
+                </button>
+
+                <button class="btn btn--small btn--hollow navigation-arrow" id="next-bookmark" type="button">
+                    <svg class="btn__icon chevron chevron--right" width="6" height="8">
+                        <use href="#chevron-path"/>
+                    </svg>
+                    <span class="visually-hidden">To next bookmark</span>
+                </button>
+            </div>
+
+            <!-- Pan score -->
+
+            <button id="to-left" class="btn btn--plain navigation-arrow" type="button">
+                <svg class="btn__icon chevron chevron--left" width="6" height="8">
+                    <use href="#chevron-path"/>
+                </svg>
+                <span class="visually-hidden">To left</span>
+            </button>
+
+            <button id="to-right" class="btn btn--plain navigation-arrow" type="button">
+                <svg class="btn__icon" width="6" height="8">
+                    <use href="#chevron-path"/>
+                </svg>
+                <span class="visually-hidden">To right</span>
+            </button>
+
+            <canvas id="minimap"></canvas>
+        </div>
+
+        <!-- Player and score visual settings -->
+
+        <div id="player-and-score-settings" class="player-and-score-settings">
+
+            <!-- MIDI Player -->
+
+            <div id="player" class="player player--stopped | fly-out">
+
+                <!-- Controls -->
+                <div class="player__controls">
+                    <button
+                        class="btn btn--plain btn--small"
+                        type="button"
+                        id="player-play-pause"
+                        data-label-play="Play original"
+                        data-label-pause="Pause"
+                    >
+                        <svg class="player__playIcon btn__icon" width="10" height="11">
+                            <use href="#audio-play-path"/>
+                        </svg>
+                        <svg class="player__pauseIcon btn__icon" width="10" height="12">
+                            <use href="#audio-pause-path"/>
+                        </svg>
+                    </button>
+
+                    <button class="btn btn--plain btn--small" type="button" id="player-stop" title="Stop">
+                        <span class="visually-hidden">Stop</span>
+                        <svg class="btn__icon" width="10" height="12">
+                            <use href="#audio-stop-path"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Player label (done / left) -->
+                <label class="player__timestamps progress__label" for="player-progress">
+                    <span class="visually-hidden">Time progress</span>
+                    <span id="player-progress-done">-</span> /
+                    <span id="player-progress-max">-</span>
+                </label>
+
+                <!-- Progress bar -->
+                <div class="player__progress | progress-range progress-range--without-thumb" style="--progress: .35;" id="player-progress-ctn">
+                    <!-- Semantic progress bar -->
+                    <progress class="progress__inner | visually-hidden--always" id="player-progress"></progress>
+
+                    <!-- Manipulate the timeline -->
+                    <input class="progress-range__input relation-width__range" type="range" min="0" value="0" step="1" id="player-timeline-input">
+
+                    <!-- Visual progress bar -->
+                    <span class="progress-range__bar"></span>
+                </div>
+
+            </div>
+
+            <button id="score-settings-toggle" class="more-options | hidden-when-score-settings-visible | btn btn--small btn--hollow" type="button">
+                More <br>options
+                <span class="more-options__dots" aria-hidden="true">•••</span>
+            </button>
+
+            <!-- Score settings -->
+            <div id="score-settings" class="btn-tabs btn-tabs--with-separator btn-tabs--big-separator | hidden-when-score-settings-not-visible">
+
+                <!-- Stems, etc -->
+                <button id="settings-stems" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
+                    <svg class="btn__icon" width="20" height="20">
+                        <use href="#framed-note-path"/>
+                    </svg>
+                    Stems,<br> etc.
+                </button>
+
+                <!-- Shades -->
+                <button id="settings-shades" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
+                    <svg class="btn__icon" width="20" height="20">
+                        <use href="#note-shades-path"/>
+                    </svg>
+                    Shades <br>types
+                </button>
+
+                <!-- Non-related tones -->
+                <button id="settings-non-related-tones" class="score-setting | btn btn--plain btn-tabs__btn" type="button">
+                    <svg class="btn__icon" width="20" height="20">
+                        <use href="#treble-clef-on-stave-path"/>
+                    </svg>
+                    Non-related <br>tones
+                </button>
+
+            </div>
+
+            <!-- Relation width -->
+            <label class="score-setting relation-width | hidden-when-score-settings-not-visible | btn btn--small btn--plain" for="relation-width">
+                Relation width
+
+                <input class="progress-range__input relation-width__range" type="range" min="20" value="200" max="200" step="2" name="relation-width" id="relation-width">
+
+                <div class="relation-width__progress-range | progress-range" id="relation-width-progress-ctn">
+                    <span class="progress-range__bar"></span>
+                    <span class="progress-range__thumb"></span>
+                </div>
+            </label>
+
+        </div>
+
+        <!-- Metadata and new note -->
+
+        <div id="metadata-and-note-toggle" class="metadata-and-note-toggle">
+
+            <button id="new-note" class="btn btn--hollow btn--small-icon | hidden-when-in-layer-1" type="button">
+                <svg class="btn__icon" width="14" height="15">
+                    <use href="#add-note-path"/>
+                </svg>
+                New note
+            </button>
+
+            <div id="metadata" class="fly-out fly-out--dark fly-out--collapsible fly-out--collapsed">
+
+                <h3 class="fly-out__toggle">
+                    <button id="metadata-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
+                        Metadata
+                        <svg class="btn__icon" width="10" height="8">
+                            <use href="#triangle-path"/>
+                        </svg>
+                    </button>
+                </h3>
+
+                <form class="fly-out__inner" style="--fly-out-max-height: 39rem;" id="metadata-form"></form>
+            </div>
+
+        </div>
+
+
+        <!-- Menu and filters -->
+
+        <div id="layers-menu" class="layers-menu">
+
+            <!-- Toggle button and layers navigation -->
+
+            <div class="layers-menu__controls">
+
+                <div class="layers-menu__nav">
+
+                    <span class="layers-menu__visibleLayer" id="visible-layer">1</span>
+
+                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-previous">
+                        <span class="visually-hidden">Previous layer</span>
+                        <svg class="btn__icon" width="10" height="8">
+                            <use href="#triangle-path"/>
+                        </svg>
+                    </button>
+
+                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-next">
+                        <span class="visually-hidden">Next layer</span>
+                        <svg class="btn__icon triangle triangle--down" width="10" height="8">
+                            <use href="#triangle-path"/>
+                        </svg>
+                    </button>
+
+                </div>
+
+                <button
+                    class="layers-menu__toggleBtn | btn btn--plain flex-center"
+                    id="layers-menu-toggle"
+                    type="button"
+                >
+                    <!-- Show layers -->
+                    <span class="hide-when-visible visually-hidden">Show layers menu</span>
+                    <svg class="hide-when-visible" width="20" height="22">
+                        <use href="#layers-path"/>
+                    </svg>
+
+                    <!-- Hide layers -->
+                    <span class="hide-when-not-visible visually-hidden">Hide layers menu</span>
+                    <svg class="hide-when-not-visible" width="11" height="11">
+                        <use href="#cross-path"/>
+                    </svg>
+                </button>
+
+            </div>
+
+
+            <!-- Main menu fly-out -->
+
+            <div id="main-menu" class="fly-out fly-out--dark  fly-out--layers-menu">
+
+                <div class="fly-out__inner" style="--fly-out-max-height: 40rem;">
+                    <div class="layers-menu__layerTitle | fly-out__headerRow">
+                        <h4 class="fly-out__title fly-out__title--big">Current layer: <span id="current-layer">1</span></h4>
+                    </div>
+
+                    <!-- Should save layer and can edit it. Not available for the first layer. -->
+                    <div id="layer-menu-settings" class="layers-menu__saveLayer hidden-when-in-layer-1">
+
+                        <label class="checkable" for="should-save-layer">
+                            Save this layer
+                            <input class="checkable__input" type="checkbox" id="should-save-layer">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+                        <button id="layer-lock" class="lock-path--unlocked | btn flex-center" type="button">
+                            <span class="visually-hidden">Unlock</span>
+                            <span class="visually-hidden">Lock</span>
+                            <svg width="13" height="18">
+                                <use href="#lock-path"/>
+                            </svg>
+                        </button>
+
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+
+                    <!-- New layer settings. Only shows starting the second layer. -->
+                    <div id="layer-menu-new" class="btn-group">
+
+                        <label class="checkable" for="layer-sliced">
+                            Sliced
+                            <input class="checkable__input" type="checkbox" id="layer-sliced">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+                        <label class="checkable" for="layer-tied">
+                            Tied
+                            <input class="checkable__input" type="checkbox" id="layer-tied">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+                        <button id="layer-new" class="btn btn--plain btn--small" type="button">
+                            Create new layer
+                        </button>
+
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+                    <!-- Reductions -->
+
+                    <div id="layers-menu-reductions" class="btn-group">
+                        <!-- (2nd+ layer) -->
+                        <button id="layers-menu-reduce" class="btn btn--plain btn--small" type="button">Reduce</button>
+                        <!-- (2nd+ layer) -->
+                        <button id="layers-menu-unreduce" class="btn btn--plain btn--small" type="button">Unreduce</button>
+
+                        <button
+                            id="layers-menu-play-reduction"
+                            class="btn btn--plain btn--small btn--small-icon"
+                            type="button"
+                        >
+                            Play reduction
+                            <svg class="btn__icon triangle triangle--right" width="10" height="8">
+                                <use href="#triangle-path"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+                    <!-- Hierarchy tree visibility -->
+
+                    <div class="btn-group">
+                        <label class="checkable" for="relations-tree-roots-low">
+                            Draw roots low
+                            <input class="checkable__input" type="checkbox" id="relations-tree-roots-low">
+                            <span class="checkbox">
+                                <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <use href="#check-path"></use>
+                                </svg>
+                            </span>
+                        </label>
+
+
+                        <div class="checkable">
+                            <h4>Hierarchy tree</h4>
+                            <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
+                                <legend class="visually-hidden">Hierarchy tree visibility</legend>
+
+                                <!-- On -->
+                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-on" data-label="On">
+                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-on" value="on">
+                                    <span class="btn btn--hollow btn-tabs__accent">On</span>
+                                </label>
+
+                                <!-- Off -->
+                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-off" data-label="Off">
+                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-off" value="off" checked>
+                                    <span class="btn btn--hollow btn-tabs__accent">Off</span>
+                                </label>
+
+                            </fieldset>
+                        </div>
+                    </div>
+
+                    <hr class="fly-out__hr">
+
+                    <form class="ssbtn-group ssbtn-group--free-field" id="json-tree-form">
+                        Draw tree <!-- turn this into a heading -->
+
+                        <div class="btn-group btn-group--free-field">
+                            <label class="fillable fly-out__relationsField" for="json-tree">
+                                <span class="visually-hidden">Draw tree</span>
+
+                                <!-- @todo transform into a textarea in a modal, actually move the whole feature into a modal because JSON editing requires a bit of space -->
+                                <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree" required>
+                            </label>
+
+                            <button class="btn btn--plain btn--small">Draw</button>
+                        </div>
+
+                        <div class="btn-group">
+                            <button id="json-tree-save" class="btn btn--plain btn--small" type="button">Save tree</button>
+                            <button id="json-tree-load" class="btn btn--plain btn--small" type="button">Load tree</button>
+                            <button id="json-tree-align" class="btn btn--plain btn--small" type="button">Align tree to selection</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Layers and views -->
+
+    <div id="layers"></div>
+
+    <div class="tooltip | fly-out fly-out--small fly-out--dark">
+        <div class="tooltip__content | fly-out__inner" id="score-tooltip"></div>
+    </div>
+
+    <!-- Relations fly-out -->
+
+    <div
+        class="
+            fly-out fly-out--big
+            fly-out--dark
+            fly-out--draggable
+            fly-out--hideable
+            fly-out--relations
+            fly-out--relations-compact
+        "
+        id="relations-menu"
+    >
+        <div class="fly-out__inner">
+            <div class="fly-out__headerActions | flex-center">
+                <button class="fly-out__headerActionBtn fly-out__deleteBtn | flex-center" type="button">
+                    <span class="visually-hidden">Delete relation</span>
+                    <svg class="fly-out__headerBinIcon" width="18" height="19">
+                        <use href="#bin-path"/>
+                    </svg>
+                </button>
+                <button class="fly-out__headerActionBtn fly-out__closeBtn | flex-center" type="button">
+                    <span class="visually-hidden">Close relations menu</span>
+                    <svg width="16" height="16">
+                        <use href="#cross-path"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Relations -->
+            <div id="relations-btns-ctn">
+                <div class="fly-out__relationsBtnsCtn" id="relations-btns"></div>
+                <div class="fly-out__relationsBtnsCtn" id="metarelations-btns"></div>
+                <div class="fly-out__relationsBtnsCtn" id="comborelations-btns"></div>
+            </div>
+        </div>
+
+        <!-- Footer actions -->
+        <div class="fly-out__footerActions | flex-center">
+            <button class="fly-out__footerActionBtn fly-out__toggleBtn fly-out__compact hide-when-compact | btn btn--plain flex-center" type="button">
+                <span class="visually-hidden">Compact menu</span>
+                <svg class="btn__icon chevron chevron--top" width="7" height="10">
+                    <use href="#chevron-path"/>
+                </svg>
+            </button>
+            <button class="fly-out__footerActionBtn fly-out__drag | btn btn--plain flex-center" type="button">
+                <span class="visually-hidden">Drag menu</span>
+                <svg class="btn__icon" width="10" height="14">
+                    <use href="#draggable-path"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Spritesheet -->
+
+    <svg style="display: none;" id="svg-spreadsheet">
+
+        <symbol id="add-note-path" viewBox="0 0 143 150" fill="currentColor">
+            <path d="M102.06 33.3v88.67c.36 7.98-6.18 17.32-16.79 22.82-13.06 6.78-27.32 5.21-31.87-3.53-4.55-8.75 2.35-21.3 15.41-28.08 11.47-5.9 23.65-5.46 29.63.5V.13c.21-.32.46 0 .63.38a76.21 76.21 0 0021.6 29.1c11.8 9.69 21.55 19.56 21.33 38.81-.25 20.9-16.03 40.98-16.92 40.1-.2-.2.5-1.46 1.65-3.53 3.97-7.1 13.25-23.73 9.2-39.24-3.32-12.58-14.21-19.19-23.14-24.6-4.47-2.72-8.45-5.13-10.73-7.85z" stroke-width="5" stroke="currentColor"/>
+            <use href="#plus-path" y="15" width="80" height="80"/>
+        </symbol>
+
+        <symbol id="bin-path" viewBox="0 0 18 19" fill="currentColor">
+            <path d="M1.945 5.566l.986 11.903c.07.858.802 1.531 1.664 1.531h9.084c.862 0 1.593-.673 1.664-1.531l.985-11.903H1.945zm4.408 11.207a.557.557 0 01-.555-.521l-.556-8.98a.557.557 0 01.52-.591.548.548 0 01.59.52l.557 8.981a.557.557 0 01-.556.591zm3.34-.556a.556.556 0 11-1.113 0v-8.98a.556.556 0 111.114 0v8.98zm3.34-8.946l-.557 8.98a.556.556 0 11-1.111-.069l.556-8.98a.566.566 0 01.59-.521c.307.019.54.283.521.59z"/>
+            <path d="M16.375 2.227h-3.34V1.67c0-.92-.749-1.67-1.67-1.67H6.912c-.92 0-1.67.75-1.67 1.67v.557h-3.34a1.113 1.113 0 100 2.226h14.473a1.113 1.113 0 000-2.226zm-4.453 0H6.355V1.67c0-.307.25-.557.557-.557h4.453c.307 0 .557.25.557.557v.557z"/>
+        </symbol>
+
+        <symbol id="bookmark-path" viewBox="0 0 12 16">
+            <path d="M10.72 0H1.332A1.315 1.315 0 0 0 .024 1.307v9.91c0 .416.2.808.535 1.054l4.687 3.476c.217.157.475.245.743.253.267-.01.525-.098.743-.252l4.731-3.477c.333-.248.526-.64.52-1.055V1.307A1.3 1.3 0 0 0 10.72 0Z" fill="#e42618"/>
+            <path d="m8.93 6.985-.936.906.208 1.278c.111.577-.519 1.086-1.055.794l-1.152-.608-1.158.609c-.536.268-1.153-.216-1.048-.788L4.01 7.9l-.943-.906c-.423-.42-.165-1.155.408-1.241l1.278-.193.572-1.16c.272-.524 1.05-.523 1.322 0l.58 1.159 1.277.193c.571.094.817.807.424 1.233Z" fill="#fff"/>
+        </symbol>
+
+        <symbol id="check-path" viewBox="0 0 12 10" fill="currentColor" stroke="currentColor">
+            <path d="M10.38 1.22a.75.75 0 00-1.07 0L4.07 7.44 1.81 4.9A.75.75 0 00.7 5.92l2.8 3.12c.13.15.33.24.53.24h.02c.2 0 .39-.08.53-.22l5.8-6.77c.3-.3.3-.77 0-1.07z"  />
+        </symbol>
+
+        <symbol id="chevron-path" viewBox="0 0 6 8" fill="currentColor">
+            <path d="M1.55 0a1 1 0 00-.87.63.9.9 0 00.22 1.03L3.17 4 .9 6.34a.9.9 0 00-.22 1.03 1 1 0 00.87.63c.23 0 .45-.1.64-.3l1.52-1.52C4.91 5.01 5.4 4.52 5.4 4c0-.52-.5-1-1.69-2.18C3.3 1.42 2.78.9 2.19.3 2 .1 1.8 0 1.55 0z"/>
+        </symbol>
+
+        <symbol id="cross-path" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+            <path d="M2 14L14 2M2 2l12 12"/>
+        </symbol>
+
+        <symbol id="draggable-path" viewBox="0 0 10 14" fill="currentColor">
+            <rect width="2" height="8" rx="1" y="3"/>
+            <rect width="2" height="14" rx="1" x="4"/>
+            <rect width="2" height="8" rx="1" x="8" y="3"/>
+        </symbol>
+
+        <symbol id="filter-path" viewBox="0 0 20 10" fill="currentColor">
+            <rect width="20" height="2" rx="1"/>
+            <rect width="14" height="2" rx="1" x="3" y="4"/>
+            <rect width="8" height="2" rx="1" x="6" y="8"/>
+        </symbol>
+
+        <symbol id="menu-path" viewBox="0 0 15 10" fill="currentColor">
+            <rect width="15" height="2" rx="1"/>
+            <rect width="15" height="2" rx="1" y="8"/>
+        </symbol>
+
+        <symbol id="note-purple-bg-path" viewBox="0 0 15 15" fill="#673ab7">
+            <path d="M11.92 0H3.08A3.08 3.08 0 000 3.08v8.84C0 13.62 1.38 15 3.08 15h8.84c1.7 0 3.08-1.38 3.08-3.08V3.08C15 1.38 13.62 0 11.92 0zm-.7 9.26v1.17c0 .65-.53 1.17-1.17 1.17h-.73a1.17 1.17 0 010-2.34h1.02V4.95l-4.22.72V11.31c0 .64-.52 1.17-1.17 1.17h-.73a1.17 1.17 0 010-2.34h1.02V3.47l5.98-1.03v6.82z"/>
+        </symbol>
+
+        <symbol id="minus-path" viewBox="0 0 80 16" fill="currentColor">
+            <rect width="80" height="16" rx="8"/>
+        </symbol>
+
+        <symbol id="plus-path" viewBox="0 0 80 80" fill="currentColor">
+            <use href="#minus-path"/>
+            <rect x="32" width="16" height="80" rx="8"/>
+        </symbol>
+
+        <symbol id="triangle-path" viewBox="0 0 10 8" fill="currentColor">
+            <path d="M9.207 6.437A1 1 0 018.38 8H1.256a1 1 0 01-.827-1.563l3.563-5.225a1 1 0 011.652 0l3.563 5.225z"/>
+        </symbol>
+
+        <symbol id="notch-path" viewBox="0 0 936 302" fill="currentColor">
+            <path d="M541 272c-39 40-106 40-145-1C296 168 118 0 0 0h936C821 0 641 168 541 272z"/>
+        </symbol>
+
+        <symbol id="undo-path" viewBox="0 0 20 21" fill="currentColor">
+            <path d="M4.08 15.742V7.96C4.08 3.57 7.65 0 12.04 0 16.429 0 20 3.571 20 7.96v6.058a1.343 1.343 0 11-2.687 0V7.96a5.28 5.28 0 00-5.273-5.273A5.28 5.28 0 006.766 7.96v7.782l1.787-1.786a1.343 1.343 0 011.9 0 1.323 1.323 0 010 1.9l-4.08 4.08a1.343 1.343 0 01-1.9 0l-4.08-4.08a1.343 1.343 0 111.9-1.9l1.787 1.786z"/>
+        </symbol>
+
+
+        <symbol id="framed-note-path" viewBox="0 0 21 21" fill="currentColor" stroke="currentColor" stroke-width=".2">
+            <path d="M1.77.9a.87.87 0 0 0-.87.87V20a.894.894 0 0 0 0 .03c0 .48.39.87.87.87H20a.867.867 0 0 0 .63-.27.867.867 0 0 0 .27-.63V1.77A.87.87 0 0 0 20 .9H1.77Zm.869 1.738h16.523v16.524H2.639V2.637Zm6.03 4.307-.084.014v6.912a1.354 1.354 0 0 0-.639-.158 2.249 2.249 0 0 0-1.016.24c-.393.192-.698.47-.871.767-.173.296-.22.626-.066.905.153.277.462.429.815.466.355.037.77-.039 1.163-.231.32-.156.582-.368.762-.602a1.21 1.21 0 0 0 .266-.64h.008V8.047l.597-.107h.002l5.072-.839v5.72a1.353 1.353 0 0 0-.638-.157 2.248 2.248 0 0 0-1.017.24c-.393.192-.698.47-.87.767-.174.297-.22.626-.067.905.153.277.462.429.816.466.355.037.77-.039 1.163-.231a2.15 2.15 0 0 0 .761-.602 1.21 1.21 0 0 0 .266-.64h.008V5.881l-.116.02-6.315 1.043ZM5 4.767h1.667a.433.433 0 1 0 0-.867H5A1.1 1.1 0 0 0 3.9 5v1.667a.433.433 0 0 0 .867 0V5A.233.233 0 0 1 5 4.767Zm-.667 3.8a.433.433 0 1 0 0 .866.433.433 0 0 0 0-.866ZM17 17.133h-1.667a.433.433 0 0 0 0 .867H17a1.1 1.1 0 0 0 1.1-1.1v-1.667a.433.433 0 1 0-.867 0V16.9a.233.233 0 0 1-.233.233Zm.667-3.8a.433.433 0 1 0 0-.866.433.433 0 0 0 0 .866Z"/>
+        </symbol>
+
+        <symbol id="note-shades-path" viewBox="0 0 21 22" fill="currentColor">
+            <defs>
+                
+            </defs>
+            <path d="M14.0925 1.0179V16.037c-.4135-.3244-.9752-.4941-1.599-.5081-.7154-.0162-1.5202.1719-2.2981.5747l-.0004.0002c-.8856.4629-1.5666 1.1246-1.9491 1.8257-.3822.7005-.4712 1.4513-.148 2.0768.3234.6257.9865.9841 1.7771 1.0721.7913.088 1.7218-.0922 2.6075-.5551 1.4328-.7477 2.3413-2.0295 2.2918-3.154V5.7206c.2274.2142.5214.4154.8439.6189.1414.0892.2883.179.4387.2707.2955.1805.6045.3692.9123.579.9254.6309 1.802 1.429 2.1254 2.6613.3395 1.3119-.0419 2.6923-.5031 3.7704-.2299.5375-.4779.9959-.662 1.3289l-.0519.0938c-.0687.1239-.1266.2283-.167.3079-.0248.049-.0453.0931-.0575.1286a.2449.2449 0 0 0-.0137.0595c-.0014.0166-.0028.0625.0339.0987.0386.038.0862.0344.1096.029a.1919.1919 0 0 0 .0589-.0261c.0309-.0196.0656-.0498.1018-.0854.0737-.0725.169-.1831.2776-.325.218-.2845.496-.7026.7708-1.212.5488-1.0171 1.0906-2.4088 1.1075-3.8335.0155-1.3107-.307-2.307-.8354-3.1406-.5268-.8308-1.2554-1.4953-2.0431-2.1461a10.126 10.126 0 0 1-2.8521-3.868l-.001-.0023c-.0121-.027-.034-.0702-.0685-.0981a.1278.1278 0 0 0-.1017-.0285c-.0465.0077-.0746.0392-.0893.062l-.0159.0248v.0294Z" stroke="currentColor" stroke-width=".2"/>
+            <path class="note-shades-lines" d="M.7692 2.5385H10a.7695.7695 0 0 0 .7692-.7693A.7695.7695 0 0 0 10 1H.7692A.7695.7695 0 0 0 0 1.7692c0 .4246.3446.7693.7692.7693Z"/>
+            <path class="note-shades-lines" d="M.7692 7.154H10a.7695.7695 0 0 0 .7692-.7693A.7695.7695 0 0 0 10 5.6155H.7692A.7695.7695 0 0 0 0 6.3847c0 .4246.3446.7692.7692.7692Z"/>
+            <path class="note-shades-lines" d="M5.3846 10.2307H.7692A.7695.7695 0 0 0 0 10.9999c0 .4247.3446.7693.7692.7693h4.6154a.7695.7695 0 0 0 .7693-.7693.7695.7695 0 0 0-.7693-.7692Z"/>
+            <path class="note-shades-lines" d="M5.3846 14.8462H.7692A.7695.7695 0 0 0 0 15.6154c0 .4246.3446.7693.7692.7693h4.6154a.7696.7696 0 0 0 .7693-.7693.7695.7695 0 0 0-.7693-.7692Z"/>
+        </symbol>
+
+        <symbol id="treble-clef-on-stave-path" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M11.484 7.266c-.053 0-.106 0-.159.003a48.573 48.573 0 0 1-.438-2.261c1.376-.942 2.394-1.757 2.394-2.86A2.15 2.15 0 0 0 11.133 0a2.15 2.15 0 0 0-2.149 2.148c0 .459.077 1.219.207 2.12-1.063.716-2.23 1.528-3.18 2.532-1.258 1.332-1.87 2.724-1.87 4.255 0 1.283.523 2.523 1.473 3.493a5.363 5.363 0 0 0 3.406 1.614c.347.027.728.043 1.165.049.542.007 1.179-.017 1.832-.188.13.622.21 1.117.21 1.399a1.017 1.017 0 0 1-2.032 0H8.633A2.581 2.581 0 0 0 11.21 20a2.581 2.581 0 0 0 2.578-2.578c0-.443-.129-1.193-.32-2.065 1.187-.833 1.943-2.087 2.029-3.373.006-.101.01-.203.01-.304v-.39a4.028 4.028 0 0 0-4.024-4.024Zm-.351-5.704c.323 0 .586.263.586.586 0 .036-.025.233-.511.667-.165.147-.36.3-.575.46-.055-.47-.086-.86-.086-1.127 0-.323.263-.586.586-.586Zm-.927 13.087c-.403-.006-.752-.02-1.066-.044-1.863-.145-3.437-1.77-3.437-3.55 0-2.216 1.919-3.804 3.768-5.087.104.567.221 1.15.347 1.718a3.519 3.519 0 0 0-1.85 3.095 2.386 2.386 0 0 0 2.384 2.383v-1.562a.821.821 0 0 1-.82-.82c0-.592.263-1.122.68-1.48.034.128.069.254.104.376l.004.012c.418 1.376.947 3.234 1.342 4.811-.403.11-.875.155-1.456.148Zm3.74-2.97c0 .067-.003.135-.007.201-.042.624-.365 1.268-.877 1.784a116.567 116.567 0 0 0-1.246-4.422 31.325 31.325 0 0 1-.112-.404 2.464 2.464 0 0 1 2.241 2.451v.39ZM.781 9.219a.781.781 0 0 0 0 1.562h1.785a6.9 6.9 0 0 1 .24-1.562H.782Zm2.422 4.609H.781a.781.781 0 0 0 0 1.563h3.473a6.803 6.803 0 0 1-1.05-1.563Zm3.993 4.61H.781a.781.781 0 0 0 0 1.562h7.192a4.13 4.13 0 0 1-.777-1.563ZM.781 0a.781.781 0 1 0 0 1.563h6.687A3.692 3.692 0 0 1 8.108 0H.782Zm0 4.61a.781.781 0 1 0 0 1.562h3.683c.127-.15.26-.3.4-.447.38-.401.785-.77 1.203-1.116H.78Z"/>
+            <path d="m13.827 4.61-.083.091A8.49 8.49 0 0 1 12.6 5.704l.022.116c.383.08.751.198 1.101.352h5.496a.781.781 0 1 0 0-1.563h-5.392Zm.33-4.61c.325.456.549.987.64 1.563h4.422a.781.781 0 1 0 0-1.563h-5.062Zm2.515 9.219a5.54 5.54 0 0 1 .375 1.562h2.171a.781.781 0 1 0 0-1.562h-2.546Zm-1.447 9.219A4.13 4.13 0 0 1 14.448 20h4.77a.781.781 0 0 0 0-1.563h-3.993Zm1.418-4.61a6.26 6.26 0 0 1-.937 1.563h3.512a.781.781 0 1 0 0-1.563h-2.575Z"/>
+        </symbol>
+
+        <symbol id="audio-play-path" viewBox="0 0 10 11" fill="currentColor">
+            <path d="M8.77 6.35a1 1 0 0 0 0-1.7L1.66.21a1 1 0 0 0-1.53.84v8.9a1 1 0 0 0 1.52.84l7.12-4.44Z"/>
+        </symbol>
+
+        <symbol id="audio-pause-path" viewBox="0 0 10 12" fill="currentColor">
+            <rect width="3.75" height="11.25" rx="1.88"/>
+            <rect x="6.25" width="3.75" height="11.25" rx="1.88"/>
+        </symbol>
+
+        <symbol id="audio-stop-path" viewBox="0 0 10 11" fill="currentColor">
+            <rect width="10" height="11" rx="2" fill="white"/>
+        </symbol>
+
+        <symbol id="layers-sub-path" viewBox="0 0 20 6" fill="currentColor">
+            <path d="M19.94.62A.79.79 0 0 0 18.9.2L10 4.03 1.1.2a.78.78 0 1 0-.62 1.45L9.69 5.6a.79.79 0 0 0 .62 0l9.21-3.95c.4-.17.59-.63.42-1.03Z"/>
+        </symbol>
+
+        <symbol id="layers-path" viewBox="0 0 20 22">
+            
+
+            <use href="#layers-sub-path" class="layers-sub-path" y="6" transform-origin="50% 50%" />
+            <use href="#layers-sub-path" class="layers-sub-path" y="-1.6"/>
+            <use href="#layers-sub-path" class="layers-sub-path" y="2.1"/>
+            <use href="#layers-sub-path" class="layers-sub-path" y="6"/>
+        </symbol>
+
+        <symbol id="lock-path" viewBox="0 0 13 18" fill="currentColor">
+            
+            <path d="M10.608 8.357h-9A1.625 1.625 0 0 0 .001 9.964s-.002 2.575 0 4.5C.003 16.42 1.611 17.998 3.537 18H8.68a3.553 3.553 0 0 0 3.535-3.536v-4.5a1.625 1.625 0 0 0-1.607-1.607Zm-3.536 4.702v2.048a.33.33 0 0 1-.321.321H5.465a.33.33 0 0 1-.321-.321v-2.048c-.699-.792-.193-2.099.964-2.136 1.143.037 1.663 1.344.964 2.136Z"/>
+            <path d="M6.108 0C3.483.003 1.29 2.197 1.287 4.821v2.893h1.928V4.821c0-1.575 1.317-2.892 2.893-2.892 1.576 0 2.893 1.317 2.893 2.892 0 .17.15.322.321.322h1.286a.33.33 0 0 0 .322-.322C10.927 2.197 8.733.003 6.108 0Z"/>
+            <path class="lock-locked-path" d="M9 4.8h1.93v2.91H9z"/>
+        </symbol>
+
+    </svg>
+</body>
+
+</html>

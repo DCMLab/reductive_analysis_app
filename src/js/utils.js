@@ -857,7 +857,7 @@ export function fix_layers(mei) {
     let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')
     if (scs.length > 1) {
       let mdiv_id = mdiv_elem.getAttribute('xml:id')
-      for (scix in scs) {
+      for (let scix in scs) {
 	  if (scix == 0)
 	    continue
 	  let score_elem = scs[scix]
@@ -865,7 +865,6 @@ export function fix_layers(mei) {
 	  if (prefix_re.test(score_id)) {
 	    // We almost certainly have a layer thingy
 	    let score_prefix = prefix_re.exec(score_id)[1]
-	    let mdiv_id = score_prefix + '-' + mdiv_id
 	    var new_mdiv_elem = mei.createElement('mdiv')
 	    if (sliced_re.test(score_id))
 	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')

@@ -19,8 +19,7 @@ jobs:
           node-version: 14.x
           cache: 'npm'
       - run: cp .env.example .env
-      - run: sed -ie "s/HEADLESS = false/HEADLESS = true/" jest-puppeteer.config.js
-      - run: "sed -ie 's/defineConfig({/defineConfig({ base\: \"\/reductive_analysis_app\/\",/' vite.config.js"
+      - run: bash run_for_gh-pages.sh
       - run: npm install
       - run: npm run build
 #     - run: npm test

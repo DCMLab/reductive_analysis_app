@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: 14.x
           cache: 'npm'
+      - run: cp .env.example .env
       - run: npm install
       - run: npm run build
       - run: npm test

@@ -169,7 +169,7 @@ class Player {
   }
 
   init() {
-    Soundfont.instrument(audioContext, '/instruments/acoustic-grand-piano-mp3.js')
+    Soundfont.instrument(audioContext, './instruments/acoustic-grand-piano-mp3.js')
       .then(instrument => {
         this.instrument = instrument
         midiPlayer = new MidiPlayer.Player(event => {

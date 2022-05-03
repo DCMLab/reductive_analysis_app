@@ -174,4 +174,4 @@ The app is in `/src`. Assets called by the app needs to be compiled using some f
 
 - Files in `/src/public` are copied as is (respecting the directory structure in `/src/public`) in the build directory.
 - Lint JavaScript: `npm run lint`.
-- (currently broken) Run tests with `npm run test`.
+- Run tests with `npm run test`.

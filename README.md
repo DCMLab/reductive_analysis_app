@@ -46,7 +46,7 @@ Major from The Well-tempered Clavier (BWV 846). This is done by selecting
 the file from your computer through the file selector accessed from the 
 "Select a score" button. Once chosen, the app should render it directly as in
 
-![](images/tutorial1.png?raw=true)
+![](images/tutorial21.png?raw=true)
 
 This done, we can begin selecting notes by clicking them. We can also select notes as _primary_ by shift-clicking them.
 
@@ -57,7 +57,7 @@ entering a custom type in the expanded menu.
 
 Let us select the first E in the upper voice as primary, and the rest of the E's in that measure as secondary:
 
-![](images/tutorial2.png?raw=true)
+![](images/tutorial22.png?raw=true)
 
 We can do this either by clicking and shift-clicking the individual notes,
 and then either clicking the button marked "Repeat" or
@@ -66,7 +66,7 @@ that all the notes of the same pitch in a single bar should be selected and
 related as repeats, it is also possible to just select the primary note of
 the repeat and then hitting "+".
 
-![](images/tutorial3.png?raw=true)
+![](images/tutorial23.png?raw=true)
 
 After having created a number of relations, we can choose to do a "Reduce"
 step (by clicking the button in the layer menu on the left) which hides 
@@ -74,31 +74,31 @@ the "lowest" level of edges, as described above. For
 example, if we have made similar relations for the other parts in the
 arpeggio, we can reduce the first bar of the Prelude from this:
 
-![](images/tutorial4.png?raw=true)
+![](images/tutorial24.png?raw=true)
 
 To this:
 
-![](images/tutorial5.png?raw=true)
+![](images/tutorial25.png?raw=true)
 
 However, this doesn't look very nice, as we only hide the notes, and not
 the beams and other things related to notes. We can hide stems and beams
 and such things with the button "Stems etc." in the "More options" menu, or the keyboard
 shortcut "s".
 
-![](images/tutorial6.png?raw=true)
+![](images/tutorial26.png?raw=true)
 
 But this still leaves us with an embarrassing amount of unused space, as
 well as unused ledger lines. We can, however, create a _new layer_, which
 will be added in the app below the first layer, where such unused spaced can be
 significantly reduced, and features like note editing becomes available.
 
-![](images/tutorial7.png?raw=true)
+![](images/tutorial27.png?raw=true)
 
 Slightly better!
 
 Having done a number of reductions and new layers, we can end up with something similar to:
 
-![](images/tutorial8.png?raw=true)
+![](images/tutorial28.png?raw=true)
 
 Which starts to be useful for further analysis.
 
@@ -106,7 +106,7 @@ By clicking the "Save" button, you will get the option to save the original
 MEI, any selection of additional layers, plus the graph as currently envisioned. For example, saving the above
 state and then loading the resulting file will show this view:
 
-![](images/tutorial9.png?raw=true)
+![](images/tutorial29.png?raw=true)
 
 ## Hierarchical analysis
 

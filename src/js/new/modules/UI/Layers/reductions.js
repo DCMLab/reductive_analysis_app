@@ -1,5 +1,6 @@
 import { do_reduce_pre, undo_reduce } from '../../../../reductions'
 import { getReducedMidi } from '../../../../ui'
+import { getCurrentDrawContext } from '../../../../ui'
 import player from '../../Player'
 
 export default class Reductions {
@@ -25,8 +26,8 @@ export default class Reductions {
   onTap(e) {
     if (!e.composedPath().includes(this.ctn)) { return }
 
-    const currentLayerObject = this.layers.getAll()[0] // set to first one temporarily
-
+    const currentLayerObject = getCurrentDrawContext() // use the current draw context
+    
     if (e.target == this.reduceBtn) { return this.reduce(currentLayerObject) }
     if (e.target == this.unreduceBtn) { return this.unreduce(currentLayerObject) }
     if (e.target == this.playReductionBtn) { return this.play(currentLayerObject) }

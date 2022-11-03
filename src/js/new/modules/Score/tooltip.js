@@ -23,6 +23,17 @@ class ScoreTooltip {
     const relationType = getRelationType(target) ?? getRelationType(target.parentElement)
     this.setContent(relationType)
   }
+
+  onFlipRelation(e) {
+    const target = e.detail.target
+    const hasEnteredRelation = isRelation(target)
+    const hasEnteredMetaRelation = isMetaRelationCircle(target)
+
+    if (!hasEnteredRelation && !hasEnteredMetaRelation) { return }
+
+    const relationType = getRelationType(target) ?? getRelationType(target.parentElement)
+    this.setContent(relationType)
+  }
 }
 
 const tooltip = new ScoreTooltip()

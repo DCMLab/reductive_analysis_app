@@ -254,6 +254,12 @@ export function handle_keypress(ev) {
       elem = elem.closest('g')
     flip_to_bg(elem)
     if (elem.onmouseout) elem.onmouseout()
+    var elem = document.elementFromPoint(mouseX, mouseY)
+    if (elem.tagName == 'circle')
+      elem = elem.closest('g')
+    document.dispatchEvent(new CustomEvent('fliprelation', { detail: {
+      target: elem
+    } }))
   } else if (ev.key == action_conf.undo) { // UNDO
     do_undo()
   } else if (ev.key == action_conf.redo) { // UNDO

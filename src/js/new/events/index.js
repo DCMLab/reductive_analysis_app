@@ -47,6 +47,7 @@ class EventsManager {
     document.addEventListener('undoredo', this.onUndoRedo.bind(this))
     document.addEventListener('scoreload', this.onScoreLoad.bind(this))
     document.addEventListener('scoreselection', this.onScoreSelection.bind(this))
+    document.addEventListener('fliprelation', this.onFlipRelation.bind(this))
   }
 
   // Browser events
@@ -159,6 +160,10 @@ class EventsManager {
   onScoreSelection(e) {
     this.app.score?.onScoreSelection(e)
     this.app.ui?.onScoreSelection(e)
+  }
+
+  onFlipRelation(e) {
+    tooltip?.onFlipRelation(e)
   }
 
   // Keyboard events

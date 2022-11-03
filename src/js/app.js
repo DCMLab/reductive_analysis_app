@@ -14,6 +14,7 @@ import $ from 'jquery'
 import { action_conf } from './conf'
 import { navigation_conf } from './conf'
 import { custom_conf } from './conf'
+import { debug } from './conf'
 
 import newApp from './new/app'
 import { downloadAs } from './new/utils/file'
@@ -145,13 +146,15 @@ $(document).ready(function() {
   minimap()
 })
 
-// Catch-all exception handler.
-window.onerror = function errorHandler(errorMsg, url, lineNumber) {
-  document.getElementsByTagName('html')[0].classList.remove('loader')
-  alert(`An error occured: ${errorMsg}
- Please report the relevant console log as a GitHub issue.
- The app will try to continue running nonetheless.`)
-  return false
+// Optional catch-all exception handler.
+if (debug) {
+  window.onerror = function errorHandler(errorMsg, url, lineNumber) {
+    document.getElementsByTagName('html')[0].classList.remove('loader')
+    alert(`An error occured: ${errorMsg}
+   Please report the relevant console log as a GitHub issue.
+   The app will try to continue running nonetheless.`)
+    return false
+  }
 }
 
 // OK we've selected stuff, let's make the selection into a

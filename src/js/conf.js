@@ -162,15 +162,8 @@ export const strip_mei_tags = [
 export const strip_xml_tags = [
 ]
 
-// THIS MUST STAY AT THE END OF THE try {...} SCOPE.
+// Trap (true) or ignore (false) runtime errors.
+export const debug = false
+
 export const CONFIG_OK = true
 
-// } catch (error) {
-
-//   export const CONFIG_OK = false
-
-//   console.log('[Reductive Analysis App] Error loading configuration file (', e, ')')
-//   console.log('[Reductive Analysis App] Attempting to proceed nonetheless, but expect malfunction.')
-//   alert('Error loading configuration file (', e, ').\nAttempting to proceed nonetheless, but expect malfunction.')
-
-// }

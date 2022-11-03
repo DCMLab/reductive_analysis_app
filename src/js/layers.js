@@ -69,7 +69,7 @@ export function new_layer(draw_context = null) {
   var score_elem = mdiv_elem.children[0]
   var [new_mdiv_elem, changed] = layerify(draw_context, mdiv_elem)
   var n_layers = mdiv_elem.parentElement.getElementsByTagName('mdiv').length
-  var prefix = n_layers + '-' // TODO: better prefix computation
+  var prefix = 'l' + n_layers + '-' // TODO: better prefix computation
   // The - is there to not clash with view
 			     // prefixes
 

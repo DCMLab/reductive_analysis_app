@@ -852,7 +852,7 @@ export function fix_layers(mei) {
   // For each score
   // Create a new mdiv for the score and move it
   Array.from(mei.getElementsByTagName('mdiv')).forEach((mdiv_elem) => {
-    let prefix_re = /(\d+)-.*/
+    let prefix_re = /l(\d+)-.*/
     let sliced_re = /-sliced$/
     let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')
     if (scs.length > 1) {

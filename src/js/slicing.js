@@ -158,7 +158,7 @@ export function new_sliced_layer(draw_context, tied = false) {
   var new_mdiv_elem = slicify(draw_context, mdiv_elem, tied)
   // TODO: this is not entirely accurate, since there may be
   var n_layers = mdiv_elem.parentElement.getElementsByTagName('mdiv').length
-  var prefix = n_layers + '-' // TODO: better prefix computation
+  var prefix = 'l' + n_layers + '-' // TODO: better prefix computation
   // The - is there to not clash with view
 			     // prefixes
   prefix_ids(new_mdiv_elem, prefix) // Compute a better prefix

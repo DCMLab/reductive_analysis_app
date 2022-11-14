@@ -1,8 +1,10 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6395095.svg)](https://doi.org/10.5281/zenodo.6395095)
+
 # Reductive score annotation app
 
-This is an app to facilitate analysing scores using a reductive paradigm.
+This is an app to facilitate music analysis using a reductive (e.g. Schenkerian) paradigm.
 
-It is currently very much under construction, but can be tested [here](https://dcmlab.github.io/reductive_analysis_app/index.html)
+The app is continually under construction but may be tested [here](https://dcmlab.github.io/reductive_analysis_app/index.html)
 
 ## Table of contents
 

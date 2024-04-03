@@ -68,7 +68,7 @@
     "rollup-plugin-license": "^2.7.0",
     "sass": "^1.49.0",
     "v.scss": "^1.2.1",
-    "vite": "~2.8.0",
+    "vite": "~2.9.18",
     "vite-plugin-eslint": "^1.5"
   }
 }

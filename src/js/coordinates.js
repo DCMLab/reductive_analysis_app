@@ -82,7 +82,11 @@ function coord_staff(dc, pt, measure) {
   // For now we don't precompute anything, but instead compute the
   // midpoints of each staff and find the correct one to return by
   // midpoints between midpoints
+  var new_staff = getElementsByClassName('staff')
+ console.log("NEW STAFF")
+  console.log(new_staff)
   var staves = Array.from(measure.getElementsByClassName('staff'))
+  // console.log(staves)
   var stave_coords = staves.map((s) => [staff_midpoint(s), s])
   stave_coords.sort((a, b) => a[0] - b[0])
   var index_maybe = stave_coords.findIndex((s) => pt.y < s[0])
@@ -130,7 +134,7 @@ export function pitch_grid(staff) {
       note = sibling_staff.getElementsByClassName('note')[0]
   }
   var mid_n
-  console.log(note)
+  // console.log(note)
   if (!note) {
     // There's no notes to compare with - we need to look at the clef
     const sys = staff.closest('.system')
@@ -333,7 +337,7 @@ export function do_note(pname, oct, note, offset, id, redoing = false) {
     new_element_id = id
   var added = []
   // Draw it temporarily
-  console.log(note)
+  // console.log(note)
   added.push(draw_note(pname, oct, note, offset, new_element_id))
   // Add it to the current layer
   var current_draw_context = getCurrentDrawContext()

@@ -9,11 +9,6 @@ body {
   user-select: none; /* Non-prefixed version, currently */
 }
 
-path {
-  stroke: #EEE;
-}
-
-
 /* *::-webkit-scrollbar {
   display: none;
 } */
@@ -47,7 +42,6 @@ path {
     position: absolute;
     z-index: -1;
 }
-
 
 
 
@@ -603,6 +597,8 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   color: lightgray !important;
 }
 
-
+g.note {
+  fill: crimson;
+}
 
 

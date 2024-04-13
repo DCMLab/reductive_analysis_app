@@ -1083,3 +1083,22 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
 export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }
+
+function bezierCurve(polyPoints, hullPadding) {
+  // Calculate offset vectors
+  var offsetVectorStart = unitNormal(polyPoints[0], polyPoints[1]);
+  var offsetVectorEnd = unitNormal(polyPoints[1], polyPoints[0]);
+  
+  // Scale offset vectors
+  var scaledOffsetVectorStart = vecScale(hullPadding, offsetVectorStart);
+  var scaledOffsetVectorEnd = vecScale(hullPadding, offsetVectorEnd);
+
+  // Calculate control points
+  var controlPointStart = vecSum(polyPoints[0], scaledOffsetVectorStart);
+  var controlPointEnd = vecSum(polyPoints[1], scaledOffsetVectorEnd);
+
+  // Construct the bezier curve path
+  var path = `M ${polyPoints[0]} C ${controlPointStart} ${controlPointEnd} ${polyPoints[1]}`;
+
+  return path;
+}

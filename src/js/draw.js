@@ -28,7 +28,7 @@ import {
   roundedHull
 } from './utils'
 
-// Given a draw context and a graph node representing a relation, draw the
+// Given a draw context ("score") and a graph node representing a relation, draw the
 // relation in the draw context.
 export function draw_relation(draw_context, mei_graph, g_elem) {
   var added = []

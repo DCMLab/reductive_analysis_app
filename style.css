@@ -157,7 +157,7 @@ select.instance-select {
 }
 
 body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
-    /* fill: #1f77b4; */
+    fill: #1f77b4;
     transform: translate3d(0,0,0);
     filter: url("#glowFilter");
 }
@@ -304,6 +304,7 @@ body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
 
 
 body:not(.mousedown) .note:hover {
+  fill: #9467bd;
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
@@ -327,6 +328,7 @@ stroke: black;
       fill: red;
 }
 .selecthover {
+  fill: #d62728;
       transform: translate3d(0,0,0);
        filter: url("#selectFilter");
 }
@@ -410,11 +412,13 @@ body:not(.mousedown) .extraselectedrelation:hover {
     filter : url("#extraFilter");
 }
 .relationhover {
+  fill: #ff7f0e;
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
 
 .extrarelationhover {
+  fill: #ff7f0e;
       transform: translate3d(0,0,0);
        filter: url("#extraFilter");
 }

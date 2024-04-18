@@ -44,26 +44,38 @@ var roundedHull1 = function (polyPoints, hullPadding) {
     + [hullPadding, hullPadding, '0,0,0', p1].join(',')
 }
 
-// Returns the path for a rounded hull around two points (a "capsule" shape).
+// // Returns the path for a rounded hull around two points (a "capsule" shape).
+// var roundedHull2 = function (polyPoints, hullPadding) {
+//   var offsetVector = vecScale(hullPadding, unitNormal(polyPoints[0], polyPoints[1]))
+//   var invOffsetVector = vecScale(-1, offsetVector)
+//   // around that note coordinates are not at the centroids
+
+//   var p0 = vecSum(polyPoints[0], offsetVector)
+//   var p1 = vecSum(polyPoints[1], offsetVector)
+//   var p2 = vecSum(polyPoints[1], invOffsetVector)
+//   var p3 = vecSum(polyPoints[0], invOffsetVector)
+
+//   return `M ${p0} L ${p1} A `
+//     + [hullPadding, hullPadding, '0,0,0', p2].join(',')
+//     + ` L ${p3} A `
+//     + [hullPadding, hullPadding, '0,0,0', p0].join(',')
+// }
+
 var roundedHull2 = function (polyPoints, hullPadding) {
-  var offsetVector = vecScale(hullPadding, unitNormal(polyPoints[0], polyPoints[1]))
-  var invOffsetVector = vecScale(-1, offsetVector)
-  // around that note coordinates are not at the centroids
+  // Calculate the control points for the quadratic Bézier curve
+  var controlPoint1 = polyPoints[0]; // First control point is the first polyPoint
+  var controlPoint2 = [(polyPoints[0][0] + polyPoints[polyPoints.length - 1][0]) / 2 + hullPadding, (polyPoints[0][1] + polyPoints[polyPoints.length - 1][1]) / 2 + hullPadding]; // Second control point is offset from the midpoint
+  var controlPoint3 = polyPoints[polyPoints.length - 1]; // Third control point is the last polyPoint
 
-  var p0 = vecSum(polyPoints[0], offsetVector)
-  var p1 = vecSum(polyPoints[1], offsetVector)
-  var p2 = vecSum(polyPoints[1], invOffsetVector)
-  var p3 = vecSum(polyPoints[0], invOffsetVector)
-
-  return `M ${p0} L ${p1} A `
-    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-    + ` L ${p3} A `
-    + [hullPadding, hullPadding, '0,0,0', p0].join(',')
+  // Generate the SVG path
+  return `M ${controlPoint1} Q ${controlPoint2} ${controlPoint3}`;
 }
+
+
+
 
 // Returns the SVG path data string representing the polygon, expanded and rounded.
 var roundedHullN = function (polyPoints, hullPadding) {
-
   // Handle special cases
   if (!polyPoints || polyPoints.length < 1) return ''
   if (polyPoints.length === 1) return roundedHull1(polyPoints, hullPadding)
@@ -97,23 +109,45 @@ var roundedHullN = function (polyPoints, hullPadding) {
   return segments.join(' ')
 }
 
+// export function roundedHull(points) {
+//   var draw_contexts = getDrawContexts()
+//   var hullPadding = draw_contexts.hullPadding || 200
+//   var hullPadding = 0
+
+//   // Returns an SVG path for a rounded hull around the points
+//   var path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+//   // TODO: Better colour picking
+//   path.style.setProperty('--shade-alternate', randomColor())
+//   if (points.length == 1) {
+//     path.setAttribute('d', roundedHull1(points, hullPadding))
+//   } else if (points.length == 2) {
+//     path.setAttribute('d', roundedHull2(points, hullPadding))
+//   } else {
+//     path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
+//   }
+//   return path
+// }
+
 export function roundedHull(points) {
   var draw_contexts = getDrawContexts()
   var hullPadding = draw_contexts.hullPadding || 200
+  // var hullPadding = 0
 
   // Returns an SVG path for a rounded hull around the points
-  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-  // TODO: Better colour picking
-  path.style.setProperty('--shade-alternate', randomColor())
-  if (points.length == 1) {
-    path.setAttribute('d', roundedHull1(points, hullPadding))
-  } else if (points.length == 2) {
-    path.setAttribute('d', roundedHull2(points, hullPadding))
+  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('stroke', 'red'); // Set stroke color to red
+  // If you also want to fill the path with red color, uncomment the line below
+  // path.setAttribute('fill', 'red');
+  if (points.length === 1) {
+    path.setAttribute('d', roundedHull1(points, hullPadding));
+  } else if (points.length === 2) {
+    path.setAttribute('d', roundedHull2(points, -500));
   } else {
-    path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
+    path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding));
   }
-  return path
+  return path;
 }
+
 
 function randomColor() {
   const hexChars = '456789AB' // characters pool for hex color
@@ -1084,21 +1118,21 @@ export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }
 
-function bezierCurve(polyPoints, hullPadding) {
-  // Calculate offset vectors
-  var offsetVectorStart = unitNormal(polyPoints[0], polyPoints[1]);
-  var offsetVectorEnd = unitNormal(polyPoints[1], polyPoints[0]);
+// function bezierCurve(polyPoints, hullPadding) {
+//   // Calculate offset vectors
+//   var offsetVectorStart = unitNormal(polyPoints[0], polyPoints[1]);
+//   var offsetVectorEnd = unitNormal(polyPoints[1], polyPoints[0]);
   
-  // Scale offset vectors
-  var scaledOffsetVectorStart = vecScale(hullPadding, offsetVectorStart);
-  var scaledOffsetVectorEnd = vecScale(hullPadding, offsetVectorEnd);
+//   // Scale offset vectors
+//   var scaledOffsetVectorStart = vecScale(hullPadding, offsetVectorStart);
+//   var scaledOffsetVectorEnd = vecScale(hullPadding, offsetVectorEnd);
 
-  // Calculate control points
-  var controlPointStart = vecSum(polyPoints[0], scaledOffsetVectorStart);
-  var controlPointEnd = vecSum(polyPoints[1], scaledOffsetVectorEnd);
+//   // Calculate control points
+//   var controlPointStart = vecSum(polyPoints[0], scaledOffsetVectorStart);
+//   var controlPointEnd = vecSum(polyPoints[1], scaledOffsetVectorEnd);
 
-  // Construct the bezier curve path
-  var path = `M ${polyPoints[0]} C ${controlPointStart} ${controlPointEnd} ${polyPoints[1]}`;
+//   // Construct the bezier curve path
+//   var path = `M ${polyPoints[0]} C ${controlPointStart} ${controlPointEnd} ${polyPoints[1]}`;
 
-  return path;
-}
+//   return path;
+// }

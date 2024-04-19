@@ -83,10 +83,7 @@ function coord_staff(dc, pt, measure) {
   // midpoints of each staff and find the correct one to return by
   // midpoints between midpoints
   var new_staff = getElementsByClassName('staff')
- console.log("NEW STAFF")
-  console.log(new_staff)
   var staves = Array.from(measure.getElementsByClassName('staff'))
-  // console.log(staves)
   var stave_coords = staves.map((s) => [staff_midpoint(s), s])
   stave_coords.sort((a, b) => a[0] - b[0])
   var index_maybe = stave_coords.findIndex((s) => pt.y < s[0])

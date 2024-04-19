@@ -63,16 +63,13 @@ var roundedHull1 = function (polyPoints, hullPadding) {
 
 var roundedHull2 = function (polyPoints, hullPadding) {
   // Calculate the control points for the quadratic Bézier curve
-  var controlPoint1 = polyPoints[0]; // First control point is the first polyPoint
-  var controlPoint2 = [(polyPoints[0][0] + polyPoints[polyPoints.length - 1][0]) / 2 + hullPadding, (polyPoints[0][1] + polyPoints[polyPoints.length - 1][1]) / 2 + hullPadding]; // Second control point is offset from the midpoint
-  var controlPoint3 = polyPoints[polyPoints.length - 1]; // Third control point is the last polyPoint
+  var controlPoint1 = polyPoints[0] // First control point is the first polyPoint
+  var controlPoint2 = [(polyPoints[0][0] + polyPoints[polyPoints.length - 1][0]) / 2 + hullPadding, (polyPoints[0][1] + polyPoints[polyPoints.length - 1][1]) / 2 + hullPadding] // Second control point is offset from the midpoint
+  var controlPoint3 = polyPoints[polyPoints.length - 1] // Third control point is the last polyPoint
 
   // Generate the SVG path
-  return `M ${controlPoint1} Q ${controlPoint2} ${controlPoint3}`;
+  return `M ${controlPoint1} Q ${controlPoint2} ${controlPoint3}`
 }
-
-
-
 
 // Returns the SVG path data string representing the polygon, expanded and rounded.
 var roundedHullN = function (polyPoints, hullPadding) {
@@ -84,7 +81,7 @@ var roundedHullN = function (polyPoints, hullPadding) {
   var segments = new Array(polyPoints.length)
 
   // Calculate each offset (outwards) segment of the convex hull.
-  for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
+  for (var segmentIndex = 0 ;segmentIndex < segments.length; ++segmentIndex) {
     var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
     var p1 = polyPoints[segmentIndex]
 
@@ -134,25 +131,24 @@ export function roundedHull(points) {
   // var hullPadding = 0
 
   // Returns an SVG path for a rounded hull around the points
-  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  path.setAttribute('stroke', 'red'); // Set stroke color to red
+  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  path.setAttribute('stroke', 'red') // Set stroke color to red
   // If you also want to fill the path with red color, uncomment the line below
-  // path.setAttribute('fill', 'red');
+  // path.setAttribute('fill', 'red')
   if (points.length === 1) {
-    path.setAttribute('d', roundedHull1(points, hullPadding));
+    path.setAttribute('d', roundedHull1(points, hullPadding))
   } else if (points.length === 2) {
-    path.setAttribute('d', roundedHull2(points, -500));
+    path.setAttribute('d', roundedHull2(points, -500))
   } else {
-    path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding));
+    path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
   }
-  return path;
+  return path
 }
-
 
 function randomColor() {
   const hexChars = '456789AB' // characters pool for hex color
   let color = '#'
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 6 ;i++) {
     color += hexChars[Math.floor(Math.random() * hexChars.length)]
   }
   return color
@@ -162,13 +158,13 @@ function getRandomShade(colour) {
   //  Returns a random shade within a specified range
   var letters = '0123456789ABCDEF'
   var shade = '#'
-  for (var i = 0; i < 6; i++) {
+  for (var i = 0; i < 6 ;i++) {
     if (
       ((colour == 'r' || colour == 'y' || colour == 'm') && i < 2) ||
         ((colour == 'g' || colour == 'y' || colour == 'c') && (i < 4 && i > 1)) ||
         ((colour == 'b' || colour == 'c' || colour == 'm') && i > 3)
     )
-      shade += letters[14]// Math.floor(6+Math.random() * 8)];
+      shade += letters[14]// Math.floor(6+Math.random() * 8)]
     else
       shade += letters[5]
   }
@@ -692,7 +688,7 @@ export function unmark_secondaries(draw_context, mei_graph, he) {
 }
 
 // Find the measure this MEI score element occurs in
-function get_measure(elem) { if (elem.tagName == 'measure') return elem; else return get_measure(elem.parentElement) }
+function get_measure(elem) { if (elem.tagName == 'measure') return elem ; else return get_measure(elem.parentElement) }
 
 // If we have a single note selected, find all other notes of the same
 // pitch in this measure, and select them as secondary, and the previously
@@ -1120,19 +1116,19 @@ export function draw_context_of(elem) {
 
 // function bezierCurve(polyPoints, hullPadding) {
 //   // Calculate offset vectors
-//   var offsetVectorStart = unitNormal(polyPoints[0], polyPoints[1]);
-//   var offsetVectorEnd = unitNormal(polyPoints[1], polyPoints[0]);
+//   var offsetVectorStart = unitNormal(polyPoints[0], polyPoints[1])
+//   var offsetVectorEnd = unitNormal(polyPoints[1], polyPoints[0])
   
 //   // Scale offset vectors
-//   var scaledOffsetVectorStart = vecScale(hullPadding, offsetVectorStart);
-//   var scaledOffsetVectorEnd = vecScale(hullPadding, offsetVectorEnd);
+//   var scaledOffsetVectorStart = vecScale(hullPadding, offsetVectorStart)
+//   var scaledOffsetVectorEnd = vecScale(hullPadding, offsetVectorEnd)
 
 //   // Calculate control points
-//   var controlPointStart = vecSum(polyPoints[0], scaledOffsetVectorStart);
-//   var controlPointEnd = vecSum(polyPoints[1], scaledOffsetVectorEnd);
+//   var controlPointStart = vecSum(polyPoints[0], scaledOffsetVectorStart)
+//   var controlPointEnd = vecSum(polyPoints[1], scaledOffsetVectorEnd)
 
 //   // Construct the bezier curve path
-//   var path = `M ${polyPoints[0]} C ${controlPointStart} ${controlPointEnd} ${polyPoints[1]}`;
+//   var path = `M ${polyPoints[0]} C ${controlPointStart} ${controlPointEnd} ${polyPoints[1]}`
 
-//   return path;
+//   return path
 // }

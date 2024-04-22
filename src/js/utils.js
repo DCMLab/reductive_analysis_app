@@ -64,7 +64,7 @@ var roundedHullN = function (polyPoints, hullPadding) {
   var segments = new Array(polyPoints.length)
 
   // Calculate each offset (outwards) segment of the convex hull.
-  for (var segmentIndex = 0 ;segmentIndex < segments.length; ++segmentIndex) {
+  for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
     var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
     var p1 = polyPoints[segmentIndex]
 
@@ -112,7 +112,7 @@ export function roundedHull(points) {
 function randomColor() {
   const hexChars = '456789AB' // characters pool for hex color
   let color = '#'
-  for (let i = 0; i < 6 ;i++) {
+  for (let i = 0; i < 6; i++) {
     color += hexChars[Math.floor(Math.random() * hexChars.length)]
   }
   return color
@@ -122,7 +122,7 @@ function getRandomShade(colour) {
   //  Returns a random shade within a specified range
   var letters = '0123456789ABCDEF'
   var shade = '#'
-  for (var i = 0; i < 6 ;i++) {
+  for (var i = 0; i < 6; i++) {
     if (
       ((colour == 'r' || colour == 'y' || colour == 'm') && i < 2) ||
         ((colour == 'g' || colour == 'y' || colour == 'c') && (i < 4 && i > 1)) ||

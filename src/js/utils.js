@@ -60,33 +60,34 @@ var roundedHullN = function (polyPoints, hullPadding) {
   if (!polyPoints || polyPoints.length < 1) return ''
   if (polyPoints.length === 1) return roundedHull1(polyPoints, hullPadding)
   if (polyPoints.length === 2) return roundedHull2(polyPoints, hullPadding)
+  else return roundedHull2(polyPoints, hullPadding) // takes first and last points of a relation
+ 
+  // var segments = new Array(polyPoints.length)
 
-  var segments = new Array(polyPoints.length)
+  // // Calculate each offset (outwards) segment of the convex hull.
+  // for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
+  //   var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
+  //   var p1 = polyPoints[segmentIndex]
 
-  // Calculate each offset (outwards) segment of the convex hull.
-  for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
-    var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
-    var p1 = polyPoints[segmentIndex]
+  //   // Compute the offset vector for the line segment, with length = hullPadding.
+  //   var offset = vecScale(hullPadding, unitNormal(p0, p1))
 
-    // Compute the offset vector for the line segment, with length = hullPadding.
-    var offset = vecScale(hullPadding, unitNormal(p0, p1))
+  //   segments[segmentIndex] = [vecSum(p0, offset), vecSum(p1, offset)]
+  // }
 
-    segments[segmentIndex] = [vecSum(p0, offset), vecSum(p1, offset)]
-  }
+  // var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',')
 
-  var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',')
+  // segments = segments.map(function (segment, index) {
+  //   var pathFragment = ''
+  //   if (index === 0) {
+  //     var pathFragment = 'M ' + segments[segments.length - 1][1] + ' '
+  //   }
+  //   pathFragment += arcData + segment[0] + ' L ' + segment[1]
 
-  segments = segments.map(function (segment, index) {
-    var pathFragment = ''
-    if (index === 0) {
-      var pathFragment = 'M ' + segments[segments.length - 1][1] + ' '
-    }
-    pathFragment += arcData + segment[0] + ' L ' + segment[1]
+  //   return pathFragment
+  // })
 
-    return pathFragment
-  })
-
-  return segments.join(' ')
+  // return segments.join(' ')
 }
 
 export function roundedHull(points) {
@@ -102,7 +103,7 @@ export function roundedHull(points) {
   if (points.length === 1) {
     path.setAttribute('d', roundedHull1(points, hullPadding))
   } else if (points.length === 2) {
-    path.setAttribute('d', roundedHull2(points, -500))
+    path.setAttribute('d', roundedHull2(points, -1000))
   } else {
     path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
   }
@@ -652,7 +653,7 @@ export function unmark_secondaries(draw_context, mei_graph, he) {
 }
 
 // Find the measure this MEI score element occurs in
-function get_measure(elem) { if (elem.tagName == 'measure') return elem ; else return get_measure(elem.parentElement) }
+function get_measure(elem) { if (elem.tagName == 'measure') return elem; else return get_measure(elem.parentElement) }
 
 // If we have a single note selected, find all other notes of the same
 // pitch in this measure, and select them as secondary, and the previously

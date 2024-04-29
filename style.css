@@ -9,6 +9,11 @@ body {
   user-select: none; /* Non-prefixed version, currently */
 }
 
+path {
+  stroke: #EEE;
+}
+
+
 /* *::-webkit-scrollbar {
   display: none;
 } */
@@ -42,6 +47,7 @@ body {
     position: absolute;
     z-index: -1;
 }
+
 
 
 
@@ -157,7 +163,7 @@ select.instance-select {
 }
 
 body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
-    fill: #1f77b4;
+    /* fill: #1f77b4; */
     transform: translate3d(0,0,0);
     filter: url("#glowFilter");
 }
@@ -304,7 +310,6 @@ body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
 
 
 body:not(.mousedown) .note:hover {
-  fill: #9467bd;
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
@@ -328,7 +333,6 @@ stroke: black;
       fill: red;
 }
 .selecthover {
-  fill: #d62728;
       transform: translate3d(0,0,0);
        filter: url("#selectFilter");
 }
@@ -340,12 +344,16 @@ stroke: black;
 
 .relation,
 .metarelation {
-  fill: var(--shade, #EEE);
-  fill-opacity: 0.2;
-
-  stroke: var(--shade, #EEE);
+  fill: (0, 0, 0, 0);
+  stroke: #1f77b4;
+  /* fill: red; */
+  fill-opacity: 0;
+  position: absolute;
+  z-index: 100;
+/* 
+  stroke: var(--shade, #EEE); */
   stroke-width: 27;
-  stroke-opacity: 0.3;
+  stroke-opacity: 1;
 }
 
 html.shades-alternate .relation,
@@ -387,12 +395,12 @@ body:not(.mousedown) .shift-pressed .relation:hover {
        stroke-opacity: 0.8;
 }
 .selectedrelation {
-    fill-opacity : 0.7;
-    stroke-opacity : 0.8;
+    /* fill-opacity : 0.7; */
+    stroke-opacity : 1;
     stroke: blue;
-    stroke-dasharray: 100 100;
+    /* stroke-dasharray: 100 100; */
     stroke-width: 15px;
-    transform : translate3d(0,0,0);
+    /* transform : translate3d(0,0,0); */
     filter : url("#selectFilter");
 }
 body:not(.mousedown) .extraselectedrelation:hover {
@@ -412,13 +420,11 @@ body:not(.mousedown) .extraselectedrelation:hover {
     filter : url("#extraFilter");
 }
 .relationhover {
-  fill: #ff7f0e;
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
 }
 
 .extrarelationhover {
-  fill: #ff7f0e;
       transform: translate3d(0,0,0);
        filter: url("#extraFilter");
 }
@@ -448,6 +454,7 @@ body:not(.mousedown) .extraselectedrelation:hover {
 
 .view_buttons {
   width: 30px;
+  position: absolute;
   z-index: 1;
   height: 21px;  backdrop-filter: blur(2px);
   background: rgb(68, 32, 32);
@@ -518,7 +525,7 @@ margin-top: 0.5rem;
 
 #relations_panel:not(input) {
   position: fixed;
-  z-index: 9;
+  z-index: 99;
   background-color: rgba(0,0,0,0.5);
   border: 1px solid #d3d3d3;
   text-align: center;
@@ -533,6 +540,7 @@ margin-top: 0.5rem;
   height: 25px;
   padding: 0;
   text-align: left;
+  position: absolute;
   z-index: 10;
   color: white;
   display: flex;
@@ -601,8 +609,30 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   color: lightgray !important;
 }
 
-g.note {
-  fill: crimson;
+/* g.ledgerLines path{ 
+
+z-index: -99;
+
+} */
+
+g.tie path {
+  stroke:#EEE;
+  fill: #eee;
+
+}
+
+g.system path{
+  stroke:#EEE;
+  fill: #eee;
+}
+
+g.rest {
+  stroke:#EEE;
+  fill: #eee;
 }
 
 
+.svg_container {
+  position: absolute;
+  z-index: 0;
+}

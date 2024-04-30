@@ -244,3 +244,117 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   added.push(g_elem)
   return added
 }
+// export function draw_metarelation(draw_context, mei_graph, g_elem) {
+//   var added = []
+//   // Draw target, prefix, ID and type
+//   var svg_elem = draw_context.svg_elem
+//   var id_prefix = draw_context.id_prefix
+//   var id = id_prefix + g_elem.getAttribute('xml:id')
+//   var type = relation_type(g_elem)
+//   // Get the targets - we don't differentiate primaries and secondaries in
+//   // this drawing style.
+//   var targets = relation_allnodes(mei_graph, g_elem).map(
+//     (e) => document.getElementById(draw_context.id_prefix + get_id(e))
+//   )
+//   var primaries = relation_primaries(mei_graph, g_elem).map(
+//     (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+//   )
+//   var secondaries = relation_secondaries(mei_graph, g_elem).map(
+//     (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+//   )
+//   // TODO should be possible to draw partial metarelations
+//   if (targets.indexOf(null) != -1) {
+//     console.log('Missing relation, not drawing metarelation')
+//     return []
+//   }
+
+//   // Where are our targets
+//   var coords = targets.map(get_metarelation_target)
+//   // What's midpoint above them?
+//   var x = average(coords.map((e) => e[0]))
+//   // Above the system, and also above the relations
+//   var y = targets.concat([svg_elem.getElementsByClassName('system')[0]]).map((b) => b.getBBox().y).sort((a, b) => a > b)[0] - 500
+
+//   coords.push([x, y])
+//   // We make a group
+//   var g_elem = g()
+//   g_elem.style.setProperty('--shade-alternate', '#000')
+//   g_elem.setAttribute('id', id)
+//   g_elem.classList.add('metarelation')
+//   // TODO: Use classlist for types
+//   g_elem.setAttribute('type', type)
+//   // Draw the metarelation as a circle connected with lines to each of its
+//   // targets
+//   g_elem.appendChild(circle([x, y], 200))
+//   coords.forEach((crds) => {
+//     var line_elem = line([x, y], crds)
+//     g_elem.appendChild(line_elem)
+
+//     // Calculate the endpoint coordinates of the line
+//     var endPointX = crds[0]
+//     var endPointY = crds[1]
+
+//     // Append a small dot at the end of the line
+//     var dotSize = 2
+//     var dot = circle([endPointX, endPointY], dotSize)
+//     dot.setAttribute('class', 'dot') // Optionally, add a class for styling
+//     g_elem.appendChild(dot)
+//   })
+
+//   /**
+//    * Hacky way of having the shades properly initialiazed (`color` attribute).
+//    * Should be improved later.
+//    */
+//   // Type-dependent shades
+//   toggle_shade(g_elem)
+//   if (!newApp.ui.scoreSettings.brightShades)
+//     toggle_shade(g_elem)
+
+//   // We can scroll among metarelations as well
+//   g_elem.addEventListener('wheel', e => {
+//     e.preventDefault()
+//     flip_to_bg(e.target.closest('g'))
+//     e.target.onmouseout()
+//   }, captureEvent)
+
+//   // Decorate with onclick and onmouseover handlers
+//   g_elem.onclick = () => toggle_selected(g_elem)
+//   g_elem.onmouseover = function (ev) {
+//     primaries.forEach((item) => {
+//       if (item.classList.contains('relation'))
+// 	    item.classList.add('extrarelationhover')
+//       else
+// 	    item.children[0].classList.add('extrarelationhover')
+//     })
+//     secondaries.forEach((item) => {
+//       if (item.classList.contains('relation'))
+// 	    item.classList.add('relationhover')
+//       else
+// 	    item.children[0].classList.add('relationhover')
+//     })
+//   }
+//   g_elem.onmouseout = function (ev) {
+//     primaries.forEach((item) => {
+//       if (item.classList.contains('relation'))
+// 	    item.classList.remove('extrarelationhover')
+//       else
+// 	    item.children[0].classList.remove('extrarelationhover')
+//     })
+//     secondaries.forEach((item) => {
+//       if (item.classList.contains('relation'))
+// 	    item.classList.remove('relationhover')
+//       else
+// 	    item.children[0].classList.remove('relationhover')
+//     })
+//   }
+
+//   // TODO: Set up more onhover stuff for The Same Relation
+//   // Elsewhere - but perhaps that's a separate thing?
+
+//   // Add it to the SVG
+//   add_to_svg_bg(svg_elem, g_elem)
+//   // Remember what we're adding
+//   added.push(g_elem)
+//   return added
+// }
+

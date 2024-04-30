@@ -91,19 +91,22 @@ var roundedHullN = function (polyPoints, hullPadding) {
 }
 
 export function roundedHull(points) {
-  var draw_contexts = getDrawContexts()
-  var hullPadding = draw_contexts.hullPadding || 200
-  // var hullPadding = 0
-
+  const drawContexts = getDrawContexts()
+  // Calculate the maximum distance along the x-axis between points
+  len = points.length - 1
+  let maxXDistance = points[0][0] - points[len][0]
+  let hullPadding = maxXDistance * 0.2 // Adjust the factor as needed
+  // console.log(points)
+  console.log(hullPadding)
   // Returns an SVG path for a rounded hull around the points
-  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-  path.setAttribute('stroke', 'red') // Set stroke color to red
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  // path.setAttribute('stroke', 'red') // Set stroke color to red
   // If you also want to fill the path with red color, uncomment the line below
-  // path.setAttribute('fill', 'red')
+  // path.setAttribute('fill', 'red');
   if (points.length === 1) {
     path.setAttribute('d', roundedHull1(points, hullPadding))
   } else if (points.length === 2) {
-    path.setAttribute('d', roundedHull2(points, -1000))
+    path.setAttribute('d', roundedHull2(points, hullPadding))
   } else {
     path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
   }

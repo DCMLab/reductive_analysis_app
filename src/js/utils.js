@@ -93,11 +93,11 @@ var roundedHullN = function (polyPoints, hullPadding) {
 export function roundedHull(points) {
   const drawContexts = getDrawContexts()
   // Calculate the maximum distance along the x-axis between points
-  len = points.length - 1
+  let len = points.length - 1
   let maxXDistance = points[0][0] - points[len][0]
   let hullPadding = maxXDistance * 0.2 // Adjust the factor as needed
   // console.log(points)
-  console.log(hullPadding)
+  // console.log(hullPadding)
   // Returns an SVG path for a rounded hull around the points
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
   // path.setAttribute('stroke', 'red') // Set stroke color to red
@@ -753,11 +753,15 @@ export function get_metarelation_target(elem) {
   } else if (elem.classList.contains('relation')) {
     return getBoundingBoxCenter(elem)
   } else {
-    console.log('wtf')
+    // console.log('wtf')
     console.log(elem)
     return [0, 0]
   }
 }
+
+// export function get_metarelation_target_new(elem)  {
+//   return elem
+// }
 
 // Is this an empty relation?
 function is_empty_relation(elem) {

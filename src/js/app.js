@@ -47,6 +47,7 @@ import {
 import {
   add_mei_node_for,
   check_for_duplicate_relations,
+  stacker,
   fix_synonyms,
   fix_corresp,
   fix_layers,
@@ -167,6 +168,8 @@ export function do_relation(type, id, redoing = false) {
   changes = true
   var he_id, mei_elems
   if (selected.concat(extraselected)[0].classList.contains('relation')) {
+    var stack = stacker(extraselected, selected)
+    console.log(stack)
     var types = []
     selected.concat(extraselected).forEach((he) => {
       // TODO: move type_synonym application so that this
@@ -182,6 +185,8 @@ export function do_relation(type, id, redoing = false) {
     // update_text()
     undo_actions.push(['change relation type', types.reverse(), selected, extraselected])
   } else if (selected.concat(extraselected)[0].classList.contains('note')) {
+    var stack = stacker(extraselected, selected)
+    console.log('STACK VALUE:', stack)
     check_for_duplicate_relations(type, extraselected, selected)
     var added = []
     // Add new nodes for all notes
@@ -191,7 +196,7 @@ export function do_relation(type, id, redoing = false) {
     [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
     added.push(mei_elems)
     for (var i = 0; i < draw_contexts.length; i++) {
-      let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+      let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id), stack)
       if (g_elem) {
         added.push(g_elem) // Draw the edge
         mark_secondaries(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
@@ -372,7 +377,7 @@ export function draw_graph(draw_context) {
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'metarelation' })
   relations_nodes.forEach((g_elem) => {
-    if (draw_relation(draw_context, mei_graph, g_elem))
+    if (draw_relation(draw_context, mei_graph, g_elem, true))
       mark_secondaries(draw_context, mei_graph, g_elem)
   })
   metarelations_nodes.forEach((g_elem) => draw_metarelation(draw_context, mei_graph, g_elem))

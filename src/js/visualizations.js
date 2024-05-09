@@ -124,7 +124,7 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
     let nodes = relation_allnodes(getMeiGraph(), r)
     let node_coords = nodes.map((n) => layers_coords.find((x) => x[0] == n)[1])
 
-    let elem = roundedHull(node_coords, hullPadding)
+    let elem = roundedHull(node_coords, 0.1)
     elem.setAttribute('id', 'hier' + id)
     if (id_prefix != '')
       elem.setAttribute('oldid', g_elem.getAttribute('xml:id'))

@@ -1,3 +1,5 @@
+
+
 body {
   margin: 0;
   padding: 0;
@@ -6,6 +8,11 @@ body {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently */
 }
+
+path {
+  stroke: #EEE;
+}
+
 
 /* *::-webkit-scrollbar {
   display: none;
@@ -21,6 +28,7 @@ body {
     margin-right: auto;
     max-width: 1044px;
     padding: 0 10px;
+    background-color: #17becf;
 }
 
 /* General visual stuff */
@@ -39,6 +47,7 @@ body {
     position: absolute;
     z-index: -1;
 }
+
 
 
 
@@ -290,7 +299,7 @@ body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
 /*     fill: #f781bf; */
 /* } */
 
-/* .vrv-highlighted-7 { */
+/* .vrv-highlighted-7 {  */
 /*     fill: #999999; */
 /* } */
 
@@ -335,23 +344,26 @@ stroke: black;
 
 .relation,
 .metarelation {
-  fill: var(--shade, currentColor);
-  fill-opacity: 0.2;
-
-  stroke: var(--shade, currentColor);
-  stroke-width: 27;
-  stroke-opacity: 0.3;
+  fill: (0, 0, 0, 0);
+  stroke: red;
+  /* fill: red; */
+  fill-opacity: 0;
+  position: absolute;
+/* 
+  stroke: var(--shade, #EEE); */
+  stroke-width: 30;
+  stroke-opacity: 1;
 }
 
 html.shades-alternate .relation,
 html.shades-alternate .metarelation {
-  --shade: var(--shade-alternate, currentColor);
+  --shade: var(--shade-alternate, #EEE);
 }
 
 body:not(.mousedown) .metarelation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
-       stroke: blue;
+       /* stroke: blue; */
        stroke-width: 20px;
 }
 .extraselectedmetarelation {
@@ -370,7 +382,7 @@ body:not(.mousedown) .metarelation:hover {
 body:not(.mousedown) .relation:hover {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");
-       stroke: blue;
+       /* stroke: blue; */
        stroke-width: 15px;
        stroke-opacity: 0.8;
 }
@@ -382,25 +394,25 @@ body:not(.mousedown) .shift-pressed .relation:hover {
        stroke-opacity: 0.8;
 }
 .selectedrelation {
-    fill-opacity : 0.7;
-    stroke-opacity : 0.8;
-    stroke: blue;
-    stroke-dasharray: 100 100;
+    /* fill-opacity : 0.7; */
+    stroke-opacity : 1;
+    /* stroke: blue; */
+    /* stroke-dasharray: 100 100; */
     stroke-width: 15px;
-    transform : translate3d(0,0,0);
+    /* transform : translate3d(0,0,0); */
     filter : url("#selectFilter");
 }
 body:not(.mousedown) .extraselectedrelation:hover {
     transform : translate3d(0,0,0);
     filter : url("#glowFilter");
-    stroke: red;
+    /* stroke: red; */
     stroke-width: 15px;
     stroke-opacity: 0.8;
 }
 .extraselectedrelation {
     fill-opacity : 0.7;
     stroke-opacity : 0.8;
-    stroke: red;
+    /* stroke: red; */
     stroke-dasharray: 80 80;
     stroke-width: 15px;
     transform : translate3d(0,0,0);
@@ -441,9 +453,9 @@ body:not(.mousedown) .extraselectedrelation:hover {
 
 .view_buttons {
   width: 30px;
-  z-index: 1;
+  position: absolute;
   height: 21px;  backdrop-filter: blur(2px);
-  background: lightgray;
+  background: rgb(68, 32, 32);
   font-family: Arial;
   font-size: 14px;
   padding-left: 1rem;
@@ -511,7 +523,6 @@ margin-top: 0.5rem;
 
 #relations_panel:not(input) {
   position: fixed;
-  z-index: 9;
   background-color: rgba(0,0,0,0.5);
   border: 1px solid #d3d3d3;
   text-align: center;
@@ -526,7 +537,7 @@ margin-top: 0.5rem;
   height: 25px;
   padding: 0;
   text-align: left;
-  z-index: 10;
+  position: absolute;
   color: white;
   display: flex;
 }
@@ -592,4 +603,31 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
   color: lightgray !important;
+}
+
+/* g.ledgerLines path{ 
+
+z-index: -99;
+
+} */
+
+g.tie path {
+  stroke:#EEE;
+  fill: #eee;
+
+}
+
+g.system path{
+  stroke:#EEE;
+  fill: #eee;
+}
+
+g.rest {
+  stroke:#EEE;
+  fill: #eee;
+}
+
+
+.svg_container {
+  position: absolute;
 }

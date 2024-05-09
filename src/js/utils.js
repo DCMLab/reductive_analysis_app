@@ -12,6 +12,7 @@ import { polygonHull } from 'd3-polygon'
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
 import { getCurrentDrawContext, toggle_selected } from './ui'
+// import { draw_relation_stacked } from './draw'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
@@ -44,70 +45,67 @@ var roundedHull1 = function (polyPoints, hullPadding) {
     + [hullPadding, hullPadding, '0,0,0', p1].join(',')
 }
 
-// Returns the path for a rounded hull around two points (a "capsule" shape).
 var roundedHull2 = function (polyPoints, hullPadding) {
-  var offsetVector = vecScale(hullPadding, unitNormal(polyPoints[0], polyPoints[1]))
-  var invOffsetVector = vecScale(-1, offsetVector)
-  // around that note coordinates are not at the centroids
+  // Calculate the control points for the quadratic Bézier curve
+  var controlPoint1 = polyPoints[0] // First control point is the first polyPoint
+  var controlPoint2 = [(polyPoints[0][0] + polyPoints[polyPoints.length - 1][0]) / 2 + hullPadding, (polyPoints[0][1] + polyPoints[polyPoints.length - 1][1]) / 2 + hullPadding] // Second control point is offset from the midpoint
+  var controlPoint3 = polyPoints[polyPoints.length - 1] // Third control point is the last polyPoint
 
-  var p0 = vecSum(polyPoints[0], offsetVector)
-  var p1 = vecSum(polyPoints[1], offsetVector)
-  var p2 = vecSum(polyPoints[1], invOffsetVector)
-  var p3 = vecSum(polyPoints[0], invOffsetVector)
-
-  return `M ${p0} L ${p1} A `
-    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-    + ` L ${p3} A `
-    + [hullPadding, hullPadding, '0,0,0', p0].join(',')
+  // Generate the SVG path
+  return `M ${controlPoint1} Q ${controlPoint2} ${controlPoint3}`
 }
 
 // Returns the SVG path data string representing the polygon, expanded and rounded.
 var roundedHullN = function (polyPoints, hullPadding) {
-
   // Handle special cases
   if (!polyPoints || polyPoints.length < 1) return ''
   if (polyPoints.length === 1) return roundedHull1(polyPoints, hullPadding)
   if (polyPoints.length === 2) return roundedHull2(polyPoints, hullPadding)
+  else return roundedHull2(polyPoints, hullPadding) // takes first and last points of a relation
+ 
+  // var segments = new Array(polyPoints.length)
 
-  var segments = new Array(polyPoints.length)
+  // // Calculate each offset (outwards) segment of the convex hull.
+  // for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
+  //   var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
+  //   var p1 = polyPoints[segmentIndex]
 
-  // Calculate each offset (outwards) segment of the convex hull.
-  for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
-    var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
-    var p1 = polyPoints[segmentIndex]
+  //   // Compute the offset vector for the line segment, with length = hullPadding.
+  //   var offset = vecScale(hullPadding, unitNormal(p0, p1))
 
-    // Compute the offset vector for the line segment, with length = hullPadding.
-    var offset = vecScale(hullPadding, unitNormal(p0, p1))
+  //   segments[segmentIndex] = [vecSum(p0, offset), vecSum(p1, offset)]
+  // }
 
-    segments[segmentIndex] = [vecSum(p0, offset), vecSum(p1, offset)]
-  }
+  // var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',')
 
-  var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',')
+  // segments = segments.map(function (segment, index) {
+  //   var pathFragment = ''
+  //   if (index === 0) {
+  //     var pathFragment = 'M ' + segments[segments.length - 1][1] + ' '
+  //   }
+  //   pathFragment += arcData + segment[0] + ' L ' + segment[1]
 
-  segments = segments.map(function (segment, index) {
-    var pathFragment = ''
-    if (index === 0) {
-      var pathFragment = 'M ' + segments[segments.length - 1][1] + ' '
-    }
-    pathFragment += arcData + segment[0] + ' L ' + segment[1]
+  //   return pathFragment
+  // })
 
-    return pathFragment
-  })
-
-  return segments.join(' ')
+  // return segments.join(' ')
 }
 
-export function roundedHull(points) {
-  var draw_contexts = getDrawContexts()
-  var hullPadding = draw_contexts.hullPadding || 200
-
+export function roundedHull(points, stacker) {
+  const drawContexts = getDrawContexts()
+  // Calculate the maximum distance along the x-axis between points
+  let len = points.length - 1
+  let maxXDistance = points[0][0] - points[len][0]
+  var hullfactor = stacker
+  var hullPadding = maxXDistance * hullfactor * 0.1 // Adjust the factor as needed
   // Returns an SVG path for a rounded hull around the points
-  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-  // TODO: Better colour picking
-  path.style.setProperty('--shade-alternate', randomColor())
-  if (points.length == 1) {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  // path.setAttribute('stroke', 'red') // Set stroke color to red
+  // If you also want to fill the path with red color, uncomment the line below
+  // path.setAttribute('fill', 'red');
+  if (points.length === 1) {
     path.setAttribute('d', roundedHull1(points, hullPadding))
-  } else if (points.length == 2) {
+  } else if (points.length === 2) {
     path.setAttribute('d', roundedHull2(points, hullPadding))
   } else {
     path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
@@ -134,7 +132,7 @@ function getRandomShade(colour) {
         ((colour == 'g' || colour == 'y' || colour == 'c') && (i < 4 && i > 1)) ||
         ((colour == 'b' || colour == 'c' || colour == 'm') && i > 3)
     )
-      shade += letters[14]// Math.floor(6+Math.random() * 8)];
+      shade += letters[14]// Math.floor(6+Math.random() * 8)]
     else
       shade += letters[5]
   }
@@ -755,11 +753,15 @@ export function get_metarelation_target(elem) {
   } else if (elem.classList.contains('relation')) {
     return getBoundingBoxCenter(elem)
   } else {
-    console.log('wtf')
+    // console.log('wtf')
     console.log(elem)
     return [0, 0]
   }
 }
+
+// export function get_metarelation_target_new(elem)  {
+//   return elem
+// }
 
 // Is this an empty relation?
 function is_empty_relation(elem) {
@@ -1049,9 +1051,75 @@ export function sanitize_xml(xml) {
   return sanitized_xml
 }
 
-export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
-  var mei_graph = getMeiGraph()
+// export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+//   var mei_graph = getMeiGraph()
 
+//   var primaries = prospective_primaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+//   var secondaries = prospective_secondaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+
+//   var same_type_relations = Array
+//     .from(mei_graph.querySelectorAll('[type=\'relation\']'))
+//     .filter(n => n.children[0].getAttribute('type') == type)
+
+//   same_type_relations.forEach(r => {
+//     var p_s = relation_get_notes_separated(r)
+//     var p = p_s[0]
+//     var s = p_s[1]
+//     p = p.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     s = s.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     if (JSON.stringify(primaries) == JSON.stringify(p)
+//           && JSON.stringify(secondaries) == JSON.stringify(s)) {
+//       alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
+//       return false
+//     }
+//   })
+//   return true
+// }
+export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+  return []
+}
+
+// export function stacker(prospective_primaries, prospective_secondaries) {
+//   var stack = false
+//   var mei_graph = getMeiGraph()
+//   var primaries = prospective_primaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+//   var secondaries = prospective_secondaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+
+//   var same_type_relations = Array
+//     .from(mei_graph.querySelectorAll('[type=\'relation\']'))
+
+//   same_type_relations.forEach(r => {
+//     var p_s = relation_get_notes_separated(r)
+//     var p = p_s[0]
+//     var s = p_s[1]
+//     p = p.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     s = s.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     if (JSON.stringify(primaries) == JSON.stringify(p)
+//           && JSON.stringify(secondaries) == JSON.stringify(s)) {
+//       alert('Warning: creating a stack of relations')
+//       stack = true
+//     }
+//   })
+
+//   return stack
+// }
+
+export function stacker(prospective_primaries, prospective_secondaries) {
+  var count = 0 // Initialize count variable
+  
+  var mei_graph = getMeiGraph()
   var primaries = prospective_primaries
     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
     .sort((a, b) => a < b)
@@ -1061,7 +1129,6 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
 
   var same_type_relations = Array
     .from(mei_graph.querySelectorAll('[type=\'relation\']'))
-    .filter(n => n.children[0].getAttribute('type') == type)
 
   same_type_relations.forEach(r => {
     var p_s = relation_get_notes_separated(r)
@@ -1073,13 +1140,12 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
       .sort((a, b) => a < b)
     if (JSON.stringify(primaries) == JSON.stringify(p)
           && JSON.stringify(secondaries) == JSON.stringify(s)) {
-      alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
-      return false
+      count++ // Increment the count when a stack is found
     }
   })
-  return true
-}
 
+  return count // Return the count of repetitions as a number
+}
 export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }

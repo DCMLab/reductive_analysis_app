@@ -28,6 +28,9 @@ export function add_relation(mei_graph, primaries, secondaries, type, he_id_para
   he_elem.setAttribute('xml:id', he_id)
   mei_graph.appendChild(he_elem)
   added.push(he_elem)
+  // for (var i = 0; i < added.length; i++) {
+  //   console.log('graph:', mei_graph)
+  // }
   // Set up the connections to the given primaries and secondaries
   for (var i = 0; i < primaries.length; i++) {
     var elem = mei.createElement('arc')

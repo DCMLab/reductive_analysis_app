@@ -12,6 +12,7 @@ import { polygonHull } from 'd3-polygon'
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
 import { getCurrentDrawContext, toggle_selected } from './ui'
+// import { draw_relation_stacked } from './draw'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
@@ -90,14 +91,13 @@ var roundedHullN = function (polyPoints, hullPadding) {
   // return segments.join(' ')
 }
 
-export function roundedHull(points) {
+export function roundedHull(points, stacker) {
   const drawContexts = getDrawContexts()
   // Calculate the maximum distance along the x-axis between points
   let len = points.length - 1
   let maxXDistance = points[0][0] - points[len][0]
-  let hullPadding = maxXDistance * 0.2 // Adjust the factor as needed
-  // console.log(points)
-  // console.log(hullPadding)
+  var hullfactor = stacker
+  var hullPadding = maxXDistance * hullfactor * 0.1 // Adjust the factor as needed
   // Returns an SVG path for a rounded hull around the points
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
   // path.setAttribute('stroke', 'red') // Set stroke color to red
@@ -1051,9 +1051,75 @@ export function sanitize_xml(xml) {
   return sanitized_xml
 }
 
-export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
-  var mei_graph = getMeiGraph()
+// export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+//   var mei_graph = getMeiGraph()
 
+//   var primaries = prospective_primaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+//   var secondaries = prospective_secondaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+
+//   var same_type_relations = Array
+//     .from(mei_graph.querySelectorAll('[type=\'relation\']'))
+//     .filter(n => n.children[0].getAttribute('type') == type)
+
+//   same_type_relations.forEach(r => {
+//     var p_s = relation_get_notes_separated(r)
+//     var p = p_s[0]
+//     var s = p_s[1]
+//     p = p.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     s = s.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     if (JSON.stringify(primaries) == JSON.stringify(p)
+//           && JSON.stringify(secondaries) == JSON.stringify(s)) {
+//       alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
+//       return false
+//     }
+//   })
+//   return true
+// }
+export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+  return []
+}
+
+// export function stacker(prospective_primaries, prospective_secondaries) {
+//   var stack = false
+//   var mei_graph = getMeiGraph()
+//   var primaries = prospective_primaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+//   var secondaries = prospective_secondaries
+//     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
+//     .sort((a, b) => a < b)
+
+//   var same_type_relations = Array
+//     .from(mei_graph.querySelectorAll('[type=\'relation\']'))
+
+//   same_type_relations.forEach(r => {
+//     var p_s = relation_get_notes_separated(r)
+//     var p = p_s[0]
+//     var s = p_s[1]
+//     p = p.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     s = s.map(i => i.getAttribute('xml:id'))
+//       .sort((a, b) => a < b)
+//     if (JSON.stringify(primaries) == JSON.stringify(p)
+//           && JSON.stringify(secondaries) == JSON.stringify(s)) {
+//       alert('Warning: creating a stack of relations')
+//       stack = true
+//     }
+//   })
+
+//   return stack
+// }
+
+export function stacker(prospective_primaries, prospective_secondaries) {
+  var count = 0 // Initialize count variable
+  
+  var mei_graph = getMeiGraph()
   var primaries = prospective_primaries
     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
     .sort((a, b) => a < b)
@@ -1063,7 +1129,6 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
 
   var same_type_relations = Array
     .from(mei_graph.querySelectorAll('[type=\'relation\']'))
-    .filter(n => n.children[0].getAttribute('type') == type)
 
   same_type_relations.forEach(r => {
     var p_s = relation_get_notes_separated(r)
@@ -1075,13 +1140,12 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
       .sort((a, b) => a < b)
     if (JSON.stringify(primaries) == JSON.stringify(p)
           && JSON.stringify(secondaries) == JSON.stringify(s)) {
-      alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
-      return false
+      count++ // Increment the count when a stack is found
     }
   })
-  return true
-}
 
+  return count // Return the count of repetitions as a number
+}
 export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }

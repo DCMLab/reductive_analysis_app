@@ -204,6 +204,7 @@ function closest_note(dc, pt, staff) {
     return notes[index_maybe - 1][1]
   else
     return notes[index_maybe][1]
+  console.log(notes)
 }
 
 function note_params() {

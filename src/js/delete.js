@@ -21,6 +21,7 @@ function delete_relation(elem) {
   var svg_hes = []
   var metarel = get_class_from_classlist(elem) == 'metarelation'
   var mei_graph = getMeiGraph()
+  console.log(mei_graph)
   var draw_contexts = getDrawContexts()
   for (const draw_context of draw_contexts) {
     let svg_he = get_by_id(document, draw_context.id_prefix + mei_id)

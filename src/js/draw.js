@@ -30,11 +30,19 @@ import {
 
 // Given a draw context ('score') and a graph node representing a relation, draw the
 // relation in the draw context.
-export function draw_relation(draw_context, mei_graph, g_elem) {
+export function draw_relation(draw_context, mei_graph, g_elem, stacker) {
+  // console.log(stacker)
   var added = []
   // Where are we drawing, and with what prefix?
   var svg_elem = draw_context.svg_elem
   var id_prefix = draw_context.id_prefix
+  // var nodes_array = Array.from(mei_graph.getElementsByTagName('arc'))
+  // var relations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'relation' })
+  var nodes_array = Array.from(mei_graph.getElementsByTagName('arc'))
+  // console.log(nodes_array)
+  // for (var i = 0; i < relations_nodes.length; i++) {
+  //   console.log(relations_nodes[i].outerHTML)
+  // }
   // ID and type
   var id = id_prefix + g_elem.getAttribute('xml:id')
   var type = relation_type(g_elem)
@@ -62,7 +70,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   // TODO: Other ways to draw the relations - retain as a single tree with
   // ID and type. TODO: Use classlist also for types, as in type:<type> or
   // similar
-  var elem = roundedHull(notes.map(note_coords))
+  var elem = roundedHull(notes.map(note_coords), stacker)
   elem.setAttribute('id', id)
   if (id_prefix != '')
     elem.setAttribute('oldid', g_elem.getAttribute('xml:id'))
@@ -94,6 +102,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
       return false
     }
     const mei_graph = getMeiGraph()
+    // console.log(mei_graph)
     if (g_elem.getAttribute('type') == 'relation')
       unmark_secondaries(draw_context, mei_graph, mei_he) // @todo: Where does mei_he come from?
     var primaries = relation_primaries(mei_graph, g_elem).map(
@@ -136,7 +145,7 @@ function redraw_relation(draw_context, g_elem) {
   }
   unmark_secondaries(draw_context, mei_graph, g_elem)
   svg_g_elem.parentElement.removeChild(svg_g_elem)
-  svg_g_elem = draw_relation(draw_context, mei_graph, g_elem)
+  svg_g_elem = draw_relation(draw_context, mei_graph, g_elem, false)
   mark_secondaries(draw_context, mei_graph, g_elem)
   return svg_g_elem[0]
 }
@@ -268,7 +277,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     return []
   }
 
-  // console.log(svg_elem)
+  console.log(svg_elem.outerHTML)
   // Where are our targets
   var coords = targets.map(get_metarelation_target)
   // What's midpoint above them?

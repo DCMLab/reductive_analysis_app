@@ -30,6 +30,7 @@ function slicify(draw_context, mdiv_elem, tied = false) {
   vrvToolkit.loadData(data2)
   vrvToolkit.renderToMIDI()
   var notes = Array.from(mei2.getElementsByTagName('note'))
+  console.log(notes)
   var ids = notes.map((n) => n.getAttribute('xml:id'))
   var time_id_map = {}
   ids.forEach((id) => {

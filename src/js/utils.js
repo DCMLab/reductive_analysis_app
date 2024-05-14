@@ -7,6 +7,8 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 */
 import $ from 'jquery'
 import { polygonHull } from 'd3-polygon'
+import Graph from 'graphology'
+import Sigma from 'sigma'
 // import fuzzysearch from 'fuzzysearch'
 
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
@@ -50,7 +52,7 @@ var roundedHull2 = function (polyPoints, hullPadding) {
   var controlPoint1 = polyPoints[0] // First control point is the first polyPoint
   var controlPoint2 = [(polyPoints[0][0] + polyPoints[polyPoints.length - 1][0]) / 2 + hullPadding, (polyPoints[0][1] + polyPoints[polyPoints.length - 1][1]) / 2 + hullPadding] // Second control point is offset from the midpoint
   var controlPoint3 = polyPoints[polyPoints.length - 1] // Third control point is the last polyPoint
-
+  // midpoint_tracker(controlPoint2)
   // Generate the SVG path
   return `M ${controlPoint1} Q ${controlPoint2} ${controlPoint3}`
 }
@@ -91,8 +93,29 @@ var roundedHullN = function (polyPoints, hullPadding) {
   // return segments.join(' ')
 }
 
+export function extractNoteheadCoordinates() {
+  var svg = document.getElementsByClassName('svg_container')
+  var noteheadCoordinates = []
+  var noteheadElements = svg.querySelectorAll('notehead') // Assuming noteheads have a class 'note'
+  
+  noteheadElements.forEach(function(notehead) {
+    var boundingBox = notehead.getBBox()
+    var x = boundingBox.x + boundingBox.width / 2 // Center X coordinate
+    var y = boundingBox.y + boundingBox.height / 2 // Center Y coordinate
+    noteheadCoordinates.push({ x: x, y: y })
+  })
+  console.log(noteheadCoordinates)
+
+  return noteheadCoordinates
+}
+
+export function graphing(graph) {
+  const sigmaInstance = new Sigma(graph, document.getElementsByClassName('svg_container'))
+}
+
 export function roundedHull(points, stacker) {
   const drawContexts = getDrawContexts()
+  // console.log('DRAW CONTEXT', drawContexts)
   // Calculate the maximum distance along the x-axis between points
   let len = points.length - 1
   let maxXDistance = points[0][0] - points[len][0]

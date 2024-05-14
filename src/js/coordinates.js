@@ -8,7 +8,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 import { getUndoActions } from './app'
 import { getCurrentDrawContext, getMouseX, getMouseY, getPlacingNote, setPlacingNote, toggle_selected } from './ui'
 import { flush_redo } from './undo_redo'
-import { average2, get_by_id, get_id, mod, note_coords, note_to_chord, random_id } from './utils'
+import { average2, get_by_id, get_id, mod, note_coords, note_to_chord, random_id, extractNoteheadCoordinates } from './utils'
 import newNote from './new/modules/UI/Note'
 
 // The functions in this file are all about converting clicks and mouse

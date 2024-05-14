@@ -6,7 +6,7 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import { getDrawContexts } from './app'
-import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space, chord_to_space } from './utils'
+import { clone_mei, get_by_id, get_id, id_in_svg, prefix_ids, note_to_space, chord_to_space, extractNoteheadCoordinates } from './utils'
 
 // This is code relating to the addition of new layers in analyses.
 

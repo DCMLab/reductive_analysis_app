@@ -65,38 +65,14 @@ var roundedHullN = function (polyPoints, hullPadding) {
   if (polyPoints.length === 2) return roundedHull2(polyPoints, hullPadding)
   else return roundedHull2(polyPoints, hullPadding) // takes first and last points of a relation
  
-  // var segments = new Array(polyPoints.length)
-
-  // // Calculate each offset (outwards) segment of the convex hull.
-  // for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
-  //   var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
-  //   var p1 = polyPoints[segmentIndex]
-
-  //   // Compute the offset vector for the line segment, with length = hullPadding.
-  //   var offset = vecScale(hullPadding, unitNormal(p0, p1))
-
-  //   segments[segmentIndex] = [vecSum(p0, offset), vecSum(p1, offset)]
-  // }
-
-  // var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',')
-
-  // segments = segments.map(function (segment, index) {
-  //   var pathFragment = ''
-  //   if (index === 0) {
-  //     var pathFragment = 'M ' + segments[segments.length - 1][1] + ' '
-  //   }
-  //   pathFragment += arcData + segment[0] + ' L ' + segment[1]
-
-  //   return pathFragment
-  // })
-
-  // return segments.join(' ')
 }
 
+// Extract the X-Y coordinates of every notehead.
 export function extractNoteheadCoordinates() {
-  var svg = document.getElementsByClassName('svg_container')
+  var svgContainer = document.querySelector('.svg_container') // Adjust the selector as needed
+  console.log('SVG CONTAINER', svgContainer)
   var noteheadCoordinates = []
-  var noteheadElements = svg.querySelectorAll('notehead') // Assuming noteheads have a class 'note'
+  var noteheadElements = svgContainer.querySelectorAll('.notehead') // Assuming noteheads have a class 'note'
   
   noteheadElements.forEach(function(notehead) {
     var boundingBox = notehead.getBBox()
@@ -104,13 +80,26 @@ export function extractNoteheadCoordinates() {
     var y = boundingBox.y + boundingBox.height / 2 // Center Y coordinate
     noteheadCoordinates.push({ x: x, y: y })
   })
-  console.log(noteheadCoordinates)
 
+  console.log('NOTEHEAD COORDS', noteheadCoordinates)
+  createGraphFromCoordinates(noteheadCoordinates)
   return noteheadCoordinates
 }
 
-export function graphing(graph) {
-  const sigmaInstance = new Sigma(graph, document.getElementsByClassName('svg_container'))
+// using graphology we create a graph from the notehead coordinates
+export function createGraphFromCoordinates(noteheadCoordinates) {
+  var graph = new Graph()
+  noteheadCoordinates.forEach(function(notehead, index) {
+    graph.addNode(index, { x: notehead.x, y: notehead.y })
+  })
+  console.log('GRAPH', graph)
+  return graph
+}
+
+// draw edge between two noteheads in graph when a relation is made
+export function drawEdgeBetweenNoteheads(graph, from, to) {
+  graph.addEdge(from, to)
+  console.log('GRAPH', graph)
 }
 
 export function roundedHull(points, stacker) {

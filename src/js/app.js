@@ -65,6 +65,7 @@ import {
   note_to_rest,
   prefix_ids,
   sanitize_xml,
+  extractNoteheadCoordinates,
 } from './utils'
 import { compute_measure_map, pitch_grid } from './coordinates'
 import { do_redo, do_undo, flush_redo } from './undo_redo'
@@ -161,6 +162,9 @@ if (debug) {
 // OK we've selected stuff, let's make the selection into a
 // "relation".
 export function do_relation(type, id, redoing = false) {
+  extractNoteheadCoordinates()
+  // create a relation between notes selected using a graph edge (drawEdgeBetweenNoteheads)
+
   console.debug('Using globals: selected, extraselected, mei, undo_actions')
   if (selected.length == 0 && extraselected == 0) {
     return
@@ -190,6 +194,7 @@ export function do_relation(type, id, redoing = false) {
     check_for_duplicate_relations(type, extraselected, selected)
     var added = []
     // Add new nodes for all notes
+    // find respective nodes in graph created from all notehead coordinates from selected primary and secondary notes
     var primaries = extraselected.map((e) => add_mei_node_for(mei_graph, e))
     var secondaries = selected.map((e) => add_mei_node_for(mei_graph, e))
     added.push(primaries.concat(secondaries));

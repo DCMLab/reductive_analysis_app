@@ -12,6 +12,8 @@ import { random_id } from './utils'
 export function add_relation(mei_graph, primaries, secondaries, type, he_id_param) {
   var added = []
   // Add a new node for the relation
+  // find nodes in the graphology graph and create an edge between them
+
   var he_elem = mei_graph.getRootNode().createElement('node')
   he_elem.setAttribute('type', 'relation')
   var he_label = mei_graph.getRootNode().createElement('label')

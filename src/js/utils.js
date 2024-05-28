@@ -1161,3 +1161,64 @@ export function stacker(prospective_primaries, prospective_secondaries) {
 export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }
+
+// Render the graph using Sigma
+export function renderGraph(graph) {
+  // Create a container for the Sigma instance
+  var container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.top = '0';
+  container.style.left = '0';
+  container.style.width = '100%';
+  container.style.height = '100%';
+  document.body.appendChild(container);
+
+  // Initialize Sigma with the graph and container
+  var renderer = new Sigma(graph, container, {
+    renderEdges: true,
+    renderNodes: false,
+    settings: {
+      drawEdges: true,
+      drawNodes: false,
+    }
+  });
+
+  // Customize edge rendering (e.g., make edges visible but nodes invisible)
+  renderer.settings({
+    defaultEdgeColor: '#000',
+    defaultEdgeType: 'line',
+    defaultNodeColor: 'rgba(0, 0, 0, 0)', // Fully transparent nodes
+    edgeColor: 'default',
+    nodeColor: 'default',
+    labelThreshold: 0,
+    labelSize: 'fixed',
+    defaultLabelSize: 14,
+    borderSize: 2,
+    defaultNodeBorderColor: '#fff',
+    defaultHoverLabelBGColor: '#002147',
+    defaultLabelBGColor: '#fff',
+    defaultLabelColor: '#000',
+  });
+
+  renderer.refresh();
+}
+
+// Set up click handlers for notehead elements to select notes and draw edges
+function setupNoteheadClickHandlers(noteheadCoordinates, graph) {
+  var selectedNodes = [];
+
+  noteheadCoordinates.forEach(function(notehead, index) {
+    notehead.element.addEventListener('click', function() {
+      selectedNodes.push(index);
+      notehead.element.style.fill = 'red'; // Highlight selected notehead
+
+      if (selectedNodes.length === 2) {
+        drawEdgeBetweenNoteheads(graph, selectedNodes[0], selectedNodes[1]);
+        selectedNodes = []; // Reset the selection
+      }
+    });
+  });
+}
+
+// Run the function to extract notehead coordinates and set up the graph
+extractNoteheadCoordinates();

@@ -86,20 +86,112 @@ export function extractNoteheadCoordinates() {
   return noteheadCoordinates
 }
 
-// using graphology we create a graph from the notehead coordinates
+// Function to create a graph from notehead coordinates using Graphology
 export function createGraphFromCoordinates(noteheadCoordinates) {
   var graph = new Graph()
   noteheadCoordinates.forEach(function(notehead, index) {
     graph.addNode(index, { x: notehead.x, y: notehead.y })
   })
-  console.log('GRAPH', graph)
+  console.log('GRAPH', graph.nodes())
+
+  // Log the values of the nodes
+  graph.forEachNode((node, attributes) => {
+    console.log(`Node ${node}:`, attributes)
+  })
+  renderGraph(graph)
   return graph
 }
 
-// draw edge between two noteheads in graph when a relation is made
-export function drawEdgeBetweenNoteheads(graph, from, to) {
-  graph.addEdge(from, to)
-  console.log('GRAPH', graph)
+// Function to add an edge between primary and secondary nodes
+export function add_edge(graph, primary, secondary) {
+  const primaryId = primary.getAttribute('xml:id')
+  const secondaryId = secondary.getAttribute('xml:id')
+
+  // Add an edge between the primary and secondary nodes
+  graph.addEdge(primaryId, secondaryId, { type: 'relation' })
+
+  // Render the updated graph
+  renderGraph(graph)
+}
+
+// Function to render the graph using Sigma.js
+function renderGraph(graph) {
+  const svgContainer = document.querySelector('.svg_container')
+  const sigmaContainer = document.getElementById('sigma-container')
+
+  // Set the dimensions of the Sigma container to match the SVG container
+  const svgRect = svgContainer.getBoundingClientRect()
+  sigmaContainer.style.width = `${svgRect.width}px`
+  sigmaContainer.style.height = `${svgRect.height}px`
+
+  const renderer = new Sigma(graph, sigmaContainer, {
+    renderLabels: false, // Disable labels
+    renderEdges: true, // Enable edges
+    defaultNodeType: 'circle',
+    nodeReducer: (node, data) => {
+      return {
+        ...data,
+        color: '#ff0000', // Red color for the nodes
+        size: 15 // Adjust the node size as needed
+      }
+    }
+  })
+}
+
+// New function to handle the complete process
+export function createGraphAndDrawRelations(type, id, redoing = false) {
+  const noteheadCoordinates = extractNoteheadCoordinates()
+  const graph = createGraphFromCoordinates(noteheadCoordinates)
+
+  console.debug('Using globals: selected, extraselected, mei, undo_actions')
+  if (selected.length == 0 && extraselected == 0) {
+    return
+  }
+  changes = true
+  var he_id, mei_elems
+  if (selected.concat(extraselected)[0].classList.contains('relation')) {
+    var stack = stacker(extraselected, selected)
+    console.log(stack)
+    var types = []
+    selected.concat(extraselected).forEach((he) => {
+      types.push([he.getAttribute('type'), type])
+      var id = id_or_oldid(he)
+      var hes = [get_by_id(document, id)].concat(get_by_oldid(document, id))
+      hes.forEach((he) => he.setAttribute('type', type))
+      var mei_he = get_by_id(mei, id)
+      mei_he.getElementsByTagName('label')[0].setAttribute('type', type)
+      hes.forEach(toggle_shade)
+    })
+    undo_actions.push(['change relation type', types.reverse(), selected, extraselected])
+  } else if (selected.concat(extraselected)[0].classList.contains('note')) {
+    var stack = stacker(extraselected, selected)
+    console.log('STACK VALUE:', stack)
+    check_for_duplicate_relations(type, extraselected, selected)
+    var added = []
+    // Add new nodes for all notes
+    var primaries = extraselected.map((e) => add_mei_node_for(mei_graph, e))
+    var secondaries = selected.map((e) => add_mei_node_for(mei_graph, e))
+    added.push(primaries.concat(secondaries))
+    // Add edges between primary and secondary nodes in the graph
+    primaries.forEach(primary => {
+      secondaries.forEach(secondary => {
+        add_edge(graph, primary, secondary)
+      })
+    })
+      [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
+    added.push(mei_elems)
+    for (var i = 0; i < draw_contexts.length; i++) {
+      let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id), stack)
+      if (g_elem) {
+        added.push(g_elem) // Draw the edge
+        mark_secondaries(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+      }
+    }
+    undo_actions.push(['relation', added.reverse(), selected, extraselected])
+    selected.concat(extraselected).forEach(toggle_selected) // De-select
+  }
+  if (!redoing)
+    flush_redo()
 }
 
 export function roundedHull(points, stacker) {
@@ -1162,63 +1254,60 @@ export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }
 
-// Render the graph using Sigma
-export function renderGraph(graph) {
-  // Create a container for the Sigma instance
-  var container = document.createElement('div');
-  container.style.position = 'absolute';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '100%';
-  container.style.height = '100%';
-  document.body.appendChild(container);
+// // Render the graph using Sigma
+// export function renderGraph(graph) {
+//   // Create a container for the Sigma instance
+//   var container = document.createElement('div')
+//   container.style.position = 'absolute'
+//   container.style.top = '0'
+//   container.style.left = '0'
+//   container.style.width = '100%'
+//   container.style.height = '100%'
+//   document.body.appendChild(container)
 
-  // Initialize Sigma with the graph and container
-  var renderer = new Sigma(graph, container, {
-    renderEdges: true,
-    renderNodes: false,
-    settings: {
-      drawEdges: true,
-      drawNodes: false,
-    }
-  });
+//   // Initialize Sigma with the graph and container
+//   var renderer = new Sigma(graph, container, {
+//     renderEdges: true,
+//     renderNodes: false,
+//     settings: {
+//       drawEdges: true,
+//       drawNodes: false,
+//     }
+//   })
 
-  // Customize edge rendering (e.g., make edges visible but nodes invisible)
-  renderer.settings({
-    defaultEdgeColor: '#000',
-    defaultEdgeType: 'line',
-    defaultNodeColor: 'rgba(0, 0, 0, 0)', // Fully transparent nodes
-    edgeColor: 'default',
-    nodeColor: 'default',
-    labelThreshold: 0,
-    labelSize: 'fixed',
-    defaultLabelSize: 14,
-    borderSize: 2,
-    defaultNodeBorderColor: '#fff',
-    defaultHoverLabelBGColor: '#002147',
-    defaultLabelBGColor: '#fff',
-    defaultLabelColor: '#000',
-  });
-
-  renderer.refresh();
-}
+//   // Customize edge rendering (e.g., make edges visible but nodes invisible)
+//   renderer.settings({
+//     defaultEdgeColor: '#000',
+//     defaultEdgeType: 'line',
+//     defaultNodeColor: 'rgba(0, 0, 0, 0)', // Fully transparent nodes
+//     edgeColor: 'default',
+//     nodeColor: 'default',
+//     labelThreshold: 0,
+//     labelSize: 'fixed',
+//     defaultLabelSize: 14,
+//     borderSize: 2,
+//     defaultNodeBorderColor: '#fff',
+//     defaultHoverLabelBGColor: '#002147',
+//     defaultLabelBGColor: '#fff',
+//     defaultLabelColor: '#000',
+//   })
+// }
 
 // Set up click handlers for notehead elements to select notes and draw edges
 function setupNoteheadClickHandlers(noteheadCoordinates, graph) {
-  var selectedNodes = [];
+  var selectedNodes = []
 
   noteheadCoordinates.forEach(function(notehead, index) {
     notehead.element.addEventListener('click', function() {
-      selectedNodes.push(index);
-      notehead.element.style.fill = 'red'; // Highlight selected notehead
+      selectedNodes.push(index)
+      notehead.element.style.fill = 'red' // Highlight selected notehead
 
       if (selectedNodes.length === 2) {
-        drawEdgeBetweenNoteheads(graph, selectedNodes[0], selectedNodes[1]);
-        selectedNodes = []; // Reset the selection
+        drawEdgeBetweenNoteheads(graph, selectedNodes[0], selectedNodes[1])
+        selectedNodes = [] // Reset the selection
       }
-    });
-  });
+    })
+  })
 }
 
 // Run the function to extract notehead coordinates and set up the graph
-extractNoteheadCoordinates();

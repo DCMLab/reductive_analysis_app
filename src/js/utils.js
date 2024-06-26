@@ -137,12 +137,7 @@ function renderGraph(graph) {
         }
       }
     })
-
-    // Disable all interactions
-    renderer.getMouseCaptor().disable()
-    renderer.getTouchCaptor().disable()
-
-    // Set up event listeners for node clicks
+    // node clicks to create relations
     renderer.on('clickNode', ({ node }) => {
       handleNodeClick(node)
     })
@@ -150,7 +145,6 @@ function renderGraph(graph) {
     renderer.refresh()
   }
 }
-
 
 // New function to handle the complete process
 export function createGraphAndDrawRelations(type, id, redoing = false) {

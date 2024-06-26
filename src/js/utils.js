@@ -29,6 +29,8 @@ var vecSum = function (pv1, pv2) {
   return [pv1[0] + pv2[0], pv1[1] + pv2[1]]
 }
 
+let graph = new Graph()
+
 var unitNormal = function (p0, p1) {
   // Returns the unit normal to the line segment from p0 to p1.
   var n = [p0[1] - p1[1], p1[0] - p0[0]]
@@ -88,7 +90,7 @@ export function extractNoteheadCoordinates() {
 
 // Function to create a graph from notehead coordinates using Graphology
 export function createGraphFromCoordinates(noteheadCoordinates) {
-  var graph = new Graph()
+  // var graph = new Graph()
   noteheadCoordinates.forEach(function(notehead, index) {
     graph.addNode(index, { x: notehead.x, y: notehead.y })
   })

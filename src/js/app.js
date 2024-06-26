@@ -617,6 +617,10 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   // prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length
   finalize_draw_context(new_draw_context)
+
+  // Extract notehead coordinates and create a graph
+  const noteheadCoordinates = extractNoteheadCoordinates(new_svg_elem)
+  createGraphFromCoordinates(noteheadCoordinates)
 }
 
 function finalize_draw_context(new_draw_context) {

@@ -118,27 +118,39 @@ export function add_edge(graph, primary, secondary) {
 
 // Function to render the graph using Sigma.js
 function renderGraph(graph) {
-  const svgContainer = document.querySelector('.svg_container')
-  const sigmaContainer = document.getElementById('sigma-container')
+  if (!renderer) {
+    const sigmaContainer = document.getElementById('sigma-container')
+    const svgContainer = document.querySelector('.svg_container')
+    const svgRect = svgContainer.getBoundingClientRect()
+    sigmaContainer.style.width = `${svgRect.width}px`
+    sigmaContainer.style.height = `${svgRect.height}px`
 
-  // Set the dimensions of the Sigma container to match the SVG container
-  const svgRect = svgContainer.getBoundingClientRect()
-  sigmaContainer.style.width = `${svgRect.width}px`
-  sigmaContainer.style.height = `${svgRect.height}px`
-
-  const renderer = new Sigma(graph, sigmaContainer, {
-    renderLabels: false, // Disable labels
-    renderEdges: true, // Enable edges
-    defaultNodeType: 'circle',
-    nodeReducer: (node, data) => {
-      return {
-        ...data,
-        color: '#ff0000', // Red color for the nodes
-        size: 15 // Adjust the node size as needed
+    renderer = new Sigma(graph, sigmaContainer, {
+      renderLabels: false, // Disable labels
+      renderEdges: true, // Enable edges
+      defaultNodeType: 'circle',
+      nodeReducer: (node, data) => {
+        return {
+          ...data,
+          color: '#ff0000', 
+          size: 15 
+        }
       }
-    }
-  })
+    })
+
+    // Disable all interactions
+    renderer.getMouseCaptor().disable()
+    renderer.getTouchCaptor().disable()
+
+    // Set up event listeners for node clicks
+    renderer.on('clickNode', ({ node }) => {
+      handleNodeClick(node)
+    })
+  } else {
+    renderer.refresh()
+  }
 }
+
 
 // New function to handle the complete process
 export function createGraphAndDrawRelations(type, id, redoing = false) {

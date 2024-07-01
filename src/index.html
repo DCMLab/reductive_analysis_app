@@ -1064,6 +1064,16 @@
         </symbol>
 
     </svg>
+    <button id="render-button">Render</button>
+    <script type="module">
+      import { extractNoteheadCoordinates, createGraphFromCoordinates } from './js/utils.js'
+  
+      document.getElementById('render-button').addEventListener('click', () => {
+        const svgContainer = document.querySelector('.svg_container')
+        const noteheadCoordinates = extractNoteheadCoordinates(svgContainer)
+        createGraphFromCoordinates(noteheadCoordinates)
+      })
+    </script>
     <div id="sigma-container"></div>
 </body>
 

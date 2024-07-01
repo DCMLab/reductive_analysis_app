@@ -6,12 +6,14 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import $ from 'jquery'
+import chroma from 'chroma-js'
 import { polygonHull } from 'd3-polygon'
 import Graph from 'graphology'
 import Sigma from 'sigma'
+
 // import fuzzysearch from 'fuzzysearch'
 
-import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
+import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'// Function to handle node clicks
 import { strip_xml_tags } from './conf'
 import { getCurrentDrawContext, toggle_selected } from './ui'
 // import { draw_relation_stacked } from './draw'
@@ -22,6 +24,10 @@ var vecScale = function (scale, v) {
   // Returns the vector 'v' scaled by 'scale'.
   return [scale * v[0], scale * v[1]]
 }
+
+let graph = new Graph()
+let renderer = null
+let selectedNodes = []
 
 var vecSum = function (pv1, pv2) {
   // Returns the sum of two vectors, or a combination of a point and a
@@ -90,7 +96,11 @@ export function extractNoteheadCoordinates() {
 export function createGraphFromCoordinates(noteheadCoordinates) {
   var graph = new Graph()
   noteheadCoordinates.forEach(function(notehead, index) {
-    graph.addNode(index, { x: notehead.x, y: notehead.y })
+    graph.addNode(index, { 
+      x: notehead.x, 
+      y: notehead.y, 
+      nodeId: index + 1 // Assign a sequential nodeId starting from 1
+    })
   })
   console.log('GRAPH', graph.nodes())
 
@@ -100,18 +110,6 @@ export function createGraphFromCoordinates(noteheadCoordinates) {
   })
   renderGraph(graph)
   return graph
-}
-
-// Function to add an edge between primary and secondary nodes
-export function add_edge(graph, primary, secondary) {
-  const primaryId = primary.getAttribute('xml:id')
-  const secondaryId = secondary.getAttribute('xml:id')
-
-  // Add an edge between the primary and secondary nodes
-  graph.addEdge(primaryId, secondaryId, { type: 'relation' })
-
-  // Render the updated graph
-  renderGraph(graph)
 }
 
 // Function to render the graph using Sigma.js
@@ -124,75 +122,127 @@ function renderGraph(graph) {
   sigmaContainer.style.width = `${svgRect.width}px`
   sigmaContainer.style.height = `${svgRect.height}px`
 
-  const renderer = new Sigma(graph, sigmaContainer, {
-    renderLabels: false, // Disable labels
-    renderEdges: true, // Enable edges
-    defaultNodeType: 'circle',
-    nodeReducer: (node, data) => {
-      return {
-        ...data,
-        color: '#ff0000', // Red color for the nodes
-        size: 15 // Adjust the node size as needed
+  if (!renderer) {
+    renderer = new Sigma(graph, sigmaContainer, {
+      renderLabels: false, // Disable labels
+      renderEdges: true, // Enable edges
+      defaultNodeType: 'circle',
+      nodeReducer: (node, data) => {
+        return {
+          ...data,
+          color: '#ff0000', // Red color for the nodes
+          size: 15 // Adjust the node size as needed
+        }
       }
+    })
+
+    // Set up event listeners for node clicks
+    renderer.on('clickNode', ({ node }) => {
+      handleNodeClick(node)
+    })
+  } else {
+    // If the renderer already exists, just refresh it
+    renderer.refresh()
+  }
+}
+
+// Function to handle node clicks
+function handleNodeClick(nodeId) {
+  selectedNodes.push(nodeId)
+  console.log(`Node selected: ${nodeId}`)
+  console.log(`Selected nodes: ${selectedNodes}`)
+
+  if (selectedNodes.length === 2) {
+    if (confirm(`Do you want to create an edge between node ${selectedNodes[0]} and node ${selectedNodes[1]}?`)) {
+      addEdge(graph, selectedNodes[0], selectedNodes[1])
     }
+    selectedNodes = []
+  }
+}
+
+// Function to print all node IDs in the graph
+export function printAllNodeIds(graph) {
+  console.log('All node IDs in the graph:')
+  graph.forEachNode((nodeId, attributes) => {
+    console.log(`Node ${nodeId}: ${attributes.nodeId}`)
   })
 }
 
-// New function to handle the complete process
-export function createGraphAndDrawRelations(type, id, redoing = false) {
-  const noteheadCoordinates = extractNoteheadCoordinates()
-  const graph = createGraphFromCoordinates(noteheadCoordinates)
+// Function to add an edge between two nodes based on nodeId attribute
+export function addEdge(graph, sourceId, targetId) {
+  let sourceNode = selectedNodes[0]
+  let targetNode = selectedNodes[1]
 
-  console.debug('Using globals: selected, extraselected, mei, undo_actions')
-  if (selected.length == 0 && extraselected == 0) {
-    return
-  }
-  changes = true
-  var he_id, mei_elems
-  if (selected.concat(extraselected)[0].classList.contains('relation')) {
-    var stack = stacker(extraselected, selected)
-    console.log(stack)
-    var types = []
-    selected.concat(extraselected).forEach((he) => {
-      types.push([he.getAttribute('type'), type])
-      var id = id_or_oldid(he)
-      var hes = [get_by_id(document, id)].concat(get_by_oldid(document, id))
-      hes.forEach((he) => he.setAttribute('type', type))
-      var mei_he = get_by_id(mei, id)
-      mei_he.getElementsByTagName('label')[0].setAttribute('type', type)
-      hes.forEach(toggle_shade)
-    })
-    undo_actions.push(['change relation type', types.reverse(), selected, extraselected])
-  } else if (selected.concat(extraselected)[0].classList.contains('note')) {
-    var stack = stacker(extraselected, selected)
-    console.log('STACK VALUE:', stack)
-    check_for_duplicate_relations(type, extraselected, selected)
-    var added = []
-    // Add new nodes for all notes
-    var primaries = extraselected.map((e) => add_mei_node_for(mei_graph, e))
-    var secondaries = selected.map((e) => add_mei_node_for(mei_graph, e))
-    added.push(primaries.concat(secondaries))
-    // Add edges between primary and secondary nodes in the graph
-    primaries.forEach(primary => {
-      secondaries.forEach(secondary => {
-        add_edge(graph, primary, secondary)
-      })
-    })
-      [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
-    added.push(mei_elems)
-    for (var i = 0; i < draw_contexts.length; i++) {
-      let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id), stack)
-      if (g_elem) {
-        added.push(g_elem) // Draw the edge
-        mark_secondaries(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-      }
+  graph.forEachNode((node, attributes) => {
+    if (attributes.nodeId === sourceId) sourceNode = node
+    if (attributes.nodeId === targetId) targetNode = node
+  })
+
+  if (sourceNode && targetNode) {
+    graph.addEdge(sourceNode, targetNode, { type: 'relation' })
+    console.log('Edge created between nodes ${sourceNode} and ${targetNode}')
+    // Render the updated graph
+    if (renderer) {
+      renderer.refresh()
     }
-    undo_actions.push(['relation', added.reverse(), selected, extraselected])
-    selected.concat(extraselected).forEach(toggle_selected) // De-select
+  } else {
+    console.warn('Cannot add edge: One or both nodes not found (sourceId: ${sourceId}, targetId: ${targetId})')
   }
-  if (!redoing)
-    flush_redo()
 }
+// // New function to handle the complete process
+// export function createGraphAndDrawRelations(type, id, redoing = false) {
+//   const noteheadCoordinates = extractNoteheadCoordinates()
+//   graph = createGraphFromCoordinates(noteheadCoordinates)
+//   console.debug('Using globals: selected, extraselected, mei, undo_actions')
+//   if (selected.length == 0 && extraselected == 0) {
+//     return
+//   }
+//   changes = true
+//   var he_id, mei_elems
+//   if (selected.concat(extraselected)[0].classList.contains('relation')) {
+//     var stack = stacker(extraselected, selected)
+//     console.log(stack)
+//     var types = []
+//     selected.concat(extraselected).forEach((he) => {
+//       types.push([he.getAttribute('type'), type])
+//       var id = id_or_oldid(he)
+//       var hes = [get_by_id(document, id)].concat(get_by_oldid(document, id))
+//       hes.forEach((he) => he.setAttribute('type', type))
+//       var mei_he = get_by_id(mei, id)
+//       mei_he.getElementsByTagName('label')[0].setAttribute('type', type)
+//       hes.forEach(toggle_shade)
+//     })
+//     undo_actions.push(['change relation type', types.reverse(), selected, extraselected])
+//   } else if (selected.concat(extraselected)[0].classList.contains('note')) {
+//     var stack = stacker(extraselected, selected)
+//     console.log('STACK VALUE:', stack)
+//     check_for_duplicate_relations(type, extraselected, selected)
+//     var added = []
+//     // Add new nodes for all notes
+//     var primaries = extraselected.map((e) => add_mei_node_for(mei_graph, e))
+//     var secondaries = selected.map((e) => add_mei_node_for(mei_graph, e))
+//     added.push(primaries.concat(secondaries))
+//     // Add edges between primary and secondary nodes in the graph
+//     primaries.forEach(primary => {
+//       secondaries.forEach(secondary => {
+//         add_edge(graph, primary, secondary)
+//       })
+//     })
+//       [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
+//     added.push(mei_elems)
+//     for (var i = 0 i < draw_contexts.length i++) {
+//       let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id), stack)
+//       if (g_elem) {
+//         added.push(g_elem) // Draw the edge
+//         mark_secondaries(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+//       }
+//     }
+//     undo_actions.push(['relation', added.reverse(), selected, extraselected])
+//     selected.concat(extraselected).forEach(toggle_selected) // De-select
+//   }
+//   if (!redoing)
+//     flush_redo()
+// }
 
 export function roundedHull(points, stacker) {
   const drawContexts = getDrawContexts()
@@ -206,7 +256,7 @@ export function roundedHull(points, stacker) {
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
   // path.setAttribute('stroke', 'red') // Set stroke color to red
   // If you also want to fill the path with red color, uncomment the line below
-  // path.setAttribute('fill', 'red');
+  // path.setAttribute('fill', 'red')
   if (points.length === 1) {
     path.setAttribute('d', roundedHull1(points, hullPadding))
   } else if (points.length === 2) {

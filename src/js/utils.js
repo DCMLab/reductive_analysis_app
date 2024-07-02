@@ -25,7 +25,7 @@ var vecScale = function (scale, v) {
   return [scale * v[0], scale * v[1]]
 }
 
-let graph = new Graph()
+// let graph = 
 let renderer = null
 let selectedNodes = []
 
@@ -94,7 +94,7 @@ export function extractNoteheadCoordinates() {
 
 // Function to create a graph from notehead coordinates using Graphology
 export function createGraphFromCoordinates(noteheadCoordinates) {
-  var graph = new Graph()
+  var graph = new Graph({ allowSelfLoops: true, multi: true, type: 'directed' })
   noteheadCoordinates.forEach(function(notehead, index) {
     graph.addNode(index, { 
       x: notehead.x, 
@@ -102,6 +102,11 @@ export function createGraphFromCoordinates(noteheadCoordinates) {
       nodeId: index + 1 // Assign a sequential nodeId starting from 1
     })
   })
+  graph.addEdge(0, 1) 
+  graph.addEdge(0, 1)
+  graph.addEdge(0, 0)
+  // testing multiple edges
+
   console.log('GRAPH', graph.nodes())
 
   // Log the values of the nodes
@@ -112,83 +117,72 @@ export function createGraphFromCoordinates(noteheadCoordinates) {
   return graph
 }
 
-// Function to render the graph using Sigma.js
-function renderGraph(graph) {
-  const svgContainer = document.querySelector('.svg_container')
-  const sigmaContainer = document.getElementById('sigma-container')
+// // Function to render the graph using Sigma.js
+// function renderGraph(graph) {
+//   const svgContainer = document.querySelector('.svg_container')
+//   const sigmaContainer = document.getElementById('sigma-container')
 
-  // Set the dimensions of the Sigma container to match the SVG container
-  const svgRect = svgContainer.getBoundingClientRect()
-  sigmaContainer.style.width = `${svgRect.width}px`
-  sigmaContainer.style.height = `${svgRect.height}px`
+//   // Set the dimensions of the Sigma container to match the SVG container
+//   const svgRect = svgContainer.getBoundingClientRect()
+//   sigmaContainer.style.width = `${svgRect.width}px`
+//   sigmaContainer.style.height = `${svgRect.height}px`
 
-  if (!renderer) {
-    renderer = new Sigma(graph, sigmaContainer, {
-      renderLabels: false, // Disable labels
-      renderEdges: true, // Enable edges
-      defaultNodeType: 'circle',
-      nodeReducer: (node, data) => {
-        return {
-          ...data,
-          color: '#ff0000', // Red color for the nodes
-          size: 15 // Adjust the node size as needed
-        }
-      }
-    })
+//   if (!renderer) {
+//     renderer = new Sigma(graph, sigmaContainer, {
+//       renderLabels: false, // Disable labels
+//       renderEdges: true, // Enable edges
+//       defaultNodeType: 'circle',
+//       nodeReducer: (node, data) => {
+//         return {
+//           ...data,
+//           color: '#ff0000', // Red color for the nodes
+//           size: 15 // Adjust the node size as needed
+//         }
+//       }
+//     })
 
-    // Set up event listeners for node clicks
-    renderer.on('clickNode', ({ node }) => {
-      handleNodeClick(node)
-    })
-  } else {
-    // If the renderer already exists, just refresh it
-    renderer.refresh()
-  }
-}
+//     // Set up event listeners for node clicks
+//     renderer.on('clickNode', ({ node }) => {
+//       handleNodeClick(node)
+//     })
+//   } else {
+//     // If the renderer already exists, just refresh it
+//     renderer.refresh()
+//   }
+// }
 
 // Function to handle node clicks
-function handleNodeClick(nodeId) {
+function handleNodeClick(nodeId, graph) {
   selectedNodes.push(nodeId)
   console.log(`Node selected: ${nodeId}`)
   console.log(`Selected nodes: ${selectedNodes}`)
 
   if (selectedNodes.length === 2) {
     if (confirm(`Do you want to create an edge between node ${selectedNodes[0]} and node ${selectedNodes[1]}?`)) {
-      addEdge(graph, selectedNodes[0], selectedNodes[1])
+      // add_Edge(graph, selectedNodes[0], selectedNodes[1])
+      graph.addEdge(selectedNodes[0], selectedNodes[1])
+      renderer.refresh()
     }
     selectedNodes = []
   }
 }
 
-// Function to print all node IDs in the graph
-export function printAllNodeIds(graph) {
-  console.log('All node IDs in the graph:')
-  graph.forEachNode((nodeId, attributes) => {
-    console.log(`Node ${nodeId}: ${attributes.nodeId}`)
-  })
-}
+// // Function to print all node IDs in the graph
+// export function printAllNodeIds(graph) {
+//   console.log('All node IDs in the graph:')
+//   graph.forEachNode((nodeId, attributes) => {
+//     console.log(`Node ${nodeId}: ${attributes.nodeId}`)
+//   })
+// }
 
-// Function to add an edge between two nodes based on nodeId attribute
-export function addEdge(graph, sourceId, targetId) {
-  let sourceNode = selectedNodes[0]
-  let targetNode = selectedNodes[1]
+// // Function to add an edge between two nodes based on nodeId attribute
+// export function add_Edge(graph, sourceId, targetId) {
+//   graph.addEdge(sourceId, targetId)
+//   console.log(`Edge added between nodes ${sourceId} and ${targetId}`)
+//   renderGraph(graph)
+// }
 
-  graph.forEachNode((node, attributes) => {
-    if (attributes.nodeId === sourceId) sourceNode = node
-    if (attributes.nodeId === targetId) targetNode = node
-  })
-
-  if (sourceNode && targetNode) {
-    graph.addEdge(sourceNode, targetNode, { type: 'relation' })
-    console.log('Edge created between nodes ${sourceNode} and ${targetNode}')
-    // Render the updated graph
-    if (renderer) {
-      renderer.refresh()
-    }
-  } else {
-    console.warn('Cannot add edge: One or both nodes not found (sourceId: ${sourceId}, targetId: ${targetId})')
-  }
-}
+// ----------------------------------------------------------------------------------------------------------------------------
 // // New function to handle the complete process
 // export function createGraphAndDrawRelations(type, id, redoing = false) {
 //   const noteheadCoordinates = extractNoteheadCoordinates()
@@ -243,6 +237,45 @@ export function addEdge(graph, sourceId, targetId) {
 //   if (!redoing)
 //     flush_redo()
 // }
+
+function renderGraph(graph) {
+  const svgContainer = document.querySelector('.svg_container')
+  const sigmaContainer = document.getElementById('sigma-container')
+
+  // Set the dimensions of the Sigma container to match the SVG container
+  const svgRect = svgContainer.getBoundingClientRect()
+  sigmaContainer.style.width = `${svgRect.width}px`
+  sigmaContainer.style.height = `${svgRect.height}px`
+
+  if (!renderer) {
+    renderer = new Sigma(graph, sigmaContainer, {
+      renderLabels: false, // Disable labels
+      renderEdges: true, // Enable edges
+      defaultNodeType: 'circle',
+      nodeReducer: (node, data) => {
+        return {
+          ...data,
+          color: '#ff0000', // Red color for the nodes
+          size: 15 // Adjust the node size as needed
+        }
+      },
+      edgeReducer: (edge, data) => {
+        return {
+          ...data,
+          color: '#0000ff' // Blue color for the edges
+        }
+      }
+    })
+
+    // Set up event listeners for node clicks
+    renderer.on('clickNode', (event) => {
+      handleNodeClick(event.node)
+    })
+  } else {
+    // If the renderer already exists, just refresh it
+    renderer.refresh()
+  }
+}
 
 export function roundedHull(points, stacker) {
   const drawContexts = getDrawContexts()

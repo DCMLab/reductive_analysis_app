@@ -7,11 +7,11 @@
   white-space: nowrap;
 
   background: v(btn-bg, bg, transparent);
-  border: solid .2rem v(btn-border, inherit);
+  border: solid 0.2rem v(btn-border, inherit);
   border-radius: v(btn-radius, btn-default-radius, 0);
   color: v(btn-color, primary);
 
-  transition: v(btn-transition, .1s) $in-out-quad;
+  transition: v(btn-transition, 0.1s) $in-out-quad;
   transition-property: background-color, border-color, color;
 
   &:hover,
@@ -33,7 +33,7 @@
 
 .btn--hollow {
   --btn-border: #{$alto};
-  --btn-transition: .4s;
+  --btn-transition: 0.4s;
   --btn-hover-transition: 0s;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .btn--small {
-  padding: .8rem;
+  padding: 0.8rem;
 }
 
 .btn--naked {

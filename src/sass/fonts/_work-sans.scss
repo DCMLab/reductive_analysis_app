@@ -26,9 +26,9 @@
  * Fallbacks for browsers not supporting variable fonts.
  */
 
- // Work Sans regular (400)
+// Work Sans regular (400)
 
- @font-face {
+@font-face {
   font-family: 'Work Sans static';
   src: url('../fonts/work-sans-static-regular.woff2') format('woff2');
   font-weight: 400;
@@ -36,9 +36,9 @@
   font-display: swap;
 }
 
- // Work Sans medium (500)
+// Work Sans medium (500)
 
- @font-face {
+@font-face {
   font-family: 'Work Sans static';
   src: url('../fonts/work-sans-static-medium.woff2') format('woff2');
   font-weight: 500;
@@ -48,7 +48,7 @@
 
 // Work Sans semibold (600)
 
- @font-face {
+@font-face {
   font-family: 'Work Sans static';
   src: url('../fonts/work-sans-static-semibold.woff2') format('woff2');
   font-weight: 600;

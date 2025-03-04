@@ -36,7 +36,7 @@
 
 .start-screen--out {
   opacity: 0;
-  transition: opacity .3s $in-quad;
+  transition: opacity 0.3s $in-quad;
 }
 
 // Title, instructions, file picker
@@ -72,12 +72,12 @@
   margin-top: 6rem;
 
   transition:
-    opacity .2s $in-out-quad .1s,
-    transform .3s $out-back .1s;
+    opacity 0.2s $in-out-quad 0.1s,
+    transform 0.3s $out-back 0.1s;
 
   html:not(.ready) & {
     opacity: 0;
-    transform: scale(.95);
+    transform: scale(0.95);
     visibility: hidden;
   }
 }

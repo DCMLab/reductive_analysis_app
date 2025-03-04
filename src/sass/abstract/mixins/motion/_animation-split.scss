@@ -23,24 +23,22 @@
     $delay: #{$base-delay + round($i * $split-delay * 1000) / 1000}s;
 
     @if $from != 'start' {
-
       @include from-end(#{$i}) {
         @if $selector != '' {
-          #{$selector} { animation-delay: $delay; }
-        }
-        @else {
+          #{$selector} {
+            animation-delay: $delay;
+          }
+        } @else {
           animation-delay: $delay;
         }
       }
-    }
-
-    @else {
-
+    } @else {
       &:nth-child(#{$i}) {
         @if $selector != '' {
-          #{$selector} { animation-delay: $delay; }
-        }
-        @else {
+          #{$selector} {
+            animation-delay: $delay;
+          }
+        } @else {
           animation-delay: $delay;
         }
       }

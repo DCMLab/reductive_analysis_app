@@ -5,7 +5,7 @@
 
   pointer-events: none;
 
-  transition: .4s $in-out-quad;
+  transition: 0.4s $in-out-quad;
   transition-property: opacity, visibility;
 
   // Hide UI while app is loading.

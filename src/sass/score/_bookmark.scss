@@ -11,7 +11,7 @@
   // Would have loved a bounce animation using scale, but Safari says no.
   transform: translateY(5rem);
 
-  animation: bookmark-appear .3s $out-quad forwards;
+  animation: bookmark-appear 0.3s $out-quad forwards;
 
   // selector needed to increase specificity and overwrite
   .svg_container & {

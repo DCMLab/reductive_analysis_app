@@ -3,8 +3,8 @@
   margin: 2rem 0;
 
   border: none;
-  border-block: .1rem solid;
-  opacity: .1;
+  border-block: 0.1rem solid;
+  opacity: 0.1;
 }
 
 .fly-out__headerRow {
@@ -18,14 +18,14 @@
 
 .fly-out__headerActions {
   position: absolute;
-  inset-inline-end: -.7rem;
+  inset-inline-end: -0.7rem;
 
   gap: 1rem;
 
   > :not(:hover):not(:focus),
   > :disabled {
-    opacity: .4;
-    transition: opacity .2s $in-out-quad;
+    opacity: 0.4;
+    transition: opacity 0.2s $in-out-quad;
   }
 }
 
@@ -43,7 +43,7 @@
 }
 
 .fly-out__headerBinIcon {
-  transform: translateY(-.15rem); // fix icon optical vertical center
+  transform: translateY(-0.15rem); // fix icon optical vertical center
 }
 
 .fly-out__notch {
@@ -53,7 +53,10 @@
   z-index: 122;
   top: 100%;
   left: 50%;
-  transform: translate(-50%, -3%); // -3% is a workaround: there’s a positionning issue (all browsers but at different levels, likely a rounding issue) where the notch doesn’t stick to the fly-out box.
+  transform: translate(
+    -50%,
+    -3%
+  ); // -3% is a workaround: there’s a positionning issue (all browsers but at different levels, likely a rounding issue) where the notch doesn’t stick to the fly-out box.
 }
 
 .fly-out__footerActions {

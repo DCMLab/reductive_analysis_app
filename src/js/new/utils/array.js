@@ -13,7 +13,8 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * @param {*} needles The array with a smaller or equal number of elements.
  * @returns {boolean}
  */
-export const arrayIncludesAll = (haystack, needles) => needles?.every(needle => haystack?.includes(needle)) ?? false
+export const arrayIncludesAll = (haystack, needles) =>
+  needles?.every((needle) => haystack?.includes(needle)) ?? false;
 
 /**
  * Compare two arrays by looking at their length and primitives.
@@ -23,4 +24,4 @@ export const arrayIncludesAll = (haystack, needles) => needles?.every(needle => 
  * @param {*} a2 The array with a smaller or equal number of elements.
  * @returns {boolean}
  */
-export const sameArray = (a1, a2) => a1.length == a2.length && arrayIncludesAll(a1, a2)
+export const sameArray = (a1, a2) => a1.length == a2.length && arrayIncludesAll(a1, a2);

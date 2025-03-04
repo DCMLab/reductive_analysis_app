@@ -1,5 +1,4 @@
 .layer {
-
   &::before {
     content: '';
 
@@ -10,7 +9,7 @@
     background: $gallery;
     pointer-events: none;
 
-    transition: opacity .5s $in-out-quad;
+    transition: opacity 0.5s $in-out-quad;
   }
 }
 

@@ -14,34 +14,38 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Safely_detecting_option_support
  */
 function detectSupport(option) {
-  let supported = false
+  let supported = false;
   let options = Object.defineProperty({}, option, {
     get: () => {
-      supported = true
+      supported = true;
     },
-  })
+  });
 
   try {
-    window.addEventListener('test', options, options)
-    window.removeEventListener('test', options, options)
+    window.addEventListener('test', options, options);
+    window.removeEventListener('test', options, options);
   } catch (err) {
-    supported = false
+    supported = false;
   }
 
-  return supported
+  return supported;
 }
 
 /**
  * Creates an event listener options object with its 3 properties.
  */
-const createEventListenerOptions = function({ capture = false, passive = true, once = false } = {}) {
-  return support.capture ? { capture, passive, once } : capture
-}
+const createEventListenerOptions = function ({
+  capture = false,
+  passive = true,
+  once = false,
+} = {}) {
+  return support.capture ? { capture, passive, once } : capture;
+};
 
 // Detect support.
 const support = {
   passive: detectSupport('passive'),
   capture: detectSupport('capture'),
-}
+};
 
-export default createEventListenerOptions
+export default createEventListenerOptions;

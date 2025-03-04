@@ -13,9 +13,9 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * @returns {void}
  */
 export function prevent(event, callback = null) {
-  event.preventDefault()
+  event.preventDefault();
 
   if (callback) {
-    callback.call()
+    callback.call();
   }
 }

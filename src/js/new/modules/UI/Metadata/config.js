@@ -47,4 +47,4 @@ export default {
       placeholder: 'Maybe… you?',
     },
   },
-}
+};

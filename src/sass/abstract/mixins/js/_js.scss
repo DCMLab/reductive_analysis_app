@@ -22,11 +22,25 @@
  */
 
 @mixin js() {
-  @if & { html.js &   { @content; } }
-  @else { html.js     { @content; } }
+  @if & {
+    html.js & {
+      @content;
+    }
+  } @else {
+    html.js {
+      @content;
+    }
+  }
 }
 
 @mixin no-js() {
-  @if & { html.no-js &   { @content; } }
-  @else { html.no-js     { @content; } }
+  @if & {
+    html.no-js & {
+      @content;
+    }
+  } @else {
+    html.no-js {
+      @content;
+    }
+  }
 }

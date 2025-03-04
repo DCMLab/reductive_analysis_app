@@ -31,19 +31,23 @@
 
   @include supports-focus-visible {
     &:focus-visible {
-      + .checkbox::before { opacity: 1; }
+      + .checkbox::before {
+        opacity: 1;
+      }
     }
   }
 
   @include supports-focus-visible(false) {
     &:focus {
-      + .checkbox::before { opacity: 1; }
+      + .checkbox::before {
+        opacity: 1;
+      }
     }
   }
 }
 
 .checkbox {
-  --checkbox-radius: .4rem;
+  --checkbox-radius: 0.4rem;
 
   flex-shrink: 0;
   position: relative;
@@ -68,7 +72,7 @@
 
     background: v(primary);
     border-radius: v(checkbox-radius);
-    opacity: .1;
+    opacity: 0.1;
   }
 
   // Inner background with radius (= the reason we have pseudo-elements here).
@@ -86,5 +90,5 @@
   z-index: 1;
   margin-left: 0.1rem;
 
-  transition: .3s transform $out-back;
+  transition: 0.3s transform $out-back;
 }

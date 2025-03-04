@@ -1,40 +1,40 @@
-import {
-  do_deselect,
-  getCurrentDrawContext,
-  select_visibles
-} from '../../../../ui'
-import SelectionLegend from './legend'
-import SelectionMode from './mode'
+import { do_deselect, getCurrentDrawContext, select_visibles } from '../../../../ui';
+import SelectionLegend from './legend';
+import SelectionMode from './mode';
 
 class Selection {
   constructor() {
-    this.selectBtn = document.getElementById('select-all')
-    this.unselectBtn = document.getElementById('unselect-all')
-    this.legend = new SelectionLegend() // rename it?
-    this.mode = new SelectionMode() // rename it?
+    this.selectBtn = document.getElementById('select-all');
+    this.unselectBtn = document.getElementById('unselect-all');
+    this.legend = new SelectionLegend(); // rename it?
+    this.mode = new SelectionMode(); // rename it?
   }
 
   selectAll() {
-    const context = getCurrentDrawContext()
+    const context = getCurrentDrawContext();
     if (context) {
-      select_visibles(context)
+      select_visibles(context);
     }
   }
 
   selectNone() {
-    do_deselect()
+    do_deselect();
   }
 
   onTap({ target }) {
-    if (target == this.selectBtn) { return this.selectAll() }
-    if (target == this.unselectBtn) { return this.selectNone() }
+    if (target == this.selectBtn) {
+      return this.selectAll();
+    }
+    if (target == this.unselectBtn) {
+      return this.selectNone();
+    }
   }
 
   onScoreSelection(detail) {
-    this.legend.update(detail)
+    this.legend.update(detail);
   }
 }
 
-const selection = new Selection()
+const selection = new Selection();
 
-export default selection
+export default selection;

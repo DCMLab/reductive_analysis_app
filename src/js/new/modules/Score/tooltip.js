@@ -1,4 +1,4 @@
-import { getRelationType, isMetaRelationCircle, isRelation } from '../UI/Selection/helpers'
+import { getRelationType, isMetaRelationCircle, isRelation } from '../UI/Selection/helpers';
 
 /**
  * This class is only responsible to set the tooltip label when the mouse foes
@@ -7,35 +7,39 @@ import { getRelationType, isMetaRelationCircle, isRelation } from '../UI/Selecti
  */
 class ScoreTooltip {
   constructor() {
-    this.content = document.getElementById('score-tooltip')
+    this.content = document.getElementById('score-tooltip');
   }
 
   setContent(relationType) {
-    this.content.innerHTML = relationType
+    this.content.innerHTML = relationType;
   }
 
   onMouseEnter({ target }) {
-    const hasEnteredRelation = isRelation(target)
-    const hasEnteredMetaRelation = isMetaRelationCircle(target)
+    const hasEnteredRelation = isRelation(target);
+    const hasEnteredMetaRelation = isMetaRelationCircle(target);
 
-    if (!hasEnteredRelation && !hasEnteredMetaRelation) { return }
+    if (!hasEnteredRelation && !hasEnteredMetaRelation) {
+      return;
+    }
 
-    const relationType = getRelationType(target) ?? getRelationType(target.parentElement)
-    this.setContent(relationType)
+    const relationType = getRelationType(target) ?? getRelationType(target.parentElement);
+    this.setContent(relationType);
   }
 
   onFlipRelation(e) {
-    const target = e.detail.target
-    const hasEnteredRelation = isRelation(target)
-    const hasEnteredMetaRelation = isMetaRelationCircle(target)
+    const target = e.detail.target;
+    const hasEnteredRelation = isRelation(target);
+    const hasEnteredMetaRelation = isMetaRelationCircle(target);
 
-    if (!hasEnteredRelation && !hasEnteredMetaRelation) { return }
+    if (!hasEnteredRelation && !hasEnteredMetaRelation) {
+      return;
+    }
 
-    const relationType = getRelationType(target) ?? getRelationType(target.parentElement)
-    this.setContent(relationType)
+    const relationType = getRelationType(target) ?? getRelationType(target.parentElement);
+    this.setContent(relationType);
   }
 }
 
-const tooltip = new ScoreTooltip()
+const tooltip = new ScoreTooltip();
 
-export default tooltip
+export default tooltip;

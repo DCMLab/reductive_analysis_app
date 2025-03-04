@@ -15,7 +15,7 @@
   --safe-bottom: var(--safe-area-bottom, 0);
   --safe-left: var(--safe-area-left, 0);
 
-/*
+  /*
  * @todo: Check how to inject data using Webpack so that these classes are
  * automatically generated.
  */
@@ -54,8 +54,8 @@
 
 // @TODO: refine focus (likely by element)
 :focus {
-  outline: .1rem solid currentColor;
-  outline-offset: .25em;
+  outline: 0.1rem solid currentColor;
+  outline-offset: 0.25em;
 }
 
 /* HTML & BODY */
@@ -75,7 +75,7 @@ html {
   }
 
   // @media (--tablet-9) {
-    font-size: 62.5%;
+  font-size: 62.5%;
   // }
 
   @media (--motion) {
@@ -123,7 +123,6 @@ figure {
   font-size: 0;
 }
 
-
 /* FORMS */
 
 fieldset {
@@ -154,7 +153,6 @@ option {
 
 input,
 select {
-
   // Autofill colors hack
   &:-webkit-autofill {
     -webkit-text-fill-color: v(primary);
@@ -193,7 +191,9 @@ button {
     cursor: not-allowed;
   }
 
-  * { pointer-events: none; }
+  * {
+    pointer-events: none;
+  }
 }
 
 /* ABBREVIATIONS */
@@ -212,7 +212,9 @@ abbr[title] {
 a {
   color: v(primary);
 
-  * { pointer-events: none; }
+  * {
+    pointer-events: none;
+  }
 }
 
 h1,
@@ -235,12 +237,16 @@ h6 {
 svg {
   pointer-events: none;
 
-  * { transform-origin: 50% 50%; }
+  * {
+    transform-origin: 50% 50%;
+  }
 
   // Score container. We need initial behaviour here.
   .svg_container & {
     pointer-events: initial;
 
-    * { transform-origin: 0 0; }
+    * {
+      transform-origin: 0 0;
+    }
   }
 }

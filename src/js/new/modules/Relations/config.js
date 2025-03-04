@@ -3,36 +3,24 @@
  * menu for a given selection type.
  */
 const menuOrderByType = {
-  note: [
-    'relations',
-    'metarelations',
-    'comborelations',
-  ],
-  relation: [
-    'metarelations',
-    'relations',
-    'comborelations',
-  ],
-  metarelation: [
-    'metarelations',
-    'comborelations',
-    'relations',
-  ],
-}
+  note: ['relations', 'metarelations', 'comborelations'],
+  relation: ['metarelations', 'relations', 'comborelations'],
+  metarelation: ['metarelations', 'comborelations', 'relations'],
+};
 
 export const relationTypes = {
   name: 'relation',
 
   // Main relation types, keyboards shortcuts and colors.
   main: {
-    repeat:       { key: 'e', color: 1, shadeColor: 0, },
-    passing:      { key: 'p', color: 2, shadeColor: 6, },
-    neighbour:    { key: 'n', color: 3, shadeColor: 2, },
-    harmonic:     { key: 'i', color: 4, shadeColor: 3, },
-    arpeggio:     { key: 'a', color: 5, shadeColor: 4, },
-    urlinie:      { key: 'u', color: 6, shadeColor: 5, },
-    bassbrechung: { key: 'b', color: 7, shadeColor: 5, },
-    untyped:      { color: 5 },
+    repeat: { key: 'e', color: 1, shadeColor: 0 },
+    passing: { key: 'p', color: 2, shadeColor: 6 },
+    neighbour: { key: 'n', color: 3, shadeColor: 2 },
+    harmonic: { key: 'i', color: 4, shadeColor: 3 },
+    arpeggio: { key: 'a', color: 5, shadeColor: 4 },
+    urlinie: { key: 'u', color: 6, shadeColor: 5 },
+    bassbrechung: { key: 'b', color: 7, shadeColor: 5 },
+    untyped: { color: 5 },
   },
 
   // The full list of pre-defined relations.
@@ -57,9 +45,9 @@ export const relationTypes = {
     'voice_exchange_component',
     'voice_exchange_component_chromaticized',
     'mixture',
-    'phrygian_ii'
-  ]
-}
+    'phrygian_ii',
+  ],
+};
 
 // Meta-relation types and shortcuts.
 export const metaRelationTypes = {
@@ -67,10 +55,10 @@ export const metaRelationTypes = {
 
   // Main relation types, keyboards shortcuts and colors.
   main: {
-    context:  { key: 'c', color: 1, shadeColor: 0 },
-    layer:    { key: 'l', color: 2, shadeColor: 6 },
-    phrase:   { key: 'r', color: 3, shadeColor: 2 },
-    section:  { key: 't', color: 5, shadeColor: 3 },
+    context: { key: 'c', color: 1, shadeColor: 0 },
+    layer: { key: 'l', color: 2, shadeColor: 6 },
+    phrase: { key: 'r', color: 3, shadeColor: 2 },
+    section: { key: 't', color: 5, shadeColor: 3 },
   },
 
   // The full list of pre-defined meta-relations.
@@ -99,9 +87,9 @@ export const metaRelationTypes = {
     'contradiction',
     'indeterminacy',
     'parallel_fifths',
-    'parallel_octaves'
+    'parallel_octaves',
   ],
-}
+};
 
 // Composite (“combo”) relation types and shortcuts.
 export const comboRelationTypes = {
@@ -110,14 +98,14 @@ export const comboRelationTypes = {
   main: {
     'passing comborelation': { key: 'P', total: 'passing', outer: 'arpeggio' },
     'neighbour comborelation': { key: 'N', total: 'neighbour', outer: 'repeat' },
-  }
-}
+  },
+};
 
 // Custon (meta-)relation shortcuts.
 export const custom_conf = {
-  'relation':            'R',
-  'meta_relation':       'M'
-}
+  relation: 'R',
+  meta_relation: 'M',
+};
 
 /**
  * Get the relations menu order for the provided selection type.
@@ -125,4 +113,4 @@ export const custom_conf = {
  * @param {string} type Selection type
  * @returns {Array}
  */
-export const getMenuOrder = type => menuOrderByType[type]
+export const getMenuOrder = (type) => menuOrderByType[type];

@@ -25,6 +25,6 @@
 
 .svg_container {
   @media (--motion) {
-    transition: transform .25s $in-out-quad;
+    transition: transform 0.25s $in-out-quad;
   }
 }

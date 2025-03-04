@@ -1,19 +1,27 @@
-import { doc } from '../../../utils/document'
-import viewport from '../../Viewport'
+import { doc } from '../../../utils/document';
+import viewport from '../../Viewport';
 
 class Navigation {
   constructor() {
-    this.toLeftBtn = document.getElementById('to-left')
-    this.toRightBtn = document.getElementById('to-right')
+    this.toLeftBtn = document.getElementById('to-left');
+    this.toRightBtn = document.getElementById('to-right');
   }
 
   onTap(e) {
-    if (e.target == this.toLeftBtn) { return this.toLeft() }
-    if (e.target == this.toRightBtn) { return this.toRight() }
+    if (e.target == this.toLeftBtn) {
+      return this.toLeft();
+    }
+    if (e.target == this.toRightBtn) {
+      return this.toRight();
+    }
   }
 
-  toLeft() { this.goTo(-(viewport.w - 200)) }
-  toRight() { this.goTo(viewport.w - 200) }
+  toLeft() {
+    this.goTo(-(viewport.w - 200));
+  }
+  toRight() {
+    this.goTo(viewport.w - 200);
+  }
 
   /**
    * Safari ignores CSS smooth scroll, which makes this a temporary solution.
@@ -24,9 +32,11 @@ class Navigation {
    * Ideally, `scrollIntoView` should be used, but as Safari ignores
    * the `scroll-padding`, the scroll would stop at a bad offset.
    */
-  goTo(x) { doc.scrollBy(x, 0) }
+  goTo(x) {
+    doc.scrollBy(x, 0);
+  }
 }
 
-const navigation = new Navigation()
+const navigation = new Navigation();
 
-export default navigation
+export default navigation;

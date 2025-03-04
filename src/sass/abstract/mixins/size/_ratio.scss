@@ -15,7 +15,6 @@
  */
 
 @mixin ratio($val, $selector: div, $offset: null) {
-
   &::before {
     content: '';
     display: block;
@@ -28,7 +27,6 @@
 }
 
 @mixin ratio-only($val) {
-
   &::before {
     content: '';
     display: block;

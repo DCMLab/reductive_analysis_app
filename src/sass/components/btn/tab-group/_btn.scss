@@ -1,7 +1,7 @@
 // A button belonging to a tab group.
 
 .btn-tabs__btn {
-  --btn-transition: .4s;
+  --btn-transition: 0.4s;
 
   position: relative;
 
@@ -14,13 +14,13 @@
   &:first-child {
     border-start-start-radius: v(btn-default-radius);
     border-end-start-radius: v(btn-default-radius);
-    border-inline-start-width: .2rem; // should be `revert` but it weirdly gives 3px…
+    border-inline-start-width: 0.2rem; // should be `revert` but it weirdly gives 3px…
   }
 
   &:last-child {
     border-start-end-radius: v(btn-default-radius);
     border-end-end-radius: v(btn-default-radius);
-    border-inline-end-width: .2rem;
+    border-inline-end-width: 0.2rem;
   }
 
   // Colors for borders, tabs separators and disabled state.

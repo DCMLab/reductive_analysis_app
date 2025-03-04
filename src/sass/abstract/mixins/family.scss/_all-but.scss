@@ -20,15 +20,11 @@
     &:not(:first-child) {
       @content;
     }
-  }
-
-  @else if ($num == last) {
+  } @else if ($num == last) {
     &:not(:last-child) {
       @content;
     }
-  }
-
-  @else {
+  } @else {
     &:not(:nth-child(#{$num})) {
       @content;
     }

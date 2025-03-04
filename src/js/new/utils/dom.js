@@ -16,17 +16,17 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * @returns {IterableDOMRect}
  */
 export const getDOMRect = (el, includedProps = null) => {
-  const rect = {}
-  const originalRect = el.getBoundingClientRect()
+  const rect = {};
+  const originalRect = el.getBoundingClientRect();
 
   for (const prop in originalRect) {
     if (!includedProps || includedProps.includes(prop)) {
-      rect[prop] = originalRect[prop]
+      rect[prop] = originalRect[prop];
     }
   }
 
-  return rect
-}
+  return rect;
+};
 
 /**
  * @typedef {['x' | 'y' | 'width' | 'height' | 'top' | 'right' | 'bottom' | 'left' ]} getDOMRectOptions
@@ -46,7 +46,7 @@ export const getDOMRect = (el, includedProps = null) => {
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
 export class NodeType {
-  static isElement = node => node.nodeType == 1
+  static isElement = (node) => node.nodeType == 1;
 }
 
 /**
@@ -58,8 +58,8 @@ export class NodeType {
 export const setAttributes = (el, attrs) => {
   Object.entries(attrs).forEach(([name, value]) => {
     if (value == null) {
-      return el.removeAttribute(name)
+      return el.removeAttribute(name);
     }
-    el.setAttribute(name, value)
-  })
-}
+    el.setAttribute(name, value);
+  });
+};

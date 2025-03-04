@@ -9,7 +9,6 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * An extension of Map to use it as a cache.
  */
 export class CacheMap extends Map {
-
   /**
    * Adds a cache entry if the specified key is new in the cache.
    *
@@ -17,7 +16,7 @@ export class CacheMap extends Map {
    * @param {*} value
    * @returns {CacheMap}
    */
-  add = (key, value) => this.has(key) ? this : this.set(key, value)
+  add = (key, value) => (this.has(key) ? this : this.set(key, value));
 
   /**
    * Adds a cache entry if the key is new in the cache, then returns the value.
@@ -31,10 +30,10 @@ export class CacheMap extends Map {
    */
   remember = (key, value) => {
     if (typeof value == 'function') {
-      value = this.has(key) ? this.get(key) : value()
+      value = this.has(key) ? this.get(key) : value();
     }
 
-    this.add(key, value)
-    return value
-  }
+    this.add(key, value);
+    return value;
+  };
 }

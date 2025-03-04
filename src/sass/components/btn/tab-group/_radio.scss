@@ -4,7 +4,7 @@
 
   &:focus-within {
     --btn-border: var(--primary); // overwrite default hover/focus
-    --btn-transition: .1s;
+    --btn-transition: 0.1s;
   }
 }
 
@@ -20,7 +20,7 @@
 
       z-index: 1;
 
-      outline: .2rem solid;
+      outline: 0.2rem solid;
     }
   }
 }
@@ -30,7 +30,7 @@
   --btn-bg: transparent;
   --btn-border: transparent;
 
-  margin: -.2rem;
+  margin: -0.2rem;
 
   pointer-events: none;
 }

@@ -1,7 +1,10 @@
 // Font fallbacks defined using https://meowni.ca/font-style-matcher
 // OS font data: https://www.cssfontstack.com
 
-$system: system-ui, -apple-system, sans-serif;
+$system:
+  system-ui,
+  -apple-system,
+  sans-serif;
 
 $work-sans: 'Work Sans', 'Lucida Grande', Verdana, $system;
 $work-sans-static: 'Work Sans static', 'Lucida Grande', Verdana, $system;

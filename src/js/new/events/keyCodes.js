@@ -5,7 +5,7 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import { arrayIncludesAll } from '../utils/array'
+import { arrayIncludesAll } from '../utils/array';
 
 const keys = Object.freeze({
   shift: 16,
@@ -22,12 +22,12 @@ const keys = Object.freeze({
   s: 83,
   x: 88,
   z: 90,
-})
+});
 
 /**
  * Check if the specified key is pressed.
  */
-export const isKey = ({ keyCode }, keyName) => keyCode === keys[keyName]
+export const isKey = ({ keyCode }, keyName) => keyCode === keys[keyName];
 
 /**
  * Check if wanted modifier(s) are pressed.
@@ -35,15 +35,15 @@ export const isKey = ({ keyCode }, keyName) => keyCode === keys[keyName]
  * @param {string | string[]=} modifiers
  */
 export function isModifier(keyboardEvent, modifiers = null) {
-  const keys = pressedModifiers(keyboardEvent)
+  const keys = pressedModifiers(keyboardEvent);
 
   // Not requesting a specific modifier.
   if (!modifiers) {
-    return !!keys.length // `true` if any modifier is pressed.
+    return !!keys.length; // `true` if any modifier is pressed.
   }
 
   // Look for all specified modifiers.
-  return arrayIncludesAll(keys, [modifiers].flat())
+  return arrayIncludesAll(keys, [modifiers].flat());
 }
 
 /**
@@ -52,16 +52,11 @@ export function isModifier(keyboardEvent, modifiers = null) {
  * @param {KeyboardEvent}
  * @returns {string[]} modifier keys
  */
-export function pressedModifiers({
-  metaKey: meta,
-  shiftKey: shift,
-  ctrlKey: ctrl,
-  altKey: alt,
-}) {
-  const modifiers = { meta, shift, ctrl, alt }
+export function pressedModifiers({ metaKey: meta, shiftKey: shift, ctrlKey: ctrl, altKey: alt }) {
+  const modifiers = { meta, shift, ctrl, alt };
 
-  return Object.keys(modifiers).filter(key => modifiers[key])
+  return Object.keys(modifiers).filter((key) => modifiers[key]);
 }
 
 // The key for usual platform shortcuts (Cmd on macOS, Ctrl anywhere else).
-export const shortcutMeta = /Macintosh/.test(navigator.userAgent) ? 'meta' : 'ctrl'
+export const shortcutMeta = /Macintosh/.test(navigator.userAgent) ? 'meta' : 'ctrl';

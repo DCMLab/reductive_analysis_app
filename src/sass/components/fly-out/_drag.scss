@@ -3,8 +3,12 @@
 .fly-out__drag {
   --btn-radius: 1rem 0rem 1rem 0rem;
 
-  &:hover { cursor: grab; }
-  .fly-out--grabbing & { cursor: grabbing; }
+  &:hover {
+    cursor: grab;
+  }
+  .fly-out--grabbing & {
+    cursor: grabbing;
+  }
 
   .dragging-fly-out :not(&) {
     pointer-events: none;
@@ -12,7 +16,6 @@
 }
 
 .fly-out--draggable {
-
   // Custom properties set in JavaScript.
   transform: translate(var(--fly-out-x, 0), var(--fly-out-y, 0));
 
@@ -36,6 +39,6 @@
   --fly-out-transition-properties: transform;
 
   @media (--no-motion) {
-    --fly-out-transition-duration: .01s;
+    --fly-out-transition-duration: 0.01s;
   }
 }

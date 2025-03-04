@@ -10,4 +10,6 @@
   -webkit-touch-callout: none;
 }
 
-.scrolling * { pointer-events: none !important; }
+.scrolling * {
+  pointer-events: none !important;
+}

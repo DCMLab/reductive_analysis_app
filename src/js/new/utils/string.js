@@ -14,5 +14,5 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  *
  * @param {string} str
  * @returns {string}
-*/
-export const capitalize = str => str[0].toUpperCase() + str.slice(1)
+ */
+export const capitalize = (str) => str[0].toUpperCase() + str.slice(1);

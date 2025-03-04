@@ -1,19 +1,19 @@
-import { capitalize } from '../../../utils/string'
+import { capitalize } from '../../../utils/string';
 
 const CSS = {
   hideIfCompact: 'hide-when-compact',
   hideIfNotCompact: 'hide-when-not-compact',
-}
+};
 
 // Add group title
 
-export const createTitle = name => `
+export const createTitle = (name) => `
   <div class="fly-out__headerRow">
       <div class="fly-out__title fly-out__title--big">
           ${capitalize(name)}s
       </div>
   </div>
-`
+`;
 
 // Add relation <button>
 
@@ -29,11 +29,11 @@ export const createBtn = (name, type, index) => `
   >
       ${capitalize(name)}
   </button>
-`
+`;
 
 // Show more <button>
 
-export const createShowMoreBtn = type => `
+export const createShowMoreBtn = (type) => `
   <button
       type="button"
       class="fly-out__secondaryBtn fly-out__showMore ${CSS.hideIfNotCompact} | btn btn--hollow"
@@ -42,7 +42,7 @@ export const createShowMoreBtn = type => `
       <span class="visually-hidden">View more ${type}</span>
       &hellip;
   </button>
-`
+`;
 
 export const createDatalistFillable = (config, type) => `
   <form
@@ -56,7 +56,7 @@ export const createDatalistFillable = (config, type) => `
           Assign <span class="visually-hidden">${type}</span>
       </button>
   </form>
-`
+`;
 
 const createFillable = (id, { label, placeholder = '' }) => `
   <label
@@ -79,14 +79,14 @@ const createFillable = (id, { label, placeholder = '' }) => `
           data-relation-type="${id}"
       >
   </label>
-`
+`;
 
 const createDatalist = (types, id) => `
   <datalist id="datalist-${id}">${createOptions(types)}</datalist>
-`
+`;
 
-const createOptions = options => options.map(createOption).join('')
-const createOption = value => `<option value="${value}">`
+const createOptions = (options) => options.map(createOption).join('');
+const createOption = (value) => `<option value="${value}">`;
 
 /**
  * Two optional functions, not needed right now:

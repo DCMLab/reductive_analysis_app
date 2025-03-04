@@ -18,7 +18,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * @param {number} max
  * @returns {number}
  */
-export const clamp = (val, min, max) => Math.max(min, Math.min(max, val))
+export const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
 
 /**
  * Round a number to provided precision.
@@ -33,6 +33,6 @@ export const clamp = (val, min, max) => Math.max(min, Math.min(max, val))
  * @param {integer=} precision
  */
 export const round = (number, precision = 0) => {
-  precision = 10 ** precision
-  return Math.round(number * precision) / precision
-}
+  precision = 10 ** precision;
+  return Math.round(number * precision) / precision;
+};

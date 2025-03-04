@@ -1,6 +1,6 @@
-import score from '../../Score'
-import { FlyOut } from '../FlyOut'
-import { createSelectionText } from './templates'
+import score from '../../Score';
+import { FlyOut } from '../FlyOut';
+import { createSelectionText } from './templates';
 
 /**
  * This class displays the list of selected notes, relations or metarelations
@@ -8,34 +8,36 @@ import { createSelectionText } from './templates'
  */
 export default class SelectionLegend extends FlyOut {
   constructor() {
-    super('selection-legend')
-    this.title = document.getElementById('selection-type')
+    super('selection-legend');
+    this.title = document.getElementById('selection-type');
 
-    this.primary = document.getElementById('selection-primary')
-    this.primaryList = document.getElementById('selection-list-primary')
+    this.primary = document.getElementById('selection-primary');
+    this.primaryList = document.getElementById('selection-list-primary');
 
-    this.secondary = document.getElementById('selection-secondary')
-    this.secondaryList = document.getElementById('selection-list-secondary')
+    this.secondary = document.getElementById('selection-secondary');
+    this.secondaryList = document.getElementById('selection-list-secondary');
 
-    this.hide()
+    this.hide();
   }
 
   update({ selected, extraselected }) {
-    this.toggleVisibility(score.hasSelection)
+    this.toggleVisibility(score.hasSelection);
 
     if (this.visible) {
-      this.updateTitle()
-      this.updateRow('primary', extraselected)
-      this.updateRow('secondary', selected)
+      this.updateTitle();
+      this.updateRow('primary', extraselected);
+      this.updateRow('secondary', selected);
     }
   }
 
   updateTitle() {
-    this.title.innerHTML = score.selectionType ? `Selected ${score.selectionType}s` : 'Selection is empty'
+    this.title.innerHTML = score.selectionType
+      ? `Selected ${score.selectionType}s`
+      : 'Selection is empty';
   }
 
   updateRow(name, selection) {
-    this[name].classList.toggle('none', !selection.length)
-    this[`${name}List`].innerHTML = createSelectionText(selection)
+    this[name].classList.toggle('none', !selection.length);
+    this[`${name}List`].innerHTML = createSelectionText(selection);
   }
 }

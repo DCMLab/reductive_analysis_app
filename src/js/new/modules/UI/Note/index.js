@@ -8,12 +8,12 @@ import {
   start_placing_note,
   stop_placing_note,
   toggle_placing_note,
-} from '../../../../coordinates'
+} from '../../../../coordinates';
 
 class NewNote {
   constructor() {
-    this.btn = document.getElementById('new-note')
-    this.isActive = false
+    this.btn = document.getElementById('new-note');
+    this.isActive = false;
   }
 
   /**
@@ -23,33 +23,33 @@ class NewNote {
    */
 
   toggle() {
-    this.isActive = toggle_placing_note() ?? false
+    this.isActive = toggle_placing_note() ?? false;
 
     /**
      * @todo: update active styles of this button on press + kb shortcut
      */
-    this.btn.classList.toggle('btn--placing-new-note', this.isActive)
+    this.btn.classList.toggle('btn--placing-new-note', this.isActive);
   }
 
   enable() {
-    start_placing_note()
-    this.btn.classList.add('btn--placing-new-note')
-    this.isActive = true
+    start_placing_note();
+    this.btn.classList.add('btn--placing-new-note');
+    this.isActive = true;
   }
 
   disable() {
-    stop_placing_note()
-    this.btn.classList.remove('btn--placing-new-note')
-    this.isActive = false
+    stop_placing_note();
+    this.btn.classList.remove('btn--placing-new-note');
+    this.isActive = false;
   }
 
   onTap({ target }) {
     if (target == this.btn) {
-      this.toggle()
+      this.toggle();
     }
   }
 }
 
-const newNote = new NewNote()
+const newNote = new NewNote();
 
-export default newNote
+export default newNote;

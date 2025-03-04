@@ -1,5 +1,5 @@
-import { capitalize } from '../../../utils/string'
-import score from '../../Score'
+import { capitalize } from '../../../utils/string';
+import score from '../../Score';
 
 /**
  * A group of filters for a category of relations.
@@ -11,16 +11,16 @@ export default class FilterGroup {
    * @param {FilterGroupOptions} options
    */
   constructor(namespace, options) {
-    this.namespace = namespace
+    this.namespace = namespace;
 
-    this.ctn = document.getElementById(options.filterCtnId)
-    this.paths = score.layersCtn.getElementsByClassName(namespace)
-    this.fields = []
+    this.ctn = document.getElementById(options.filterCtnId);
+    this.paths = score.layersCtn.getElementsByClassName(namespace);
+    this.fields = [];
   }
 
   onChange(e) {
     if (e.composedPath().includes(this.ctn)) {
-      this.toggleRelationsPaths(e.target.dataset.type, e.target.checked)
+      this.toggleRelationsPaths(e.target.dataset.type, e.target.checked);
     }
   }
 
@@ -29,34 +29,36 @@ export default class FilterGroup {
    */
   toggleRelationsPaths(type, state) {
     Array.from(this.paths)
-      .filter(path => path.getAttribute('type') == type)
-      .forEach(path => path.classList.toggle('relation--filtered', !state))
+      .filter((path) => path.getAttribute('type') == type)
+      .forEach((path) => path.classList.toggle('relation--filtered', !state));
   }
 
   /**
    * Get the list of relations type on the page.
    */
   getRelations() {
-    const uniqueRelations = new Set(Array.from(this.paths, path => path.getAttribute('type')))
+    const uniqueRelations = new Set(Array.from(this.paths, (path) => path.getAttribute('type')));
 
-    this.fields = Array.from(uniqueRelations, type => ({
+    this.fields = Array.from(uniqueRelations, (type) => ({
       type,
       checked: true, // @todo: modify later
       el: null, // @todo: useless for now…
-    }))
+    }));
   }
 
   hasRelationType(relationType) {
-    return this.fields.some(relation => relation.type == relationType)
+    return this.fields.some((relation) => relation.type == relationType);
   }
 
   wasLastOfType(relationType) {
-    return !Array.from(this.paths).some(path => path.getAttribute('type') == relationType)
+    return !Array.from(this.paths).some((path) => path.getAttribute('type') == relationType);
   }
 
   render() {
-    let filtersDomString = this.fields.map(relationType => this.createFilterElement(relationType)).join(' ')
-    this.ctn.innerHTML = filtersDomString
+    let filtersDomString = this.fields
+      .map((relationType) => this.createFilterElement(relationType))
+      .join(' ');
+    this.ctn.innerHTML = filtersDomString;
   }
 
   createFilterElement = ({ type, checked }) => `
@@ -71,7 +73,7 @@ export default class FilterGroup {
             </span>
         </label>
     </li>
-  `
+  `;
 }
 
 /**

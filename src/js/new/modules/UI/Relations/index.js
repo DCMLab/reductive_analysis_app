@@ -1,109 +1,107 @@
-import {
-  do_relation,
-  do_metarelation,
-  do_comborelation,
-} from '../../../../app'
+import { do_relation, do_metarelation, do_comborelation } from '../../../../app';
 
-import { delete_relations } from '../../../../delete'
-import { doc } from '../../../utils/document'
+import { delete_relations } from '../../../../delete';
+import { doc } from '../../../utils/document';
 
 import {
   relationTypes,
   metaRelationTypes,
   comboRelationTypes,
   getMenuOrder,
-} from '../../Relations/config'
+} from '../../Relations/config';
 
-import score from '../../Score'
-import viewport from '../../Viewport'
-import { DraggableFlyOut } from '../FlyOut'
-import RelationsGroup from './group'
+import score from '../../Score';
+import viewport from '../../Viewport';
+import { DraggableFlyOut } from '../FlyOut';
+import RelationsGroup from './group';
 
 // Assign form id looks like `free-field-something-form`
-const freeFieldFormRegex = new RegExp(/^free-field-(\w+)-form$/)
+const freeFieldFormRegex = new RegExp(/^free-field-(\w+)-form$/);
 
 class RelationsFlyOut extends DraggableFlyOut {
   constructor() {
-    super('relations-menu')
+    super('relations-menu');
 
-    this.innerCtn = document.getElementById('relations-btns-ctn')
-    this.deleteBtn = this.ctn.el.querySelector('.fly-out__deleteBtn')
-    this.init()
+    this.innerCtn = document.getElementById('relations-btns-ctn');
+    this.deleteBtn = this.ctn.el.querySelector('.fly-out__deleteBtn');
+    this.init();
   }
 
   get visibleGroups() {
-    return [
-      this.relations,
-      this.metarelations,
-      this.comborelations
-    ].filter(({ isVisible }) => isVisible)
+    return [this.relations, this.metarelations, this.comborelations].filter(
+      ({ isVisible }) => isVisible
+    );
   }
 
   onTap(e) {
-    super.onTap(e)
+    super.onTap(e);
 
     // Delete relation
     if (e.target == this.deleteBtn) {
-      return delete_relations()
+      return delete_relations();
     }
 
-    const { dataset, classList } = e.target
+    const { dataset, classList } = e.target;
 
     // Compact or expand
-    const isCompactBtn = classList.contains('fly-out__compact')
-    const isShowMoreBtn = classList.contains('fly-out__showMore')
+    const isCompactBtn = classList.contains('fly-out__compact');
+    const isShowMoreBtn = classList.contains('fly-out__showMore');
 
     if (isCompactBtn || isShowMoreBtn) {
-      this.compact(isCompactBtn)
-      return this.computeValues()
+      this.compact(isCompactBtn);
+      return this.computeValues();
     }
 
-    if (!dataset?.hasOwnProperty('relationType')) { return }
+    if (!dataset?.hasOwnProperty('relationType')) {
+      return;
+    }
 
     // Create relation
     if (classList.contains('btn--relation')) {
-      this[dataset.relationType].eventCallbacks.tap(dataset.relationName)
+      this[dataset.relationType].eventCallbacks.tap(dataset.relationName);
     }
   }
 
   onSubmit(e) {
-    const relationType = e.target.id.match(freeFieldFormRegex)?.[1]
+    const relationType = e.target.id.match(freeFieldFormRegex)?.[1];
 
-    if (!relationType) { return }
+    if (!relationType) {
+      return;
+    }
 
-    e.preventDefault()
+    e.preventDefault();
 
-    const { value } = this[relationType]?.freeField
+    const { value } = this[relationType]?.freeField;
     if (value) {
-      this[relationType].eventCallbacks.tap(value)
+      this[relationType].eventCallbacks.tap(value);
     }
   }
 
   onScoreSelection() {
-    const { hasSelection, selectionType, selectedRelationTypes } = score
+    const { hasSelection, selectionType, selectedRelationTypes } = score;
 
     // Update selected buttons.
-    this.relations.select(selectionType == 'relation' ? selectedRelationTypes : new Set())
-    this.metarelations.select(selectionType == 'metarelation' ? selectedRelationTypes : new Set())
+    this.relations.select(selectionType == 'relation' ? selectedRelationTypes : new Set());
+    this.metarelations.select(selectionType == 'metarelation' ? selectedRelationTypes : new Set());
 
     // Hide if nothing is selected.
-    this.toggleVisibility(hasSelection)
+    this.toggleVisibility(hasSelection);
 
-    this.reorder()
+    this.reorder();
 
-    const selectionIsNote = selectionType == 'note'
-    doc.classList.toggle('selection-is-note', selectionIsNote)
+    const selectionIsNote = selectionType == 'note';
+    doc.classList.toggle('selection-is-note', selectionIsNote);
 
     // Always show the relations buttons.
-    this.relations.show()
+    this.relations.show();
 
     // Show metarelations unless a note is selected.
-    this.metarelations.toggleVisibility(!selectionIsNote)
+    this.metarelations.toggleVisibility(!selectionIsNote);
 
-    this.compact()
+    this.compact();
 
     // Disable the delete button unless a relation is selected.
-    this.deleteBtn.disabled = !hasSelection || selectionIsNote
+    this.deleteBtn.disabled = !hasSelection || selectionIsNote;
 
     /**
      * The dimensions of the fly-out may change if the selected item isn’t the
@@ -111,7 +109,7 @@ class RelationsFlyOut extends DraggableFlyOut {
      * selected item, we need to re-compute its values.
      */
     if (score.flatSelection.length == 1) {
-      this.computeValues()
+      this.computeValues();
     }
   }
 
@@ -120,55 +118,55 @@ class RelationsFlyOut extends DraggableFlyOut {
    * The order by type is defined in `modules/Relations/config.js`.
    */
   reorder() {
-
     // Reorder only when 1 item is selected.
-    if (!(score.flatSelection.length === 1)) { return }
+    if (!(score.flatSelection.length === 1)) {
+      return;
+    }
 
-    const order = getMenuOrder(score.selectionType)
+    const order = getMenuOrder(score.selectionType);
 
     for (let index = order.length - 1; index > 0; index--) {
-      this.innerCtn.insertBefore(
-        this[order[index - 1]].ctn,
-        this[order[index]].ctn
-      )
+      this.innerCtn.insertBefore(this[order[index - 1]].ctn, this[order[index]].ctn);
     }
   }
 
   compact(shouldCompact = null) {
-    if (!(score.flatSelection.length)) { return }
+    if (!score.flatSelection.length) {
+      return;
+    }
 
     if (shouldCompact != null) {
-      this.ctn.el.classList.toggle('fly-out--relations-compact', shouldCompact)
-      this.ctn.el.classList.toggle('fly-out--big', !shouldCompact)
+      this.ctn.el.classList.toggle('fly-out--relations-compact', shouldCompact);
+      this.ctn.el.classList.toggle('fly-out--big', !shouldCompact);
     }
 
     // Condition partly from src/js/app.js: do_comborelation()
     const comborelationsVisible =
-        score.selectionType == 'note'
-        && score.flatSelection.length > 2
-        && score.selection.extraselected.length < 3
-    this.comborelations.toggleVisibility(comborelationsVisible)
+      score.selectionType == 'note' &&
+      score.flatSelection.length > 2 &&
+      score.selection.extraselected.length < 3;
+    this.comborelations.toggleVisibility(comborelationsVisible);
   }
 
   init() {
     this.relations = new RelationsGroup('relations', relationTypes, {
       tap: do_relation,
-    })
+    });
 
     this.metarelations = new RelationsGroup('metarelations', metaRelationTypes, {
       tap: do_metarelation,
-    })
+    });
 
     this.comborelations = new RelationsGroup('comborelations', comboRelationTypes, {
       tap: do_comborelation,
-    })
+    });
 
-    this.title = this.ctn.el.querySelector('.fly-out__title')
-    this.updatePosition((viewport.w - this.ctn.el.clientWidth) / 2, 120)
-    this.snapInViewport()
+    this.title = this.ctn.el.querySelector('.fly-out__title');
+    this.updatePosition((viewport.w - this.ctn.el.clientWidth) / 2, 120);
+    this.snapInViewport();
   }
 }
 
-const relationsMenu = new RelationsFlyOut()
+const relationsMenu = new RelationsFlyOut();
 
-export default relationsMenu
+export default relationsMenu;

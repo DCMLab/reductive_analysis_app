@@ -3,7 +3,7 @@
   transform-box: fill-box;
   transform-origin: 50% 50% !important; // overwrite `.svg__container svg *`
 
-  transition: .2s $in-out-quad;
+  transition: 0.2s $in-out-quad;
   transition-property: fill, stroke;
 
   /**
@@ -20,7 +20,7 @@
 
 .relation--filtered {
   opacity: 0;
-  transform: scale(.95);
+  transform: scale(0.95);
   visibility: hidden;
 
   transition-timing-function: $in-quint;

@@ -1,4 +1,4 @@
-import FlyOut from './base'
-import DraggableFlyOut from './draggable'
+import FlyOut from './base';
+import DraggableFlyOut from './draggable';
 
-export { DraggableFlyOut, FlyOut }
+export { DraggableFlyOut, FlyOut };

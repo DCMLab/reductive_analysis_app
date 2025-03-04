@@ -34,11 +34,11 @@
 }
 
 .fillable__input {
-  padding: .8rem;
+  padding: 0.8rem;
 
   font-weight: inherit;
 
-  border: solid .2rem v(fillable-border, primary, null);
+  border: solid 0.2rem v(fillable-border, primary, null);
   border-radius: 1rem;
 
   &:not(:focus):not(:hover) {

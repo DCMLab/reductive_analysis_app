@@ -6,10 +6,10 @@
   top: 12rem;
   left: 0;
 
-  transition: transform .4s $in-out-quad;
+  transition: transform 0.4s $in-out-quad;
 
   &.layers-menu--visible {
-    transition: transform .3s $out-cubic;
+    transition: transform 0.3s $out-cubic;
 
     .hide-when-visible {
       display: none;
@@ -18,7 +18,7 @@
 
   &:not(.layers-menu--visible) {
     transform: translateX(calc(-100% - 2rem)); // -2rem for container (.ui) offset
-    transition: transform .3s $out-back;
+    transition: transform 0.3s $out-back;
 
     .hide-when-not-visible {
       display: none;
@@ -118,5 +118,5 @@
   z-index: 2;
 
   background: v(bg);
-  border-bottom: .1rem solid $lacquered-licorice;
+  border-bottom: 0.1rem solid $lacquered-licorice;
 }

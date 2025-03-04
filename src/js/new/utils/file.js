@@ -18,19 +18,19 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * @param {string} mimeType
  */
 export function downloadAs(filedata, filename, mimeType) {
-  const file = new Blob([filedata], { type: mimeType })
+  const file = new Blob([filedata], { type: mimeType });
 
-  const link = document.createElement('a')
-  link.style.display = 'none'
-  link.href = URL.createObjectURL(file)
-  link.download = filename
+  const link = document.createElement('a');
+  link.style.display = 'none';
+  link.href = URL.createObjectURL(file);
+  link.download = filename;
 
-  document.body.appendChild(link)
-  link.click()
+  document.body.appendChild(link);
+  link.click();
 
   // timeout apparently needed on Firefox
   setTimeout(() => {
-    URL.revokeObjectURL(link.href)
-    link.remove()
-  }, 0)
+    URL.revokeObjectURL(link.href);
+    link.remove();
+  }, 0);
 }

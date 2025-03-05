@@ -1,8 +1,8 @@
 // https://github.com/grimmdude/MidiPlayerJS
-// https://github.com/danigb/soundfont-player
+// https://github.com/danigb/smplr
 
 import MidiPlayer from 'midi-player-js';
-import Soundfont from 'soundfont-player';
+import { Soundfont } from 'smplr';
 import { getOrigMidi } from '../../../app';
 import { setAttributes } from '../../utils/dom';
 import { clamp, round } from '../../utils/math';
@@ -165,33 +165,38 @@ class Player {
   }
 
   init() {
-    Soundfont.instrument(audioContext, './instruments/acoustic-grand-piano-mp3.js').then(
-      (instrument) => {
-        this.instrument = instrument;
-        midiPlayer = new MidiPlayer.Player((event) => {
-          const noteKey = event.noteName + event.track;
+    // Create a new Soundfont instance from smplr
+    this.instrument = new Soundfont(audioContext, {
+      instrument: 'acoustic_grand_piano',
+    });
 
-          if (event.name == 'Note on' && event.velocity > 0) {
-            this.activeNotes[noteKey] = instrument.play(
-              event.noteNumber,
-              audioContext.currentTime,
-              {
-                gain: event.velocity / 127,
-              }
-            );
-          } else if (
-            event.name == 'Note off' ||
-            (event.name == 'Note on' && event.velocity == 0) // synonym of `Note off`
-          ) {
-            this.activeNotes[noteKey]?.stop();
+    // Wait for the instrument to load
+    this.instrument.load.then(() => {
+      midiPlayer = new MidiPlayer.Player((event) => {
+        const noteKey = event.noteName + event.track;
+
+        if (event.name == 'Note on' && event.velocity > 0) {
+          // Start playing a note using smplr's API
+          this.activeNotes[noteKey] = this.instrument.start({
+            note: event.noteNumber,
+            velocity: event.velocity,
+          });
+        } else if (
+          event.name == 'Note off' ||
+          (event.name == 'Note on' && event.velocity == 0) // synonym of `Note off`
+        ) {
+          // Stop the note if it exists
+          if (this.activeNotes[noteKey]) {
+            this.activeNotes[noteKey](); // Call the returned stop function
+            delete this.activeNotes[noteKey];
           }
+        }
 
-          this.updateProgress();
-        });
+        this.updateProgress();
+      });
 
-        midiPlayer.on('endOfFile', () => this.stop());
-      }
-    );
+      midiPlayer.on('endOfFile', () => this.stop());
+    });
 
     this.updateControls('stopped');
     this.progressBar = new ProgressBar('player');

@@ -35,15 +35,9 @@ function delete_relation(elem) {
               arc.getAttribute('from') == '#' + elem.id
     })
   // Find meta-relations associated with this relation
-  let meta_relations = []
-  let meta_relation_arcs = []
-
-  // Only find meta-relations if this is not a meta-relation itself
-  if (!is_meta_relation) {
-    const result = find_parent_meta_relations(elem, mei, draw_contexts, svg_hes)
-    meta_relations = result.meta_relations
-    meta_relation_arcs = result.meta_relation_arcs
-  }
+  const result = find_all_parent_relations(elem, mei, draw_contexts, svg_hes)
+  const meta_relations = result.meta_relations
+  const meta_relation_arcs = result.meta_relation_arcs
 
   // Combine all elements that need to be removed
   let removed = arcs.concat(svg_hes).concat(meta_relations).concat(meta_relation_arcs)
@@ -90,35 +84,44 @@ export function delete_relations(redoing = false) {
  * visual representations and connecting arcs.
  *
  * When a relation is deleted, any meta-relations that reference it should also be deleted.
- * This function identifies all such meta-relations and their associated elements.
+ * This function recursively identifies all such parent relations (parents, grandparents, etc.)
+ * and their associated elements.
  *
  * @param {Element} elem - The target relation element being deleted
  * @param {Document} mei - The MEI document containing the graph data
  * @param {Array} draw_contexts - The drawing contexts containing SVG representations
  * @param {Array} svg_hes - Array of SVG elements (this is modified by adding meta-relation SVGs)
+ * @param {Set} [processedIds=new Set()] - Set of already processed meta-relation IDs to prevent infinite recursion
  *
  * @returns {Object} An object containing:
  *   - meta_relations: Array of MEI meta-relation nodes that reference the relation
  *   - meta_relation_arcs: Array of arcs connecting these meta-relations
  */
-function find_parent_meta_relations(elem, mei, draw_contexts, svg_hes) {
+function find_all_parent_relations(elem, mei, draw_contexts, svg_hes, processedIds = new Set()) {
   let meta_relations = []
   let meta_relation_arcs = []
 
+  const elemId = elem.id || get_id(elem)
+
   // Find arcs that connect meta-relations to this relation
+  // Only look for arcs where this element is the target (to) - parent->child
   const meta_arcs = Array.from(mei.getElementsByTagName('arc')).filter(
-    arc => arc.getAttribute('to') == '#' + elem.id || arc.getAttribute('from') == '#' + elem.id
+    arc => arc.getAttribute('to') == '#' + elemId
   )
 
-  // For each arc, find the meta-relation nodes
+  // For each arc, find the meta-relation nodes that are parents of this element
   meta_arcs.forEach(arc => {
-    // Find the meta-relation (whether it's at the "to" or "from" end)
-    const meta_id =
-      arc.getAttribute('to') === '#' + elem.id
-        ? arc.getAttribute('from').substring(1)
-        : arc.getAttribute('to').substring(1)
+    // The source of the arc is the parent meta-relation
+    const meta_id = arc.getAttribute('from').substring(1)
 
+    // Skip if already processed
+    if (processedIds.has(meta_id)) {
+      return
+    }
+
+    processedIds.add(meta_id)
     const meta_node = get_by_id(mei, meta_id)
+
     if (meta_node && meta_node.getAttribute('type') === 'metarelation') {
       meta_relations.push(meta_node)
 
@@ -136,6 +139,19 @@ function find_parent_meta_relations(elem, mei, draw_contexts, svg_hes) {
       )
 
       meta_relation_arcs = meta_relation_arcs.concat(related_arcs)
+
+      // Recursively find parent meta-relations of this meta-relation
+      const result = find_all_parent_relations(
+        { id: meta_id },
+        mei,
+        draw_contexts,
+        svg_hes,
+        processedIds
+      )
+
+      // Merge results
+      meta_relations = meta_relations.concat(result.meta_relations)
+      meta_relation_arcs = meta_relation_arcs.concat(result.meta_relation_arcs)
     }
   })
 

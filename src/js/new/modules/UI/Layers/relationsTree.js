@@ -11,6 +11,11 @@ export default class RelationsTree {
 
     this.visible = false
     this.shouldDrawRootsLow = false
+
+    // Register this instance to make it accessible globally
+    if (!window.relationTreeInstance) {
+      window.relationTreeInstance = this
+    }
   }
 
   /**
@@ -26,9 +31,17 @@ export default class RelationsTree {
     }
   }
 
+  /**
+   * Update the hierarchy tree if it's currently visible
+   * This can be called from anywhere in the application
+   */
+  updateIfVisible() {
+    if (!this.visible) return
+    this.draw()
+  }
+
   onChange({ target }) {
     if (target.name == 'relations-tree') {
-      console.log(getCurrentDrawContext())
       this.visible = target.value == 'on'
       this.draw()
     }
@@ -49,5 +62,8 @@ export default class RelationsTree {
     console.log(hasTree)
 
     this[hasTree ? 'on' : 'off'].checked = true
+    if (hasTree) {
+      this.visible = true
+    }
   }
 }

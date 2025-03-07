@@ -11,9 +11,6 @@ import '/sass/app.scss'
 
 import $ from 'jquery'
 
-import { action_conf } from './conf'
-import { navigation_conf } from './conf'
-import { custom_conf } from './conf'
 import { debug } from './conf'
 
 import newApp from './new/app'
@@ -202,6 +199,9 @@ export function do_relation(type, id, redoing = false) {
   }
   if (!redoing)
     flush_redo()
+
+  // Update hierarchy tree if visible
+  window.relationTreeInstance?.updateIfVisible()
 }
 
 export function do_comborelation(type) {
@@ -221,6 +221,9 @@ export function do_comborelation(type) {
   selected = all
 
   do_relation(comboRelationTypes.main[type].total)
+
+  // Update hierarchy tree if visible
+  window.relationTreeInstance?.updateIfVisible()
 }
 
 export function do_metarelation(type, id, redoing = false) {
@@ -249,6 +252,9 @@ export function do_metarelation(type, id, redoing = false) {
   selected.concat(extraselected).forEach(toggle_selected) // De-select
   if (!redoing)
     flush_redo()
+
+  // Update hierarchy tree if visible
+  window.relationTreeInstance?.updateIfVisible()
 }
 
 var rerendered_after_action

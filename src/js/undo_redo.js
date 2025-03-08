@@ -74,7 +74,14 @@ export function do_undo() {
   } else if (what == 'delete relation') {
     var removed = elems
     removed.forEach(x => {
-      x[1].insertBefore(x[0], x[2])
+      // Check if reference node is still valid before inserting
+      if (x[2] && x[1].contains(x[2])) {
+        x[1].insertBefore(x[0], x[2])
+      } else {
+        // Append if reference node is invalid or missing
+        x[1].appendChild(x[0])
+      }
+
       let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]))
       let rel = get_class_from_classlist(x[0]) == 'relation'
       if (dc && rel) {

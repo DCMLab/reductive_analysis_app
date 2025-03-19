@@ -354,8 +354,11 @@ export function load(event) {
      * move this to the MAIN MENU
      */
     filename = files[0].name.split('.').slice(0, -1).join('.')
-    if (filename == '')
-      filename = files[0].name
+    if (filename == '') filename = files[0].name
+
+    // Update page title and menu filename
+    document.title = `${filename}`
+    document.getElementById('menu-filename').textContent = filename
   }
 }
 

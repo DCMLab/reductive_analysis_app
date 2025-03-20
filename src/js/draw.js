@@ -68,10 +68,11 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
 
   // Draw slurs between consecutive notes
   for (let i = 0; i < notes.length - 1; i++) {
-    const start = note_coords(notes[i])
-    const end = note_coords(notes[i + 1])
+    const slur = draw_slur(notes[i], notes[i + 1])
 
-    const slur = draw_slur(start, end)
+    // Store note references in the slur element
+    slur.setAttribute('start-note', notes[i].id)
+    slur.setAttribute('end-note', notes[i + 1].id)
 
     // Apply the group's color to the slur
     slur.style.stroke = getComputedStyle(group).getPropertyValue('--shade-alternate')

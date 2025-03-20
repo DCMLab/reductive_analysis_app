@@ -1084,21 +1084,64 @@ export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }
 
-// Draw a slur between two points
-export function draw_slur(start, end) {
+// Count how many slurs are connected to a note element
+function count_existing_slurs(noteElement) {
+  const drawContext = draw_context_of(noteElement)
+  if (!drawContext) return 0
+
+  const relations = Array.from(drawContext.svg_elem.getElementsByClassName('relation'))
+
+  let count = 0
+  relations.forEach(relation => {
+    const slurs = Array.from(relation.getElementsByTagName('path'))
+    slurs.forEach(slur => {
+      if (slur.getAttribute('start-note') === noteElement.id ||
+          slur.getAttribute('end-note') === noteElement.id) {
+        count++
+      }
+    })
+  })
+  return count
+}
+
+// Draw a slur between two notes
+export function draw_slur(startNote, endNote) {
   const newElement = document.createElementNS('http://www.w3.org/2000/svg', 'path')
 
-  // Move start and end points up from the notehead center
-  const offsetY = 150
-  const adjustedStart = [start[0], start[1] - offsetY]
-  const adjustedEnd = [end[0], end[1] - offsetY]
+  // Get base coordinates
+  const start = note_coords(startNote)
+  const end = note_coords(endNote)
+
+  // Calculate offsets based on existing slurs
+  const nStartSlur = count_existing_slurs(startNote)
+  const nEndSlur = count_existing_slurs(endNote)
+
+  // Base offset plus additional offset per existing slur
+  const baseOffsetY = 150
+  const slurOffsetYUnit = 30
+  const startOffsetY = baseOffsetY + (nStartSlur * slurOffsetYUnit)
+  const endOffsetY = baseOffsetY + (nEndSlur * slurOffsetYUnit)
+
+  // Apply offsets
+  const adjustedStart = [start[0], start[1] - startOffsetY]
+  const adjustedEnd = [end[0], end[1] - endOffsetY]
 
   // Calculate control points for a quadratic Bezier curve
   const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
   const midY = (adjustedStart[1] + adjustedEnd[1]) / 2
-  const height = Math.abs(adjustedEnd[0] - adjustedStart[0]) * 0.4
-  const topControlPoint = [midX, midY - height]
-  const bottomControlPoint = [midX, midY - height * 0.7]
+  const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
+
+  // Calculate base height and additional height for existing slurs
+  const slurOffsetHeightUnit = 80
+  const maxExistingSlurs = Math.max(nStartSlur, nEndSlur)
+  const additionalHeight = maxExistingSlurs * slurOffsetHeightUnit
+  const height = width * 0.4 + additionalHeight
+
+  // Adjust control points based on different start/end heights
+  const maxWidth = 80
+  const heightDiff = Math.abs(startOffsetY - endOffsetY)
+  const topControlPoint = [midX, midY - height - (heightDiff * 0.5)]
+  const bottomControlPoint = [midX, midY - height - (heightDiff * 0.5) + maxWidth]
 
   const pathData = `
     M ${adjustedStart[0]},${adjustedStart[1]}
@@ -1108,6 +1151,5 @@ export function draw_slur(start, end) {
     Z`
 
   newElement.setAttribute('d', pathData)
-
   return newElement
 }

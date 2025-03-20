@@ -331,11 +331,7 @@ body:not(.mousedown) .note:hover {
 .relation,
 .metarelation {
   fill: var(--shade, currentColor);
-  fill-opacity: 0.2;
-
-  stroke: var(--shade, currentColor);
-  stroke-width: 27;
-  stroke-opacity: 0.3;
+  fill-opacity: 0.8 ;
 }
 
 html.shades-alternate .relation,

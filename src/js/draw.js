@@ -25,7 +25,7 @@ import {
   relation_primaries,
   relation_secondaries,
   relation_type,
-  roundedHull
+  draw_slur,
 } from './utils'
 
 // Given a draw context and a graph node representing a relation, draw the
@@ -59,72 +59,60 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
     return null
   }
 
-  // TODO: Other ways to draw the relations - retain as a single tree with
-  // ID and type. TODO: Use classlist also for types, as in type:<type> or
-  // similar
-  var elem = roundedHull(notes.map(note_coords))
-  elem.setAttribute('id', id)
-  if (id_prefix != '')
-    elem.setAttribute('oldid', g_elem.getAttribute('xml:id'))
-  elem.classList.add('relation')
-  elem.setAttribute('type', type)
+  // Create a group element to hold all slurs
+  var group = g()
+  group.setAttribute('id', id)
+  if (id_prefix != '') group.setAttribute('oldid', g_elem.getAttribute('xml:id'))
+  group.classList.add('relation')
+  group.setAttribute('type', type)
+
+  // Draw slurs between consecutive notes
+  for (let i = 0; i < notes.length - 1; i++) {
+    const start = note_coords(notes[i])
+    const end = note_coords(notes[i + 1])
+
+    const slur = draw_slur(start, end)
+
+    // Apply the group's color to the slur
+    slur.style.stroke = getComputedStyle(group).getPropertyValue('--shade-alternate')
+    group.appendChild(slur)
+  }
 
   /**
    * Hacky way of having the shades properly initialiazed (`color` attribute).
    * Should be improved later.
    */
   // Are we running with type-specific shades?
-  toggle_shade(elem)
+  toggle_shade(group)
   if (!newApp.ui.scoreSettings.brightShades)
     toggle_shade(elem)
 
   // Relations can be scrolled
-  elem.addEventListener('wheel', e => {
-    e.preventDefault()
-    flip_to_bg(e.target)
-    e.target.onmouseout()
-  }, captureEvent)
-
-  function undraw_meta_or_relation(draw_context, g_elem) {
-    let mei_id = get_id(g_elem)
-    let svg_id = draw_context.id_prefix + mei_id
-    let svg_he = get_by_id(document, svg_id)
-    if (!svg_he) {
-      console.debug('Could not undraw relation in draw context', g_elem, draw_context)
-      return false
-    }
-    const mei_graph = getMeiGraph()
-    if (g_elem.getAttribute('type') == 'relation')
-      unmark_secondaries(draw_context, mei_graph, mei_he) // @todo: Where does mei_he come from?
-    var primaries = relation_primaries(mei_graph, g_elem).map(
-      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
-    )
-    var secondaries = relation_secondaries(mei_graph, g_elem).map(
-      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
-    )
-    primaries.forEach((item) => { item.classList.remove('extrahover') })
-    secondaries.forEach((item) => { item.classList.remove('selecthover') })
-    svg_he.parentNode.removeChild(svg_he)
-    return true
-  }
+  group.addEventListener(
+    'wheel',
+    e => {
+      e.preventDefault()
+      flip_to_bg(e.target)
+      e.target.onmouseout()
+    },
+    captureEvent
+  )
 
   // Decorate with onclick and onmouseover handlers
-  elem.onclick = () => toggle_selected(elem)
-  elem.onmouseover = function () {
+  group.onclick = () => toggle_selected(group)
+  group.onmouseover = function () {
     primaries.forEach(item => item.classList.add('extrahover'))
     secondaries.forEach(item => item.classList.add('selecthover'))
   }
-  elem.onmouseout = function () {
+  group.onmouseout = function () {
     primaries.forEach(item => item.classList.remove('extrahover'))
     secondaries.forEach(item => item.classList.remove('selecthover'))
   }
-  // TODO: Set up more onhover stuff for The Same Relation
-  // Elsewhere - but perhaps that's a separate thing?
 
   // Add it to the SVG
-  add_to_svg_bg(svg_elem, elem)
+  add_to_svg_bg(svg_elem, group)
   // Remember what we're adding
-  added.push(elem)
+  added.push(group)
   return added
 }
 

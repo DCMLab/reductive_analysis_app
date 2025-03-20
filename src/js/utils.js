@@ -1083,3 +1083,31 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
 export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
 }
+
+// Draw a slur between two points
+export function draw_slur(start, end) {
+  const newElement = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+
+  // Move start and end points up from the notehead center
+  const offsetY = 150
+  const adjustedStart = [start[0], start[1] - offsetY]
+  const adjustedEnd = [end[0], end[1] - offsetY]
+
+  // Calculate control points for a quadratic Bezier curve
+  const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
+  const midY = (adjustedStart[1] + adjustedEnd[1]) / 2
+  const height = Math.abs(adjustedEnd[0] - adjustedStart[0]) * 0.4
+  const topControlPoint = [midX, midY - height]
+  const bottomControlPoint = [midX, midY - height * 0.7]
+
+  const pathData = `
+    M ${adjustedStart[0]},${adjustedStart[1]}
+    Q ${topControlPoint[0]},${topControlPoint[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
+    L ${adjustedEnd[0]},${adjustedEnd[1]}
+    Q ${bottomControlPoint[0]},${bottomControlPoint[1]} ${adjustedStart[0]},${adjustedStart[1]}
+    Z`
+
+  newElement.setAttribute('d', pathData)
+
+  return newElement
+}

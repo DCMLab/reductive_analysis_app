@@ -638,7 +638,8 @@ function render_mei(mei) {
   var svg = vrvToolkit.renderData(data, {
     pageWidth: 20000,
     pageHeight: 10000,
-    breaks: 'none'
+    breaks: 'none',
+    svgCss: 'g.notehead, g.stem, g.dots {fill: currentColor;}',
   })
   return [data, svg]
 }

@@ -39,6 +39,7 @@ import {
   minimap,
   toggle_selected,
   toggle_shade,
+  setCurrentDrawContext,
 } from './ui'
 
 import {
@@ -139,8 +140,6 @@ window.addEventListener('beforeunload', function (e) {
 
 $(document).ready(function() {
   document.getElementsByTagName('html')[0].classList.remove('loader')
-
-  minimap()
 })
 
 // Optional catch-all exception handler.
@@ -635,6 +634,7 @@ function finalize_draw_context(new_draw_context) {
   }
   console.groupEnd()
   draw_graph(new_draw_context)
+  setCurrentDrawContext(new_draw_context)
   minimap()
 }
 

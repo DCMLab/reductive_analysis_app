@@ -71,10 +71,20 @@ export function do_undo() {
     sel.forEach(x => toggle_selected(document.getElementById(x.id), false))
     extra.forEach(x => toggle_selected(document.getElementById(x.id), true))
     redo_actions.push([what, [type, id], sel, extra])
+
+    // Update hierarchy tree if visible
+    window.relationTreeInstance?.updateIfVisible()
   } else if (what == 'delete relation') {
     var removed = elems
     removed.forEach(x => {
-      x[1].insertBefore(x[0], x[2])
+      // Check if reference node is still valid before inserting
+      if (x[2] && x[1].contains(x[2])) {
+        x[1].insertBefore(x[0], x[2])
+      } else {
+        // Append if reference node is invalid or missing
+        x[1].appendChild(x[0])
+      }
+
       let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]))
       let rel = get_class_from_classlist(x[0]) == 'relation'
       if (dc && rel) {
@@ -88,6 +98,8 @@ export function do_undo() {
     extra.forEach(x => toggle_selected(x, true))
     redo_actions.push([what, [], sel, extra])
 
+    // Update hierarchy tree if visible
+    window.relationTreeInstance?.updateIfVisible()
   } else if (what == 'change relation type') {
     var types = elems
     let type = elems[0][1]
@@ -105,6 +117,9 @@ export function do_undo() {
     sel.forEach(x => toggle_selected(x, false))
     extra.forEach(x => toggle_selected(x, true))
     redo_actions.push([what, type, sel, extra])
+
+    // Update hierarchy tree if visible
+    window.relationTreeInstance?.updateIfVisible()
   } else if (what == 'add note') {
     var [mei_elems, graphicals] = elems
     graphicals.forEach(x => x.parentNode.removeChild(x))

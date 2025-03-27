@@ -121,7 +121,7 @@ export function toggle_selected(item, extra = null) {
   }
 
   /**
-   * Unless it’s explicitely forced (= when `extra` is `true` or `false`), the
+   * Unless it's explicitely forced (= when `extra` is `true` or `false`), the
    * selection mode is handled by a keyboard shortcut or the visual toggle.
    */
   if (extra === null) {
@@ -334,7 +334,7 @@ function set_non_note_visibility(hidden) {
  *
  * Ideas to evaluate for improvements:
  * 1) gather colors in one object so that
- *    `rootStyles.getPropertyValue(`--relation-${colorIndex}`)` isn’t needed.
+ *    `rootStyles.getPropertyValue(`--relation-${colorIndex}`)` isn't needed.
  * 2) Do `element.setAttribute('color', color)` on relation creation,
  *    maybe in `draw_relation()` after elem.setAttribute('type', type).
  */
@@ -543,4 +543,57 @@ export const setCurrentDrawContext = drawContext => {
   current_draw_context?.layer.layer_elem.classList.remove('layer--active')
   current_draw_context = drawContext
   current_draw_context.layer.layer_elem.classList.add('layer--active')
+}
+
+export function adjustSvgDimensions(draw_context) {
+  const svg_elem = draw_context.svg_elem
+  const svg = svg_elem.children[0]
+  const viewBox = svg_elem.getElementsByClassName('definition-scale')[0].getAttribute('viewBox')
+  let [x, y, w, h] = viewBox.split(' ').map(Number)
+
+  // Get all relations
+  const allRelations = Array.from(svg_elem.getElementsByClassName('relation'))
+  const allMetarelations = Array.from(svg_elem.getElementsByClassName('metarelation'))
+
+  // If no relations, don't adjust anything
+  if (allRelations.length === 0 && allMetarelations.length === 0) {
+    return
+  }
+
+  // Calculate bounding box of all relations
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+
+  const allElements = [...allRelations, ...allMetarelations]
+  allElements.forEach(relation => {
+    const bbox = relation.getBBox()
+    minX = Math.min(minX, bbox.x)
+    minY = Math.min(minY, bbox.y)
+    maxX = Math.max(maxX, bbox.x + bbox.width)
+    maxY = Math.max(maxY, bbox.y + bbox.height)
+  })
+
+  // Add padding
+  const padding = 100
+  minX -= padding
+  minY -= padding
+  maxX += padding
+  maxY += padding
+
+  // Calculate new viewBox that includes both score and relations
+  const newMinX = Math.min(x, minX)
+  const newMinY = Math.min(y, minY)
+  const newMaxX = Math.max(x + w, maxX)
+  const newMaxY = Math.max(y + h, maxY)
+  const newWidth = newMaxX - newMinX
+  const newHeight = newMaxY - newMinY
+
+  // Update viewBox to include both score and relations
+  const newViewBox = `${newMinX} ${newMinY} ${newWidth} ${newHeight}`
+  svg_elem.getElementsByClassName('definition-scale')[0].setAttribute('viewBox', newViewBox)
+
+  // Update SVG dimensions while maintaining aspect ratio
+  const currentWidth = parseFloat(svg.getAttribute('width'))
+  const scale = currentWidth / w
+  svg.setAttribute('width', `${newWidth * scale}px`)
+  svg.setAttribute('height', `${newHeight * scale}px`)
 }

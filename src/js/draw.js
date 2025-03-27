@@ -8,7 +8,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 import newApp from './new/app'
 import { getMeiGraph } from './app'
 import { captureEvent } from './new/events/options'
-import { toggle_selected, toggle_shade } from './ui'
+import { toggle_selected, toggle_shade, adjustSvgDimensions } from './ui'
 import {
   add_to_svg_bg,
   average,
@@ -114,6 +114,10 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   add_to_svg_bg(svg_elem, group)
   // Remember what we're adding
   added.push(group)
+
+  // Adjust SVG dimensions if needed
+  adjustSvgDimensions(draw_context)
+
   return added
 }
 
@@ -231,5 +235,9 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   add_to_svg_bg(svg_elem, g_elem)
   // Remember what we're adding
   added.push(g_elem)
+
+  // Adjust SVG dimensions if needed
+  adjustSvgDimensions(draw_context)
+
   return added
 }

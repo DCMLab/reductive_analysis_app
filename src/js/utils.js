@@ -996,17 +996,23 @@ export function new_layer_element() {
   return new_layer
 }
 
-export function new_view_elements(layer_element) {
+export function new_view_elements(layer_element, new_svg) {
   var draw_contexts = getDrawContexts()
   var new_view = document.createElement('div')
   new_view.id = 'view' + draw_contexts.length
   new_view.classList.add('view')
-  var new_svg = document.createElement('div')
-  new_svg.id = 'svg' + draw_contexts.length
-  new_svg.classList.add('svg_container')
-  new_view.appendChild(new_svg)
+  var svg_container = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  svg_container.id = 'svg' + draw_contexts.length
+  svg_container.classList.add('svg_container')
+  svg_container.setAttribute('width', '100%')
+  svg_container.setAttribute('height', '100%')
+  svg_container.setAttribute('preserveAspectRatio', 'xMidYMid meet')
+  new_view.appendChild(svg_container)
+  svg_container.innerHTML = new_svg
+  let viewBox = svg_container.querySelector('svg.definition-scale').getAttribute('viewBox')
+  svg_container.setAttribute('viewBox', viewBox)
   layer_element.appendChild(new_view)
-  return [new_view, new_svg]
+  return [new_view, svg_container]
 }
 
 export function checkbox(value) {

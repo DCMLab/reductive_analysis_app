@@ -547,7 +547,6 @@ export const setCurrentDrawContext = drawContext => {
 
 export function adjustSvgDimensions(draw_context) {
   const svg_elem = draw_context.svg_elem
-  const svg = svg_elem.children[0]
   const viewBox = svg_elem.getElementsByClassName('definition-scale')[0].getAttribute('viewBox')
   let [x, y, w, h] = viewBox.split(' ').map(Number)
 
@@ -589,11 +588,7 @@ export function adjustSvgDimensions(draw_context) {
 
   // Update viewBox to include both score and relations
   const newViewBox = `${newMinX} ${newMinY} ${newWidth} ${newHeight}`
-  svg_elem.getElementsByClassName('definition-scale')[0].setAttribute('viewBox', newViewBox)
 
-  // Update SVG dimensions while maintaining aspect ratio
-  const currentWidth = parseFloat(svg.getAttribute('width'))
-  const scale = currentWidth / w
-  svg.setAttribute('width', `${newWidth * scale}px`)
-  svg.setAttribute('height', `${newHeight * scale}px`)
+  // Set the viewBox on the container SVG to match its content
+  svg_elem.setAttribute('viewBox', newViewBox)
 }

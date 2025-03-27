@@ -415,7 +415,8 @@ body:not(.mousedown) .extraselectedrelation:hover {
 
 
 .svg_container {
-  height: auto;
+  height: 100%;
+  width: 100%;
   padding-left: 255px; /* Should be greater than the width of `filterdiv`, which is now removed. */
   transform-origin: left center;
 }
@@ -429,10 +430,11 @@ body:not(.mousedown) .extraselectedrelation:hover {
   width: 100vw;
   border-bottom: gray solid;
   border-top: gray solid;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .view {
+  overflow: hidden;
   position: relative;
   min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
 }

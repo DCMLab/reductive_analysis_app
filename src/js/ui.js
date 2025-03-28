@@ -57,6 +57,7 @@ import { metaRelationTypes, relationTypes } from './new/modules/Relations/config
 import accidentals from './new/modules/UI/Accidentals'
 import bookmarks from './new/modules/UI/Bookmarks'
 import layersMenu from './new/modules/UI/Layers'
+import { setupSpaceDrag, removeSpaceDrag } from './space_drag'
 
 /* UI globals */
 
@@ -223,17 +224,30 @@ window.onmousemove = (e) => {
 }
 
 export function handle_keydown(ev) {
-
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === 'Shift')
     $('#layers').addClass('shift-pressed')
+
+  // Add space drag functionality
+  if (ev.key === ' ' || ev.key === 'Space') {
+    ev.preventDefault() // Prevent page scrolling with space
+    window._spacePressed = true
+    $('#layers').addClass('space-drag-mode') // Visual indicator for space-drag mode
+    setupSpaceDrag()
+  }
 }
 
 export function handle_keyup(ev) {
-
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === 'Shift')
     $('#layers').removeClass('shift-pressed')
+
+  // Remove space drag functionality
+  if (ev.key === ' ' || ev.key === 'Space') {
+    window._spacePressed = false
+    $('#layers').removeClass('space-drag-mode') // Remove visual indicator
+    removeSpaceDrag()
+  }
 }
 
 export function handle_click(ev) {

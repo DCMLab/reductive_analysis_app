@@ -36,7 +36,6 @@ import {
   handle_keydown,
   handle_keypress,
   handle_keyup,
-  minimap,
   toggle_selected,
   toggle_shade,
   setCurrentDrawContext,
@@ -634,7 +633,6 @@ function finalize_draw_context(new_draw_context) {
   console.groupEnd()
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
-  minimap()
 }
 
 function render_mei(mei) {

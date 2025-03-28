@@ -571,17 +571,6 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   color: darkgreen;
 }
 
-
-#minimap {
-  position: absolute;
-  bottom: 5rem;
-  right: 0;
-
-  /* overwrite pagemap inline styles */
-  width: 14rem !important;
-  height: auto !important;
-}
-
 .select2-container {
   background: rgba(255,255,255,0.5) !important;
 }

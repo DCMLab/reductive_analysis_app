@@ -159,13 +159,38 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   }
 
   // Where are our targets
-  var coords = targets.map(get_metarelation_target)
-  // What's midpoint above them?
-  var x = average(coords.map((e) => e[0]))
-  // Above the system, and also above the relations
-  var y = targets.concat([svg_elem.getElementsByClassName('system')[0]]).map((b) => b.getBBox().y).sort((a, b) => a > b)[0] - 500
+  var coords = targets.map(target => {
+    // Get all slurs in the target relation
+    const slurs = Array.from(target.getElementsByTagName('path'))
+    if (slurs.length === 0) return { point: get_metarelation_target(target), width: 80 }
 
-  coords.push([x, y])
+    // Find the highest point and corresponding width of all slurs in this relation
+    const slurInfo = slurs.map(slur => {
+      const bbox = slur.getBBox()
+      // Get the width at the highest point using the same calculation as in draw_slur
+      const maxWidth = 80
+      // This matches the maxWidth in draw_slur
+      return {
+        point: [bbox.x + bbox.width / 2, bbox.y],
+        width: maxWidth
+      }
+    })
+
+    // Return the highest point and its corresponding width
+    return slurInfo.reduce((highest, current) =>
+      current.point[1] < highest.point[1] ? current : highest
+    )
+  })
+
+  // What's midpoint above them?
+  var x = average(coords.map((e) => e.point[0]))
+  // Position circle higher above the highest slur point
+  let yOffset = -400
+  var y = Math.min(...coords.map(c => c.point[1])) + yOffset
+
+  // Store original coords for line connections
+  var connectionPoints = [...coords]
+  coords.push({ point: [x, y], width: 80 })
   // We make a group
   var g_elem = g()
   g_elem.style.setProperty('--shade-alternate', '#000')
@@ -175,10 +200,85 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.setAttribute('type', type)
   // Draw the metarelation as a circle connected with lines to each of its
   // targets
-  g_elem.appendChild(circle([x, y], 200))
-  coords.forEach((crds) => {
-    var line_elem = line([x, y], crds)
+  const rectHeight = 250
+  const cornerRadius = 30
+  const padding = 100 // Padding on each side
+
+  // Create temporary SVG element for accurate text measurement
+  const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  document.body.appendChild(tempSvg)
+
+  // Create text element for measurement
+  const tempText = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  tempText.style.fontSize = '200px'
+  tempText.textContent = type
+  tempSvg.appendChild(tempText)
+  const textWidth = tempText.getBBox().width
+  document.body.removeChild(tempSvg)
+
+  const rectWidth = textWidth + (padding * 2)
+
+  // Create rounded rectangle with width based on text
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+  rect.setAttribute('x', x - rectWidth / 2)
+  rect.setAttribute('y', y - rectHeight / 2)
+  rect.setAttribute('width', rectWidth)
+  rect.setAttribute('height', rectHeight)
+  rect.setAttribute('rx', cornerRadius)
+  rect.setAttribute('ry', cornerRadius)
+  rect.style.fill = getComputedStyle(g_elem).getPropertyValue('--shade-alternate')
+
+  // Create actual text element
+  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  text.setAttribute('x', x)
+  text.setAttribute('y', y)
+  text.setAttribute('text-anchor', 'middle')
+  text.setAttribute('dominant-baseline', 'middle')
+  text.setAttribute('fill', 'white')
+  text.style.fontSize = '200px'
+  text.classList.add('metarelation-text')
+  text.textContent = type
+
+  // Add rectangle and text in correct order
+  g_elem.appendChild(rect)
+  g_elem.appendChild(text)
+
+  connectionPoints.forEach((info) => {
+    // Calculate where the line should start from the rectangle's edge
+    const dx = info.point[0] - x
+    const dy = info.point[1] - y
+    const angle = Math.atan2(dy, dx)
+
+    // Calculate the point where the line intersects the rectangle
+    // Consider both the width and height of the rectangle
+    let intersectX, intersectY
+
+    // Calculate the ratio of the rectangle's dimensions
+    const ratio = Math.abs(dy / dx)
+    const halfWidth = rectWidth / 2
+    const halfHeight = rectHeight / 2
+
+    if (ratio < halfHeight / halfWidth) {
+      // Line intersects with vertical edge
+      intersectX = dx > 0 ? x + halfWidth : x - halfWidth
+      intersectY = y + (dy * halfWidth / Math.abs(dx))
+    } else {
+      // Line intersects with horizontal edge
+      intersectY = dy > 0 ? y + halfHeight : y - halfHeight
+      intersectX = x + (dx * halfHeight / Math.abs(dy))
+    }
+
+    // Draw the connection line from the intersection point
+    var line_elem = line([intersectX, intersectY], info.point)
     g_elem.appendChild(line_elem)
+
+    // Draw a white-filled circle at the connection point, moved down by its radius
+    const radius = info.width / 2
+    const adjustedPoint = [info.point[0], info.point[1] + radius]
+    var connection_circle = circle(adjustedPoint, radius)
+    connection_circle.style.fill = 'white'
+    connection_circle.style.stroke = '#000'
+    g_elem.appendChild(connection_circle)
   })
 
   /**

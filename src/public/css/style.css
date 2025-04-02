@@ -437,6 +437,7 @@ body:not(.mousedown) .extraselectedrelation:hover {
   overflow: hidden;
   position: relative;
   min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
+  width: 100%;
 }
 
 .view_buttons {

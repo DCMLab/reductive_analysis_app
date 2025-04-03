@@ -160,7 +160,18 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
   // Where are our targets
   var coords = targets.map(target => {
-    // Get all slurs in the target relation
+    // Check if the target is a relation
+    if (target.classList.contains('metarelation')) {
+      // Get the bounding rect of the relation
+      const bbox = target.getBBox()
+      // Return the middle point of the upper edge
+      return {
+        point: [bbox.x + bbox.width / 2, bbox.y],
+        width: 80 // Keep consistent width
+      }
+    }
+
+    // Original logic for non-relation targets
     const slurs = Array.from(target.getElementsByTagName('path'))
     if (slurs.length === 0) return { point: get_metarelation_target(target), width: 80 }
 
@@ -274,7 +285,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
     // Draw a white-filled circle at the connection point, moved down by its radius
     const radius = info.width / 2
-    const adjustedPoint = [info.point[0], info.point[1] + radius]
+    const adjustedPoint = [info.point[0], info.point[1] + radius / 2]
     var connection_circle = circle(adjustedPoint, radius)
     connection_circle.style.fill = 'white'
     connection_circle.style.stroke = '#000'

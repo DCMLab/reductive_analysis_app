@@ -294,7 +294,10 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.addEventListener('wheel', e => {
     e.preventDefault()
     flip_to_bg(e.target.closest('g'))
-    e.target.onmouseout()
+    // Only call onmouseout if it exists
+    if (e.target.onmouseout) {
+      e.target.onmouseout()
+    }
   }, captureEvent)
 
   // Decorate with onclick and onmouseover handlers

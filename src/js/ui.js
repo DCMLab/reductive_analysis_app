@@ -57,6 +57,7 @@ import accidentals from './new/modules/UI/Accidentals'
 import bookmarks from './new/modules/UI/Bookmarks'
 import layersMenu from './new/modules/UI/Layers'
 import { setupSpaceDrag, removeSpaceDrag } from './space_drag'
+import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */
 
@@ -234,6 +235,14 @@ export function handle_keydown(ev) {
     $('#layers').addClass('space-drag-mode') // Visual indicator for space-drag mode
     setupSpaceDrag()
   }
+
+  // Add option drag functionality for metarelations
+  if (ev.key === 'Alt' || ev.key === 'Option') {
+    ev.preventDefault()
+    window._optionPressed = true
+    $('#layers').addClass('option-drag-mode')
+    setupOptionDrag()
+  }
 }
 
 export function handle_keyup(ev) {
@@ -246,6 +255,13 @@ export function handle_keyup(ev) {
     window._spacePressed = false
     $('#layers').removeClass('space-drag-mode') // Remove visual indicator
     removeSpaceDrag()
+  }
+
+  // Remove option drag functionality
+  if (ev.key === 'Alt' || ev.key === 'Option') {
+    window._optionPressed = false
+    $('#layers').removeClass('option-drag-mode')
+    removeOptionDrag()
   }
 }
 

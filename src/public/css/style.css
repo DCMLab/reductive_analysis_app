@@ -589,3 +589,7 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 .select2-container--default .select2-selection--single .select2-selection__rendered {
   color: lightgray !important;
 }
+
+.hidden {
+  display: none;
+}

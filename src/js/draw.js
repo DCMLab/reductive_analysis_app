@@ -289,6 +289,23 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     var connection_circle = circle(adjustedPoint, radius)
     connection_circle.style.fill = 'white'
     connection_circle.style.stroke = '#000'
+    connection_circle.style.cursor = 'pointer'
+    connection_circle.classList.add('connection-circle')
+
+    // Add click event listener for toggle functionality
+    connection_circle.addEventListener('click', (e) => {
+      e.stopPropagation() // Prevent event from bubbling to parent elements
+
+      const elemToToggle = g_elem.querySelectorAll('line, rect, text')
+      elemToToggle.forEach(elem => {
+        if (elem.classList.contains('hidden')) {
+          elem.classList.remove('hidden')
+        } else {
+          elem.classList.add('hidden')
+        }
+      })
+    })
+
     g_elem.appendChild(connection_circle)
   })
 

@@ -207,6 +207,8 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.classList.add('metarelation')
   // TODO: Use classlist for types
   g_elem.setAttribute('type', type)
+  g_elem.setAttribute('start-relation', targets[0].id)
+  g_elem.setAttribute('end-relation', targets[1].id)
   // Draw the metarelation as a circle connected with lines to each of its
   // targets
   const rectHeight = 250
@@ -292,13 +294,40 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     // Add click event listener for toggle functionality
     connection_circle.addEventListener('click', (e) => {
       e.stopPropagation() // Prevent event from bubbling to parent elements
+      const isHidden = rect.classList.contains('hidden')
 
       const elemToToggle = g_elem.querySelectorAll('line, rect, text')
       elemToToggle.forEach(elem => {
-        if (elem.classList.contains('hidden')) {
+        if (isHidden) {
           elem.classList.remove('hidden')
         } else {
           elem.classList.add('hidden')
+        }
+      })
+
+      // Find and toggle any metarelations that point to this metarelation
+      const allMetarelations = document.querySelectorAll('.metarelation')
+      allMetarelations.forEach(metarelation => {
+        // Skip the current metarelation
+        if (metarelation === g_elem) return
+
+        // Check if this metarelation points to the current one
+        const startRelation = metarelation.getAttribute('start-relation')
+        const endRelation = metarelation.getAttribute('end-relation')
+
+        if (startRelation === g_elem.getAttribute('id') || endRelation === g_elem.getAttribute('id')) {
+          // Toggle this metarelation's visibility
+          if (isHidden) {
+            const elementsToToggle = metarelation.querySelectorAll('circle')
+            elementsToToggle.forEach(elem => {
+              elem.classList.remove('hidden')
+            })
+          } else {
+            const elementsToToggle = metarelation.querySelectorAll('line, rect, text, circle')
+            elementsToToggle.forEach(elem => {
+              elem.classList.add('hidden')
+            })
+          }
         }
       })
     })

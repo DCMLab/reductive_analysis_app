@@ -160,6 +160,8 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
   // Where are our targets
   var coords = targets.map(target => {
+    const maxWidth = 80 // matches the maxWidth in draw_slur
+
     // Check if the target is a relation
     if (target.classList.contains('metarelation')) {
       // Get the bounding rect of the relation
@@ -167,35 +169,31 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       // Return the middle point of the upper edge
       return {
         point: [bbox.x + bbox.width / 2, bbox.y],
-        width: 80 // Keep consistent width
-      }
-    }
-
-    // Original logic for non-relation targets
-    const slurs = Array.from(target.getElementsByTagName('path'))
-    if (slurs.length === 0) return { point: get_metarelation_target(target), width: 80 }
-
-    // Find the highest point and corresponding width of all slurs in this relation
-    const slurInfo = slurs.map(slur => {
-      const bbox = slur.getBBox()
-      // Get the width at the highest point using the same calculation as in draw_slur
-      const maxWidth = 80
-      // This matches the maxWidth in draw_slur
-      return {
-        point: [bbox.x + bbox.width / 2, bbox.y],
         width: maxWidth
       }
-    })
+    } else {
+      // If the target is a relation slur, return the middle point of the slur
+      const slurs = Array.from(target.getElementsByTagName('path'))
+      if (slurs.length === 0) return { point: get_metarelation_target(target), width: 80 }
 
-    // Return the highest point and its corresponding width
-    return slurInfo.reduce((highest, current) =>
-      current.point[1] < highest.point[1] ? current : highest
-    )
+      // Find the highest point and corresponding width of all slurs in this relation
+      const slurInfo = slurs.map(slur => {
+        const bbox = slur.getBBox()
+        return {
+          point: [bbox.x + bbox.width / 2, bbox.y],
+          width: maxWidth
+        }
+      })
+
+      // Return the highest point and its corresponding width
+      return slurInfo.reduce((highest, current) =>
+        current.point[1] < highest.point[1] ? current : highest
+      )
+    }
   })
 
   // What's midpoint above them?
   var x = average(coords.map((e) => e.point[0]))
-  // Position circle higher above the highest slur point
   let yOffset = -400
   var y = Math.min(...coords.map(c => c.point[1])) + yOffset
 
@@ -258,7 +256,6 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     // Calculate where the line should start from the rectangle's edge
     const dx = info.point[0] - x
     const dy = info.point[1] - y
-    const angle = Math.atan2(dy, dx)
 
     // Calculate the point where the line intersects the rectangle
     // Consider both the width and height of the rectangle

@@ -639,12 +639,11 @@ function render_mei(mei) {
   var data = new XMLSerializer().serializeToString(sanitize_xml(mei))
 
   var svg = vrvToolkit.renderData(data, {
-    pageWidth: 2000,
-    pageHeight: 1000,
     scale: 1000,
     footer: 'none',
     header: 'none',
     breaks: 'none',
+    scaleToPageSize: true,
     svgCss: 'g.notehead, g.stem, g.dots {fill: currentColor;}',
   })
   return [data, svg]

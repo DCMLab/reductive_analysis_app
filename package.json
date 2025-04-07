@@ -27,6 +27,7 @@
   "homepage": "https://github.com/DCMLab/reductive_analysis_app#readme",
   "dependencies": {
     "base64-arraybuffer": "^1",
+    "d3": "^7.9.0",
     "d3-polygon": "^3.0.1",
     "dragselect": "2.2.1",
     "expect-puppeteer": "^4.4.0",
@@ -34,7 +35,6 @@
     "jquery": "^3.6.0",
     "midi-player-js": "^2.0.14",
     "normalize.css": "^8.0",
-    "pagemap": "^1.4.0",
     "smplr": "^0.16.1"
   },
   "devDependencies": {

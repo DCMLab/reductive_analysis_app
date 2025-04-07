@@ -36,9 +36,9 @@ import {
   handle_keydown,
   handle_keypress,
   handle_keyup,
-  minimap,
   toggle_selected,
   toggle_shade,
+  setCurrentDrawContext,
 } from './ui'
 
 import {
@@ -139,8 +139,6 @@ window.addEventListener('beforeunload', function (e) {
 
 $(document).ready(function() {
   document.getElementsByTagName('html')[0].classList.remove('loader')
-
-  minimap()
 })
 
 // Optional catch-all exception handler.
@@ -466,8 +464,7 @@ function load_finish(loader_modal) {
     }
 
     var layer_element = new_layer_element()
-    var [view_element, svg_element] = new_view_elements(layer_element)
-    svg_element.innerHTML = new_svg
+    var [view_element, svg_element] = new_view_elements(layer_element, new_svg)
     var layer_context = {
       'mei': new_mei,
       'layer_elem': layer_element,
@@ -499,7 +496,7 @@ function load_finish(loader_modal) {
       forceSaveLayer: isFirstLayer,
       lockLayer: isFirstLayer,
 
-      // by default, all layers are saved and editable, but the first isn’t editable
+      // by default, all layers are saved and editable, but the first isn't editable
       canSave: true,
       canEdit: !isFirstLayer,
     }
@@ -582,7 +579,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   }
 
   var layer_element = new_layer_element()
-  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element)
+  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
   new_svg_elem.innerHTML = new_svg
   var layer_context = {
     'mei': new_mei,
@@ -635,16 +632,18 @@ function finalize_draw_context(new_draw_context) {
   }
   console.groupEnd()
   draw_graph(new_draw_context)
-  minimap()
+  setCurrentDrawContext(new_draw_context)
 }
 
 function render_mei(mei) {
   var data = new XMLSerializer().serializeToString(sanitize_xml(mei))
 
   var svg = vrvToolkit.renderData(data, {
-    pageWidth: 20000,
-    pageHeight: 10000,
+    scale: 1000,
+    footer: 'none',
+    header: 'none',
     breaks: 'none',
+    scaleToPageSize: true,
     svgCss: 'g.notehead, g.stem, g.dots {fill: currentColor;}',
   })
   return [data, svg]

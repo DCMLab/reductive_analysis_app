@@ -996,17 +996,23 @@ export function new_layer_element() {
   return new_layer
 }
 
-export function new_view_elements(layer_element) {
+export function new_view_elements(layer_element, new_svg) {
   var draw_contexts = getDrawContexts()
   var new_view = document.createElement('div')
   new_view.id = 'view' + draw_contexts.length
   new_view.classList.add('view')
-  var new_svg = document.createElement('div')
-  new_svg.id = 'svg' + draw_contexts.length
-  new_svg.classList.add('svg_container')
-  new_view.appendChild(new_svg)
+  var svg_container = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  svg_container.id = 'svg' + draw_contexts.length
+  svg_container.classList.add('svg_container')
+  svg_container.setAttribute('width', '100%')
+  svg_container.setAttribute('height', '100%')
+  svg_container.setAttribute('preserveAspectRatio', 'xMidYMid meet')
+  new_view.appendChild(svg_container)
+  svg_container.innerHTML = new_svg
+  let viewBox = svg_container.querySelector('svg.definition-scale').getAttribute('viewBox')
+  svg_container.setAttribute('viewBox', viewBox)
   layer_element.appendChild(new_view)
-  return [new_view, new_svg]
+  return [new_view, svg_container]
 }
 
 export function checkbox(value) {
@@ -1082,4 +1088,74 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
 
 export function draw_context_of(elem) {
   return getDrawContexts().find(dc => dc.svg_elem.contains(elem))
+}
+
+// Count how many slurs are connected to a note element
+function count_existing_slurs(noteElement) {
+  const drawContext = draw_context_of(noteElement)
+  if (!drawContext) return 0
+
+  const relations = Array.from(drawContext.svg_elem.getElementsByClassName('relation'))
+
+  let count = 0
+  relations.forEach(relation => {
+    const slurs = Array.from(relation.getElementsByTagName('path'))
+    slurs.forEach(slur => {
+      if (slur.getAttribute('start-note') === noteElement.id ||
+          slur.getAttribute('end-note') === noteElement.id) {
+        count++
+      }
+    })
+  })
+  return count
+}
+
+// Draw a slur between two notes
+export function draw_slur(startNote, endNote) {
+  const newElement = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+
+  // Get base coordinates
+  const start = note_coords(startNote)
+  const end = note_coords(endNote)
+
+  // Calculate offsets based on existing slurs
+  const nStartSlur = count_existing_slurs(startNote)
+  const nEndSlur = count_existing_slurs(endNote)
+
+  // Base offset plus additional offset per existing slur
+  const baseOffsetY = 150
+  const slurOffsetYUnit = 30
+  const startOffsetY = baseOffsetY + (nStartSlur * slurOffsetYUnit)
+  const endOffsetY = baseOffsetY + (nEndSlur * slurOffsetYUnit)
+
+  // Apply offsets
+  const adjustedStart = [start[0], start[1] - startOffsetY]
+  const adjustedEnd = [end[0], end[1] - endOffsetY]
+
+  // Calculate control points for a quadratic Bezier curve
+  const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
+  const midY = (adjustedStart[1] + adjustedEnd[1]) / 2
+  const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
+
+  // Calculate base height and additional height for existing slurs
+  const slurOffsetHeightUnit = 80
+  const maxExistingSlurs = Math.max(nStartSlur, nEndSlur)
+  const additionalHeight = maxExistingSlurs * slurOffsetHeightUnit
+  const height = width * 0.4 + additionalHeight
+
+  // Adjust control points based on different start/end heights
+  const maxWidth = 80
+  const heightDiff = Math.abs(startOffsetY - endOffsetY)
+  const topControlPoint = [midX, midY - height - (heightDiff * 0.5)]
+  const bottomControlPoint = [midX, midY - height - (heightDiff * 0.5) + maxWidth]
+
+  const pathData = `
+    M ${adjustedStart[0]},${adjustedStart[1]}
+    Q ${topControlPoint[0]},${topControlPoint[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
+    L ${adjustedEnd[0]},${adjustedEnd[1]}
+    Q ${bottomControlPoint[0]},${bottomControlPoint[1]} ${adjustedStart[0]},${adjustedStart[1]}
+    Z`
+
+  newElement.setAttribute('d', pathData)
+  return newElement
 }

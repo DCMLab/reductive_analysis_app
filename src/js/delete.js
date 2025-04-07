@@ -6,7 +6,7 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import { getDrawContexts, getMeiGraph, getUndoActions } from './app'
-import { toggle_selected } from './ui'
+import { toggle_selected, adjustSvgDimensions } from './ui'
 import { flush_redo } from './undo_redo'
 import { get_by_id, get_class_from_classlist, get_id, unmark_secondaries } from './utils'
 
@@ -56,6 +56,11 @@ function delete_relation(elem) {
     } catch (e) {}
     x.parentElement.removeChild(x)
     return elems
+  })
+
+  // Adjust SVG dimensions after deletion
+  draw_contexts.forEach(draw_context => {
+    adjustSvgDimensions(draw_context)
   })
 
   return action_removed

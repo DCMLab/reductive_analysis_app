@@ -3,17 +3,12 @@ import viewport from '../../Viewport'
 
 class Navigation {
   constructor() {
-    this.toLeftBtn = document.getElementById('to-left')
-    this.toRightBtn = document.getElementById('to-right')
+    // Navigation buttons removed
   }
 
   onTap(e) {
-    if (e.target == this.toLeftBtn) { return this.toLeft() }
-    if (e.target == this.toRightBtn) { return this.toRight() }
+    // Navigation button tap handlers removed
   }
-
-  toLeft() { this.goTo(-(viewport.w - 200)) }
-  toRight() { this.goTo(viewport.w - 200) }
 
   /**
    * Safari ignores CSS smooth scroll, which makes this a temporary solution.

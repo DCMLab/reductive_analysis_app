@@ -29,6 +29,7 @@ body {
   width: fit-content;
   width: -moz-fit-content;
   margin-bottom: 33vh;
+  top: 8vh;
 }
 
 .file-input {
@@ -331,11 +332,7 @@ body:not(.mousedown) .note:hover {
 .relation,
 .metarelation {
   fill: var(--shade, currentColor);
-  fill-opacity: 0.2;
-
-  stroke: var(--shade, currentColor);
-  stroke-width: 27;
-  stroke-opacity: 0.3;
+  fill-opacity: 0.8 ;
 }
 
 html.shades-alternate .relation,
@@ -418,20 +415,33 @@ body:not(.mousedown) .extraselectedrelation:hover {
 
 
 .svg_container {
-  height: auto;
+  height: 100%;
+  width: 100%;
   padding-left: 255px; /* Should be greater than the width of `filterdiv`, which is now removed. */
   transform-origin: left center;
+  overflow: visible;
+}
+
+.svg_container svg {
+  overflow: visible;
+  width: auto;
+  max-width: none;
+  height: 100%;
 }
 
 .layer {
-  min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the layer below is empty.*/
-  border-bottom: gray;
-  border-bottom-style: solid;
+  height: 35vh;  /* Should be large enough to avoid displacements when the filter menu is expanded and the layer below is empty.*/
+  width: 100vw;
+  border-bottom: gray solid;
+  border-top: gray solid;
+  overflow: hidden;
 }
 
 .view {
+  overflow: hidden;
   position: relative;
-  min-height: 330px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
+  height: 100%;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
+  width: 100%;
 }
 
 .view_buttons {
@@ -564,17 +574,6 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 
 #relations_panel_toggle:active {
   color: darkgreen;
-}
-
-
-#minimap {
-  position: absolute;
-  bottom: 5rem;
-  right: 0;
-
-  /* overwrite pagemap inline styles */
-  width: 14rem !important;
-  height: auto !important;
 }
 
 .select2-container {

@@ -152,6 +152,50 @@ export function moveOptionDrag(event) {
     line.setAttribute('x1', intersectX)
     line.setAttribute('y1', intersectY)
   })
+
+  // Update connection circle position if this metarelation has one
+  const connectionCircle = currentMetarelation.querySelector('.connection-circle')
+  if (connectionCircle) {
+    const radius = parseFloat(connectionCircle.getAttribute('r'))
+    // Position the circle at the top center of the rectangle, moved up by its radius
+    const circleCenterX = newRectX + initialRectTransform.width / 2
+    const circleCenterY = newRectY - radius / 2
+
+    connectionCircle.setAttribute('cx', circleCenterX)
+    connectionCircle.setAttribute('cy', circleCenterY)
+
+    // Find parent metarelations that connect to this one
+    const parentMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
+      const startId = meta.getAttribute('start-relation')
+      const endId = meta.getAttribute('end-relation')
+      return startId === currentMetarelation.id || endId === currentMetarelation.id
+    })
+
+    // Update each parent's connection line
+    parentMetarelations.forEach(parentMeta => {
+      // Find the line that connects to this circle using the circle:id attribute
+      const connectingLine = parentMeta.querySelector(`line[circle\\:id="${connectionCircle.id}"]`)
+
+      if (connectingLine) {
+        // Get the line's start point
+        const lineStartX = parseFloat(connectingLine.getAttribute('x1'))
+        const lineStartY = parseFloat(connectingLine.getAttribute('y1'))
+
+        // Calculate the angle between the line and the circle center
+        const dx = circleCenterX - lineStartX
+        const dy = circleCenterY - lineStartY
+        const angle = Math.atan2(dy, dx)
+
+        // Calculate the point where the line should end at the circle's edge
+        const endX = circleCenterX - (radius * Math.cos(angle))
+        const endY = circleCenterY - (radius * Math.sin(angle))
+
+        // Update the line's end point to stop at the circle's edge
+        connectingLine.setAttribute('x2', endX)
+        connectingLine.setAttribute('y2', endY)
+      }
+    })
+  }
 }
 
 export function endOptionDrag() {

@@ -295,6 +295,31 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       connection_circle.style.stroke = '#000'
       connection_circle.style.cursor = 'pointer'
       connection_circle.classList.add('connection-circle')
+      // Generate a unique ID for the connection circle if it doesn't have one
+      const circleId = `circle-${target.id}`
+      connection_circle.setAttribute('id', circleId)
+
+      // Calculate where the line should end at the circle's edge
+      const lineStartX = parseFloat(line_elem.getAttribute('x1'))
+      const lineStartY = parseFloat(line_elem.getAttribute('y1'))
+      const circleCenterX = adjustedPoint[0]
+      const circleCenterY = adjustedPoint[1]
+
+      // Calculate the angle between the line and the circle center
+      const dx = circleCenterX - lineStartX
+      const dy = circleCenterY - lineStartY
+      const angle = Math.atan2(dy, dx)
+
+      // Calculate the point where the line should end at the circle's edge
+      const endX = circleCenterX - (radius * Math.cos(angle))
+      const endY = circleCenterY - (radius * Math.sin(angle))
+
+      // Update the line endpoint to stop at the circle's edge
+      line_elem.setAttribute('x2', endX)
+      line_elem.setAttribute('y2', endY)
+
+      // Set the connection circle ID on the line element
+      line_elem.setAttribute('circle:id', circleId)
 
       // Add click event listener for toggle show/hide functionality
       connection_circle.addEventListener('click', (e) => {

@@ -335,8 +335,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
         // Function to recursively hide a metarelation and its parents
         const recursiveHide = (metarelation) => {
           // Hide current metarelation
-          const elemToHide = metarelation.querySelectorAll('line, rect, text, circle')
-          elemToHide.forEach(elem => elem.classList.add('hidden'))
+          metarelation.classList.add('hidden')
 
           // Find parent metarelations
           const parentMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
@@ -350,17 +349,18 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
         }
 
         connectedMetarelations.forEach(metarelation => {
-          const isHidden = metarelation.querySelector('rect').classList.contains('hidden')
+          const isHidden = metarelation.classList.contains('hidden')
 
           if (isHidden) {
             // Show operation - only show this level
-            const elemToShow = metarelation.querySelectorAll('line, rect, text, circle')
-            elemToShow.forEach(elem => elem.classList.remove('hidden'))
+            metarelation.classList.remove('hidden')
           } else {
             // Hide operation - recursively hide this level and all parents
             recursiveHide(metarelation)
           }
         })
+
+        window.metaRelationInstance?.updateToggles()
       })
 
       // Add the circle to the target

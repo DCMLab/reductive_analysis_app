@@ -282,57 +282,65 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     var line_elem = line([intersectX, intersectY], info.point)
     g_elem.appendChild(line_elem)
 
-    // Draw a white-filled circle at the connection point, moved down by its radius
-    const radius = info.width / 2
-    const adjustedPoint = [info.point[0], info.point[1] + radius / 2]
-    var connection_circle = circle(adjustedPoint, radius)
-    connection_circle.style.fill = 'white'
-    connection_circle.style.stroke = '#000'
-    connection_circle.style.cursor = 'pointer'
-    connection_circle.classList.add('connection-circle')
+    // Check if target already has a connection circle
+    const target = targets[connectionPoints.indexOf(info)]
+    let connection_circle = target.querySelector('.connection-circle')
 
-    // Add click event listener for toggle functionality
-    connection_circle.addEventListener('click', (e) => {
-      e.stopPropagation() // Prevent event from bubbling to parent elements
-      const isHidden = rect.classList.contains('hidden')
+    if (!connection_circle) {
+      // Draw a connection circle at the connection point if not already present
+      const radius = info.width / 2
+      const adjustedPoint = [info.point[0], info.point[1] + radius / 2]
+      connection_circle = circle(adjustedPoint, radius)
+      connection_circle.style.fill = 'white'
+      connection_circle.style.stroke = '#000'
+      connection_circle.style.cursor = 'pointer'
+      connection_circle.classList.add('connection-circle')
 
-      const elemToToggle = g_elem.querySelectorAll('line, rect, text')
-      elemToToggle.forEach(elem => {
-        if (isHidden) {
-          elem.classList.remove('hidden')
-        } else {
-          elem.classList.add('hidden')
+      // Add click event listener for toggle show/hide functionality
+      connection_circle.addEventListener('click', (e) => {
+        e.stopPropagation() // Prevent event from bubbling to parent elements
+
+        // Find all metarelations connected to this target
+        const connectedMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
+          const startId = meta.getAttribute('start-relation')
+          const endId = meta.getAttribute('end-relation')
+          return startId === target.id || endId === target.id
+        })
+
+        // Function to recursively hide a metarelation and its parents
+        const recursiveHide = (metarelation) => {
+          // Hide current metarelation
+          const elemToHide = metarelation.querySelectorAll('line, rect, text, circle')
+          elemToHide.forEach(elem => elem.classList.add('hidden'))
+
+          // Find parent metarelations
+          const parentMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
+            const startId = meta.getAttribute('start-relation')
+            const endId = meta.getAttribute('end-relation')
+            return startId === metarelation.id || endId === metarelation.id
+          })
+
+          // Recursively hide parents
+          parentMetarelations.forEach(parent => recursiveHide(parent))
         }
-      })
 
-      // Find and toggle any metarelations that point to this metarelation
-      const allMetarelations = document.querySelectorAll('.metarelation')
-      allMetarelations.forEach(metarelation => {
-        // Skip the current metarelation
-        if (metarelation === g_elem) return
+        connectedMetarelations.forEach(metarelation => {
+          const isHidden = metarelation.querySelector('rect').classList.contains('hidden')
 
-        // Check if this metarelation points to the current one
-        const startRelation = metarelation.getAttribute('start-relation')
-        const endRelation = metarelation.getAttribute('end-relation')
-
-        if (startRelation === g_elem.getAttribute('id') || endRelation === g_elem.getAttribute('id')) {
-          // Toggle this metarelation's visibility
           if (isHidden) {
-            const elementsToToggle = metarelation.querySelectorAll('circle')
-            elementsToToggle.forEach(elem => {
-              elem.classList.remove('hidden')
-            })
+            // Show operation - only show this level
+            const elemToShow = metarelation.querySelectorAll('line, rect, text, circle')
+            elemToShow.forEach(elem => elem.classList.remove('hidden'))
           } else {
-            const elementsToToggle = metarelation.querySelectorAll('line, rect, text, circle')
-            elementsToToggle.forEach(elem => {
-              elem.classList.add('hidden')
-            })
+            // Hide operation - recursively hide this level and all parents
+            recursiveHide(metarelation)
           }
-        }
+        })
       })
-    })
 
-    g_elem.appendChild(connection_circle)
+      // Add the circle to the target
+      target.appendChild(connection_circle)
+    }
   })
 
   /**

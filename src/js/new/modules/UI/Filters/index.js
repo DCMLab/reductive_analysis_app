@@ -80,7 +80,7 @@ class Filters {
 
     // Is there a new relation type in the SVG?
 
-    const newRelation = mutations.length == 1 && mutations
+    const newRelation = mutations
       .filter(mutation => mutation.type == 'childList' && mutation.addedNodes?.length == 1)
       .map(mutation => mutation.addedNodes?.item(0))
       .find(NodeType.isElement)
@@ -95,7 +95,7 @@ class Filters {
 
     // Deleted relation.
 
-    const deletedRelation = mutations.length == 1 && mutations
+    const deletedRelation = mutations
       .filter(mutation => mutation.type == 'childList' && mutation.removedNodes?.length == 1)
       .map(mutation => mutation.removedNodes?.item(0))
       .find(NodeType.isElement)

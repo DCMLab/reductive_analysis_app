@@ -4,6 +4,7 @@ import JsonTree       from './jsonTree'
 import LayerControls  from './new'
 import Reductions     from './reductions'
 import RelationsTree  from './relationsTree'
+import MetaRelation   from './metaRelation'
 import { navigation_conf } from '../../../../conf'
 import { getCurrentDrawContext, setCurrentDrawContext } from '../../../../ui'
 import { doc } from '../../../utils/document'
@@ -28,6 +29,7 @@ class LayersMenu {
     this.reductions = new Reductions(this)
     this.tree = new RelationsTree(this)
     this.jsonTree = new JsonTree(this)
+    this.metaRelation = new MetaRelation(this)
 
     this.previousLayerBtn = document.getElementById('layers-nav-previous')
     this.nextLayerBtn = document.getElementById('layers-nav-next')
@@ -73,6 +75,7 @@ class LayersMenu {
 
     this.tree.onChange(e)
     this.new.onChange(e)
+    this.metaRelation.onChange(e)
   }
 
   onScoreLoad() {
@@ -80,6 +83,7 @@ class LayersMenu {
     this.setDataPosition()
     this.updateLayersCount()
     this.tree.onScoreLoad()
+    this.metaRelation.onScoreLoad()
   }
 
   toggleVisibility(state = !this.#visible) {
@@ -106,6 +110,7 @@ class LayersMenu {
     this.checkLockState(layer.canEdit)
     this.checkSaveState(layer.canSave)
     this.tree.updateToggles(layer)
+    this.metaRelation.updateToggles(layer)
     bookmarks.setCount()
   }
 

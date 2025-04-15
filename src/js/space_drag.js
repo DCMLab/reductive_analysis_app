@@ -32,15 +32,19 @@ export function setupSpaceDrag() {
 
   drawContexts.forEach(context => {
     if (context && context.svg_elem) {
+      // Find the view element that contains this svg_elem
+      const viewElement = context.view_elem
+      if (!viewElement) return
+
       // Set cursor and store context
-      context.svg_elem.style.cursor = 'grab'
-      context.svg_elem._dragContext = context
+      viewElement.style.cursor = 'grab'
+      viewElement._dragContext = context
 
-      // Apply D3 drag behavior
-      d3.select(context.svg_elem).call(drag)
+      // Apply D3 drag behavior to the view element instead of just the svg_elem
+      d3.select(viewElement).call(drag)
 
-      // Make sure svg element can receive events
-      context.svg_elem.style.pointerEvents = 'auto'
+      // Make sure both elements can receive events
+      viewElement.style.pointerEvents = 'auto'
     }
   })
 }
@@ -59,8 +63,7 @@ function startSpaceDrag(event) {
 
   if (currentContext) {
     // Change cursor to indicate dragging
-    document.body.style.cursor = 'grabbing'
-    currentContext.svg_elem.style.cursor = 'grabbing'
+    container.style.cursor = 'grabbing'
   }
 }
 
@@ -83,8 +86,15 @@ function endSpaceDrag() {
 
   // Reset cursor styles
   document.body.style.cursor = ''
+
   if (currentContext) {
-    currentContext.svg_elem.style.cursor = 'grab'
+
+    // Find and reset the view element cursor as well
+    const viewElement = currentContext.view_elem
+    if (viewElement) {
+      viewElement.style.cursor = 'grab'
+    }
+
     currentContext = null
   }
 }
@@ -105,7 +115,23 @@ export function removeSpaceDrag() {
       context.svg_elem.style.cursor = ''
       context.svg_elem.style.pointerEvents = ''
 
-      // Remove D3 drag behavior
+      // Find the view element
+      const viewElement = context.view_elem
+      if (viewElement) {
+        // Reset cursor and pointer-events
+        viewElement.style.cursor = ''
+        viewElement.style.pointerEvents = ''
+
+        // Remove D3 drag behavior
+        d3.select(viewElement).on('.drag', null)
+
+        // Clean up stored context
+        if (viewElement._dragContext) {
+          delete viewElement._dragContext
+        }
+      }
+
+      // Remove D3 drag behavior from SVG as well
       d3.select(context.svg_elem).on('.drag', null)
 
       // Clean up stored context on SVG element

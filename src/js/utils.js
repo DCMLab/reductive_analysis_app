@@ -1132,29 +1132,57 @@ export function draw_slur(startNote, endNote) {
   const adjustedStart = [start[0], start[1] - startOffsetY]
   const adjustedEnd = [end[0], end[1] - endOffsetY]
 
-  // Calculate control points for a quadratic Bezier curve
-  const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
-  const midY = (adjustedStart[1] + adjustedEnd[1]) / 2
-  const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
-
   // Calculate base height and additional height for existing slurs
   const slurOffsetHeightUnit = 80
   const maxExistingSlurs = Math.max(nStartSlur, nEndSlur)
   const additionalHeight = maxExistingSlurs * slurOffsetHeightUnit
-  const height = width * 0.4 + additionalHeight
+  const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
+  const maxSlurWidth = 120
+
+  let pathData
 
   // Adjust control points based on different start/end heights
-  const maxWidth = 80
-  const heightDiff = Math.abs(startOffsetY - endOffsetY)
-  const topControlPoint = [midX, midY - height - (heightDiff * 0.5)]
-  const bottomControlPoint = [midX, midY - height - (heightDiff * 0.5) + maxWidth]
+  if (width < 2000) {
+    const height = width * 0.3 + additionalHeight
+    const heightDiff = Math.abs(startOffsetY - endOffsetY)
+    const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
+    const midY = (adjustedStart[1] + adjustedEnd[1]) / 2
+    const topControlPoint = [midX, midY - height - (heightDiff * 0.5)]
+    const bottomControlPoint = [midX, midY - height - (heightDiff * 0.5) + maxSlurWidth]
 
-  const pathData = `
-    M ${adjustedStart[0]},${adjustedStart[1]}
-    Q ${topControlPoint[0]},${topControlPoint[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
-    L ${adjustedEnd[0]},${adjustedEnd[1]}
-    Q ${bottomControlPoint[0]},${bottomControlPoint[1]} ${adjustedStart[0]},${adjustedStart[1]}
-    Z`
+    pathData = `
+      M ${adjustedStart[0]},${adjustedStart[1]}
+      Q ${topControlPoint[0]},${topControlPoint[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
+      L ${adjustedEnd[0]},${adjustedEnd[1]}
+      Q ${bottomControlPoint[0]},${bottomControlPoint[1]} ${adjustedStart[0]},${adjustedStart[1]}
+      Z`
+  } else {
+    const height = width * 0.05 < 2000 ? additionalHeight + width * 0.1 : additionalHeight + 2000
+    const minY = Math.min(startOffsetY, endOffsetY)
+
+    // Calculate control points at 20% and 80% of the width
+    const cp1x = adjustedStart[0] + (width * 0.2)
+    const cp2x = adjustedStart[0] + (width * 0.8)
+
+    // Set control points at the same height for flat top
+    const topY = minY - height
+
+    // Top curve control points
+    const topCP1 = [cp1x, topY]
+    const topCP2 = [cp2x, topY]
+
+    // Bottom curve control points (offset by maxWidth)
+    const bottomCP1 = [cp1x, topY + maxSlurWidth]
+    const bottomCP2 = [cp2x, topY + maxSlurWidth]
+
+    pathData = `
+      M ${adjustedStart[0]},${adjustedStart[1]}
+      C ${topCP1[0]},${topCP1[1]} ${topCP2[0]},${topCP2[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
+      L ${adjustedEnd[0]},${adjustedEnd[1]}
+      C ${bottomCP2[0]},${bottomCP2[1]} ${bottomCP1[0]},${bottomCP1[1]} ${adjustedStart[0]},${adjustedStart[1]}
+      Z`
+
+  }
 
   newElement.setAttribute('d', pathData)
   return newElement

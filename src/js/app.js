@@ -464,7 +464,8 @@ function load_finish(loader_modal) {
     }
 
     var layer_element = new_layer_element()
-    var [view_element, svg_element] = new_view_elements(layer_element, new_svg)
+    var [view_element, svg_element] = new_view_elements(layer_element)
+    svg_element.innerHTML = new_svg
     var layer_context = {
       'mei': new_mei,
       'layer_elem': layer_element,
@@ -639,11 +640,11 @@ function render_mei(mei) {
   var data = new XMLSerializer().serializeToString(sanitize_xml(mei))
 
   var svg = vrvToolkit.renderData(data, {
-    scale: 1000,
+    scale: 50,
     footer: 'none',
     header: 'none',
     breaks: 'none',
-    scaleToPageSize: true,
+    // scaleToPageSize: true,
     svgCss: 'g.notehead, g.stem, g.dots {fill: currentColor;}',
   })
   return [data, svg]

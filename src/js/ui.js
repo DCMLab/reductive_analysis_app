@@ -555,6 +555,7 @@ export const setCurrentDrawContext = drawContext => {
 }
 
 export function adjustSvgDimensions(draw_context) {
+  console.trace('adjustSvgDimensions')
   const svg_elem = draw_context.svg_elem
   const rootSvg = svg_elem.getElementsByTagName('svg')[0]
   const definitionScale = svg_elem.getElementsByClassName('definition-scale')[0]
@@ -611,5 +612,5 @@ export function adjustSvgDimensions(draw_context) {
 
   // Set the width and height on the container SVG in pixels
   rootSvg.setAttribute('width', `${newPixelWidth}px`)
-  rootSvg.setAttribute('height', `${newPixelHeight}px`)
+  rootSvg.setAttribute('height', `${newPixelHeight + 100}px`)
 }

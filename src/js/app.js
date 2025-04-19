@@ -15,6 +15,7 @@ import { debug } from './conf'
 
 import newApp from './new/app'
 import { downloadAs } from './new/utils/file'
+import { adjustSvgDimensions } from './ui'
 
 // Clicking selects, exposed globally
 window.selected = []
@@ -200,6 +201,8 @@ export function do_relation(type, id, redoing = false) {
 
   // Update hierarchy tree if visible
   window.relationTreeInstance?.updateIfVisible()
+
+  adjustSvgDimensions(getCurrentDrawContext())
 }
 
 export function do_comborelation(type) {
@@ -253,6 +256,8 @@ export function do_metarelation(type, id, redoing = false) {
 
   // Update hierarchy tree if visible
   window.relationTreeInstance?.updateIfVisible()
+
+  adjustSvgDimensions(getCurrentDrawContext())
 }
 
 var rerendered_after_action
@@ -634,6 +639,7 @@ function finalize_draw_context(new_draw_context) {
   console.groupEnd()
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
+  adjustSvgDimensions(new_draw_context)
 }
 
 function render_mei(mei) {

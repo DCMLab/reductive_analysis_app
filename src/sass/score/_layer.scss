@@ -2,6 +2,25 @@
   position: relative;
   display: flex; // see comment in `.layer-intersection-landmark`
   align-items: stretch;
+
+  // Add resize handle at the bottom of each layer
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    cursor: row-resize;
+    background-color: transparent;
+    z-index: 10;
+    transition: background-color 0.2s ease;
+  }
+
+  // Add extra padding at the bottom to create more resize space for the last layer
+  &:last-child {
+    margin-bottom: 150px;
+  }
 }
 
 /**
@@ -11,7 +30,7 @@
  * the end, the observer fails to intersect at the defined threshold
  * but it can be solved using an element havng the same height as
  * a layer but a 1px width that will never mess with the ratio.
- * The use of flex and sticky isn’t ideal but is currently a
+ * The use of flex and sticky isn't ideal but is currently a
  * okay-temp way to intersect while panning horizontally.
  */
 .layer-intersection-landmark {
@@ -23,4 +42,26 @@
   width: 1px;
 
   pointer-events: none;
+}
+
+// Add class for when layer is being resized
+.layer--resizing {
+  user-select: none;
+
+  &::after {
+    background-color: rgba(0, 0, 0, 0.2);
+
+    // Enhanced visibility during active resizing
+    &::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 2px;
+      width: 150px;
+      height: 2px;
+      background-color: rgba(0, 0, 0, 0.5);
+      transform: translateX(-50%);
+      border-radius: 1px;
+    }
+  }
 }

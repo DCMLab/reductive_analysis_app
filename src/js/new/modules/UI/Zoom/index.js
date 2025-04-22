@@ -1,4 +1,5 @@
 import { getCurrentDrawContext } from '../../../../ui'
+import { adjustSvgDimensions } from '../../../../ui'
 
 const ZOOM_DEFAULT = 1
 const ZOOM_STEP = 1.1

@@ -5,6 +5,7 @@ import LayerControls  from './new'
 import Reductions     from './reductions'
 import RelationsTree  from './relationsTree'
 import MetaRelation   from './metaRelation'
+import { initLayerResize } from './layer_resize'
 import { navigation_conf } from '../../../../conf'
 import { getCurrentDrawContext, setCurrentDrawContext } from '../../../../ui'
 import { doc } from '../../../utils/document'
@@ -39,6 +40,9 @@ class LayersMenu {
     this.$lockBtn = document.getElementById('layer-lock')
 
     this.initObserver()
+
+    // Initialize layer resize functionality
+    this.resizeHandler = initLayerResize(this)
   }
 
   get contexts() {
@@ -84,6 +88,11 @@ class LayersMenu {
     this.updateLayersCount()
     this.tree.onScoreLoad()
     this.metaRelation.onScoreLoad()
+
+    // Update resize handlers for newly loaded layers
+    if (this.resizeHandler) {
+      this.resizeHandler.updateResizeHandlers()
+    }
   }
 
   toggleVisibility(state = !this.#visible) {

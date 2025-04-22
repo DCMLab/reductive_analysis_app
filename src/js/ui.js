@@ -56,7 +56,6 @@ import { metaRelationTypes, relationTypes } from './new/modules/Relations/config
 import accidentals from './new/modules/UI/Accidentals'
 import bookmarks from './new/modules/UI/Bookmarks'
 import layersMenu from './new/modules/UI/Layers'
-import { setupSpaceDrag, removeSpaceDrag } from './space_drag'
 import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */
@@ -228,7 +227,7 @@ export function handle_keydown(ev) {
   if (ev.key === 'Shift')
     $('#layers').addClass('shift-pressed')
 
-  // Add space drag functionality
+  // Add space drag functionality (commented out due to performance issues)
   if (ev.key === ' ' || ev.key === 'Space') {
     ev.preventDefault() // Prevent page scrolling with space
     window._spacePressed = true
@@ -250,12 +249,12 @@ export function handle_keyup(ev) {
   if (ev.key === 'Shift')
     $('#layers').removeClass('shift-pressed')
 
-  // Remove space drag functionality
-  if (ev.key === ' ' || ev.key === 'Space') {
-    window._spacePressed = false
-    $('#layers').removeClass('space-drag-mode') // Remove visual indicator
-    removeSpaceDrag()
-  }
+  // Remove space drag functionality (commented out due to performance issues)
+  // if (ev.key === ' ' || ev.key === 'Space') {
+  //   window._spacePressed = false
+  //   $('#layers').removeClass('space-drag-mode') // Remove visual indicator
+  //   removeSpaceDrag()
+  // }
 
   // Remove option drag functionality
   if (ev.key === 'Alt' || ev.key === 'Option') {

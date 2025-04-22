@@ -30,6 +30,8 @@ body {
   width: -moz-fit-content;
   margin-bottom: 33vh;
   top: 8vh;
+  padding-bottom: 200px;
+  min-height: 100vh;
 }
 
 .file-input {

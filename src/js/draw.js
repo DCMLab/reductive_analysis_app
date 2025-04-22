@@ -115,9 +115,6 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   // Remember what we're adding
   added.push(group)
 
-  // Adjust SVG dimensions if needed
-  adjustSvgDimensions(draw_context)
-
   return added
 }
 
@@ -425,9 +422,6 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   add_to_svg_bg(svg_elem, g_elem)
   // Remember what we're adding
   added.push(g_elem)
-
-  // Adjust SVG dimensions if needed
-  adjustSvgDimensions(draw_context)
 
   return added
 }

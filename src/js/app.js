@@ -15,6 +15,7 @@ import { debug } from './conf'
 
 import newApp from './new/app'
 import { downloadAs } from './new/utils/file'
+import { adjustSvgDimensions } from './ui'
 
 // Clicking selects, exposed globally
 window.selected = []
@@ -200,6 +201,8 @@ export function do_relation(type, id, redoing = false) {
 
   // Update hierarchy tree if visible
   window.relationTreeInstance?.updateIfVisible()
+
+  adjustSvgDimensions(getCurrentDrawContext())
 }
 
 export function do_comborelation(type) {
@@ -253,6 +256,8 @@ export function do_metarelation(type, id, redoing = false) {
 
   // Update hierarchy tree if visible
   window.relationTreeInstance?.updateIfVisible()
+
+  adjustSvgDimensions(getCurrentDrawContext())
 }
 
 var rerendered_after_action
@@ -464,7 +469,8 @@ function load_finish(loader_modal) {
     }
 
     var layer_element = new_layer_element()
-    var [view_element, svg_element] = new_view_elements(layer_element, new_svg)
+    var [view_element, svg_element] = new_view_elements(layer_element)
+    svg_element.innerHTML = new_svg
     var layer_context = {
       'mei': new_mei,
       'layer_elem': layer_element,
@@ -633,17 +639,18 @@ function finalize_draw_context(new_draw_context) {
   console.groupEnd()
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
+  adjustSvgDimensions(new_draw_context)
 }
 
 function render_mei(mei) {
   var data = new XMLSerializer().serializeToString(sanitize_xml(mei))
 
   var svg = vrvToolkit.renderData(data, {
-    scale: 1000,
+    scale: 50,
     footer: 'none',
     header: 'none',
     breaks: 'none',
-    scaleToPageSize: true,
+    // scaleToPageSize: true,
     svgCss: 'g.notehead, g.stem, g.dots {fill: currentColor;}',
   })
   return [data, svg]

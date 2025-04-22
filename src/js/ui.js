@@ -56,7 +56,6 @@ import { metaRelationTypes, relationTypes } from './new/modules/Relations/config
 import accidentals from './new/modules/UI/Accidentals'
 import bookmarks from './new/modules/UI/Bookmarks'
 import layersMenu from './new/modules/UI/Layers'
-import { setupSpaceDrag, removeSpaceDrag } from './space_drag'
 import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */
@@ -228,7 +227,7 @@ export function handle_keydown(ev) {
   if (ev.key === 'Shift')
     $('#layers').addClass('shift-pressed')
 
-  // Add space drag functionality
+  // Add space drag functionality (commented out due to performance issues)
   if (ev.key === ' ' || ev.key === 'Space') {
     ev.preventDefault() // Prevent page scrolling with space
     window._spacePressed = true
@@ -250,12 +249,12 @@ export function handle_keyup(ev) {
   if (ev.key === 'Shift')
     $('#layers').removeClass('shift-pressed')
 
-  // Remove space drag functionality
-  if (ev.key === ' ' || ev.key === 'Space') {
-    window._spacePressed = false
-    $('#layers').removeClass('space-drag-mode') // Remove visual indicator
-    removeSpaceDrag()
-  }
+  // Remove space drag functionality (commented out due to performance issues)
+  // if (ev.key === ' ' || ev.key === 'Space') {
+  //   window._spacePressed = false
+  //   $('#layers').removeClass('space-drag-mode') // Remove visual indicator
+  //   removeSpaceDrag()
+  // }
 
   // Remove option drag functionality
   if (ev.key === 'Alt' || ev.key === 'Option') {
@@ -555,9 +554,20 @@ export const setCurrentDrawContext = drawContext => {
 }
 
 export function adjustSvgDimensions(draw_context) {
+  console.trace('adjustSvgDimensions')
   const svg_elem = draw_context.svg_elem
-  const viewBox = svg_elem.getElementsByClassName('definition-scale')[0].getAttribute('viewBox')
+  const rootSvg = svg_elem.getElementsByTagName('svg')[0]
+  const definitionScale = svg_elem.getElementsByClassName('definition-scale')[0]
+  const viewBox = definitionScale.getAttribute('viewBox')
   let [x, y, w, h] = viewBox.split(' ').map(Number)
+
+  // Get current dimensions to calculate scale factor
+  const currentWidth = rootSvg.clientWidth || rootSvg.width.baseVal.value
+  const currentHeight = rootSvg.clientHeight || rootSvg.height.baseVal.value
+
+  // Calculate scale factors (pixels per SVG unit)
+  const scaleX = currentWidth / w
+  const scaleY = currentHeight / h
 
   // Get all relations
   const allRelations = Array.from(svg_elem.getElementsByClassName('relation'))
@@ -580,24 +590,26 @@ export function adjustSvgDimensions(draw_context) {
     maxY = Math.max(maxY, bbox.y + bbox.height)
   })
 
-  // Add padding
+  // Add padding in SVG units
   const padding = 100
   minX -= padding
   minY -= padding
   maxX += padding
   maxY += padding
 
-  // Calculate new viewBox that includes both score and relations
+  // Calculate new dimensions that include both score and relations in SVG units
   const newMinX = Math.min(x, minX)
   const newMinY = Math.min(y, minY)
   const newMaxX = Math.max(x + w, maxX)
   const newMaxY = Math.max(y + h, maxY)
-  const newWidth = newMaxX - newMinX
-  const newHeight = newMaxY - newMinY
+  const newSvgWidth = newMaxX - newMinX
+  const newSvgHeight = newMaxY - newMinY
 
-  // Update viewBox to include both score and relations
-  const newViewBox = `${newMinX} ${newMinY} ${newWidth} ${newHeight}`
+  // Convert SVG units to pixels using the scale factors
+  const newPixelWidth = Math.ceil(newSvgWidth * scaleX)
+  const newPixelHeight = Math.ceil(newSvgHeight * scaleY)
 
-  // Set the viewBox on the container SVG to match its content
-  svg_elem.setAttribute('viewBox', newViewBox)
+  // Set the width and height on the container SVG in pixels
+  rootSvg.setAttribute('width', `${newPixelWidth}px`)
+  rootSvg.setAttribute('height', `${newPixelHeight + 100}px`)
 }

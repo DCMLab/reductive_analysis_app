@@ -1,208 +1,200 @@
-/*
-This file is part of MuseReduce, a webapp for graph-based musical analysis
+// import $ from 'jquery'
+// import { getDrawContexts } from './app'
 
-Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Digital and Cognitive Musicology Lab (DCML).
+// // Space drag implementation
+// let isDragging = false
+// let dragStartX = 0
+// let dragStartY = 0
+// let currentContext = null
+// let initialTransform = null
 
-MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
-*/
+// export function setupSpaceDrag() {
+//   const drawContexts = getDrawContexts()
+//   if (!drawContexts || !drawContexts.length) return
 
-import $ from 'jquery'
-import { getDrawContexts } from './app'
+//   // Set cursor on layers container
+//   const layersContainer = document.getElementById('layers')
+//   if (layersContainer) {
+//     layersContainer.style.cursor = 'grab'
+//   }
 
-// Space drag implementation
-let isDragging = false
-let dragStartX = 0
-let dragStartY = 0
-let currentContext = null
-let initialTransform = null
+//   drawContexts.forEach(context => {
+//     if (context && context.svg_elem) {
+//       // Find the SVG container which is the parent of svg_elem
+//       const svgContainer = context.svg_elem.closest('.svg_container') || context.svg_elem.parentNode
 
-export function setupSpaceDrag() {
-  const drawContexts = getDrawContexts()
-  if (!drawContexts || !drawContexts.length) return
+//       // Change cursor on both elements
+//       context.svg_elem.style.cursor = 'grab'
+//       if (svgContainer) {
+//         svgContainer.style.cursor = 'grab'
 
-  // Set cursor on layers container
-  const layersContainer = document.getElementById('layers')
-  if (layersContainer) {
-    layersContainer.style.cursor = 'grab'
-  }
+//         // Store context on both elements for easy access during drag
+//         svgContainer._dragContext = context
+//         context.svg_elem._dragContext = context
 
-  drawContexts.forEach(context => {
-    if (context && context.svg_elem) {
-      // Find the SVG container which is the parent of svg_elem
-      const svgContainer = context.svg_elem.closest('.svg_container') || context.svg_elem.parentNode
+//         // Attach mousedown to both container and SVG element
+//         svgContainer.addEventListener('mousedown', startSpaceDrag)
+//         context.svg_elem.addEventListener('mousedown', startSpaceDrag)
 
-      // Change cursor on both elements
-      context.svg_elem.style.cursor = 'grab'
-      if (svgContainer) {
-        svgContainer.style.cursor = 'grab'
+//         // Make sure svg element can receive events
+//         context.svg_elem.style.pointerEvents = 'auto'
+//       }
+//     }
+//   })
 
-        // Store context on both elements for easy access during drag
-        svgContainer._dragContext = context
-        context.svg_elem._dragContext = context
+//   // Global event listeners
+//   document.addEventListener('mousemove', moveSpaceDrag)
+//   document.addEventListener('mouseup', endSpaceDrag)
+// }
 
-        // Attach mousedown to both container and SVG element
-        svgContainer.addEventListener('mousedown', startSpaceDrag)
-        context.svg_elem.addEventListener('mousedown', startSpaceDrag)
+// export function startSpaceDrag(event) {
+//   if (!window._spacePressed) return
 
-        // Make sure svg element can receive events
-        context.svg_elem.style.pointerEvents = 'auto'
-      }
-    }
-  })
+//   event.preventDefault()
 
-  // Global event listeners
-  document.addEventListener('mousemove', moveSpaceDrag)
-  document.addEventListener('mouseup', endSpaceDrag)
-}
+//   isDragging = true
+//   dragStartX = event.clientX
+//   dragStartY = event.clientY
 
-export function startSpaceDrag(event) {
-  if (!window._spacePressed) return
+//   // First try to get the context from the element's _dragContext property
+//   const container = event.currentTarget
 
-  event.preventDefault()
+//   if (container && container._dragContext) {
+//     currentContext = container._dragContext
+//   } else {
+//     // Fall back to finding context by traversing up the DOM
+//     const svgContainer = event.target.closest('.svg_container')
 
-  isDragging = true
-  dragStartX = event.clientX
-  dragStartY = event.clientY
+//     if (svgContainer) {
+//       // Try to find the context from any stored context on the container
+//       if (svgContainer._dragContext) {
+//         currentContext = svgContainer._dragContext
+//       } else {
+//         // Fall back to search through all contexts
+//         currentContext = getDrawContexts().find(ctx => {
+//           return ctx.svg_elem.closest('.svg_container') === svgContainer
+//         })
+//       }
+//     }
+//   }
 
-  // First try to get the context from the element's _dragContext property
-  const container = event.currentTarget
+//   if (currentContext) {
+//     initialTransform = getComputedTransformMatrix(currentContext.svg_elem)
 
-  if (container && container._dragContext) {
-    currentContext = container._dragContext
-  } else {
-    // Fall back to finding context by traversing up the DOM
-    const svgContainer = event.target.closest('.svg_container')
+//     // Change cursor to indicate dragging
+//     document.body.style.cursor = 'grabbing'
+//     if (currentContext.svg_elem) {
+//       currentContext.svg_elem.style.cursor = 'grabbing'
+//     }
 
-    if (svgContainer) {
-      // Try to find the context from any stored context on the container
-      if (svgContainer._dragContext) {
-        currentContext = svgContainer._dragContext
-      } else {
-        // Fall back to search through all contexts
-        currentContext = getDrawContexts().find(ctx => {
-          return ctx.svg_elem.closest('.svg_container') === svgContainer
-        })
-      }
-    }
-  }
+//     // Also change cursor on container
+//     const container = currentContext.svg_elem.closest('.svg_container')
+//     if (container) {
+//       container.style.cursor = 'grabbing'
+//     }
+//   }
+// }
 
-  if (currentContext) {
-    initialTransform = getComputedTransformMatrix(currentContext.svg_elem)
+// export function moveSpaceDrag(event) {
+//   if (!isDragging || !currentContext || !initialTransform) return
 
-    // Change cursor to indicate dragging
-    document.body.style.cursor = 'grabbing'
-    if (currentContext.svg_elem) {
-      currentContext.svg_elem.style.cursor = 'grabbing'
-    }
+//   const dx = event.clientX - dragStartX
+//   const dy = event.clientY - dragStartY
 
-    // Also change cursor on container
-    const container = currentContext.svg_elem.closest('.svg_container')
-    if (container) {
-      container.style.cursor = 'grabbing'
-    }
-  }
-}
+//   // Make sure we have the correct cursor during drag
+//   document.body.style.cursor = 'grabbing'
 
-export function moveSpaceDrag(event) {
-  if (!isDragging || !currentContext || !initialTransform) return
+//   // Apply the new transform
+//   const transform = initialTransform
+//   const newTransform = `matrix(${transform.a}, ${transform.b}, ${transform.c}, ${transform.d}, ${transform.e + dx}, ${transform.f + dy})`
+//   currentContext.svg_elem.style.transform = newTransform
+// }
 
-  const dx = event.clientX - dragStartX
-  const dy = event.clientY - dragStartY
+// export function endSpaceDrag() {
+//   if (!isDragging) return
 
-  // Make sure we have the correct cursor during drag
-  document.body.style.cursor = 'grabbing'
+//   isDragging = false
 
-  // Apply the new transform
-  const transform = initialTransform
-  const newTransform = `matrix(${transform.a}, ${transform.b}, ${transform.c}, ${transform.d}, ${transform.e + dx}, ${transform.f + dy})`
-  currentContext.svg_elem.style.transform = newTransform
-}
+//   // Reset cursor styles
+//   document.body.style.cursor = ''
 
-export function endSpaceDrag() {
-  if (!isDragging) return
+//   if (currentContext) {
+//     currentContext.svg_elem.style.cursor = 'grab'
 
-  isDragging = false
+//     // Reset cursor on container too
+//     const container = currentContext.svg_elem.closest('.svg_container')
+//     if (container) {
+//       container.style.cursor = 'grab'
+//     }
 
-  // Reset cursor styles
-  document.body.style.cursor = ''
+//     currentContext = null
+//   }
 
-  if (currentContext) {
-    currentContext.svg_elem.style.cursor = 'grab'
+//   initialTransform = null
+// }
 
-    // Reset cursor on container too
-    const container = currentContext.svg_elem.closest('.svg_container')
-    if (container) {
-      container.style.cursor = 'grab'
-    }
+// export function removeSpaceDrag() {
+//   // Reset cursor on the layers container
+//   const layersContainer = document.getElementById('layers')
+//   if (layersContainer) {
+//     layersContainer.style.cursor = ''
+//   }
 
-    currentContext = null
-  }
+//   const drawContexts = getDrawContexts()
+//   if (!drawContexts || !drawContexts.length) return
 
-  initialTransform = null
-}
+//   drawContexts.forEach(context => {
+//     if (context && context.svg_elem) {
+//       // Reset cursor and pointer-events on SVG element
+//       context.svg_elem.style.cursor = ''
+//       context.svg_elem.style.pointerEvents = ''
 
-export function removeSpaceDrag() {
-  // Reset cursor on the layers container
-  const layersContainer = document.getElementById('layers')
-  if (layersContainer) {
-    layersContainer.style.cursor = ''
-  }
+//       // Remove event listener from SVG element
+//       context.svg_elem.removeEventListener('mousedown', startSpaceDrag)
 
-  const drawContexts = getDrawContexts()
-  if (!drawContexts || !drawContexts.length) return
+//       // Clean up stored context on SVG element
+//       if (context.svg_elem._dragContext) {
+//         delete context.svg_elem._dragContext
+//       }
 
-  drawContexts.forEach(context => {
-    if (context && context.svg_elem) {
-      // Reset cursor and pointer-events on SVG element
-      context.svg_elem.style.cursor = ''
-      context.svg_elem.style.pointerEvents = ''
+//       // Find the SVG container
+//       const svgContainer = context.svg_elem.closest('.svg_container') || context.svg_elem.parentNode
 
-      // Remove event listener from SVG element
-      context.svg_elem.removeEventListener('mousedown', startSpaceDrag)
+//       if (svgContainer) {
+//         // Reset cursor
+//         svgContainer.style.cursor = ''
 
-      // Clean up stored context on SVG element
-      if (context.svg_elem._dragContext) {
-        delete context.svg_elem._dragContext
-      }
+//         // Remove event listener from container
+//         svgContainer.removeEventListener('mousedown', startSpaceDrag)
 
-      // Find the SVG container
-      const svgContainer = context.svg_elem.closest('.svg_container') || context.svg_elem.parentNode
+//         // Clean up stored context on container
+//         if (svgContainer._dragContext) {
+//           delete svgContainer._dragContext
+//         }
+//       }
+//     }
+//   })
 
-      if (svgContainer) {
-        // Reset cursor
-        svgContainer.style.cursor = ''
+//   // Remove global event listeners
+//   document.removeEventListener('mousemove', moveSpaceDrag)
+//   document.removeEventListener('mouseup', endSpaceDrag)
 
-        // Remove event listener from container
-        svgContainer.removeEventListener('mousedown', startSpaceDrag)
+//   isDragging = false
+//   currentContext = null
+//   initialTransform = null
+// }
 
-        // Clean up stored context on container
-        if (svgContainer._dragContext) {
-          delete svgContainer._dragContext
-        }
-      }
-    }
-  })
+// function getComputedTransformMatrix(element) {
+//   try {
+//     const style = window.getComputedStyle(element)
 
-  // Remove global event listeners
-  document.removeEventListener('mousemove', moveSpaceDrag)
-  document.removeEventListener('mouseup', endSpaceDrag)
+//     // Handle case where transform is not set or "none"
+//     if (!style.transform || style.transform === 'none') {
+//       return new DOMMatrix() // Identity matrix
+//     }
 
-  isDragging = false
-  currentContext = null
-  initialTransform = null
-}
-
-function getComputedTransformMatrix(element) {
-  try {
-    const style = window.getComputedStyle(element)
-
-    // Handle case where transform is not set or "none"
-    if (!style.transform || style.transform === 'none') {
-      return new DOMMatrix() // Identity matrix
-    }
-
-    return new DOMMatrix(style.transform)
-  } catch (e) {
-    return new DOMMatrix() // Return identity matrix on error
-  }
-}
+//     return new DOMMatrix(style.transform)
+//   } catch (e) {
+//     return new DOMMatrix() // Return identity matrix on error
+//   }
+// }

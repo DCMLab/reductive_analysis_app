@@ -570,6 +570,60 @@ export function rerender_mei(replace_with_rests = false, draw_context = draw_con
 
 }
 
+/**
+ * Deletes a layer from the MEI and removes it from the UI
+ *
+ * @param {Object} draw_context - The draw context representing the layer to delete
+ * @returns {boolean} - True if the layer was successfully deleted, false otherwise
+ */
+export function delete_layer(draw_context) {
+  // Check if the layer can be edited
+  if (!draw_context || !draw_context.canEdit) {
+    alert('This layer cannot be deleted (not editable)')
+    return false
+  }
+
+  // Ask for confirmation since this action is irreversible
+  if (!confirm('Warning: Deleting a layer is irreversible and cannot be undone. Continue?')) {
+    return false
+  }
+
+  try {
+    // 1. Delete the layer from the MEI document
+    const mdiv_elem = draw_context.mei_mdiv
+    const mdiv_id = mdiv_elem.getAttribute('xml:id')
+    const mdiv_in_mei = get_by_id(mei, mdiv_id)
+
+    if (!mdiv_in_mei) {
+      console.log('Layer mdiv not found in MEI, cannot delete')
+      return false
+    }
+
+    mdiv_in_mei.parentElement.removeChild(mdiv_in_mei)
+
+    // 2. Remove the layer div from HTML
+    const layer_elem = draw_context.layer.layer_elem
+    if (layer_elem) {
+      layer_elem.parentElement.removeChild(layer_elem)
+    }
+
+    // 3. Remove the layer from our data structures
+    draw_contexts = draw_contexts.filter(ctx => ctx !== draw_context)
+    layer_contexts = layer_contexts.filter(ctx => ctx !== draw_context.layer)
+
+    // 4. Set the current draw context to the first layer
+    setCurrentDrawContext(draw_contexts[0])
+
+    // 5. Mark that changes were made
+    changes = true
+
+    return true
+  } catch (error) {
+    console.error('Error deleting layer:', error)
+    return false
+  }
+}
+
 export function create_new_layer(draw_context, sliced = false, tied = false) {
   var new_mdiv_elem
   if (sliced)

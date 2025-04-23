@@ -116,7 +116,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
         // Use the best point for the jot position
         if (bestPoint) {
           const jot = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-          const radius = 105
+          const radius = 80
 
           jot.setAttribute('cx', bestPoint.x)
           jot.setAttribute('cy', bestPoint.y + radius / 2)

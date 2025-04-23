@@ -1131,12 +1131,12 @@ export function draw_slur(startNote, endNote) {
   const maxExistingSlurs = Math.max(nStartSlur, nEndSlur)
   const additionalHeight = maxExistingSlurs * slurOffsetHeightUnit
   const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
-  const maxSlurWidth = 120
+  const maxSlurWidth = 100
 
   let pathData
 
   // Adjust control points based on different start/end heights
-  if (width < 2000) {
+  if (width < 1000) {
     const height = width * 0.3 + additionalHeight
     const heightDiff = Math.abs(startOffsetY - endOffsetY)
     const midX = (adjustedStart[0] + adjustedEnd[0]) / 2

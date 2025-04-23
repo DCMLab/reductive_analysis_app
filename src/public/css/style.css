@@ -361,7 +361,13 @@ body:not(.mousedown) .metarelation:hover rect {
     transform : translate3d(0,0,0);
     filter : url("#selectFilter");
 }
-
+.relation line {
+  visibility: hidden;
+}
+.relation:hover line,
+.relation.selectedrelation line {
+  visibility: visible;
+}
 body:not(.mousedown) .relation:hover path {
       transform: translate3d(0,0,0);
        filter: url("#glowFilter");

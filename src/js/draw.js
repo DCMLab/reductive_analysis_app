@@ -115,12 +115,14 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
 
         // Use the best point for the jot position
         if (bestPoint) {
-          const jot = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
-          const radius = 80
+          const jot = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+          const size = 100 // Size is double the radius to maintain similar visual size
 
-          jot.setAttribute('cx', bestPoint.x)
-          jot.setAttribute('cy', bestPoint.y + radius / 2)
-          jot.setAttribute('r', radius)
+          // Position the rect - need to offset by half the size to center it on the bestPoint
+          jot.setAttribute('x', bestPoint.x - size / 4)
+          jot.setAttribute('y', bestPoint.y - size / 4)
+          jot.setAttribute('width', size / 2)
+          jot.setAttribute('height', size)
           jot.style.fill = getComputedStyle(group).getPropertyValue('--shade-alternate')
           jot.setAttribute('middle-note', middleNote.id)
 
@@ -130,10 +132,11 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
           line.setAttribute('x1', coords[0])
           line.setAttribute('y1', coords[1] - baseOffsetY)
           line.setAttribute('x2', bestPoint.x)
-          line.setAttribute('y2', bestPoint.y + radius)
+          line.setAttribute('y2', bestPoint.y + size) // Connect to the middle of the square
           line.setAttribute('stroke', 'currentColor')
           line.setAttribute('stroke-width', '30px')
           line.setAttribute('stroke-dasharray', '100 100')
+          line.classList.add('relation-jot-line')
 
           // Add connection line and jot to the group
           group.appendChild(line)

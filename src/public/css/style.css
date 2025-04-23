@@ -314,14 +314,17 @@ body:not(.mousedown) .note:hover {
 .selectednote {
   color: green;
 }
-.extrahover {
-      transform: translate3d(0,0,0);
-       filter: url("#extraFilter");
-       color: red;
+.extrahover,
+.relation-select-primary {
+  transform: translate3d(0,0,0);
+  filter: url("#extraFilter");
+  color: red;
 }
-.selecthover {
-      transform: translate3d(0,0,0);
-       filter: url("#selectFilter");
+.selecthover,
+.relation-select-secondary {
+  transform: translate3d(0,0,0);
+  filter: url("#selectFilter");
+  color: hsl(199, 98%, 55%);
 }
 .secondarynote {
   opacity: calc(1.0 / var(--how-secondary));

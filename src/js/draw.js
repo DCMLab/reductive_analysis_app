@@ -66,17 +66,84 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   group.classList.add('relation')
   group.setAttribute('type', type)
 
-  // Draw slurs between consecutive notes
-  for (let i = 0; i < notes.length - 1; i++) {
-    const slur = draw_slur(notes[i], notes[i + 1])
+  // Draw a single slur from first note to last note
+  if (notes.length >= 2) {
+    const firstNote = notes[0]
+    const lastNote = notes[notes.length - 1]
+
+    // Create the single slur from first to last note
+    const slur = draw_slur(firstNote, lastNote)
 
     // Store note references in the slur element
-    slur.setAttribute('start-note', notes[i].id)
-    slur.setAttribute('end-note', notes[i + 1].id)
+    slur.setAttribute('start-note', firstNote.id)
+    slur.setAttribute('end-note', lastNote.id)
 
     // Apply the group's color to the slur
     slur.style.stroke = getComputedStyle(group).getPropertyValue('--shade-alternate')
+
     group.appendChild(slur)
+
+    // Add jots for any middle notes on the slur
+    if (notes.length > 2) {
+      // Get the length of the path for measurements
+      const pathLength = slur.getTotalLength()
+      const curveLength = pathLength / 2 // Top curve is roughly the first half
+
+      // Draw jots for middle notes
+      for (let i = 1; i < notes.length - 1; i++) {
+        const middleNote = notes[i]
+        const coords = note_coords(middleNote)
+
+        // Find the point on the top curve that best matches the x-coordinate of the middle note
+        let bestPoint = null
+        let minDistance = Infinity
+
+        // Sample points along the top curve to find the closest one to our x-coordinate
+        const numSamples = 100
+        for (let j = 0; j <= numSamples; j++) {
+          const samplePosition = j / numSamples * curveLength
+          const point = slur.getPointAtLength(samplePosition)
+
+          // Calculate distance to the target x-coordinate
+          const xDistance = Math.abs(point.x - coords[0])
+
+          if (xDistance < minDistance) {
+            minDistance = xDistance
+            bestPoint = point
+          }
+        }
+
+        // Use the best point for the jot position
+        if (bestPoint) {
+          const jot = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+          const size = 100 // Size is double the radius to maintain similar visual size
+
+          // Position the rect - need to offset by half the size to center it on the bestPoint
+          jot.setAttribute('x', bestPoint.x - size / 4)
+          jot.setAttribute('y', bestPoint.y - size / 4)
+          jot.setAttribute('width', size / 2)
+          jot.setAttribute('height', size)
+          jot.style.fill = getComputedStyle(group).getPropertyValue('--shade-alternate')
+          jot.setAttribute('middle-note', middleNote.id)
+
+          // Create a dashed line connecting the middle note to the jot
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+          const baseOffsetY = 150
+          line.setAttribute('x1', coords[0])
+          line.setAttribute('y1', coords[1] - baseOffsetY)
+          line.setAttribute('x2', bestPoint.x)
+          line.setAttribute('y2', bestPoint.y + size) // Connect to the middle of the square
+          line.setAttribute('stroke', 'currentColor')
+          line.setAttribute('stroke-width', '30px')
+          line.setAttribute('stroke-dasharray', '100 100')
+          line.classList.add('relation-jot-line')
+
+          // Add connection line and jot to the group
+          group.appendChild(line)
+          group.appendChild(jot)
+        }
+      }
+    }
   }
 
   /**
@@ -100,7 +167,23 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   )
 
   // Decorate with onclick and onmouseover handlers
-  group.onclick = () => toggle_selected(group)
+  group.onclick = () => {
+    primaries.forEach(item => {
+      if (item.classList.contains('relation-select-primary')) {
+        item.classList.remove('relation-select-primary')
+      } else {
+        item.classList.add('relation-select-primary')
+      }
+    })
+    secondaries.forEach(item => {
+      if (item.classList.contains('relation-select-secondary')) {
+        item.classList.remove('relation-select-secondary')
+      } else {
+        item.classList.add('relation-select-secondary')
+      }
+    })
+    toggle_selected(group)
+  }
   group.onmouseover = function () {
     primaries.forEach(item => item.classList.add('extrahover'))
     secondaries.forEach(item => item.classList.add('selecthover'))
@@ -157,7 +240,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
   // Where are our targets
   var coords = targets.map(target => {
-    const maxWidth = 80 // matches the maxWidth in draw_slur
+    const maxWidth = 100 // matches the maxWidth in draw_slur
 
     // Check if the target is a relation
     if (target.classList.contains('metarelation')) {

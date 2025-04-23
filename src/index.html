@@ -101,7 +101,7 @@
             </feMerge>
         </filter>
         <filter id="selectFilter">
-            <feFlood result="flood" flood-color="green" />
+            <feFlood result="flood" flood-color="hsl(199, 98%, 55%)" />
             <feComposite in="flood" in2="SourceGraphic" operator="in" result="mask" />
             <feMorphology in="mask" operator="dilate" radius="2" result="thickened" />
             <feGaussianBlur in="thickened" stdDeviation="5" result="coloredBlur" />

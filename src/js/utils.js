@@ -1127,16 +1127,16 @@ export function draw_slur(startNote, endNote) {
   const adjustedEnd = [end[0], end[1] - endOffsetY]
 
   // Calculate base height and additional height for existing slurs
-  const slurOffsetHeightUnit = 80
+  const slurOffsetHeightUnit = 100
   const maxExistingSlurs = Math.max(nStartSlur, nEndSlur)
   const additionalHeight = maxExistingSlurs * slurOffsetHeightUnit
   const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
-  const maxSlurWidth = 120
+  const maxSlurWidth = 100
 
   let pathData
 
   // Adjust control points based on different start/end heights
-  if (width < 2000) {
+  if (width < 3800) {
     const height = width * 0.3 + additionalHeight
     const heightDiff = Math.abs(startOffsetY - endOffsetY)
     const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
@@ -1151,7 +1151,7 @@ export function draw_slur(startNote, endNote) {
       Q ${bottomControlPoint[0]},${bottomControlPoint[1]} ${adjustedStart[0]},${adjustedStart[1]}
       Z`
   } else {
-    const height = width * 0.05 < 2000 ? additionalHeight + width * 0.1 : additionalHeight + 2000
+    const height = additionalHeight + Math.min(width * 0.05, 2000)
     const minY = Math.min(startOffsetY, endOffsetY)
 
     // Calculate control points at 20% and 80% of the width

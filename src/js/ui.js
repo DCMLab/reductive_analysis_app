@@ -118,6 +118,10 @@ export function toggle_selected(item, extra = null) {
 
     selected = selected.filter(x => x !== item)
     extraselected = extraselected.filter(x => x !== item)
+
+    // Remove relation-related highlight from notes if using unselect-all
+    document.querySelectorAll('.relation-select-primary').forEach(x => x.classList.remove('relation-select-primary'))
+    document.querySelectorAll('.relation-select-secondary').forEach(x => x.classList.remove('relation-select-secondary'))
   }
 
   /**

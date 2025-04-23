@@ -168,7 +168,6 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
 
   // Decorate with onclick and onmouseover handlers
   group.onclick = () => {
-    toggle_selected(group)
     primaries.forEach(item => {
       if (item.classList.contains('relation-select-primary')) {
         item.classList.remove('relation-select-primary')
@@ -183,6 +182,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
         item.classList.add('relation-select-secondary')
       }
     })
+    toggle_selected(group)
   }
   group.onmouseover = function () {
     primaries.forEach(item => item.classList.add('extrahover'))

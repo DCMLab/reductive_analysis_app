@@ -1,4 +1,4 @@
-import { create_new_layer } from '../../../../app'
+import { create_new_layer, delete_layer } from '../../../../app'
 import { getCurrentDrawContext } from '../../../../ui'
 
 export default class LayerControls {
@@ -11,10 +11,16 @@ export default class LayerControls {
     this.$tied = document.getElementById('layer-tied')
 
     this.$createBtn = document.getElementById('layer-new')
+
+    this.$deleteBtn = document.getElementById('layer-delete')
   }
 
   create() {
     create_new_layer(getCurrentDrawContext(), this.$sliced.checked, this.$tied.checked)
+  }
+
+  delete() {
+    delete_layer(getCurrentDrawContext())
   }
 
   onChange({ target }) {
@@ -36,6 +42,8 @@ export default class LayerControls {
     if (e.target == this.$createBtn) {
       this.create()
       console.log(this.layers)
+    } else if (e.target == this.$deleteBtn) {
+      this.delete()
     }
   }
 }

@@ -579,7 +579,12 @@ export function rerender_mei(replace_with_rests = false, draw_context = draw_con
 export function delete_layer(draw_context) {
   // Check if the layer can be edited
   if (!draw_context || !draw_context.canEdit) {
-    console.log('Layer cannot be deleted (not editable)')
+    alert('This layer cannot be deleted (not editable)')
+    return false
+  }
+
+  // Ask for confirmation since this action is irreversible
+  if (!confirm('Warning: Deleting a layer is irreversible and cannot be undone. Continue?')) {
     return false
   }
 

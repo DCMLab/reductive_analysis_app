@@ -84,6 +84,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
     slur.style.stroke = getComputedStyle(group).getPropertyValue('--shade-alternate')
 
     group.appendChild(slur)
+    group.setAttribute('is-downward', isDownward)
 
     // Add jots for any middle notes on the slur
     if (notes.length > 2) {
@@ -240,16 +241,21 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     return []
   }
 
+  const isDownward = targets.every(target => target.getAttribute('is-downward') === 'true')
+
   // Where are our targets
   var coords = targets.map(target => {
     const maxWidth = 100 // matches the maxWidth in draw_slur
 
-    // Check if the target is a relation
+    // Check if the target is a metarelation
     if (target.classList.contains('metarelation')) {
       // Get the bounding rect of the relation
       const bbox = target.getBBox()
       // Return the middle point of the upper edge
-      return {
+      return isDownward ? {
+        point: [bbox.x + bbox.width / 2, bbox.y + bbox.height],
+        width: maxWidth
+      } : {
         point: [bbox.x + bbox.width / 2, bbox.y],
         width: maxWidth
       }
@@ -261,14 +267,19 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       // Find the highest point and corresponding width of all slurs in this relation
       const slurInfo = slurs.map(slur => {
         const bbox = slur.getBBox()
-        return {
-          point: [bbox.x + bbox.width / 2, bbox.y],
-          width: maxWidth
-        }
+        return isDownward
+          ? {
+            point: [bbox.x + bbox.width / 2, bbox.y + bbox.height],
+            width: maxWidth,
+          }
+          : {
+            point: [bbox.x + bbox.width / 2, bbox.y],
+            width: maxWidth,
+          }
       })
-
-      // Return the highest point and its corresponding width
-      return slurInfo.reduce((highest, current) =>
+      return isDownward ? slurInfo.reduce((lowest, current) =>
+        current.point[1] > lowest.point[1] ? current : lowest
+      ) : slurInfo.reduce((highest, current) =>
         current.point[1] < highest.point[1] ? current : highest
       )
     }
@@ -276,7 +287,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
   // What's midpoint above them?
   var x = average(coords.map((e) => e.point[0]))
-  let yOffset = -400
+  let yOffset = isDownward ? 400 : -400
   var y = Math.min(...coords.map(c => c.point[1])) + yOffset
 
   // Store original coords for line connections
@@ -291,6 +302,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.setAttribute('type', type)
   g_elem.setAttribute('start-relation', targets[0].id)
   g_elem.setAttribute('end-relation', targets[1].id)
+  g_elem.setAttribute('is-downward', isDownward)
   // Draw the metarelation as a circle connected with lines to each of its
   // targets
   const rectHeight = 250
@@ -371,7 +383,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     if (!connection_circle) {
       // Draw a connection circle at the connection point if not already present
       const radius = info.width / 2
-      const adjustedPoint = [info.point[0], info.point[1] + radius / 2]
+      const adjustedPoint = [info.point[0], isDownward ? info.point[1] - radius / 2 : info.point[1] + radius / 2]
       connection_circle = circle(adjustedPoint, radius)
       connection_circle.style.fill = 'white'
       connection_circle.style.stroke = '#000'

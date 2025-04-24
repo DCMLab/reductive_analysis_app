@@ -66,13 +66,19 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   group.classList.add('relation')
   group.setAttribute('type', type)
 
+  let system_bbox = svg_elem.querySelector('svg.definition-scale').getBBox()
+  let system_mid = system_bbox.y + system_bbox.height / 2
+
   // Draw a single slur from first note to last note
   if (notes.length >= 2) {
     const firstNote = notes[0]
     const lastNote = notes[notes.length - 1]
+    // Downward slur if both notes are below the system's midpoint
+    const isDownward = system_mid < note_coords(firstNote)[1] && system_mid < note_coords(lastNote)[1]
+    console.log('isDownward', isDownward)
 
     // Create the single slur from first to last note
-    const slur = draw_slur(firstNote, lastNote)
+    const slur = draw_slur(firstNote, lastNote, isDownward)
 
     // Store note references in the slur element
     slur.setAttribute('start-note', firstNote.id)
@@ -120,7 +126,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
 
           // Position the rect - need to offset by half the size to center it on the bestPoint
           jot.setAttribute('x', bestPoint.x - size / 4)
-          jot.setAttribute('y', bestPoint.y - size / 4)
+          jot.setAttribute('y', isDownward ? bestPoint.y - size * 0.75 : bestPoint.y - size / 4)
           jot.setAttribute('width', size / 2)
           jot.setAttribute('height', size)
           jot.style.fill = getComputedStyle(group).getPropertyValue('--shade-alternate')
@@ -130,9 +136,9 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
           const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
           const baseOffsetY = 150
           line.setAttribute('x1', coords[0])
-          line.setAttribute('y1', coords[1] - baseOffsetY)
+          line.setAttribute('y1', isDownward ? coords[1] + baseOffsetY : coords[1] - baseOffsetY)
           line.setAttribute('x2', bestPoint.x)
-          line.setAttribute('y2', bestPoint.y + size) // Connect to the middle of the square
+          line.setAttribute('y2', isDownward ? bestPoint.y - size : bestPoint.y + size) // Connect to the middle of the square
           line.setAttribute('stroke', 'currentColor')
           line.setAttribute('stroke-width', '30px')
           line.setAttribute('stroke-dasharray', '100 100')

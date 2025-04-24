@@ -26,6 +26,7 @@ import {
   relation_secondaries,
   relation_type,
   draw_slur,
+  isSlurDownward
 } from './utils'
 
 // Given a draw context and a graph node representing a relation, draw the
@@ -66,17 +67,12 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   group.classList.add('relation')
   group.setAttribute('type', type)
 
-  let system_bbox = svg_elem.querySelector('svg.definition-scale').getBBox()
-  let system_mid = system_bbox.y + system_bbox.height / 2
-
   // Draw a single slur from first note to last note
   if (notes.length >= 2) {
     const firstNote = notes[0]
     const lastNote = notes[notes.length - 1]
     // Downward slur if both notes are below the system's midpoint
-    const isDownward = system_mid < note_coords(firstNote)[1] && system_mid < note_coords(lastNote)[1]
-    console.log('isDownward', isDownward)
-
+    const isDownward = isSlurDownward(svg_elem, firstNote, lastNote)
     // Create the single slur from first to last note
     const slur = draw_slur(firstNote, lastNote, isDownward)
 

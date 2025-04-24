@@ -1182,3 +1182,9 @@ export function draw_slur(startNote, endNote, isDownward) {
   newElement.setAttribute('d', pathData)
   return newElement
 }
+
+export function isSlurDownward(svg_elem, startNote, endNote) {
+  let system_bbox = svg_elem.querySelector('svg.definition-scale').getBBox()
+  let system_mid = system_bbox.y + system_bbox.height / 2
+  return system_mid < note_coords(startNote)[1] && system_mid < note_coords(endNote)[1]
+}

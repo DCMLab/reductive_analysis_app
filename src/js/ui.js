@@ -560,7 +560,7 @@ export const setCurrentDrawContext = drawContext => {
 export function adjustSvgDimensions(draw_context) {
   console.trace('adjustSvgDimensions')
   const svg_elem = draw_context.svg_elem
-  const rootSvg = svg_elem.getElementsByTagName('svg')[0]
+  const rootSvg = svg_elem.getElementsByTagName('svg')[0] // The root SVG element from verovio
   const definitionScale = svg_elem.getElementsByClassName('definition-scale')[0]
   const viewBox = definitionScale.getAttribute('viewBox')
   let [x, y, w, h] = viewBox.split(' ').map(Number)
@@ -594,26 +594,38 @@ export function adjustSvgDimensions(draw_context) {
     maxY = Math.max(maxY, bbox.y + bbox.height)
   })
 
-  // Add padding in SVG units
-  const padding = 100
-  minX -= padding
-  minY -= padding
-  maxX += padding
-  maxY += padding
+  // Only adjust if the relations actually exceed the current SVG boundaries
+  const needsWidthAdjustment = minX < x || maxX > (x + w)
+  const needsHeightAdjustment = minY < y || maxY > (y + h)
 
-  // Calculate new dimensions that include both score and relations in SVG units
-  const newMinX = Math.min(x, minX)
-  const newMinY = Math.min(y, minY)
-  const newMaxX = Math.max(x + w, maxX)
-  const newMaxY = Math.max(y + h, maxY)
+  if (!needsWidthAdjustment && !needsHeightAdjustment) {
+    return // No adjustment needed
+  }
+
+  // Calculate new dimensions only for directions that need adjustment
+  const newMinX = needsWidthAdjustment ? Math.min(x, minX) : x
+  const newMinY = needsHeightAdjustment ? Math.min(y, minY) : y
+  const newMaxX = needsWidthAdjustment ? Math.max(x + w, maxX) : x + w
+  const newMaxY = needsHeightAdjustment ? Math.max(y + h, maxY) : y + h
+
   const newSvgWidth = newMaxX - newMinX
   const newSvgHeight = newMaxY - newMinY
+
+  // Only update viewBox if needed
+  if (newMinX !== x || newMinY !== y || newSvgWidth !== w || newSvgHeight !== h) {
+    definitionScale.setAttribute('viewBox', `${newMinX} ${newMinY} ${newSvgWidth} ${newSvgHeight}`)
+  }
 
   // Convert SVG units to pixels using the scale factors
   const newPixelWidth = Math.ceil(newSvgWidth * scaleX)
   const newPixelHeight = Math.ceil(newSvgHeight * scaleY)
 
   // Set the width and height on the container SVG in pixels
-  rootSvg.setAttribute('width', `${newPixelWidth}px`)
-  rootSvg.setAttribute('height', `${newPixelHeight + 100}px`)
+  // Only change dimensions if they're actually different
+  if (newPixelWidth !== currentWidth) {
+    rootSvg.setAttribute('width', `${newPixelWidth}px`)
+  }
+  if (newPixelHeight !== currentHeight) {
+    rootSvg.setAttribute('height', `${newPixelHeight}px`)
+  }
 }

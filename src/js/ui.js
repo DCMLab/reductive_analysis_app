@@ -611,11 +611,6 @@ export function adjustSvgDimensions(draw_context) {
   const newSvgWidth = newMaxX - newMinX
   const newSvgHeight = newMaxY - newMinY
 
-  // Only update viewBox if needed
-  if (newMinX !== x || newMinY !== y || newSvgWidth !== w || newSvgHeight !== h) {
-    definitionScale.setAttribute('viewBox', `${newMinX} ${newMinY} ${newSvgWidth} ${newSvgHeight}`)
-  }
-
   // Convert SVG units to pixels using the scale factors
   const newPixelWidth = Math.ceil(newSvgWidth * scaleX)
   const newPixelHeight = Math.ceil(newSvgHeight * scaleY)

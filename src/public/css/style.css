@@ -472,6 +472,8 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   position: relative;
   height: 100%;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
   width: 100%;
+  display: flex;
+  align-items: flex-start;
 }
 
 .view_buttons {

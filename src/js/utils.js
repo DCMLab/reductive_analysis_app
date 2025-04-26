@@ -1107,6 +1107,9 @@ function count_existing_slurs(noteElement) {
 // Draw a slur between two notes
 export function draw_slur(startNote, endNote, isDownward) {
   const newElement = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  var draw_contexts = getDrawContexts()
+  const curvature_factor = draw_contexts.curvatureFactor || .5
+  const stroke_width = 20 + curvature_factor * 50
 
   // Get base coordinates
   const start = note_coords(startNote)
@@ -1116,70 +1119,47 @@ export function draw_slur(startNote, endNote, isDownward) {
   const nStartSlur = count_existing_slurs(startNote)
   const nEndSlur = count_existing_slurs(endNote)
 
-  // Base offset plus additional offset per existing slur
-  const baseOffsetY = 150
-  const slurOffsetYUnit = 30
-  const startOffsetY = isDownward ? (nStartSlur * slurOffsetYUnit) - baseOffsetY : baseOffsetY - (nStartSlur * slurOffsetYUnit)
-  const endOffsetY = isDownward ? (nEndSlur * slurOffsetYUnit) - baseOffsetY : baseOffsetY - (nEndSlur * slurOffsetYUnit)
-
   // Apply offsets
-  const adjustedStart = [start[0], start[1] - startOffsetY]
-  const adjustedEnd = [end[0], end[1] - endOffsetY]
+  const adjustedStart = [start[0], start[1]]
+  const adjustedEnd = [end[0], end[1]]
 
   // Calculate base height and additional height for existing slurs
-  const slurOffsetHeightUnit = 100
+  const slurOffsetHeightUnit = 150 + stroke_width * 2
   const maxExistingSlurs = Math.max(nStartSlur, nEndSlur)
   const additionalHeight = maxExistingSlurs * slurOffsetHeightUnit
   const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
+  const heightHeadwise = Math.abs(adjustedEnd[1] - adjustedStart [1])
   const maxSlurWidth = 100
 
   let pathData
 
-  // Adjust control points based on different start/end heights
-  if (width < 3800) {
-    const height = width * 0.3 + additionalHeight
-    const heightDiff = Math.abs(startOffsetY - endOffsetY)
-    const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
-    const midY = (adjustedStart[1] + adjustedEnd[1]) / 2
-    const topControlPoint = isDownward ? [midX, midY + height + (heightDiff * 0.5)] : [midX, midY - height - (heightDiff * 0.5)]
-    const bottomControlPoint = isDownward ? [midX, midY + height + (heightDiff * 0.5) - maxSlurWidth] : [midX, midY - height - (heightDiff * 0.5) + maxSlurWidth]
+  const minY = Math.min(adjustedStart[1], adjustedEnd[1])
+  const maxY = Math.max(adjustedStart[1], adjustedEnd[1])
 
-    pathData = `
-      M ${adjustedStart[0]},${adjustedStart[1]}
-      Q ${topControlPoint[0]},${topControlPoint[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
-      L ${adjustedEnd[0]},${adjustedEnd[1]}
-      Q ${bottomControlPoint[0]},${bottomControlPoint[1]} ${adjustedStart[0]},${adjustedStart[1]}
-      Z`
-  } else {
-    const height = additionalHeight + Math.min(width * 0.05, 2000)
-    const minY = Math.min(adjustedStart[1], adjustedEnd[1])
-    const maxY = Math.max(adjustedStart[1], adjustedEnd[1])
+  // Calculate two control points on axes that are perpendicular to the linear segment between the start and end of the slur,
+  // and intersect that segment at 20% and 80% of its length, so that the four points together form a trapezoid.
+  const cpMult = isDownward ? 1 : -1
+  const cpScaler = 4 * curvature_factor / Math.log(width) + additionalHeight / 5000
+  const cp1x = (4 * adjustedStart[0] + adjustedEnd[0]) / 5 - cpMult * cpScaler * (adjustedEnd[1] - adjustedStart[1])
+  const cp2x = (adjustedStart[0] + 4 * adjustedEnd[0]) / 5 - cpMult * cpScaler * (adjustedEnd[1] - adjustedStart[1])
+  const cp1y = (4 * adjustedStart[1] + adjustedEnd[1]) / 5 + cpMult * cpScaler * (adjustedEnd[0] - adjustedStart[0])
+  const cp2y = (adjustedStart[1] + 4 * adjustedEnd[1]) / 5 + cpMult * cpScaler * (adjustedEnd[0] - adjustedStart[0])
 
-    // Calculate control points at 20% and 80% of the width
-    const cp1x = adjustedStart[0] + (width * 0.2)
-    const cp2x = adjustedStart[0] + (width * 0.8)
+  const topCP1 = [cp1x, cp1y]
+  const topCP2 = [cp2x, cp2y]
+  const bottomCP1 = topCP1
+  const bottomCP2 = topCP2
 
-    // Set control points at the same height for flat top
-    const topY = isDownward ? maxY + height : minY - height
-
-    // Top curve control points
-    const topCP1 = [cp1x, topY]
-    const topCP2 = [cp2x, topY]
-
-    // Bottom curve control points (offset by maxWidth)
-    const bottomCP1 = isDownward ? [cp1x, topY - maxSlurWidth] : [cp1x, topY + maxSlurWidth]
-    const bottomCP2 = isDownward ? [cp2x, topY - maxSlurWidth] : [cp2x, topY + maxSlurWidth]
-
-    pathData = `
-      M ${adjustedStart[0]},${adjustedStart[1]}
-      C ${topCP1[0]},${topCP1[1]} ${topCP2[0]},${topCP2[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
-      L ${adjustedEnd[0]},${adjustedEnd[1]}
-      C ${bottomCP2[0]},${bottomCP2[1]} ${bottomCP1[0]},${bottomCP1[1]} ${adjustedStart[0]},${adjustedStart[1]}
-      Z`
-
-  }
+  pathData = `
+    M ${adjustedStart[0]},${adjustedStart[1]}
+    C ${topCP1[0]},${topCP1[1]} ${topCP2[0]},${topCP2[1]} ${adjustedEnd[0]},${adjustedEnd[1]}
+    L ${adjustedEnd[0]},${adjustedEnd[1]}
+    C ${bottomCP2[0]},${bottomCP2[1]} ${bottomCP1[0]},${bottomCP1[1]} ${adjustedStart[0]},${adjustedStart[1]}
+    Z`
+  // }
 
   newElement.setAttribute('d', pathData)
+  newElement.setAttribute('style', `stroke-width:${stroke_width}`)
   return newElement
 }
 

@@ -455,6 +455,7 @@ function load_finish(loader_modal) {
   document.getElementById('layers').innerHTML = ''
 
   draw_contexts.hullPadding = 200
+  draw_contexts.curvatureFactor = 0.5
 
   // Segment existing layers
   var layers = Array.from(mei.getElementsByTagName('body')[0].getElementsByTagName('mdiv'))

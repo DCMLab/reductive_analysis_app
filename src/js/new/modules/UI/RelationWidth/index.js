@@ -1,4 +1,4 @@
-import { handle_hull_controller } from '../../../../ui'
+import { handle_curvature_controller } from '../../../../ui'
 import Progress from './progress'
 
 class RelationWidth {
@@ -7,6 +7,7 @@ class RelationWidth {
 
     const { min, max, value } = this.input
     this.progressBar = new Progress('relation-width', { min, max, value })
+    console.log('initializing relation width controller with value ', this.input.value)
 
     this.throttling = false
   }
@@ -19,9 +20,9 @@ class RelationWidth {
     this.throttling = true
 
     requestAnimationFrame(() => {
-      const value = parseInt(target.value)
+      const value = target.value
       this.progressBar.update(value)
-      handle_hull_controller(value)
+      handle_curvature_controller(value)
       this.throttling = false
     })
   }

@@ -4,8 +4,11 @@ export default class Progress {
   constructor(idPrefix = '', options) {
     this.ctn = document.getElementById(`${idPrefix}-progress-ctn`)
 
-    this.setMinMax(options)
-    this.update(options.value)
+    if (options) {
+      console.log('Progress options', options)
+      this.setMinMax(options)
+      this.update(options.value)
+    }
   }
 
   setMinMax({ min, max }) {

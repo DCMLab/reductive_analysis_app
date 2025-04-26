@@ -38,12 +38,10 @@ var roundedHull1 = function (polyPoints, hullPadding) {
   const p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding]
   const p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)]
 
-  return (
-    `M ${p1} A ` +
-    [hullPadding, hullPadding, '0,0,0', p2].join(',') +
-    ' A ' +
-    [hullPadding, hullPadding, '0,0,0', p1].join(',')
-  )
+  return `M ${p1} A `
+    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
+    + ' A '
+    + [hullPadding, hullPadding, '0,0,0', p1].join(',')
 }
 
 // Returns the path for a rounded hull around two points (a "capsule" shape).
@@ -57,16 +55,15 @@ var roundedHull2 = function (polyPoints, hullPadding) {
   var p2 = vecSum(polyPoints[1], invOffsetVector)
   var p3 = vecSum(polyPoints[0], invOffsetVector)
 
-  return (
-    `M ${p0} L ${p1} A ` +
-    [hullPadding, hullPadding, '0,0,0', p2].join(',') +
-    ` L ${p3} A ` +
-    [hullPadding, hullPadding, '0,0,0', p0].join(',')
-  )
+  return `M ${p0} L ${p1} A `
+    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
+    + ` L ${p3} A `
+    + [hullPadding, hullPadding, '0,0,0', p0].join(',')
 }
 
 // Returns the SVG path data string representing the polygon, expanded and rounded.
 var roundedHullN = function (polyPoints, hullPadding) {
+
   // Handle special cases
   if (!polyPoints || polyPoints.length < 1) return ''
   if (polyPoints.length === 1) return roundedHull1(polyPoints, hullPadding)
@@ -76,7 +73,7 @@ var roundedHullN = function (polyPoints, hullPadding) {
 
   // Calculate each offset (outwards) segment of the convex hull.
   for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
-    var p0 = segmentIndex === 0 ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
+    var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
     var p1 = polyPoints[segmentIndex]
 
     // Compute the offset vector for the line segment, with length = hullPadding.
@@ -134,11 +131,12 @@ function getRandomShade(colour) {
   for (var i = 0; i < 6; i++) {
     if (
       ((colour == 'r' || colour == 'y' || colour == 'm') && i < 2) ||
-      ((colour == 'g' || colour == 'y' || colour == 'c') && i < 4 && i > 1) ||
-      ((colour == 'b' || colour == 'c' || colour == 'm') && i > 3)
+        ((colour == 'g' || colour == 'y' || colour == 'c') && (i < 4 && i > 1)) ||
+        ((colour == 'b' || colour == 'c' || colour == 'm') && i > 3)
     )
-      shade += letters[14] // Math.floor(6+Math.random() * 8)];
-    else shade += letters[5]
+      shade += letters[14]// Math.floor(6+Math.random() * 8)];
+    else
+      shade += letters[5]
   }
   return shade + '88' // Semitransparency
 }
@@ -234,19 +232,15 @@ export function random_id(n = 5) {
 export function pitch_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
   // Pitch offset in MIDI steps
-  return (
-    vrvToolkit.getMIDIValuesForElement(get_id(n1)).pitch -
-    vrvToolkit.getMIDIValuesForElement(get_id(n2)).pitch
-  )
+  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).pitch -
+	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).pitch
 }
 
 export function time_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
   // Time offset in MIDI milliseconds
-  return (
-    vrvToolkit.getMIDIValuesForElement(get_id(n1)).time -
-    vrvToolkit.getMIDIValuesForElement(get_id(n2)).time
-  )
+  return vrvToolkit.getMIDIValuesForElement(get_id(n1)).time -
+	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).time
 }
 
 export function notes_template(ns) {
@@ -255,11 +249,11 @@ export function notes_template(ns) {
   var ns_temp = ns
   ns_temp = ns_temp.sort(pitch_offset)
   ns_temp = ns_temp.sort(time_offset)
-  var ns_relative = ns_temp.map(n => {
+  var ns_relative = ns_temp.map((n) => {
     return {
       p_off: pitch_offset(n, ns_temp[0]),
       t_off: time_offset(n, ns_temp[0]),
-      n_from: n,
+      n_from: n
     }
   })
   return ns_relative
@@ -279,69 +273,61 @@ export function notes_in_range(n_ref, min_p_off, max_p_off, max_t_off) {
         console.log('in time')
         let p_off = pitch_offset(m, n_ref)
         if (p_off >= min_p_off && p_off <= max_p_off) {
-          console.log('in pitch')
-          none_added = false
-          ns.push(m)
+	  console.log('in pitch')
+	  none_added = false
+	  ns.push(m)
         }
       }
     }
-    if (none_added)
-      // TODO: Better check - there could be measures with no
-      // notes in the pitch range that are still in the time
-      // range
+    if (none_added) // TODO: Better check - there could be measures with no
+    // notes in the pitch range that are still in the time
+		   // range
       curr_measure = null
-    else curr_measure = next_measure(curr_measure)
+    else
+      curr_measure = next_measure(curr_measure)
   }
   return ns
 }
 
 export function next_measure(m) {
-  if (m.nextElementSibling && m.nextElementSibling.tagName == 'measure') return m.nextElementSibling
-  else if (!m.nextElementSibling) return null
-  else return next_measure(m.nextElementSibling)
+  if (m.nextElementSibling && m.nextElementSibling.tagName == 'measure')
+    return m.nextElementSibling
+  else if (!m.nextElementSibling)
+    return null
+  else
+    return next_measure(m.nextElementSibling)
 }
 
 // Note coordinates are off center by a bit
 export function note_coords(note) {
   // Computes useful coordinates of a note
-  return [
-    note.getElementsByTagName('use')[0].x.animVal.value + 100,
-    note.getElementsByTagName('use')[0].y.animVal.value,
-  ]
+  return [note.getElementsByTagName('use')[0].x.animVal.value + 100,
+    note.getElementsByTagName('use')[0].y.animVal.value]
 }
 
-function get_by_oldid_elem(doc, elem) {
-  return get_by_id(doc, get_id(elem))
-}
+function get_by_oldid_elem(doc, elem) { return get_by_id(doc, get_id(elem)) }
 
 // Gets all elements from the doc with the oldid
 export function get_by_oldid(doc, id) {
-  if (id[0] == '#') {
-    id = id.slice(1)
-  }
-  var elems = doc.querySelectorAll("[*|oldid='" + id + "']")
+  if (id[0] == '#') { id = id.slice(1) }
+  var elems = doc.querySelectorAll('[*|oldid=\'' + id + '\']')
   if (elems) {
     return Array.from(elems)
   } else {
-    return Array.from(doc.all).find(x => {
-      return x.getAttribute('oldid') == id
-    })
+    return Array.from(doc.all).find((x) => { return x.getAttribute('oldid') == id })
   }
 }
 
 // From id string to element, looking in the document doc
 export function get_by_id(doc, id) {
-  if (!id) return null
-  if (id[0] == '#') {
-    id = id.slice(1)
-  }
-  var elem = doc.querySelector("[*|id='" + id + "']")
+  if (!id)
+    return null
+  if (id[0] == '#') { id = id.slice(1) }
+  var elem = doc.querySelector('[*|id=\'' + id + '\']')
   if (elem) {
     return elem
   } else {
-    return Array.from(doc.getElementsByTagName('*')).find(x => {
-      return x.getAttribute('id') == id || x.getAttribute('xml:id') == id
-    })
+    return Array.from(doc.getElementsByTagName('*')).find((x) => { return x.getAttribute('id') == id || x.getAttribute('xml:id') == id })
   }
 }
 
@@ -354,100 +340,105 @@ export const id_or_oldid = elem => elem.getAttribute('oldid') ?? elem.id
 export function get_id(elem) {
   if (document.contains(elem)) {
     // SVG traversal
-    if (!elem.hasAttribute('oldid')) return elem.id
-    else return get_id(document.getElementById(elem.getAttribute('oldid')))
+    if (!elem.hasAttribute('oldid'))
+      return elem.id
+    else
+      return get_id(document.getElementById(elem.getAttribute('oldid')))
   } else if (elem.hasAttribute('xml:id')) {
     // MEI traversal
-    if (elem.hasAttribute('sameas')) return get_id(get_by_id(mei, elem.getAttribute('sameas')))
+    if (elem.hasAttribute('sameas'))
+      return get_id(get_by_id(mei, elem.getAttribute('sameas')))
     else if (elem.hasAttribute('corresp'))
       return get_id(get_by_id(mei, elem.getAttribute('corresp')))
-    else if (elem.hasAttribute('copyof')) return get_id(get_by_id(mei, elem.getAttribute('copyof')))
-    else if (elem.hasAttribute('xml:id')) return elem.getAttribute('xml:id')
+    else if (elem.hasAttribute('copyof'))
+      return get_id(get_by_id(mei, elem.getAttribute('copyof')))
+    else if (elem.hasAttribute('xml:id'))
+      return elem.getAttribute('xml:id')
   }
 }
 
 export function id_in_svg(draw_context, id) {
-  if (!id) return undefined
+  if (!id)
+    return undefined
   // Computes the relevant ID string for the element in the draw
   // context that correlates to the given ID string
-  if (id[0] == '#') {
-    id = id.slice(1)
-  }
+  if (id[0] == '#') { id = id.slice(1) }
   // use the layer.id_mapping to find the things in the layer score (if
   // that's how it is), then dc.id_prefix to calculate the final id
   var layer_id = id_in_layer(draw_context.layer, id)
   var svg_note = document.getElementById(layer_id)
-  if (draw_context.svg_elem.contains(svg_note)) return layer_id
-  if (layer_id) return draw_context.id_prefix + layer_id
+  if (draw_context.svg_elem.contains(svg_note))
+    return layer_id
+  if (layer_id)
+    return draw_context.id_prefix + layer_id
 }
 
 function id_in_layer(layer_context, id) {
   // Computes the relevant ID string for the element in the layer
   // context that correlates to the given ID string
-  if (id[0] == '#') {
-    id = id.slice(1)
-  }
+  if (id[0] == '#') { id = id.slice(1) }
   // use the layer.id_mapping to find the thing, if it exists
-  var pair = layer_context.id_mapping.find(p => p[1] == id)
+  var pair = layer_context.id_mapping.find((p) => p[1] == id)
   if (pair)
-    return pair[0] // This is probably a relation that has no real 'layer' as such
-  else return id
+    return pair[0]
+  else // This is probably a relation that has no real 'layer' as such
+    return id
 }
 
 // From graph node to list of all arcs that refer to it
 function arcs_where_node_referred_to(mei_graph, id) {
-  return (
-    Array.from(mei_graph.getElementsByTagName('arc')).filter(x => {
-      return x.getAttribute('from') == '#' + id || x.getAttribute('to') == '#' + id
+  return Array.from(mei_graph.getElementsByTagName('arc'))
+    .filter((x) => {
+      return (x.getAttribute('from') == '#' + id ||
+                x.getAttribute('to') == '#' + id)
     }).length > 0
-  )
 }
 
 // From graph node to list of all arcs that refer to it
 export function node_referred_to(id) {
   console.debug('Using global: mei to find element')
-  return (
-    Array.from(mei.getElementsByTagName('arc')).filter(x => {
-      return x.getAttribute('from') == '#' + id || x.getAttribute('to') == '#' + id
+  return Array.from(mei.getElementsByTagName('arc'))
+    .filter((x) => {
+      return (x.getAttribute('from') == '#' + id ||
+                x.getAttribute('to') == '#' + id)
     }).length > 0
-  )
 }
 
 // From MEI graph node to the note in the layer referring to the same one
 function node_to_note_id_layer(layer_context, node) {
-  var id = node
-    .getElementsByTagName('label')[0]
-    .getElementsByTagName('note')[0]
-    .getAttribute('corresp')
-  var pair = layer_context.id_mapping.find(x => '#' + x[1] == id)
-  if (pair) return pair[0]
-  else return null
+  var id = node.getElementsByTagName('label')[0].
+    getElementsByTagName('note')[0].
+    getAttribute('corresp')
+  var pair = layer_context.id_mapping.find((x) => ('#' + x[1]) == id)
+  if (pair)
+    return pair[0]
+  else
+    return null
 }
 
 // From MEI graph node to and ID string for the note as drawn in the draw context
 function node_to_note_id_drawn(draw_context, note) {
   var layer_note = node_to_note_id_layer(draw_context.layer, note)
-  if (draw_context.svg_elem.getRootNode().getElementById(layer_note)) return '#' + layer_note
-  else return '#' + draw_context.id_prefix + layer_note
+  if (draw_context.svg_elem.getRootNode().getElementById(layer_note))
+    return '#' + layer_note
+  else
+    return '#' + draw_context.id_prefix + layer_note
 }
 
 // From MEI graph node to the ID string for its referred note.
 function node_to_note_id_prefix(prefix, note) {
-  return note
-    .getElementsByTagName('label')[0]
-    .getElementsByTagName('note')[0]
-    .getAttribute('corresp')
-    .replace('#', '#' + prefix)
+  return note.getElementsByTagName('label')[0].
+    getElementsByTagName('note')[0].
+    getAttribute('corresp').replace('#', '#' + prefix)
 }
 
 // From MEI graph node to the ID string for its referred note.
 export function node_to_note_id(note) {
-  if (note.getElementsByTagName('label')[0].children.length == 0) return note.getAttribute('xml:id')
-  return note
-    .getElementsByTagName('label')[0]
-    .getElementsByTagName('note')[0]
-    .getAttribute('corresp')
-    .replace('#', '')
+  if (note.getElementsByTagName('label')[0].children.length == 0)
+    return note.getAttribute('xml:id')
+  return note.getElementsByTagName('label')[0].
+    getElementsByTagName('note')[0].
+    getAttribute('corresp').replace('#', '')
 }
 
 // Always-positive modulo
@@ -460,22 +451,27 @@ function div(n, m) {
   Math.floor(n / m)
 }
 
-export function average2(x, y) {
-  return (x + y) / 2
-}
+export function average2(x, y) { return (x + y) / 2 }
 
 // What's the accidentals for the given (SVG or MEI) note?
 function note_get_accid(note) {
   console.debug('Using globals: document, mei to find element')
-  if (document.contains(note)) note = get_by_id(mei, get_id(note))
-  if (note.hasAttribute('accid.ges')) return note.getAttribute('accid.ges')
-  if (note.hasAttribute('accid')) return note.getAttribute('accid')
-  if (note.children.length == 0) return ''
+  if (document.contains(note))
+    note = get_by_id(mei, get_id(note))
+  if (note.hasAttribute('accid.ges'))
+    return note.getAttribute('accid.ges')
+  if (note.hasAttribute('accid'))
+    return note.getAttribute('accid')
+  if (note.children.length == 0)
+    return ''
   var accids = note.getElementsByTagName('accid')
-  if (accids.length == 0) return ''
+  if (accids.length == 0)
+    return ''
   var accid = accids[0] // We don't care if there's more than one.
-  if (accid.hasAttribute('accid.ges')) return accid.getAttribute('accid.ges')
-  if (accid.hasAttribute('accid')) return accid.getAttribute('accid')
+  if (accid.hasAttribute('accid.ges'))
+    return accid.getAttribute('accid.ges')
+  if (accid.hasAttribute('accid'))
+    return accid.getAttribute('accid')
   return ''
 }
 
@@ -483,7 +479,8 @@ function note_get_accid(note) {
 function get_time(note) {
   var vrvToolkit = getVerovioToolkit()
   console.debug('Using globals: document, mei to find element')
-  if (document.contains(note)) note = get_by_id(mei, get_id(note))
+  if (document.contains(note))
+    note = get_by_id(mei, get_id(note))
   return vrvToolkit.getTimeForElement(note.getAttribute('xml:id'))
 }
 
@@ -492,17 +489,18 @@ export function relation_get_notes(he) {
   var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var note_nodes = relation_allnodes(mei_graph, he)
-  var notes = note_nodes.map(node_to_note_id).map(n => get_by_id(mei, n))
+  var notes = note_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
   return notes
+
 }
 // From any relation element to list of MEI note elements
 export function relation_get_notes_separated(he) {
   var mei_graph = getMeiGraph()
   he = get_by_id(mei, get_id(he))
   var prim_nodes = relation_primaries(mei_graph, he)
-  var prims = prim_nodes.map(node_to_note_id).map(n => get_by_id(mei, n))
+  var prims = prim_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
   var sec_nodes = relation_secondaries(mei_graph, he)
-  var secs = sec_nodes.map(node_to_note_id).map(n => get_by_id(mei, n))
+  var secs = sec_nodes.map(node_to_note_id).map((n) => get_by_id(mei, n))
   return [prims, secs]
 }
 
@@ -510,7 +508,7 @@ export function relation_get_notes_separated(he) {
 export function relation_allnodes(mei_graph, he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
   var nodes = []
-  arcs_array.forEach(a => {
+  arcs_array.forEach((a) => {
     if (a.getAttribute('from') == '#' + he.getAttribute('xml:id')) {
       nodes.push(get_by_id(mei_graph.getRootNode(), a.getAttribute('to')))
     }
@@ -522,11 +520,9 @@ export function relation_allnodes(mei_graph, he) {
 export function relation_primaries(mei_graph, he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
   var nodes = []
-  arcs_array.forEach(a => {
-    if (
-      a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
-      a.getAttribute('type') == 'primary'
-    ) {
+  arcs_array.forEach((a) => {
+    if (a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
+       a.getAttribute('type') == 'primary') {
       nodes.push(get_by_id(mei_graph.getRootNode(), a.getAttribute('to')))
     }
   })
@@ -536,11 +532,9 @@ export function relation_primaries(mei_graph, he) {
 export function relation_secondaries(mei_graph, he) {
   var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
   var nodes = []
-  arcs_array.forEach(a => {
-    if (
-      a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
-      a.getAttribute('type') == 'secondary'
-    ) {
+  arcs_array.forEach((a) => {
+    if (a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
+       a.getAttribute('type') == 'secondary') {
       nodes.push(get_by_id(mei_graph.getRootNode(), a.getAttribute('to')))
     }
   })
@@ -580,41 +574,33 @@ export function add_mei_node_for(mei_graph, note) {
 
 // Find graphical element corresponding to an MEI graph node and hide it
 export function hide_note(draw_context, note) {
-  var elem = get_by_id(
-    draw_context.svg_elem.getRootNode(),
-    id_in_svg(draw_context, node_to_note_id(note))
-  )
-  if (elem && draw_context.svg_elem.contains(elem)) elem.classList.add('hidden')
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(), id_in_svg(draw_context, node_to_note_id(note)))
+  if (elem && draw_context.svg_elem.contains(elem))
+    elem.classList.add('hidden')
   return elem
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
 export function hide_note_hier(draw_context, note) {
-  var elem = get_by_id(
-    draw_context.svg_elem.getRootNode(),
-    'hier' + id_in_svg(draw_context, node_to_note_id(note))
-  )
-  if (elem && draw_context.svg_elem.contains(elem)) elem.classList.add('hidden')
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + id_in_svg(draw_context, node_to_note_id(note)))
+  if (elem && draw_context.svg_elem.contains(elem))
+    elem.classList.add('hidden')
   return elem
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
 export function hide_he(draw_context, he) {
-  var elem = get_by_id(
-    draw_context.svg_elem.getRootNode(),
-    draw_context.id_prefix + he.getAttribute('xml:id')
-  )
-  if (elem && draw_context.svg_elem.contains(elem)) elem.classList.add('hidden')
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(), draw_context.id_prefix + he.getAttribute('xml:id'))
+  if (elem && draw_context.svg_elem.contains(elem))
+    elem.classList.add('hidden')
   return elem
 }
 
 // Find graphical element corresponding to an MEI graph node and hide it
 export function hide_he_hier(draw_context, he) {
-  var elem = get_by_id(
-    draw_context.svg_elem.getRootNode(),
-    'hier' + draw_context.id_prefix + he.getAttribute('xml:id')
-  )
-  if (elem && draw_context.svg_elem.contains(elem)) elem.classList.add('hidden')
+  var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + draw_context.id_prefix + he.getAttribute('xml:id'))
+  if (elem && draw_context.svg_elem.contains(elem))
+    elem.classList.add('hidden')
   return elem
 }
 
@@ -641,18 +627,18 @@ function unmark_secondary(item) {
   }
   var level = getComputedStyle(item).getPropertyValue('--how-secondary')
   item.style.setProperty('--how-secondary', level / 2)
-  if (level / 2 == 1) item.classList.remove('secondarynote')
+  if (level / 2 == 1)
+    item.classList.remove('secondarynote')
 }
 
 // For a certain MEI relation node, find its secondaries and mark them as
 // secondary in the draw context
 export function mark_secondaries(draw_context, mei_graph, he) {
   var svg_elem = draw_context.svg_elem
-  if (he.tagName != 'node')
-    // TODO: Probably bad, but shouldn't happen from do_relation
+  if (he.tagName != 'node') // TODO: Probably bad, but shouldn't happen from do_relation
     he = get_by_id(mei_graph.getRootNode(), he.id)
   var secondaries = relation_secondaries(mei_graph, he)
-  secondaries.forEach(n => {
+  secondaries.forEach((n) => {
     var svg_note = document.getElementById(id_in_svg(draw_context, node_to_note_id(n)))
     mark_secondary(svg_note)
   })
@@ -662,40 +648,37 @@ export function mark_secondaries(draw_context, mei_graph, he) {
 // secondary in the draw context
 export function unmark_secondaries(draw_context, mei_graph, he) {
   var svg_elem = draw_context.svg_elem
-  if (he.tagName != 'node') he = get_by_id(mei_graph.getRootNode(), he.id)
+  if (he.tagName != 'node')
+    he = get_by_id(mei_graph.getRootNode(), he.id)
   var secondaries = relation_secondaries(mei_graph, he)
-  secondaries.forEach(n => {
+  secondaries.forEach((n) => {
     var svg_note = document.getElementById(id_in_svg(draw_context, node_to_note_id(n)))
     unmark_secondary(svg_note)
   })
 }
 
 // Find the measure this MEI score element occurs in
-function get_measure(elem) {
-  if (elem.tagName == 'measure') return elem
-  else return get_measure(elem.parentElement)
-}
+function get_measure(elem) { if (elem.tagName == 'measure') return elem; else return get_measure(elem.parentElement) }
 
 // If we have a single note selected, find all other notes of the same
 // pitch in this measure, and select them as secondary, and the previously
 // selected one as primary
 export function select_samenote() {
   console.debug('Using globals: document, mei to find elems')
-  if (
-    (selected.length == 1 || extraselected.length == 1) &&
-    !(selected.length == 1 && extraselected.length == 1)
-  ) {
+  if ((selected.length == 1 || extraselected.length == 1)
+   && !(selected.length == 1 && extraselected.length == 1)) {
     var svg_note
-    if (selected.length == 1) svg_note = selected[0]
-    else svg_note = extraselected[0]
+    if (selected.length == 1)
+      svg_note = selected[0]
+    else
+      svg_note = extraselected[0]
     var note = get_by_id(mei, svg_note.getAttribute('id'))
     var measure = get_measure(note)
     var candidates = Array.from(measure.getElementsByTagName('note'))
-    candidates.forEach(x => {
+    candidates.forEach((x) => {
       if (
         x.getAttribute('oct') == note.getAttribute('oct') &&
-        x.getAttribute('pname') == note.getAttribute('pname')
-      )
+                  x.getAttribute('pname') == note.getAttribute('pname'))
         toggle_selected(get_by_id(document, x.getAttribute('xml:id')))
     })
     // This is an ugly hack
@@ -705,20 +688,23 @@ export function select_samenote() {
 
 // Deprecated
 function svg_find_from_mei_elem(svg_container, id_prefix, e) {
-  if (!e) return null
+  if (!e)
+    return null
   // TODO: Sanity checks
   var id = id_prefix + e.getAttribute('xml:id')
   var svg_e = svg_container.getRootNode().getElementById(id)
-  if (svg_e) return svg_e
+  if (svg_e)
+    return svg_e
   else {
     id = e.getAttribute('xml:id')
     svg_e = svg_container.getRootNode().getElementById(id)
-    if (svg_container.contains(svg_e)) return svg_e
+    if (svg_container.contains(svg_e))
+      return svg_e
   }
 }
 
 // Get the top coordinate of the bounding box of the given element
-function getBoundingBoxTop(elem) {
+function getBoundingBoxTop (elem) {
   // use the native SVG interface to get the bounding box
   var bbox = elem.getBBox()
   // return the center of the bounding box
@@ -727,20 +713,23 @@ function getBoundingBoxTop(elem) {
 
 // Get the Interesting class from a classlist
 export function get_class_from_classlist(elem) {
-  if (typeof elem == 'undefined') {
+  if (typeof (elem) == 'undefined') {
     return false
   }
 
   // TODO: If more things can be selected etc., it should be reflected here
-  if (elem.classList.contains('note')) return 'note'
-  if (elem.classList.contains('relation')) return 'relation'
-  if (elem.classList.contains('metarelation')) return 'metarelation'
+  if (elem.classList.contains('note'))
+    return 'note'
+  if (elem.classList.contains('relation'))
+    return 'relation'
+  if (elem.classList.contains('metarelation'))
+    return 'metarelation'
 
   return ''
 }
 
 // Get the center of the bounding box
-function getBoundingBoxCenter(elem) {
+function getBoundingBoxCenter (elem) {
   // use the native SVG interface to get the bounding box
   var bbox = elem.getBBox()
   // return the center of the bounding box
@@ -748,7 +737,7 @@ function getBoundingBoxCenter(elem) {
 }
 
 // "Smart" selection of a coordinate
-function getBoundingBoxOffCenter(elem) {
+function getBoundingBoxOffCenter (elem) {
   // use the native SVG interface to get the bounding box
   var bbox = elem.getBBox()
   // return the center of the bounding box
@@ -785,7 +774,7 @@ function is_note_node(elem) {
 
 // Clean up in the graph to remove empty relations
 function remove_empty_relations(graph) {
-  Array.from(graph.getElementsByTagName('node')).forEach(elem => {
+  Array.from(graph.getElementsByTagName('node')).forEach((elem) => {
     if (!is_note_node(elem) && is_empty_relation(elem)) {
       elem.parentNode.removeChild(elem)
     }
@@ -793,13 +782,12 @@ function remove_empty_relations(graph) {
 }
 
 // Average over a list of values
-export function average(l) {
-  return l.reduce((a, b) => a + b, 0) / l.length
-}
+export function average(l) { return l.reduce((a, b) => a + b, 0) / l.length }
 
 export function note_to_text(id) {
   var mei_elem = get_by_id(mei, id)
-  if (mei_elem.tagName == 'node') return mei_elem.children[0].getAttribute('type')
+  if (mei_elem.tagName == 'node')
+    return mei_elem.children[0].getAttribute('type')
   var accid = note_get_accid(mei_elem)
   accid = accid.replace(/s/g, '#')
   accid = accid.replace(/f/g, 'b')
@@ -810,12 +798,13 @@ export function note_to_text(id) {
 // Compute a text to represent notes
 export function to_text(elems) {
   // TODO: Detect and warn for selections spanning several drawing contexts
-  if (elems.length == 0) return ''
+  if (elems.length == 0)
+    return ''
   if (elems[0].classList.contains('note')) {
     elems.sort((n, m) => {
       const [nx, ny] = note_coords(n)
       const [mx, my] = note_coords(m)
-      return nx - mx == 0 ? my - ny : nx - mx
+      return (nx - mx == 0) ? my - ny : nx - mx
     })
     return elems.map(note => note_to_text(get_id(note)))
   }
@@ -823,9 +812,11 @@ export function to_text(elems) {
 
 // Translate deprecated names
 export function fix_synonyms(mei) {
-  Array.from(mei.getElementsByTagName('node')).forEach(elem => {
-    if (elem.getAttribute('type') == 'hyperedge') elem.setAttribute('type', 'relation')
-    if (elem.getAttribute('type') == 'metaedge') elem.setAttribute('type', 'metarelation')
+  Array.from(mei.getElementsByTagName('node')).forEach((elem) => {
+    if (elem.getAttribute('type') == 'hyperedge')
+      elem.setAttribute('type', 'relation')
+    if (elem.getAttribute('type') == 'metaedge')
+      elem.setAttribute('type', 'metarelation')
   })
   return mei
 }
@@ -833,11 +824,8 @@ export function fix_synonyms(mei) {
 // sameas/copyof for layers and graphs is deprecated, all should be corresp
 export function fix_corresp(mei_elem) {
   Array.from(mei_elem.children).forEach(fix_corresp) // recurse
-  let attr = mei_elem.hasAttribute('sameas')
-    ? 'sameas'
-    : mei_elem.hasAttribute('copyof')
-      ? 'copyof'
-      : ''
+  let attr = mei_elem.hasAttribute('sameas') ? 'sameas' :
+    mei_elem.hasAttribute('copyof') ? 'copyof' : ''
   if (attr) {
     if (mei_elem.closest('graph') || mei_elem.closest('eTree')) {
       // We're in the analysis, any sameas/copyof should be a corresp
@@ -863,33 +851,35 @@ export function fix_layers(mei) {
   // If they have more than one score among its children (i.e. the app did it)
   // For each score
   // Create a new mdiv for the score and move it
-  Array.from(mei.getElementsByTagName('mdiv')).forEach(mdiv_elem => {
+  Array.from(mei.getElementsByTagName('mdiv')).forEach((mdiv_elem) => {
     let prefix_re = /l(\d+)-.*/
     let sliced_re = /-sliced$/
-    let scs = Array.from(mdiv_elem.children).filter(elem => elem.tagName == 'score')
+    let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')
     if (scs.length > 1) {
       let mdiv_id = mdiv_elem.getAttribute('xml:id')
       for (let scix in scs) {
-        if (scix == 0) continue
-        let score_elem = scs[scix]
-        let score_id = score_elem.getAttribute('xml:id')
-        if (prefix_re.test(score_id)) {
-          // We almost certainly have a layer thingy
-          let score_prefix = prefix_re.exec(score_id)[1]
-          var new_mdiv_elem = mei.createElement('mdiv')
-          if (sliced_re.test(score_id))
-            new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
-          else new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
-          mdiv_elem.parentElement.append(new_mdiv_elem)
-          new_mdiv_elem.append(score_elem)
-        }
+	  if (scix == 0)
+	    continue
+	  let score_elem = scs[scix]
+	  let score_id = score_elem.getAttribute('xml:id')
+	  if (prefix_re.test(score_id)) {
+	    // We almost certainly have a layer thingy
+	    let score_prefix = prefix_re.exec(score_id)[1]
+	    var new_mdiv_elem = mei.createElement('mdiv')
+	    if (sliced_re.test(score_id))
+	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
+	    else
+	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
+	    mdiv_elem.parentElement.append(new_mdiv_elem)
+	    new_mdiv_elem.append(score_elem)
+	  }
       }
+
     }
   })
 }
 
-var attributes = [
-  'dur',
+var attributes = ['dur',
   'n',
   'dots',
   'when',
@@ -907,35 +897,42 @@ var attributes = [
   'dur.recip',
   'beam',
   'fermata',
-  'tuplet',
-]
+  'tuplet']
 
 // Make a rest of the same properties as the given note.
 export function note_to_rest(mei, note) {
   var rest = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'rest')
   rest.setAttribute('xml:id', 'rest-' + note.getAttribute('xml:id'))
-  for (let a of attributes) if (note.hasAttribute(a)) rest.setAttribute(a, note.getAttribute(a))
+  for (let a of attributes)
+    if (note.hasAttribute(a))
+      rest.setAttribute(a, note.getAttribute(a))
   return rest
 }
 // Make a space of the same properties as the given note.
 export function note_to_space(mei, note) {
   var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
   space.setAttribute('xml:id', 'space-' + note.getAttribute('xml:id'))
-  for (let a of attributes) if (note.hasAttribute(a)) space.setAttribute(a, note.getAttribute(a))
+  for (let a of attributes)
+    if (note.hasAttribute(a))
+      space.setAttribute(a, note.getAttribute(a))
   return space
 }
 // Make a chord of the same properties as the given note.
 export function note_to_chord(mei, note) {
   var chord = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'chord')
   chord.setAttribute('xml:id', 'chord-' + note.getAttribute('xml:id'))
-  for (const a of attributes) if (note.hasAttribute(a)) chord.setAttribute(a, note.getAttribute(a))
+  for (const a of attributes)
+    if (note.hasAttribute(a))
+      chord.setAttribute(a, note.getAttribute(a))
   return chord
 }
 
 export function chord_to_space(mei, chord) {
   var space = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'space')
   space.setAttribute('xml:id', 'space-' + chord.getAttribute('xml:id'))
-  for (let a of attributes) if (chord.hasAttribute(a)) space.setAttribute(a, chord.getAttribute(a))
+  for (let a of attributes)
+    if (chord.hasAttribute(a))
+      space.setAttribute(a, chord.getAttribute(a))
   return space
 }
 
@@ -955,8 +952,9 @@ export function prefix_ids(elem, prefix) {
   }
   if (elem.getAttribute('startid'))
     elem.setAttribute('startid', prefix + elem.getAttribute('startid'))
-  if (elem.getAttribute('endid')) elem.setAttribute('endid', prefix + elem.getAttribute('endid'))
-  Array.from(elem.children).forEach(e => prefix_ids(e, prefix))
+  if (elem.getAttribute('endid'))
+    elem.setAttribute('endid', prefix + elem.getAttribute('endid'))
+  Array.from(elem.children).forEach((e) => prefix_ids(e, prefix))
 }
 
 // Clone an MEI into a new XMLDocument
@@ -978,10 +976,14 @@ export function clone_mei(mei) {
 // corresponding get_id strings, i.e. what the element represents
 export function get_id_pairs(elem) {
   var item
-  if (elem.id) item = [elem.id, get_id(elem)]
-  else if (elem.hasAttribute('xml:id')) item = [elem.getAttribute('xml:id'), get_id(elem)]
-  if (item) return [item].concat(Array.from(elem.children).flatMap(get_id_pairs))
-  else return Array.from(elem.children).flatMap(get_id_pairs)
+  if (elem.id)
+    item = [elem.id, get_id(elem)]
+  else if (elem.hasAttribute('xml:id'))
+    item = [elem.getAttribute('xml:id'), get_id(elem)]
+  if (item)
+    return [item].concat(Array.from(elem.children).flatMap(get_id_pairs))
+  else
+    return Array.from(elem.children).flatMap(get_id_pairs)
 }
 
 export function new_layer_element() {
@@ -1022,6 +1024,7 @@ export function button(value) {
 }
 
 function sanitize_mei(mei) {
+
   var sanitized_mei = mei
 
   strip_mei_tags.forEach(tag => {
@@ -1034,6 +1037,7 @@ function sanitize_mei(mei) {
 }
 
 export function sanitize_xml(xml) {
+
   var sanitized_xml = xml
 
   strip_xml_tags.forEach(tag => {
@@ -1045,11 +1049,7 @@ export function sanitize_xml(xml) {
   return sanitized_xml
 }
 
-export function check_for_duplicate_relations(
-  type,
-  prospective_primaries,
-  prospective_secondaries
-) {
+export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
   var mei_graph = getMeiGraph()
 
   var primaries = prospective_primaries
@@ -1059,20 +1059,20 @@ export function check_for_duplicate_relations(
     .map(p => p.getAttribute('id').replace(/(^\d+-?)/, 'gn-'))
     .sort((a, b) => a < b)
 
-  var same_type_relations = Array.from(mei_graph.querySelectorAll("[type='relation']")).filter(
-    n => n.children[0].getAttribute('type') == type
-  )
+  var same_type_relations = Array
+    .from(mei_graph.querySelectorAll('[type=\'relation\']'))
+    .filter(n => n.children[0].getAttribute('type') == type)
 
   same_type_relations.forEach(r => {
     var p_s = relation_get_notes_separated(r)
     var p = p_s[0]
     var s = p_s[1]
-    p = p.map(i => i.getAttribute('xml:id')).sort((a, b) => a < b)
-    s = s.map(i => i.getAttribute('xml:id')).sort((a, b) => a < b)
-    if (
-      JSON.stringify(primaries) == JSON.stringify(p) &&
-      JSON.stringify(secondaries) == JSON.stringify(s)
-    ) {
+    p = p.map(i => i.getAttribute('xml:id'))
+      .sort((a, b) => a < b)
+    s = s.map(i => i.getAttribute('xml:id'))
+      .sort((a, b) => a < b)
+    if (JSON.stringify(primaries) == JSON.stringify(p)
+          && JSON.stringify(secondaries) == JSON.stringify(s)) {
       alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
       return false
     }
@@ -1095,10 +1095,8 @@ function count_existing_slurs(noteElement) {
   relations.forEach(relation => {
     const slurs = Array.from(relation.getElementsByTagName('path'))
     slurs.forEach(slur => {
-      if (
-        slur.getAttribute('start-note') === noteElement.id ||
-        slur.getAttribute('end-note') === noteElement.id
-      ) {
+      if (slur.getAttribute('start-note') === noteElement.id ||
+          slur.getAttribute('end-note') === noteElement.id) {
         count++
       }
     })
@@ -1121,8 +1119,8 @@ export function draw_slur(startNote, endNote) {
   // Base offset plus additional offset per existing slur
   const baseOffsetY = 150
   const slurOffsetYUnit = 30
-  const startOffsetY = baseOffsetY + nStartSlur * slurOffsetYUnit
-  const endOffsetY = baseOffsetY + nEndSlur * slurOffsetYUnit
+  const startOffsetY = baseOffsetY + (nStartSlur * slurOffsetYUnit)
+  const endOffsetY = baseOffsetY + (nEndSlur * slurOffsetYUnit)
 
   // Apply offsets
   const adjustedStart = [start[0], start[1] - startOffsetY]
@@ -1143,8 +1141,8 @@ export function draw_slur(startNote, endNote) {
     const heightDiff = Math.abs(startOffsetY - endOffsetY)
     const midX = (adjustedStart[0] + adjustedEnd[0]) / 2
     const midY = (adjustedStart[1] + adjustedEnd[1]) / 2
-    const topControlPoint = [midX, midY - height - heightDiff * 0.5]
-    const bottomControlPoint = [midX, midY - height - heightDiff * 0.5 + maxSlurWidth]
+    const topControlPoint = [midX, midY - height - (heightDiff * 0.5)]
+    const bottomControlPoint = [midX, midY - height - (heightDiff * 0.5) + maxSlurWidth]
 
     pathData = `
       M ${adjustedStart[0]},${adjustedStart[1]}
@@ -1157,8 +1155,8 @@ export function draw_slur(startNote, endNote) {
     const minY = Math.min(startOffsetY, endOffsetY)
 
     // Calculate control points at 20% and 80% of the width
-    const cp1x = adjustedStart[0] + width * 0.2
-    const cp2x = adjustedStart[0] + width * 0.8
+    const cp1x = adjustedStart[0] + (width * 0.2)
+    const cp2x = adjustedStart[0] + (width * 0.8)
 
     // Set control points at the same height for flat top
     const topY = minY - height
@@ -1177,6 +1175,7 @@ export function draw_slur(startNote, endNote) {
       L ${adjustedEnd[0]},${adjustedEnd[1]}
       C ${bottomCP2[0]},${bottomCP2[1]} ${bottomCP1[0]},${bottomCP1[1]} ${adjustedStart[0]},${adjustedStart[1]}
       Z`
+
   }
 
   newElement.setAttribute('d', pathData)

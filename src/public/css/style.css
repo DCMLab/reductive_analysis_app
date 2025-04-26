@@ -326,13 +326,13 @@ body:not(.mousedown) .note:hover {
   filter: url("#selectFilter");
   color: hsl(199, 98%, 55%);
 }
-.secondarynote {
-  opacity: calc(1.0 / var(--how-secondary));
-}
-
-.secondarynote .stem path {
-  stroke-opacity: calc(1.0 / var(--how-secondary));
-}
+/* .secondarynote { */
+/*   opacity: calc(1.0 / var(--how-secondary)); */
+/* } */
+/**/
+/* .secondarynote .stem path { */
+/*   stroke-opacity: calc(1.0 / var(--how-secondary)); */
+/* } */
 
 .relation,
 .metarelation {

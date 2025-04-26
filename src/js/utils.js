@@ -612,7 +612,7 @@ function mark_secondary(item) {
   }
   if (item.classList.contains('secondarynote')) {
     var level = getComputedStyle(item).getPropertyValue('--how-secondary')
-    item.style.setProperty('--how-secondary', level * 2)
+    item.style.setProperty('--how-secondary', level * 1)
   } else {
     item.classList.add('secondarynote')
     item.style.setProperty('--how-secondary', 2)
@@ -626,7 +626,7 @@ function unmark_secondary(item) {
     return
   }
   var level = getComputedStyle(item).getPropertyValue('--how-secondary')
-  item.style.setProperty('--how-secondary', level / 2)
+  item.style.setProperty('--how-secondary', level / 1)
   if (level / 2 == 1)
     item.classList.remove('secondarynote')
 }

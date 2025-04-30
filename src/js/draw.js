@@ -26,7 +26,8 @@ import {
   relation_secondaries,
   relation_type,
   draw_slur,
-  isSlurDownward
+  isSlurDownward,
+  get_by_id
 } from './utils'
 
 // Given a draw context and a graph node representing a relation, draw the
@@ -188,12 +189,10 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
     toggle_selected(group)
   }
   group.onmouseover = function () {
-    primaries.forEach(item => item.classList.add('extrahover'))
-    secondaries.forEach(item => item.classList.add('selecthover'))
+    addHoverClassToChildren(group, true, true, draw_context, mei_graph)
   }
   group.onmouseout = function () {
-    primaries.forEach(item => item.classList.remove('extrahover'))
-    secondaries.forEach(item => item.classList.remove('selecthover'))
+    removeHoverClassToChildren(group, true, true, draw_context, mei_graph)
   }
 
   // Add it to the SVG
@@ -484,32 +483,10 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   // Decorate with onclick and onmouseover handlers
   g_elem.onclick = () => toggle_selected(g_elem)
   g_elem.onmouseover = function (ev) {
-    primaries.forEach((item) => {
-      if (item.classList.contains('relation'))
-	    item.classList.add('extrarelationhover')
-      else
-	    item.children[0].classList.add('extrarelationhover')
-    })
-    secondaries.forEach((item) => {
-      if (item.classList.contains('relation'))
-	    item.classList.add('relationhover')
-      else
-	    item.children[0].classList.add('relationhover')
-    })
+    addHoverClassToChildren(g_elem, true, true, draw_context, mei_graph)
   }
   g_elem.onmouseout = function (ev) {
-    primaries.forEach((item) => {
-      if (item.classList.contains('relation'))
-	    item.classList.remove('extrarelationhover')
-      else
-	    item.children[0].classList.remove('extrarelationhover')
-    })
-    secondaries.forEach((item) => {
-      if (item.classList.contains('relation'))
-	    item.classList.remove('relationhover')
-      else
-	    item.children[0].classList.remove('relationhover')
-    })
+    removeHoverClassToChildren(g_elem, true, true, draw_context, mei_graph)
   }
 
   // TODO: Set up more onhover stuff for The Same Relation
@@ -521,4 +498,63 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   added.push(g_elem)
 
   return added
+}
+
+// Recursively add hover class to elements and their children
+function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
+  if (!element) return
+
+  // For meta-relations
+  if (element.classList.contains('metarelation') || element.classList.contains('relation')) {
+    // Add hover class to the meta-relation itself
+    if (!isRoot) element.classList.add(isPrimary ? 'extrarelationhover' : 'relationhover')
+
+    // Get the corresponding MEI node using the oldid attribute
+    let meiNode = get_by_id(mei_graph, element.getAttribute('oldid') || element.id)
+
+    // Recursively add hover class to the children
+    let primaries = relation_primaries(mei_graph, meiNode).map(
+      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+    )
+    let secondaries = relation_secondaries(mei_graph, meiNode).map(
+      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+    )
+    console.log(primaries, secondaries)
+
+    primaries.forEach(elem => { addHoverClassToChildren(elem, false, true, draw_context, mei_graph) })
+    secondaries.forEach(elem => { addHoverClassToChildren(elem, false, false, draw_context, mei_graph) })
+
+  } else if (element.classList.contains('note')) {
+    // Add hover class to the note itself (note is never a root)
+    element.classList.add(isPrimary ? 'extrahover' : 'selecthover')
+  }
+}
+
+// Recursively remove hover class from elements and their children
+function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
+  if (!element) return
+
+  // For meta-relations
+  if (element.classList.contains('metarelation') || element.classList.contains('relation')) {
+    // Remove hover class from the meta-relation itself
+    if (!isRoot) element.classList.remove(isPrimary ? 'extrarelationhover' : 'relationhover')
+
+    // Get the corresponding MEI node using the oldid attribute
+    let meiNode = get_by_id(mei_graph, element.getAttribute('oldid') || element.id)
+
+    // Recursively remove hover class from the children
+    let primaries = relation_primaries(mei_graph, meiNode).map(
+      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+    )
+    let secondaries = relation_secondaries(mei_graph, meiNode).map(
+      (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
+    )
+
+    primaries.forEach(elem => { removeHoverClassToChildren(elem, false, true, draw_context, mei_graph) })
+    secondaries.forEach(elem => { removeHoverClassToChildren(elem, false, false, draw_context, mei_graph) })
+
+  } else if (element.classList.contains('note')) {
+    // Remove hover class from the note itself (note is never a root)
+    element.classList.remove(isPrimary ? 'extrahover' : 'selecthover')
+  }
 }

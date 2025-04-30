@@ -373,11 +373,11 @@ body:not(.mousedown) .metarelation:hover rect {
   visibility: visible;
 }
 body:not(.mousedown) .relation:hover path {
-      transform: translate3d(0,0,0);
-       filter: url("#glowFilter");
-       stroke: blue !important;
-       stroke-width: 15px;
-       stroke-opacity: 0.8;
+  transform: translate3d(0,0,0);
+  filter: url("#glowFilter");
+  stroke-width: 30px;
+  stroke-opacity: 0.8;
+  stroke-dasharray: 100 50;
 }
 body:not(.mousedown) .shift-pressed .relation:hover path,
 body:not(.mousedown) .shift-pressed .metarelation:hover line,
@@ -389,14 +389,18 @@ body:not(.mousedown) .shift-pressed .metarelation:hover rect {
        stroke-opacity: 0.8;
 }
 .selectedrelation line:not(.relation-jot-line),
-.selectedrelation rect,
-.selectedrelation path {
+.selectedrelation rect {
     fill-opacity : 0.7;
     stroke-opacity : 0.8;
     stroke: blue !important;
     stroke-dasharray: 100 100;
     stroke-width: 15px;
     filter : url("#selectFilter");
+}
+.selectedrelation path {
+  stroke-width: 30px;
+  stroke-opacity: 0.8;
+  stroke-dasharray: 100 50;
 }
 .selectedrelation .relation-jot-line {
   stroke: blue !important;
@@ -428,9 +432,19 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   stroke-width: 30px;
   stroke-opacity: 0.8;
 }
-.relationhover {
-      transform: translate3d(0,0,0);
-       filter: url("#glowFilter");
+.relationhover path {
+  transform: translate3d(0,0,0);
+  filter: url("#glowFilter");
+  stroke-width: 15px;
+  stroke-opacity: 0.8;
+  stroke-dasharray: 100 50;
+}
+.relationhover.metarelation rect,
+.relationhover.metarelation line {
+  transform: translate3d(0,0,0);
+  filter: url("#glowFilter");
+  stroke: blue;
+  stroke-width: 20px;
 }
 
 .extrarelationhover {

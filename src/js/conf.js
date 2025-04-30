@@ -14,71 +14,71 @@ export const button_shades = {}
 
 // General action shortcuts.
 export const action_conf = {
-  'undo':                    'U',
-  'redo':                    'I',
-  'deselect_all':            'd',
-  'delete_all':              'D',
-  'add_bookmark':            '^',
-  'move_relation_to_front':  'z',
-  'reduce_relations':        'r',
+  undo: 'U',
+  redo: 'I',
+  deselect_all: 'd',
+  delete_all: 'D',
+  add_bookmark: '^',
+  move_relation_to_front: 'z',
+  reduce_relations: 'r',
   // 'show_hide_notation':      's',
   // 'toggle_type_shades':      'h',
-  'select_same_notes':       '+',
+  select_same_notes: '+',
   // 'toggle_add_note':         'x',
-  'naturalize_note':         'Z',
-  'copy':                    'C',
-  'paste':                   'V'
+  naturalize_note: 'Z',
+  copy: 'C',
+  paste: 'V',
 }
 
 // Navigation shortcuts.
 export const navigation_conf = {
-  'pan_left':                   '[',
-  'pan_right':                  ']',
-  'jump_to_next_bookmark':      '{',
-  'jump_to_previous_bookmark':  '}',
-  'jump_to_context_below':      ',', // next layer
-  'jump_to_context_above':      '.', // previous layer
-  'toggle_palette':             '-',
+  pan_left: '[',
+  pan_right: ']',
+  jump_to_next_bookmark: '{',
+  jump_to_previous_bookmark: '}',
+  jump_to_context_below: ',', // next layer
+  jump_to_context_above: '.', // previous layer
+  toggle_palette: '-',
   // 'zoom_out':                   '(',
   // 'zoom_in':                    ')',
-  'switch_context_on_hover':    false
+  switch_context_on_hover: false,
 }
 
 // Custon (meta-)relation shortcuts.
 export const custom_conf = {
-  'relation':            'R',
-  'meta_relation':       'M'
+  relation: 'R',
+  meta_relation: 'M',
 }
 
 // Meta-relation types and shortcuts.
 export const meta_conf = {
-  'context': { key: 'c', colour: 0 },
-  'layer': { key: 'l', colour: 6 },
-  'phrase': { key: 'r', colour: 2 },
-  'section': { key: 't', colour: 3 },
+  context: { key: 'c', colour: 0 },
+  layer: { key: 'l', colour: 6 },
+  phrase: { key: 'r', colour: 2 },
+  section: { key: 't', colour: 3 },
 }
 
 // Relation types and shortcuts.
 export const type_conf = {
-  'repeat': { key: 'e', colour: 0 },
-  'passing': { key: 'p', colour: 6 },
-  'neighbour': { key: 'n', colour: 2 },
-  'harmonic': { key: 'i', colour: 3 },
-  'arpeggio': { key: 'a', colour: 4 },
-  'urlinie': { key: 'u', colour: 5 },
-  'bassbrechung': { key: 'b', colour: 5 }
+  repeat: { key: 'e', colour: 0 },
+  passing: { key: 'p', colour: 6 },
+  neighbour: { key: 'n', colour: 2 },
+  harmonic: { key: 'i', colour: 3 },
+  arpeggio: { key: 'a', colour: 4 },
+  urlinie: { key: 'u', colour: 5 },
+  bassbrechung: { key: 'b', colour: 5 },
 }
 
 // Composite ("combo") relation types and shortcuts.
 export const combo_conf = {
-  'passing_comb': { key: 'P', total: 'passing', outer: 'arpeggio' },
-  'neighbour_comb': { key: 'N', total: 'neighbour', outer: 'repeat' },
+  passing_comb: { key: 'P', total: 'passing', outer: 'arpeggio' },
+  neighbour_comb: { key: 'N', total: 'neighbour', outer: 'repeat' },
 }
 
 export const type_synonym = {
-  'prolongation': 'passing',
-  'arp': 'arpeggio',
-  'bassbrech': 'bassbrechung'
+  prolongation: 'passing',
+  arp: 'arpeggio',
+  bassbrech: 'bassbrechung',
 }
 
 // The full list of pre-defined relations.
@@ -103,7 +103,7 @@ export const type_full_conf = [
   'voice_exchange_component',
   'voice_exchange_component_chromaticized',
   'mixture',
-  'phrygian_ii'
+  'phrygian_ii',
 ]
 
 // The full list of pre-defined meta-relations.
@@ -132,7 +132,7 @@ export const meta_full_conf = [
   'contradiction',
   'indeterminacy',
   'parallel_fifths',
-  'parallel_octaves'
+  'parallel_octaves',
 ]
 
 // MEI classes to be hidden after rendering.
@@ -149,21 +149,16 @@ export const hide_classes = [
   'tempo',
   'tupletNum',
   'dir',
-  'verse'
+  'verse',
+  'mRest',
 ]
 
 // MEI and MusicXML tags to be stripped before rendering.
-export const strip_mei_tags = [
-  'label',
-  'labelAbbr',
-  'tempo'
-]
+export const strip_mei_tags = ['label', 'labelAbbr', 'tempo']
 
-export const strip_xml_tags = [
-]
+export const strip_xml_tags = []
 
 // Trap (true) or ignore (false) runtime errors.
 export const debug = false
 
 export const CONFIG_OK = true
-

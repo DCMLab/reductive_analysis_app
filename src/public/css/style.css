@@ -450,6 +450,8 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   padding-left: 255px; /* Should be greater than the width of `filterdiv`, which is now removed. */
   transform-origin: left center;
   overflow: visible;
+  padding-top: 30px;
+  transform-origin: 0 0;
 }
 
 .svg_container svg {

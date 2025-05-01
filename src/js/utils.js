@@ -1168,3 +1168,12 @@ export function isSlurDownward(svg_elem, startNote, endNote) {
   let system_mid = system_bbox.y + system_bbox.height / 2
   return system_mid < note_coords(startNote)[1] && system_mid < note_coords(endNote)[1]
 }
+
+export function handleFlip(e) {
+  e.preventDefault()
+  flip_to_bg(e.target.closest('g'))
+  // Only call onmouseout if it exists
+  if (e.target.onmouseout) {
+    e.target.onmouseout()
+  }
+}

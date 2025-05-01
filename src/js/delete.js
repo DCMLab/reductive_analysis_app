@@ -10,6 +10,7 @@ import { toggle_selected, adjustSvgDimensions } from './ui'
 import { flush_redo } from './undo_redo'
 import { get_by_id, get_class_from_classlist, get_id, unmark_secondaries } from './utils'
 
+// This also delete meta-relations
 function delete_relation(elem) {
   console.debug('Using globals: mei for element selection')
   // Assume no meta-edges for now, meaning we only have to
@@ -46,6 +47,30 @@ function delete_relation(elem) {
   // Remove duplicates (in case some elements are counted twice)
   removed = [...new Set(removed)]
 
+  // Collect child IDs from metarelation arcs that will be removed
+  const childIds = new Set()
+  if (is_meta_relation || meta_relations.length > 0) {
+    // Process all arcs being removed
+    removed.filter(element => element.tagName === 'arc').forEach(arc => {
+      const fromAttr = arc.getAttribute('from')
+      const toAttr = arc.getAttribute('to')
+
+      if (fromAttr && toAttr) {
+        const fromId = fromAttr.substring(1) // Remove the '#' prefix
+        const toId = toAttr.substring(1) // Remove the '#' prefix
+
+        // Find the source element to check if it's a metarelation
+        const sourceElement = get_by_id(mei, fromId)
+
+        // If the source is a metarelation, add the target as a child ID
+        if (sourceElement && sourceElement.getAttribute('type') === 'metarelation') {
+          childIds.add(toId)
+        }
+      }
+    })
+  }
+
+  // Store removed elements in action_removed
   const action_removed = removed.map(x => {
     const elems = [x, x.parentElement, x.nextSibling]
     // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
@@ -58,12 +83,87 @@ function delete_relation(elem) {
     return elems
   })
 
+  // After deletion, check if any children need their connection circles removed
+  // Store the returned connection circle data for undo
+  if (childIds.size > 0) {
+    const connectionCircleData = updateConnectionCircles(Array.from(childIds))
+
+    // Add connection circle data to the action_removed array if any was removed
+    if (connectionCircleData.length > 0) {
+      action_removed.push(['connection_circle_data', connectionCircleData])
+    }
+  }
+
   // Adjust SVG dimensions after deletion
   draw_contexts.forEach(draw_context => {
     adjustSvgDimensions(draw_context)
   })
 
   return action_removed
+}
+
+/**
+ * Checks if children of deleted metarelations have remaining parent metarelations
+ * and updates connection circles accordingly.
+ *
+ * @param {Array} childIds - Array of child relation IDs to check
+ * @returns {Array} Array of connection circle data for removed circles (for undo support)
+ */
+function updateConnectionCircles(childIds) {
+  const connectionCircleData = []
+
+  childIds.forEach(childId => {
+    // Find the child element in the DOM
+    const childElement = document.getElementById(childId)
+    if (!childElement) return // Skip if child no longer exists
+
+    // Check if this child has any remaining metarelation parents
+    const remainingParentArcs = Array.from(mei.getElementsByTagName('arc')).filter(arc => {
+      const targetId = arc.getAttribute('to')
+      const fromElement = get_by_id(mei, arc.getAttribute('from').substring(1))
+      return targetId === '#' + childId &&
+             fromElement &&
+             fromElement.getAttribute('type') === 'metarelation'
+    })
+
+    // If no remaining parents, remove the connection circle
+    if (remainingParentArcs.length === 0) {
+      // Find connection circle in this element
+      const connectionCircle = childElement.querySelector('.connection-circle')
+      if (connectionCircle) {
+        // Save information about the connection circle for undo
+        const circleData = {
+          childId,
+          circleId: connectionCircle.getAttribute('id'),
+          circleSVG: connectionCircle.cloneNode(true),
+          connectedLines: []
+        }
+
+        // Find and save information about any lines connected to this circle
+        const circleId = connectionCircle.getAttribute('id')
+        if (circleId) {
+          const connectedLines = document.querySelectorAll(`line[circle\\:id="${circleId}"]`)
+          connectedLines.forEach(line => {
+            if (line.parentElement) {
+              circleData.connectedLines.push({
+                lineSVG: line.cloneNode(true),
+                parentElement: line.parentElement
+              })
+              line.parentElement.removeChild(line)
+            }
+          })
+        }
+
+        // Add the circle data to our tracking array
+        connectionCircleData.push(circleData)
+
+        // Remove the connection circle
+        connectionCircle.parentElement.removeChild(connectionCircle)
+      }
+    }
+  })
+
+  return connectionCircleData
 }
 
 export function delete_relations(redoing = false) {

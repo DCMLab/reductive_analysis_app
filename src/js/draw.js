@@ -519,7 +519,6 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
     let secondaries = relation_secondaries(mei_graph, meiNode).map(
       (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
     )
-    console.log(primaries, secondaries)
 
     primaries.forEach(elem => { addHoverClassToChildren(elem, false, true, draw_context, mei_graph) })
     secondaries.forEach(elem => { addHoverClassToChildren(elem, false, false, draw_context, mei_graph) })

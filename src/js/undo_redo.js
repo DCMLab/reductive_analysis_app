@@ -76,6 +76,19 @@ export function do_undo() {
     window.relationTreeInstance?.updateIfVisible()
   } else if (what == 'delete relation') {
     var removed = elems
+
+    // First, check if there's connection circle data to restore
+    const connectionCircleDataIndex = removed.findIndex(item =>
+      Array.isArray(item) && item[0] === 'connection_circle_data'
+    )
+
+    let connectionCircleData = null
+    if (connectionCircleDataIndex !== -1) {
+      // Extract and remove the connection circle data from the removed array
+      connectionCircleData = removed.splice(connectionCircleDataIndex, 1)[0][1]
+    }
+
+    // Restore all removed elements
     removed.forEach(x => {
       // Check if reference node is still valid before inserting
       if (x[2] && x[1].contains(x[2])) {
@@ -93,6 +106,33 @@ export function do_undo() {
         mark_secondaries(dc, getMeiGraph(), mei_he)
       }
     })
+
+    // Restore any connection circles that were removed
+    if (connectionCircleData) {
+      connectionCircleData.forEach(circleData => {
+        const { childId, circleId, circleSVG, connectedLines } = circleData
+
+        // Find the child element
+        const childElement = document.getElementById(childId)
+        if (!childElement) return
+
+        // Check if the connection circle already exists
+        let existingCircle = childElement.querySelector('.connection-circle')
+        if (!existingCircle) {
+          // Add the circle back to the child element
+          childElement.appendChild(circleSVG)
+
+          // Restore all connected lines
+          connectedLines.forEach(lineData => {
+            const { lineSVG, parentElement } = lineData
+            if (parentElement) {
+              parentElement.appendChild(lineSVG)
+            }
+          })
+        }
+      })
+    }
+
     // Select last selection
     sel.forEach(x => toggle_selected(x, false))
     extra.forEach(x => toggle_selected(x, true))

@@ -164,8 +164,11 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
     'wheel',
     e => {
       e.preventDefault()
-      flip_to_bg(e.target)
-      e.target.onmouseout()
+      flip_to_bg(e.target.closest('g'))
+      // Only call onmouseout if it exists
+      if (e.target.onmouseout) {
+        e.target.onmouseout()
+      }
     },
     captureEvent
   )

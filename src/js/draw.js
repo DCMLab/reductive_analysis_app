@@ -266,7 +266,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       // Find the highest point and corresponding width of all slurs in this relation
       const slurInfo = slurs.map(slur => {
         const bbox = slur.getBBox()
-        return isDownward
+        return slur.parentElement.getAttribute('is-downward') === 'true'
           ? {
             point: [bbox.x + bbox.width / 2, bbox.y + bbox.height],
             width: maxWidth,

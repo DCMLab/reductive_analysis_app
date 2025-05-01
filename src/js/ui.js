@@ -284,11 +284,11 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.move_relation_to_front) {
     // Scroll through relations
     var elem = document.elementFromPoint(mouseX, mouseY)
-    if (elem.tagName == 'circle') elem = elem.closest('g')
+    if (elem.tagName != 'g') elem = elem.closest('g')
     flip_to_bg(elem)
     if (elem.onmouseout) elem.onmouseout()
     var elem = document.elementFromPoint(mouseX, mouseY)
-    if (elem.tagName == 'circle') elem = elem.closest('g')
+    if (elem.tagName != 'g') elem = elem.closest('g')
     document.dispatchEvent(
       new CustomEvent('fliprelation', {
         detail: {

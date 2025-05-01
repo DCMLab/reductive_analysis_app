@@ -27,7 +27,8 @@ import {
   relation_type,
   draw_slur,
   isSlurDownward,
-  get_by_id
+  get_by_id,
+  handleFlip
 } from './utils'
 
 // Given a draw context and a graph node representing a relation, draw the
@@ -159,19 +160,7 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   if (!newApp.ui.scoreSettings.brightShades)
     toggle_shade(elem)
 
-  // Relations can be scrolled
-  group.addEventListener(
-    'wheel',
-    e => {
-      e.preventDefault()
-      flip_to_bg(e.target.closest('g'))
-      // Only call onmouseout if it exists
-      if (e.target.onmouseout) {
-        e.target.onmouseout()
-      }
-    },
-    captureEvent
-  )
+  group.addEventListener('wheel', handleFlip, captureEvent)
 
   // Decorate with onclick and onmouseover handlers
   group.onclick = () => {
@@ -473,15 +462,8 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   if (!newApp.ui.scoreSettings.brightShades)
     toggle_shade(g_elem)
 
-  // We can scroll among metarelations as well
-  g_elem.addEventListener('wheel', e => {
-    e.preventDefault()
-    flip_to_bg(e.target.closest('g'))
-    // Only call onmouseout if it exists
-    if (e.target.onmouseout) {
-      e.target.onmouseout()
-    }
-  }, captureEvent)
+  // We can scroll among metarelations with wheel
+  g_elem.addEventListener('wheel', handleFlip, captureEvent)
 
   // Decorate with onclick and onmouseover handlers
   g_elem.onclick = () => toggle_selected(g_elem)

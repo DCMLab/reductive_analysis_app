@@ -263,18 +263,18 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       const slurs = Array.from(target.getElementsByTagName('path'))
       if (slurs.length === 0) return { point: get_metarelation_target(target), width: 80 }
 
-      // Find the highest point and corresponding width of all slurs in this relation
+      // Find the middle point of each slur by calculating the point halfway along the path
       const slurInfo = slurs.map(slur => {
-        const bbox = slur.getBBox()
-        return slur.parentElement.getAttribute('is-downward') === 'true'
-          ? {
-            point: [bbox.x + bbox.width / 2, bbox.y + bbox.height],
-            width: maxWidth,
-          }
-          : {
-            point: [bbox.x + bbox.width / 2, bbox.y],
-            width: maxWidth,
-          }
+        // Get the total length of the path
+        const pathLength = slur.getTotalLength()
+        // Get the point that's halfway along the path
+        const midPoint = slur.getPointAtLength(pathLength / 4)
+
+        return {
+          // Return the actual midpoint of the slur
+          point: [midPoint.x, midPoint.y],
+          width: maxWidth,
+        }
       })
       return isDownward ? slurInfo.reduce((lowest, current) =>
         current.point[1] > lowest.point[1] ? current : lowest

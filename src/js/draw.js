@@ -255,18 +255,18 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       const slurs = Array.from(target.getElementsByTagName('path'))
       if (slurs.length === 0) return { point: get_metarelation_target(target), width: 80 }
 
-      // Find the highest point and corresponding width of all slurs in this relation
+      // Find the middle point of each slur by calculating the point halfway along the path
       const slurInfo = slurs.map(slur => {
-        const bbox = slur.getBBox()
-        return isDownward
-          ? {
-            point: [bbox.x + bbox.width / 2, bbox.y + bbox.height],
-            width: maxWidth,
-          }
-          : {
-            point: [bbox.x + bbox.width / 2, bbox.y],
-            width: maxWidth,
-          }
+        // Get the total length of the path
+        const pathLength = slur.getTotalLength()
+        // Get the point that's halfway along the path
+        const midPoint = slur.getPointAtLength(pathLength / 4)
+
+        return {
+          // Return the actual midpoint of the slur
+          point: [midPoint.x, midPoint.y],
+          width: maxWidth,
+        }
       })
       return isDownward ? slurInfo.reduce((lowest, current) =>
         current.point[1] > lowest.point[1] ? current : lowest
@@ -504,7 +504,6 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
     let secondaries = relation_secondaries(mei_graph, meiNode).map(
       (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
     )
-    console.log(primaries, secondaries)
 
     primaries.forEach(elem => { addHoverClassToChildren(elem, false, true, draw_context, mei_graph) })
     secondaries.forEach(elem => { addHoverClassToChildren(elem, false, false, draw_context, mei_graph) })

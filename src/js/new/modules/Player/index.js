@@ -2,7 +2,7 @@
 // https://github.com/danigb/smplr
 
 import MidiPlayer from 'midi-player-js'
-import { Soundfont } from 'smplr'
+import { SplendidGrandPiano, Soundfont } from 'smplr'
 import { getOrigMidi } from '../../../app'
 import { setAttributes } from '../../utils/dom'
 import { clamp, round } from '../../utils/math'
@@ -170,9 +170,7 @@ class Player {
 
   init() {
     // Create a new Soundfont instance from smplr
-    this.instrument = new Soundfont(audioContext, {
-      instrument: 'acoustic_grand_piano',
-    })
+    this.instrument = new SplendidGrandPiano(audioContext)
 
     // Wait for the instrument to load
     this.instrument.load.then(() => {

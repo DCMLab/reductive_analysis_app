@@ -57,9 +57,7 @@ export default class RelationsTree {
   }
 
   updateToggles(layer = getCurrentDrawContext()) {
-    console.log(layer)
     const hasTree = layer.svg_elem.querySelector('#hier')
-    console.log(hasTree)
 
     this[hasTree ? 'on' : 'off'].checked = true
     if (hasTree) {

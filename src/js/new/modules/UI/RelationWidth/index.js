@@ -7,7 +7,6 @@ class RelationWidth {
 
     const { min, max, value } = this.input
     this.progressBar = new Progress('relation-width', { min, max, value })
-    console.log('initializing relation width controller with value ', this.input.value)
 
     this.throttling = false
   }

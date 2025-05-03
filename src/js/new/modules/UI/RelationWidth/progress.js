@@ -5,7 +5,6 @@ export default class Progress {
     this.ctn = document.getElementById(`${idPrefix}-progress-ctn`)
 
     if (options) {
-      console.log('Progress options', options)
       this.setMinMax(options)
       this.update(options.value)
     }

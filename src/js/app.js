@@ -683,14 +683,12 @@ function finalize_draw_context(new_draw_context) {
   for (let n of new_draw_context.svg_elem.getElementsByClassName('note')) {
     n.onclick = () => toggle_selected(n)
   }
-  console.groupCollapsed('notes output from `pitch_grid()`')
   for (let s of new_draw_context.svg_elem.getElementsByClassName('staff')) {
     // TODO: handle staves with no notes in them
     let [y_to_p, p_to_y] = pitch_grid(s)
     s.y_to_p = y_to_p
     s.p_to_y = p_to_y
   }
-  console.groupEnd()
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
   adjustSvgDimensions(new_draw_context)

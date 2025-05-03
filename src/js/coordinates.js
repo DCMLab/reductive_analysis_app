@@ -130,7 +130,6 @@ export function pitch_grid(staff) {
       note = sibling_staff.getElementsByClassName('note')[0]
   }
   var mid_n
-  console.log(note)
   if (!note) {
     // There's no notes to compare with - we need to look at the clef
     const sys = staff.closest('.system')
@@ -216,7 +215,6 @@ function note_params() {
   const pt = getPointerSVGCoords()
   const measure = coord_measure(dc, pt)
   if (!measure) {
-    console.log('Pointer outside measures')
     return [null, null, null]
   }
   const staff = coord_staff(dc, pt, measure)
@@ -296,7 +294,6 @@ function draw_note(pname, oct, note, sim = true, id = '') {
 function add_note(layer_context, pname, oct, note, sim = true, id = '') {
   var l = get_by_id(mei, get_id(note))
   if (!layer_context.score_elem.contains(l)) {
-    console.log('Note not in layer?')
     return false
   }
   var n = mei.createElement('note')
@@ -333,7 +330,6 @@ export function do_note(pname, oct, note, offset, id, redoing = false) {
     new_element_id = id
   var added = []
   // Draw it temporarily
-  console.log(note)
   added.push(draw_note(pname, oct, note, offset, new_element_id))
   // Add it to the current layer
   var current_draw_context = getCurrentDrawContext()

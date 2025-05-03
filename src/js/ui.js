@@ -597,7 +597,6 @@ export const setCurrentDrawContext = drawContext => {
 }
 
 export function adjustSvgDimensions(draw_context) {
-  console.trace('adjustSvgDimensions')
   const svg_elem = draw_context.svg_elem
   const rootSvg = svg_elem.getElementsByTagName('svg')[0] // The root SVG element from verovio
   const definitionScale = svg_elem.getElementsByClassName('definition-scale')[0]

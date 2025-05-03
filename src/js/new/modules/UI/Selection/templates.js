@@ -8,7 +8,6 @@ import score from '../../Score'
  * @returns string
  */
 export const createSelectionText = selection => {
-  console.log(selection)
   const type = score.selectionType
 
   if (!selection.length) { return '-' }

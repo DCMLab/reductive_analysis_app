@@ -595,12 +595,9 @@ export function delete_layer(draw_context) {
     const mdiv_id = mdiv_elem.getAttribute('xml:id')
     const mdiv_in_mei = get_by_id(mei, mdiv_id)
 
-    if (!mdiv_in_mei) {
-      console.log('Layer mdiv not found in MEI, cannot delete')
-      return false
+    if (mdiv_in_mei) {
+      mdiv_in_mei.parentElement.removeChild(mdiv_in_mei)
     }
-
-    mdiv_in_mei.parentElement.removeChild(mdiv_in_mei)
 
     // 2. Remove the layer div from HTML
     const layer_elem = draw_context.layer.layer_elem

@@ -13,7 +13,6 @@ class Zoom {
     this.resetBtn = document.getElementById('zoom-reset')
     this.levelEl = document.getElementById('zoom-level')
 
-    // For Chrome, Edge, Firefox — trackpad pinch detection
     window.addEventListener('wheel', (event) => {
       if (event.ctrlKey) {
         if (event.deltaY < 0) {
@@ -25,12 +24,6 @@ class Zoom {
         }
       } 
     }, { passive: false })
-
-    // For Safari — gesturechange event (non-standard)
-    // TODO: Check for correctness as soon as the app works on Safari again.
-    window.addEventListener('gesturechange', (event) => {
-      this.by(Math.abs(Math.floor(event.deltaY / ZOOM_STEP)))
-    })
   }
 
   onTap({ target }) {

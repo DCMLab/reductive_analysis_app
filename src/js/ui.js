@@ -36,7 +36,7 @@ import { draw_hierarchy_graph } from './visualizations'
 
 import { do_copy, do_paste } from './copy_paste'
 
-import { flip_to_bg, get_class_from_classlist, select_samenote, unmark_secondaries } from './utils'
+import { scrollThroughRelations, get_class_from_classlist, select_samenote, unmark_secondaries } from './utils'
 
 import { place_note, update_placing_note } from './coordinates'
 
@@ -231,14 +231,6 @@ export function handle_keydown(ev) {
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === 'Shift') $('#layers').addClass('shift-pressed')
 
-  // Add space drag functionality (commented out due to performance issues)
-  if (ev.key === ' ' || ev.key === 'Space') {
-    ev.preventDefault() // Prevent page scrolling with space
-    window._spacePressed = true
-    $('#layers').addClass('space-drag-mode') // Visual indicator for space-drag mode
-    setupSpaceDrag()
-  }
-
   // Add option drag functionality for metarelations
   if (ev.key === 'Alt' || ev.key === 'Option') {
     ev.preventDefault()
@@ -251,13 +243,6 @@ export function handle_keydown(ev) {
 export function handle_keyup(ev) {
   // Global `.shift-pressed` class for pretty (meta-)relation styling on hover.
   if (ev.key === 'Shift') $('#layers').removeClass('shift-pressed')
-
-  // Remove space drag functionality (commented out due to performance issues)
-  // if (ev.key === ' ' || ev.key === 'Space') {
-  //   window._spacePressed = false
-  //   $('#layers').removeClass('space-drag-mode') // Remove visual indicator
-  //   removeSpaceDrag()
-  // }
 
   // Remove option drag functionality
   if (ev.key === 'Alt' || ev.key === 'Option') {
@@ -283,19 +268,7 @@ export function handle_keypress(ev) {
     // do_edges()
   } else if (ev.key == action_conf.move_relation_to_front) {
     // Scroll through relations
-    var elem = document.elementFromPoint(mouseX, mouseY)
-    if (elem.tagName != 'g') elem = elem.closest('g')
-    flip_to_bg(elem)
-    if (elem.onmouseout) elem.onmouseout()
-    var elem = document.elementFromPoint(mouseX, mouseY)
-    if (elem.tagName != 'g') elem = elem.closest('g')
-    document.dispatchEvent(
-      new CustomEvent('fliprelation', {
-        detail: {
-          target: elem,
-        },
-      })
-    )
+    scrollThroughRelations()
   } else if (ev.key == action_conf.undo) {
     // UNDO
     do_undo()

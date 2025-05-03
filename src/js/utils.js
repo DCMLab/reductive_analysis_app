@@ -11,7 +11,7 @@ import { polygonHull } from 'd3-polygon'
 
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
-import { getCurrentDrawContext, toggle_selected } from './ui'
+import { getCurrentDrawContext, toggle_selected, getMouseX, getMouseY } from './ui'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
@@ -1169,11 +1169,24 @@ export function isSlurDownward(svg_elem, startNote, endNote) {
   return system_mid < note_coords(startNote)[1] && system_mid < note_coords(endNote)[1]
 }
 
+export function scrollThroughRelations() {
+  var elem = document.elementFromPoint(getMouseX(), getMouseY())
+  if (elem.tagName != 'g') elem = elem.closest('g')
+  flip_to_bg(elem)
+  if (elem.onmouseout) elem.onmouseout()
+  var elem = document.elementFromPoint(getMouseX(), getMouseY())
+  if (elem.tagName != 'g') elem = elem.closest('g')
+  if (elem.onmouseover) elem.onmouseover()
+  document.dispatchEvent(
+    new CustomEvent('fliprelation', {
+      detail: {
+        target: elem,
+      },
+    })
+  )
+}
+
 export function handleFlip(e) {
   e.preventDefault()
-  flip_to_bg(e.target.closest('g'))
-  // Only call onmouseout if it exists
-  if (e.target.onmouseout) {
-    e.target.onmouseout()
-  }
+  scrollThroughRelations()
 }

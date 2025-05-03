@@ -9,7 +9,9 @@ import { clamp, round } from '../../utils/math'
 import ProgressBar from './progress'
 
 const audioContext = new AudioContext()
-let midiPlayer
+let midiPlayer = new MidiPlayer.Player(function(event) {
+  console.log(event)
+})
 
 class Player {
   constructor() {

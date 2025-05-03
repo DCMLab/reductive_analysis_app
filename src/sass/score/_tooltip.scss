@@ -19,5 +19,5 @@
 
 // Show tooltip on relation hover.
 html:has(.relation:hover, .metarelation circle:hover) {
-  --tooltip-opacity: 1;
+  --tooltip-opacity: .5;
 }

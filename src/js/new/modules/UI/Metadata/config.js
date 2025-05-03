@@ -39,12 +39,12 @@ export default {
     analyst: {
       label: 'Analyst',
       saveBtn: 'Assign responsibility',
-      placeholder: 'Maybe… you?',
+      placeholder: 'Maybe you?',
     },
     annotator: {
       label: 'Annotator',
       saveBtn: 'Assign responsibility',
-      placeholder: 'Maybe… you?',
+      placeholder: 'Maybe you?',
     },
   },
 }

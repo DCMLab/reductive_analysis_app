@@ -64,7 +64,7 @@
             <!-- Pick a score -->
             <label class="start-screen__filePicker file | btn btn--plain btn--big" for="start-screen-score-file-picker">
                 <span>
-                    Open an MEI or MusicXML score
+                    Open an MEI, MusicXML, or ABC score
                     <input class="file__input" id="start-screen-score-file-picker" type="file" accept=".mei,.mxl,.musicxml,.xml,.abc">
                 </span>
             </label>
@@ -149,7 +149,7 @@
                 <!-- Expanded -->
                 <h3 class="fly-out__toggle">
                     <button id="main-menu-toggle" class="btn btn--plain fly-out__toggleBtn" type="button">
-                        Menu
+                        File
                         <!-- Expanded -->
                         <svg class="fly-out__hideIfCollapsed" width="11" height="11">
                             <use href="#cross-path"/>
@@ -168,10 +168,10 @@
 
 
                     <div class="btn-group">
-                        <button id="save-file" class="btn btn--plain btn--small" type="button">Save file</button>
+                            <button id="save-file" class="btn btn--plain btn--small" type="button"><span>Export as <abbr title="Music Encoding Initiative">MEI</abbr></span></button>
 
                         <button id="save-file-svg" class="btn btn--plain btn--small" type="button">
-                            <span>Save as <abbr title="Scalable Vector Graphics">SVG</abbr></span>
+                            <span>Export as <abbr title="Scalable Vector Graphics">SVG</abbr></span>
                         </button>
 
                         <label class="file | btn btn--plain btn--small" for="score-file-picker">
@@ -388,7 +388,7 @@
             </div>
 
             <!-- (Un)select all -->
-            <button id="select-all" class="btn btn--hollow" type="button">Select visible relations</button>
+            <button id="select-all" class="btn btn--hollow" type="button">Select all visible relations</button>
             <button id="unselect-all" class="btn btn--hollow" type="button">Unselect all</button>
 
             <!-- Selection mode -->

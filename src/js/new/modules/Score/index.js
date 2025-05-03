@@ -87,7 +87,7 @@ class Score {
 
     // Select layer on tap (touch screens)
 
-    const layer = e.composedPath().find(el => el.classList.contains('layer'))
+    const layer = e.composedPath().find(el => el.classList?.contains('layer'))
     if (layer) {
       layersMenu.setCurrentLayer(parseInt(layer.dataset.position))
     }

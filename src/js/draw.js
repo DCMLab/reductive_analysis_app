@@ -13,7 +13,6 @@ import {
   add_to_svg_bg,
   average,
   circle,
-  flip_to_bg,
   g,
   get_id,
   get_metarelation_target,

@@ -46,7 +46,7 @@ The basics are as follows:
 Let us load a familiar piece into the annotation app: Bach's Prelude in C
 Major from The Well-tempered Clavier (BWV 846). This is done by selecting
 the file from your computer through the file selector accessed from the 
-"Select a score" button. Once chosen, the app should render it directly as in
+"Open a score" button. Once chosen, the app should render it directly as in
 
 ![](images/tutorial21.png?raw=true)
 

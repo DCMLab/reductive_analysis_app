@@ -291,6 +291,9 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.naturalize_note) {
     // Naturalize note.
     accidentals.naturalize()
+  } else if (ev.key == action_conf.toggle_metarelations) {
+    // Toggle meta-relation visibility
+    newApp.ui.layersMenu.metaRelation.toggle()
   } else if (ev.key == navigation_conf.jump_to_next_bookmark) {
     // Jump to previous bookmark in current context.
     bookmarks.goTo(-1)

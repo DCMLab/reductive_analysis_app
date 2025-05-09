@@ -26,11 +26,6 @@ export default class MetaRelation {
     this.off = document.getElementById('meta-relation-off')
 
     this.visible = false
-
-    // Register this instance to make it accessible globally
-    if (!window.metaRelationInstance) {
-      window.metaRelationInstance = this
-    }
   }
 
   draw() {
@@ -59,5 +54,9 @@ export default class MetaRelation {
 
     this[hasMetaRelations ? 'on' : 'off'].checked = true
     this.visible = hasMetaRelations
+  }
+
+  toggle(layer = getCurrentDrawContext()) {
+    this.visible == true ? this.off.click() : this.on.click()
   }
 }

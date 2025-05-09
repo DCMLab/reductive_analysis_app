@@ -28,6 +28,7 @@ export const action_conf = {
   naturalize_note: 'Z',
   copy: 'C',
   paste: 'V',
+  toggle_metarelations: 'm',
 }
 
 // Navigation shortcuts.

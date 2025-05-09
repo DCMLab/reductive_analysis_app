@@ -26,11 +26,6 @@ export default class MetaRelation {
     this.off = document.getElementById('meta-relation-off')
 
     this.visible = false
-
-    // Register this instance to make it accessible globally
-    if (!window.metaRelationInstance) {
-      window.metaRelationInstance = this
-    }
   }
 
   draw() {

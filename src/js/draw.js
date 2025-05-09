@@ -444,7 +444,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
           }
         })
 
-        window.metaRelationInstance?.updateToggles()
+        newApp.ui.layersMenu.metaRelation?.updateToggles()
       })
 
       // Add the circle to the target

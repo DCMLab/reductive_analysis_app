@@ -60,4 +60,8 @@ export default class MetaRelation {
     this[hasMetaRelations ? 'on' : 'off'].checked = true
     this.visible = hasMetaRelations
   }
+
+  toggle(layer = getCurrentDrawContext()) {
+    this.visible == true ? this.off.click() : this.on.click()
+  }
 }

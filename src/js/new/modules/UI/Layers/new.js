@@ -24,7 +24,7 @@ export default class LayerControls {
   }
 
   onChange({ target }) {
-    console.log(target)
+    // console.log(target)
     // if (target.name == 'relations-tree') {
     //   this.visible = target.value == 'on'
     //   this.draw()

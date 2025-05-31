@@ -301,8 +301,8 @@ export function next_measure(m) {
 // Note coordinates are off center by a bit
 export function note_coords(note) {
   // Computes useful coordinates of a note
-  return [note.getElementsByTagName('use')[0].x.animVal.value + 100,
-    note.getElementsByTagName('use')[0].y.animVal.value]
+  return [note.getElementsByClassName('notehead')[0].getBBox().x + 100,
+    note.getElementsByClassName('notehead')[0].getBBox().y]
 }
 
 function get_by_oldid_elem(doc, elem) { return get_by_id(doc, get_id(elem)) }

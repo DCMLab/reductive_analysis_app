@@ -1,3 +1,4 @@
+@use "sass:math";
 @mixin all-but($num) {
   @if ($num == 1 or $num == first) {
     &:not(:first-child) {
@@ -9,7 +10,7 @@
     }
   } @else if ($num < 0) {
     // Negative values interpreted as nth-last-child
-    $abs: abs($num);
+    $abs: math.abs($num);
     &:not(:nth-last-child(#{$abs})) {
       @content;
     }

@@ -1,3 +1,5 @@
+@use "../../utility/easings";
+
 .fly-out__hr {
   flex: 1 0 100%;
   margin: 2rem 0;
@@ -25,7 +27,7 @@
   > :not(:hover):not(:focus),
   > :disabled {
     opacity: .4;
-    transition: opacity .2s $in-out-quad;
+    transition: opacity .2s easings.$in-out-quad;
   }
 }
 

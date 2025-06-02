@@ -1,3 +1,6 @@
+@use "../../utility/easings";
+@use "../../variables/colors";
+
 .btn {
   padding: 1rem 1.5rem;
   display: inline-flex;
@@ -11,7 +14,7 @@
   border-radius: var(--btn-radius, var(--btn-default-radius, 0));
   color: var(--btn-color, primary);
 
-  transition: var(--btn-transition, .1s) $in-out-quad;
+  transition: var(--btn-transition, .1s) easings.$in-out-quad;
   transition-property: background-color, border-color, color;
 
   &:hover,
@@ -26,13 +29,13 @@
   }
 
   &:active {
-    --btn-bg: #{$gallery};
+    --btn-bg: #{colors.$gallery};
     --btn-transition: 0s;
   }
 }
 
 .btn--hollow {
-  --btn-border: #{$alto};
+  --btn-border: #{colors.$alto};
   --btn-transition: .4s;
   --btn-hover-transition: 0s;
 }
@@ -44,14 +47,14 @@
 
   &:hover,
   &:focus {
-    --btn-bg: #{$lacquered-licorice};
-    --btn-border: #{$lacquered-licorice};
+    --btn-bg: #{colors.$lacquered-licorice};
+    --btn-border: #{colors.$lacquered-licorice};
     --btn-color: var(--bg);
   }
 
   &:active {
-    --btn-bg: #{$silver};
-    --btn-border: #{$silver};
+    --btn-bg: #{colors.$silver};
+    --btn-border: #{colors.$silver};
   }
 }
 

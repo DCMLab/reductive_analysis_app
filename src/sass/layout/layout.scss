@@ -1,12 +1,12 @@
-@import 'ui';
-@import 'menu-and-filters';
-@import 'history-and-selection';
-@import 'selection-legend-and-zoom';
-@import 'score-navigation';
-@import 'metadata-and-note-toggle';
-@import 'player-and-score-settings';
-@import 'layers-menu';
-@import 'ui/relations';
+@use 'ui';
+@use 'menu-and-filters';
+@use 'history-and-selection';
+@use 'selection-legend-and-zoom';
+@use 'score-navigation';
+@use 'metadata-and-note-toggle';
+@use 'player-and-score-settings';
+@use 'layers-menu';
+@use 'ui/relations';
 
 .hidden-when-has-1-layer {
   html.has-1-layer & {

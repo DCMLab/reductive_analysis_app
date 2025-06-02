@@ -1,3 +1,6 @@
+@use "../../abstract/mixins/all-but";
+@use "../../variables/colors";
+
 .fly-out--relations {
   max-width: 37rem;
 
@@ -49,13 +52,13 @@
 // Button collapsing the menu.
 .fly-out__compact {
   --btn-radius: 1rem 1rem 0rem 0rem;
-  --primary: #{$moonless-night};
+  --primary: #{colors.$moonless-night};
 
   margin-right: 1.5rem;
 }
 
 .fly-out__relationsBtnsCtn {
-  @include all-but(1) {
+  @include all-but.all-but(1) {
     margin-top: 3rem;
     padding-top: 2rem;
 

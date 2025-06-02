@@ -1,3 +1,5 @@
+@use "../utility/easings";
+
 .hidden-when-score-settings-not-visible {
   html:not(.ui-score-settings-visible) & {
     display: none;
@@ -49,7 +51,7 @@
 
 .more-options__dots {
   letter-spacing: var(--dot-gap, .01em);
-  transition: letter-spacing .3s $out-quad;
+  transition: letter-spacing .3s easings.$out-quad;
 }
 
 .score-setting {

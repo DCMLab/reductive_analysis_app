@@ -1,3 +1,6 @@
+@use "../../utility/easings";
+@use "../../variables/colors";
+
 .layer {
 
   &::before {
@@ -7,10 +10,10 @@
     z-index: -1;
     inset: 0;
 
-    background: $gallery;
+    background: colors.$gallery;
     pointer-events: none;
 
-    transition: opacity .5s $in-out-quad;
+    transition: opacity .5s easings.$in-out-quad;
   }
 }
 

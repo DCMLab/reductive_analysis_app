@@ -1,7 +1,6 @@
 // Abstract (mixins and functions)
 @use 'utility/_easings' as *;
 @use 'utility/hsl' as *;
-@use 'sass:string';
 @use 'abstract/abstract' as *;
 
 // Variables
@@ -23,12 +22,12 @@
 @use 'actions/actions' as *;
 
 // Pages
-@import 'layout/layout';
-@import 'pages/start-screen';
-@import 'score/score';
+@use 'layout/layout';
+@use 'pages/start-screen';
+@use 'score/score';
 
-@import 'custom-normalize';
-@import 'base';
+@use 'custom-normalize';
+@use 'base';
 
 // Components
-@import 'components/components';
+@use 'components/components';

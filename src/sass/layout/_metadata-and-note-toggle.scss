@@ -1,3 +1,5 @@
+@use "../variables/colors";
+
 .metadata-and-note-toggle {
   position: absolute;
   bottom: 0;
@@ -21,7 +23,7 @@
   }
 
   &:active {
-    --btn-bg: #{$gallery};
+    --btn-bg: #{colors.$gallery};
     --btn-transition: 0s;
   }
 }

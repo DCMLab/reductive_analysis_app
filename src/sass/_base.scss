@@ -1,12 +1,16 @@
+@use "abstract/mixins/txt/aliasing";
+@use "variables/colors";
+@use "variables/typo";
+
 :root {
-  --black: #{$black};
-  --white: #{$white};
+  --black: #{colors.$black};
+  --white: #{colors.$white};
 
   --primary: var(--black);
   --bg: var(--white);
 
-  --accent: #{$san-marino};
-  --accent-alt: #{$electric-violet};
+  --accent: #{colors.$san-marino};
+  --accent-alt: #{colors.$electric-violet};
 
   --btn-default-radius: 1rem;
 
@@ -19,13 +23,13 @@
  * @todo: Check how to inject data using Webpack so that these classes are
  * automatically generated.
  */
-  --relation-1: #{$san-marino};
-  --relation-2: #{$seance};
-  --relation-3: #{$pomegranate};
-  --relation-4: #{$persian-green};
-  --relation-5: #{$sushi};
-  --relation-6: #{$amber};
-  --relation-7: #{$orange-peel};
+  --relation-1: #{colors.$san-marino};
+  --relation-2: #{colors.$seance};
+  --relation-3: #{colors.$pomegranate};
+  --relation-4: #{colors.$persian-green};
+  --relation-5: #{colors.$sushi};
+  --relation-6: #{colors.$amber};
+  --relation-7: #{colors.$orange-peel};
 
   @supports (top: env(safe-area-inset-top, 0)) {
     --safe-area-top: env(safe-area-inset-top, 0);
@@ -63,15 +67,15 @@
 html {
   size: 100%;
 
-  font: 500 50% / #{$body-lh} $body-font-static;
-  @include font-smoothing(on);
+  font: 500 50% / #{typo.$body-lh} typo.$body-font-static;
+  @include aliasing.font-smoothing(on);
 
   background: var(--bg);
   color: var(--primary);
 
   // Use variable font if supported.
   @supports (font-variation-settings: normal) {
-    font-family: $body-font;
+    font-family: typo.$body-font;
   }
   & {
     font-size: 62.5%;
@@ -86,7 +90,7 @@ body {
   size: 100%;
   min-height: 100%;
 
-  font-size: $body-size;
+  font-size: typo.$body-size;
 
   @media (--mobile) {
     // overflow-x: hidden;

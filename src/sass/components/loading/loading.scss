@@ -1,3 +1,5 @@
+@use "../../utility/easings";
+
 @keyframes loading-spinner {
   100% { transform: rotate(1turn); }
 }
@@ -47,7 +49,7 @@
 
   transform-origin: 50% calc(var(--spinner-size) / 2);
 
-  animation: loading-disc 3.5s infinite $in-out-quart calc(var(--spinner-bullet-index) * .17s);
+  animation: loading-disc 3.5s infinite easings.$in-out-quart calc(var(--spinner-bullet-index) * .17s);
 
   // Bullet index used for staggering of animation delay, opacity and size.
   @for $bullet-index from 1 through 5 {

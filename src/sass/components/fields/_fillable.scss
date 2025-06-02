@@ -1,3 +1,5 @@
+@use "../../variables/colors";
+
 .fillable {
   display: grid;
   gap: 1rem;
@@ -42,7 +44,7 @@
   border-radius: 1rem;
 
   &:not(:focus):not(:hover) {
-    --fillable-border: #{$lacquered-licorice};
+    --fillable-border: #{colors.$lacquered-licorice};
   }
 
   &:focus {

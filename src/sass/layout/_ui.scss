@@ -1,3 +1,5 @@
+@use "../utility/easings";
+
 .ui {
   position: fixed;
   z-index: 1;
@@ -5,7 +7,7 @@
 
   pointer-events: none;
 
-  transition: .4s $in-out-quad;
+  transition: .4s easings.$in-out-quad;
   transition-property: opacity, visibility;
 
   // Hide UI while app is loading.

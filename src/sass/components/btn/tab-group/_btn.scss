@@ -1,3 +1,5 @@
+@use "../../../variables/colors";
+
 // A button belonging to a tab group.
 
 .btn-tabs__btn {
@@ -26,15 +28,15 @@
   // Colors for borders, tabs separators and disabled state.
 
   &:not(.btn--plain) {
-    --btn-border: #{$alto};
-    --tab-separator: #{$alto};
+    --btn-border: #{colors.$alto};
+    --tab-separator: #{colors.$alto};
   }
 
   &.btn--plain {
-    --tab-separator: #{$lacquered-licorice};
+    --tab-separator: #{colors.$lacquered-licorice};
   }
 
   &:disabled {
-    color: $alto;
+    color: colors.$alto;
   }
 }

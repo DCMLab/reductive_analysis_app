@@ -1,12 +1,15 @@
+@use "../../variables/colors";
+@use "../../variables/typo";
+
 .btn--relation {
-  --btn-border: var(--relation, #{$alto});
+  --btn-border: var(--relation, #{colors.$alto});
 
   &.btn--selected,
   &:hover,
   &:focus {
     --btn-bg: var(--relation);
     --btn-color: var(--white);
-    --btn-border: var(--relation, #{$alto});
+    --btn-border: var(--relation, #{colors.$alto});
   }
 }
 
@@ -30,5 +33,5 @@
 }
 
 .metarelation-text {
-  font-family: $body-font;
+  font-family: typo.$body-font;
 }

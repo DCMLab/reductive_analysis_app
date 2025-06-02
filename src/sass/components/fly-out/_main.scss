@@ -1,15 +1,19 @@
+@use "../../utility/easings";
+@use "../../variables/colors";
+@use "sass:string";
+
 .fly-out {
   position: relative;
   display: flow-root; // prevent margin collapse on first children
   padding-block-end: var(--fly-out-inner-space, 2rem);
 
-  background: var(--fly-out-bg, $cod-gray);
+  background: var(--fly-out-bg, colors.$cod-gray);
   border-radius: 1rem;
   color: var(--primary);
 
   transition:
     var(--fly-out-transition-duration, .2s)
-    var(--fly-out-transition-easing, $in-out-quad)
+    var(--fly-out-transition-easing, easings.$in-out-quad)
     var(--fly-out-transition-delay, 0s);
   transition-property:
     var(--fly-out-transition-properties, opacity, visibility);
@@ -76,7 +80,7 @@
 }
 
 .fly-out--dark {
-  --bg: #{$cod-gray};
+  --bg: #{colors.$cod-gray};
   --primary: var(--white);
   --fly-out-bg: var(--bg);
 }

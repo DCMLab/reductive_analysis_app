@@ -1,3 +1,6 @@
+@use "../utility/easings";
+@use "../variables/colors";
+
 .layers-menu {
   --fly-out-inner-space: 2rem;
   max-width: 36rem; // design: :26rem, but design scale is lower
@@ -6,10 +9,10 @@
   top: 12rem;
   left: 0;
 
-  transition: transform .4s $in-out-quad;
+  transition: transform .4s easings.$in-out-quad;
 
   &.layers-menu--visible {
-    transition: transform .3s $out-cubic;
+    transition: transform .3s easings.$out-cubic;
 
     .hide-when-visible {
       display: none;
@@ -18,7 +21,7 @@
 
   &:not(.layers-menu--visible) {
     transform: translateX(calc(-100% - 2rem)); // -2rem for container (.ui) offset
-    transition: transform .3s $out-back;
+    transition: transform .3s easings.$out-back;
 
     .hide-when-not-visible {
       display: none;
@@ -64,11 +67,11 @@
 
   text-align: center;
 
-  --layers-nav-bg: #{$alto};
+  --layers-nav-bg: #{colors.$alto};
   background: var(--layers-nav-bg);
   border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
 
-  transition: transform 1s $in-out-quad;
+  transition: transform 1s easings.$in-out-quad;
   transform: translateX(calc(-100% * var(--layers-nav-hidden, 1)));
 }
 
@@ -89,12 +92,12 @@
 
   &:hover,
   &:focus {
-    --btn-bg: #{$gallery};
-    --btn-border: #{$gallery};
+    --btn-bg: #{colors.$gallery};
+    --btn-border: #{colors.$gallery};
   }
 
   &:disabled {
-    --btn-color: #{$silver};
+    --btn-color: #{colors.$silver};
   }
 }
 
@@ -118,5 +121,5 @@
   z-index: 2;
 
   background: var(--bg);
-  border-bottom: .1rem solid $lacquered-licorice;
+  border-bottom: .1rem solid colors.$lacquered-licorice;
 }

@@ -1,3 +1,5 @@
+@use "../utility/easings";
+
 // 688px * 640px
 @custom-media --start-screen-more-padding (width > 43em) and (height > 40em);
 
@@ -36,7 +38,7 @@
 
 .start-screen--out {
   opacity: 0;
-  transition: opacity .3s $in-quad;
+  transition: opacity .3s easings.$in-quad;
 }
 
 // Title, instructions, file picker
@@ -72,8 +74,8 @@
   margin-top: 6rem;
 
   transition:
-    opacity .2s $in-out-quad .1s,
-    transform .3s $out-back .1s;
+    opacity .2s easings.$in-out-quad .1s,
+    transform .3s easings.$out-back .1s;
 
   html:not(.ready) & {
     opacity: 0;

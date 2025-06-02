@@ -1,4 +1,5 @@
 // Abstract (mixins and functions)
+@use 'easings.scss' as *;
 @import 'family.scss';
 @import 'hsl.scss';
 @import 'v.scss';
@@ -35,3 +36,4 @@
 @import 'layout/layout';
 @import 'pages/start-screen';
 @import 'score/score';
+

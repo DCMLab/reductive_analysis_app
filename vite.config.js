@@ -56,7 +56,7 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
-
+  
   plugins: [
     license({
       sourcemap: true,

@@ -1,6 +1,5 @@
 const postcssPresetEnv = require('postcss-preset-env')
 const postcssSafeArea = require('postcss-safe-area')
-const postcssShortSize = require('postcss-short-size')
 
 /**
  * Experimental plugin the CSS `:has` pseudo-selector. It requires to run the
@@ -14,7 +13,7 @@ const postcssShortSize = require('postcss-short-size')
  * - https://developer.mozilla.org/en-US/docs/Web/CSS/:has
  * - https://github.com/csstools/postcss-plugins/tree/main/experimental
  */
-const cssHasPseudoExperimental = require('@csstools/css-has-pseudo-experimental')
+const cssHasPseudo = require('css-has-pseudo')
 const cssNano = require('cssnano')
 
 const postcssPresetEnvOptions = {
@@ -35,10 +34,9 @@ const cssNanoOptions = { preset: ['default', { colormin: false }] }
 
 module.exports = ({ options, env }) => ({
   plugins: [
-    postcssShortSize(),
     postcssSafeArea(),
     postcssPresetEnv(postcssPresetEnvOptions),
-    cssHasPseudoExperimental(),
+    cssHasPseudo(),
     env === 'production' ? cssNano(cssNanoOptions) : false,
   ],
 })

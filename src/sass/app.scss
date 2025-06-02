@@ -1,9 +1,8 @@
 // Abstract (mixins and functions)
 @use 'easings.scss' as *;
 @use 'sass:string';
-@use 'family.scss' as *;
 @use 'hsl.scss' as *;
-@import 'abstract/abstract';
+@use 'abstract/abstract' as *;
 
 // Variables
 @import 'variables/variables';

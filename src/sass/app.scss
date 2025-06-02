@@ -1,7 +1,7 @@
 // Abstract (mixins and functions)
 @use 'utility/_easings' as *;
+@use 'utility/hsl' as *;
 @use 'sass:string';
-@use 'hsl.scss' as *;
 @use 'abstract/abstract' as *;
 
 // Variables

@@ -15,7 +15,6 @@ class LayersMenu {
   #visible = false
 
   constructor() {
-    console.log('LayersMenu: initializing…')
     this.ctn = document.getElementById('layers-menu')
     this.toggleBtn = document.getElementById('layers-menu-toggle')
 
@@ -26,7 +25,6 @@ class LayersMenu {
 
     this.$visibleLayer = document.getElementById('visible-layer')
     this.$currentLayer = document.getElementById('current-layer')
-    console.log('LayersMenu: found', this.$currentLayer, 'layers')
 
     this.new = new LayerControls(this)
     this.reductions = new Reductions(this)

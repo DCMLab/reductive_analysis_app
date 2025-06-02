@@ -1,5 +1,6 @@
 // Abstract (mixins and functions)
 @use 'easings.scss' as *;
+@use 'sass:string';
 @import 'family.scss';
 @import 'hsl.scss';
 @import 'v.scss';

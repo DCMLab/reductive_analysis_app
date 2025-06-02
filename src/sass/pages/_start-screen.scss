@@ -9,7 +9,7 @@
   inset: 0;
 
   --start-screen-padding: 2rem;
-  padding: v(start-screen-padding);
+  padding: var(--start-screen-padding);
 
   display: grid;
   grid-template-rows: 1fr auto;
@@ -20,7 +20,7 @@
   text-align: center;
   font-size: 1.6rem;
 
-  background: v(bg);
+  background: var(--bg);
 
   @supports (top: #{'max(0px)'}) {
     padding: #{'max(var(--safe-top), var(--start-screen-padding))'}

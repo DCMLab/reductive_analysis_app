@@ -47,7 +47,7 @@
   size: 4rem;
   padding: 0;
 
-  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+  border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
 
   &:hover,
   &:focus {
@@ -65,8 +65,8 @@
   text-align: center;
 
   --layers-nav-bg: #{$alto};
-  background: v(layers-nav-bg);
-  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+  background: var(--layers-nav-bg);
+  border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
 
   transition: transform 1s $in-out-quad;
   transform: translateX(calc(-100% * var(--layers-nav-hidden, 1)));
@@ -78,13 +78,13 @@
   --btn-radius: none;
 
   &:first-of-type {
-    border-top-right-radius: v(btn-default-radius);
+    border-top-right-radius: var(--btn-default-radius);
     border-bottom: none;
   }
 
   &:last-of-type {
     border-top: none;
-    border-bottom-right-radius: v(btn-default-radius);
+    border-bottom-right-radius: var(--btn-default-radius);
   }
 
   &:hover,
@@ -117,6 +117,6 @@
   top: 0;
   z-index: 2;
 
-  background: v(bg);
+  background: var(--bg);
   border-bottom: .1rem solid $lacquered-licorice;
 }

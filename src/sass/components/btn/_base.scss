@@ -6,12 +6,12 @@
 
   white-space: nowrap;
 
-  background: v(btn-bg, bg, transparent);
-  border: solid .2rem v(btn-border, inherit);
-  border-radius: v(btn-radius, btn-default-radius, 0);
-  color: v(btn-color, primary);
+  background: var(--btn-bg, var(--bg, transparent));
+  border: solid .2rem var(--btn-border, inherit);
+  border-radius: var(--btn-radius, var(--btn-default-radius, 0));
+  color: var(--btn-color, primary);
 
-  transition: v(btn-transition, .1s) $in-out-quad;
+  transition: var(--btn-transition, .1s) $in-out-quad;
   transition-property: background-color, border-color, color;
 
   &:hover,
@@ -22,7 +22,7 @@
 
     outline: none;
 
-    transition-duration: v(btn-hover-transition, btn-transition, 0s);
+    transition-duration: var(--btn-hover-transition, var(--btn-transition, 0s));
   }
 
   &:active {

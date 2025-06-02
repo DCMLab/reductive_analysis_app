@@ -48,7 +48,7 @@
 }
 
 .more-options__dots {
-  letter-spacing: v(dot-gap, .01em);
+  letter-spacing: var(--dot-gap, .01em);
   transition: letter-spacing .3s $out-quad;
 }
 

@@ -48,8 +48,8 @@
 }
 
 ::selection {
-  background: v(accent);
-  color: v(bg);
+  background: var(--accent);
+  color: var(--bg)
 }
 
 // @TODO: refine focus (likely by element)
@@ -66,17 +66,16 @@ html {
   font: 500 50% / #{$body-lh} $body-font-static;
   @include font-smoothing(on);
 
-  background: v(bg);
-  color: v(primary);
+  background: var(--bg);
+  color: var(--primary);
 
   // Use variable font if supported.
   @supports (font-variation-settings: normal) {
     font-family: $body-font;
   }
-
-  // @media (--tablet-9) {
+  & {
     font-size: 62.5%;
-  // }
+  }
 
   @media (--motion) {
     scroll-behavior: smooth;
@@ -157,14 +156,14 @@ select {
 
   // Autofill colors hack
   &:-webkit-autofill {
-    -webkit-text-fill-color: v(primary);
+    -webkit-text-fill-color: var(--primary);
     background-color: transparent;
     box-shadow: 0 0 0px 100px transparent inset;
 
     transition: background-color 500000s ease-in-out 500000s;
 
     &::selection {
-      -webkit-text-fill-color: v(accent);
+      -webkit-text-fill-color: var(--accent);
     }
   }
 }
@@ -175,7 +174,7 @@ button {
 
   background: transparent;
   border: none;
-  color: v(primary);
+  color: var(--primary);
 }
 
 textarea {
@@ -210,7 +209,7 @@ abbr[title] {
 /* LINKS */
 
 a {
-  color: v(primary);
+  color: var(--primary);
 
   * { pointer-events: none; }
 }

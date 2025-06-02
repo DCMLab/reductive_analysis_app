@@ -23,7 +23,7 @@
   transform: scaleX(v(progress, 0));
   transform-origin: left;
 
-  background: v(accent);
+  background: var(--accent);
 
   // transition: .3s $in-out-quad;
   // transition-property: opacity, transform;

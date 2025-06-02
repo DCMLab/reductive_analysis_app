@@ -11,7 +11,7 @@
   flex-wrap: wrap;
   row-gap: .1rem;
 
-  color: v(bg);
+  color: var(--bg);
 }
 
 .player--paused,

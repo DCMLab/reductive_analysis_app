@@ -437,11 +437,11 @@ export function drag_selector_installer(svg_elem) {
     autoScrollSpeed: 0.0001,
   })
 
-  drag_selector.subscribe('dragstart', ({ items, event, isDragging }) => {
+  drag_selector.subscribe('Ds:start', ({ items, event, isDragging }) => {
     $('.ds-selector-area').show()
   })
 
-  drag_selector.subscribe('dragmove', ({ items, event, isDragging }) => {
+  drag_selector.subscribe('Ds:update', ({ items, event, isDragging }) => {
     // Do not drag-select if a note is being added
     if (placing_note == '') {
       if ($('.ds-selector').height() > 10 || $('.ds-selector').width() > 10) {
@@ -485,7 +485,7 @@ export function drag_selector_installer(svg_elem) {
     }
   })
 
-  drag_selector.subscribe('callback', ({ items, event, isDragging }) => {
+  drag_selector.subscribe('Ds:end', ({ items, event, isDragging }) => {
     document.getElementById('layers').style.cursor = 'default'
     $('.ds-selector-area').hide()
   })

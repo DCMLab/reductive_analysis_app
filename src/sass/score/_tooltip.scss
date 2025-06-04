@@ -2,7 +2,7 @@
   position: fixed;
   top: 2rem;
   left: 2rem;
-  z-index: 2;
+  z-index: 1000;
 
   opacity: var(--tooltip-opacity, 0);
 

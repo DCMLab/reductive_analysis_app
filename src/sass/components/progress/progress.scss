@@ -22,7 +22,7 @@
   position: absolute;
   inset: 0;
 
-  transform: scaleX(v(progress, 0));
+  transform: scaleX(var(--progress, 0));
   transform-origin: left;
 
   background: var(--accent);

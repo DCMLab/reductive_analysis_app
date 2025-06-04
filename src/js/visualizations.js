@@ -147,6 +147,7 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
       elem_in_score.classList.add('relationhover')
       elem_in_score.onmouseover()
     }
+    
     elem.onmouseout = function () {
       elem_in_score.classList.remove('relationhover')
       elem_in_score.onmouseout()

@@ -370,6 +370,8 @@ export function start_placing_note() {
 
 export function stop_placing_note() {
   var placing_note = getPlacingNote()
+  if (placing_note == '')
+    return
   let elem = document.getElementById(placing_note)
   if (elem)
     elem.parentElement.removeChild(elem)

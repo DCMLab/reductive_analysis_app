@@ -203,6 +203,7 @@ export function tspan(text, p, dy, dx = 0) {
  * Probably could be replaced by cycling CSS `z-index`.
  */
 export function flip_to_bg(elem) {
+  if (!elem || !elem.parentElement) return
   elem.parentElement.prepend(elem)
 }
 

@@ -156,8 +156,8 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
    */
   // Are we running with type-specific shades?
   toggle_shade(group)
-  if (!newApp.ui.scoreSettings.brightShades)
-    toggle_shade(elem)
+  // if (!newApp.ui.scoreSettings.brightShades)
+  // toggle_shade(elem)
 
   group.addEventListener('wheel', handleFlip, captureEvent)
 

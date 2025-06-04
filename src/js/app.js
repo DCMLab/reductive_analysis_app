@@ -5,9 +5,9 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import '/public/css/select2.min.css'
-import '/public/css/style.css'
 import '/sass/app.scss'
+import '/css/style.css'
+import '/css/select2.min.css'
 
 import $ from 'jquery'
 
@@ -74,7 +74,7 @@ import { setAttributes } from './new/utils/dom'
  * - https://developer.mozilla.org/en-US/docs/Web/CSS/:has
  * - https://github.com/csstools/postcss-plugins/tree/main/experimental
  */
-import cssHasPseudo from '@csstools/css-has-pseudo-experimental/browser'
+import cssHasPseudo from 'css-has-pseudo'
 // const cssHasPseudo = require('css-has-pseudo/browser') // defect
 cssHasPseudo(document)
 

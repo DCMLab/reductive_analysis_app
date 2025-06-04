@@ -1,4 +1,3 @@
-@import 'animation-split';
-@import 'transition-split';
-
-@import 'no-transition';
+@use 'animation-split' as *;
+@use 'transition-split' as *;
+@use 'no-transition' as *;

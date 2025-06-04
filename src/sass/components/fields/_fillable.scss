@@ -1,3 +1,5 @@
+@use "../../variables/colors";
+
 .fillable {
   display: grid;
   gap: 1rem;
@@ -38,11 +40,11 @@
 
   font-weight: inherit;
 
-  border: solid .2rem v(fillable-border, primary, null);
+  border: solid .2rem var(--fillable-border, var(--primary, null));
   border-radius: 1rem;
 
   &:not(:focus):not(:hover) {
-    --fillable-border: #{$lacquered-licorice};
+    --fillable-border: #{colors.$lacquered-licorice};
   }
 
   &:focus {

@@ -1,0 +1,8 @@
+
+@function hsl($args...) {
+  @return #{'hsl(#{$args})'};
+}
+
+@function hsla($args...) {
+  @return hsl($args...);
+}

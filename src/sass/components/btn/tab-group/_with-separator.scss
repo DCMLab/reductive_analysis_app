@@ -1,3 +1,6 @@
+@use "../../../abstract/mixins/all-but";
+@use "../../../variables/colors";
+
 // Modifier for a group of tab buttons with a separator between them.
 
 .btn-tabs--with-separator {
@@ -16,7 +19,7 @@
       // Fade out other buttons.
 
       &:not(:hover):not(:focus) {
-        --btn-color: #{$alto};
+        --btn-color: #{colors.$alto};
       }
 
       /**
@@ -46,16 +49,16 @@
 
     // Separator between buttons.
 
-    @include all-but(1) {
+    @include all-but.all-but(1) {
       &::before {
-        content: v(with-separator, unset);
-        size: .2rem v(tab-separator-height, 2rem);
+        content: var(--with-separator, unset);
+        size: .2rem var(--tab-separator-height, 2rem);
         position: absolute;
         left: -.1rem;
 
         pointer-events: none;
 
-        background: v(tab-separator, unset);
+        background: var(--tab-separator, unset);
         border-radius: .1rem;
       }
     }

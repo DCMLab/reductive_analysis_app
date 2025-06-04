@@ -1,16 +1,19 @@
-.fly-out {
-  position: relative;
-  display: flow-root; // prevent margin collapse on first children
-  padding-block-end: v(fly-out-inner-space, 2rem);
+@use "../../utility/easings";
+@use "../../variables/colors";
+@use "sass:string";
 
-  background: v(fly-out-bg, $cod-gray);
+.fly-out {
+  display: flow-root; // prevent margin collapse on first children
+  padding-block-end: var(--fly-out-inner-space, 2rem);
+
+  background: var(--fly-out-bg, colors.$cod-gray);
   border-radius: 1rem;
-  color: v(primary);
+  color: var(--primary);
 
   transition:
-    v(fly-out-transition-duration, .2s)
-    v(fly-out-transition-easing, $in-out-quad)
-    v(fly-out-transition-delay, 0s);
+    var(--fly-out-transition-duration, .2s)
+    var(--fly-out-transition-easing, easings.$in-out-quad)
+    var(--fly-out-transition-delay, 0s);
   transition-property:
     var(--fly-out-transition-properties, opacity, visibility);
 
@@ -29,23 +32,23 @@
  }
 
 .fly-out__inner {
-  margin-block-start: v(fly-out-inner-space, 2rem);
+  margin-block-start: var(--fly-out-inner-space, 2rem);
   margin-inline-end: calc(var(--fly-out-half-inner-space) - var(--scrollbar-margin-adjust));
   padding-block-end: 0;
   padding-inline:
-    v(fly-out-inner-space, 2rem)
+    var(--fly-out-inner-space, 2rem)
     calc(var(--fly-out-half-inner-space) + var(--scrollbar-padding-adjust));
 
   // Thanks for the parsing, SASS… -_-
   // max-height: unquote('min(calc(100vh - 4rem), 58rem)'); // 4rem = space around UI.
-  max-height: unquote('min(var(--fly-out-max-height), calc(100vh - 4rem), 50rem)'); // 4rem = space around UI.
+  max-height: string.unquote('min(var(--fly-out-max-height), calc(100vh - 4rem), 50rem)'); // 4rem = space around UI.
 
   overflow: hidden auto;
 
   // Scrollbar (standard)
 
   scrollbar-width: thin;
-  scrollbar-color: v(primary) hsl(0, 0%, 100%, .1);
+  scrollbar-color: var(--primary) hsl(0, 0%, 100%, .1);
 
   // Temp awaiting for JS computation of scrollbarWidth.
   @supports not (scrollbar-width: thin) {
@@ -61,7 +64,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: v(primary);
+    background: var(--primary);
     border-radius: .2rem;
   }
 }
@@ -76,7 +79,7 @@
 }
 
 .fly-out--dark {
-  --bg: #{$cod-gray};
+  --bg: #{colors.$cod-gray};
   --primary: var(--white);
   --fly-out-bg: var(--bg);
 }

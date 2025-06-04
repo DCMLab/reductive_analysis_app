@@ -1,7 +1,7 @@
-@import 'family.scss/family';
-@import 'js/js';
-@import 'motion/motion';
-@import 'mq/mq';
-@import 'size/size';
-@import 'supports/supports';
-@import 'txt/txt';
+@use 'js/js';
+@use 'motion/motion';
+@use 'mq/mq';
+@use 'size/size';
+@use 'supports/supports';
+@use 'txt/txt';
+@use '_all-but';

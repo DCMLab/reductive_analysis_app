@@ -3,8 +3,8 @@ process.env.SLOWMO = true
 
 module.exports = {
   server: {
-    command: './node_modules/.bin/lite-server',
-    port: 8000,
+    command: 'npm run preview',
+    port: 4173,
     launchTimeout: 30000
   },
   launch: {

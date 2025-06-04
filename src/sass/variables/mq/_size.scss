@@ -10,5 +10,21 @@ $global-h: (
   'tablet-9': 75em, // 1200px
 );
 
-@include --w($global-w);
-@include --h($global-h);
+@mixin apply-widths($map) {
+  @each $key, $value in $map {
+    .w-#{$key} {
+      width: $value;
+    }
+  }
+}
+
+@mixin apply-heights($map) {
+  @each $key, $value in $map {
+    .h-#{$key} {
+      height: $value;
+    }
+  }
+}
+
+@include apply-widths($global-w);
+@include apply-heights($global-h);

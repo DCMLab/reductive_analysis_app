@@ -2,11 +2,11 @@
   position: fixed;
   top: 2rem;
   left: 2rem;
-  z-index: 2;
+  z-index: 1000;
 
   opacity: var(--tooltip-opacity, 0);
 
-  transform: translate(calc(v(mouse-x, 0) * 1px), calc(v(mouse-y, 0) * 1px));
+  transform: translate(calc(var(--mouse-x, 0) * 1px), calc(var(--mouse-y, 0) * 1px));
   --fly-out-transition-properties: none;
 }
 

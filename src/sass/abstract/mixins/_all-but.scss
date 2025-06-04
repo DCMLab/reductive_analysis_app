@@ -1,0 +1,22 @@
+@use "sass:math";
+@mixin all-but($num) {
+  @if ($num == 1 or $num == first) {
+    &:not(:first-child) {
+      @content;
+    }
+  } @else if ($num == last or $num == -1) {
+    &:not(:last-child) {
+      @content;
+    }
+  } @else if ($num < 0) {
+    // Negative values interpreted as nth-last-child
+    $abs: math.abs($num);
+    &:not(:nth-last-child(#{$abs})) {
+      @content;
+    }
+  } @else {
+    &:not(:nth-child(#{$num})) {
+      @content;
+    }
+  }
+}

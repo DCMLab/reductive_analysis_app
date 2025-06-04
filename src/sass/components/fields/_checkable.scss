@@ -1,9 +1,13 @@
+@use "../../abstract/mixins/supports/supports";
+@use "../../utility/easings";
+@use "../../variables/colors";
+
 .checkable {
   display: inline-flex;
   align-items: baseline;
   gap: 1rem;
 
-  color: v(primary);
+  color: var(--primary);
 
   @media (--hidpi) {
     font-size: 1.3rem; // only renders fine on high pixel density screens
@@ -24,18 +28,18 @@
     + .checkbox {
       .checkable__icon {
         transform: scale(0);
-        transition-timing-function: $in-quint;
+        transition-timing-function: easings.$in-quint;
       }
     }
   }
 
-  @include supports-focus-visible {
+  @include supports.supports-focus-visible {
     &:focus-visible {
       + .checkbox::before { opacity: 1; }
     }
   }
 
-  @include supports-focus-visible(false) {
+  @include supports.supports-focus-visible(false) {
     &:focus {
       + .checkbox::before { opacity: 1; }
     }
@@ -57,8 +61,8 @@
 
   pointer-events: none;
 
-  background: v(relation, checkbox, rgba(245, 245, 245, 0.05));
-  border-radius: v(checkbox-radius);
+  background: var(--relation, var(--checkbox, rgba(245, 245, 245, 0.05)));
+  border-radius: var(--checkbox-radius);
 
   // Outer border
   &::before {
@@ -66,8 +70,8 @@
     position: absolute;
     inset: 0;
 
-    background: v(primary);
-    border-radius: v(checkbox-radius);
+    background: var(--primary);
+    border-radius: var(--checkbox-radius);
     opacity: .1;
   }
 
@@ -77,7 +81,7 @@
     position: absolute;
     inset: calc(var(--checkbox-radius) / 2);
 
-    background: v(relation, checkbox, $young-night);
+    background: var(--relation, var(--checkbox, colors.$young-night));
     border-radius: calc(var(--checkbox-radius) / 2);
   }
 }
@@ -86,5 +90,5 @@
   z-index: 1;
   margin-left: 0.1rem;
 
-  transition: .3s transform $out-back;
+  transition: .3s transform easings.$out-back;
 }

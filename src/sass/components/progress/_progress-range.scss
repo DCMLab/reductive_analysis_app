@@ -1,3 +1,5 @@
+@use "../../variables/colors";
+
 .progress-range {
   --progress: 0;
   --progress-percent: var(--progress) * 100%;
@@ -9,9 +11,9 @@
   pointer-events: none;
 
   // track
-  height: v(progress-track-h);
-  background: $lacquered-licorice;
-  border-radius: v(progress-track-radius);
+  height: var(--progress-track-h);
+  background: colors.$lacquered-licorice;
+  border-radius: var(--progress-track-radius);
 
   // Keep interactivity on <input type="range"> when it’s inside `.progress`.
   .progress-range__input {
@@ -47,8 +49,8 @@
 
   overflow: hidden;
 
-  background: $lacquered-licorice;
-  border-radius: v(progress-track-radius);
+  background: colors.$lacquered-licorice;
+  border-radius: var(--progress-track-radius);
 
   // progress
   &::after {
@@ -57,7 +59,7 @@
     inset: 0;
 
     background: currentColor;
-    border-radius: v(progress-bar-radius, 0);
+    border-radius: var(--progress-bar-radius, 0);
 
     // Position the progress bar and compensate for the clamped thumb.
     transform: translateX(calc(
@@ -81,7 +83,7 @@
   // thumb
   &::after {
     content: '';
-    size: v(progress-thumb);
+    size: var(--progress-thumb);
 
     position: absolute;
     top: 50%;

@@ -1,3 +1,6 @@
+@use "../utility/easings";
+@use "../variables/colors";
+
 .layers-menu {
   --fly-out-inner-space: 2rem;
   max-width: 36rem; // design: :26rem, but design scale is lower
@@ -6,10 +9,10 @@
   top: 12rem;
   left: 0;
 
-  transition: transform .4s $in-out-quad;
+  transition: transform .4s easings.$in-out-quad;
 
   &.layers-menu--visible {
-    transition: transform .3s $out-cubic;
+    transition: transform .3s easings.$out-cubic;
 
     .hide-when-visible {
       display: none;
@@ -18,7 +21,7 @@
 
   &:not(.layers-menu--visible) {
     transform: translateX(calc(-100% - 2rem)); // -2rem for container (.ui) offset
-    transition: transform .3s $out-back;
+    transition: transform .3s easings.$out-back;
 
     .hide-when-not-visible {
       display: none;
@@ -47,7 +50,7 @@
   size: 4rem;
   padding: 0;
 
-  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+  border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
 
   &:hover,
   &:focus {
@@ -64,11 +67,11 @@
 
   text-align: center;
 
-  --layers-nav-bg: #{$alto};
-  background: v(layers-nav-bg);
-  border-radius: 0 v(btn-default-radius) v(btn-default-radius) 0;
+  --layers-nav-bg: #{colors.$alto};
+  background: var(--layers-nav-bg);
+  border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
 
-  transition: transform 1s $in-out-quad;
+  transition: transform 1s easings.$in-out-quad;
   transform: translateX(calc(-100% * var(--layers-nav-hidden, 1)));
 }
 
@@ -78,23 +81,23 @@
   --btn-radius: none;
 
   &:first-of-type {
-    border-top-right-radius: v(btn-default-radius);
+    border-top-right-radius: var(--btn-default-radius);
     border-bottom: none;
   }
 
   &:last-of-type {
     border-top: none;
-    border-bottom-right-radius: v(btn-default-radius);
+    border-bottom-right-radius: var(--btn-default-radius);
   }
 
   &:hover,
   &:focus {
-    --btn-bg: #{$gallery};
-    --btn-border: #{$gallery};
+    --btn-bg: #{colors.$gallery};
+    --btn-border: #{colors.$gallery};
   }
 
   &:disabled {
-    --btn-color: #{$silver};
+    --btn-color: #{colors.$silver};
   }
 }
 
@@ -117,6 +120,6 @@
   top: 0;
   z-index: 2;
 
-  background: v(bg);
-  border-bottom: .1rem solid $lacquered-licorice;
+  background: var(--bg);
+  border-bottom: .1rem solid colors.$lacquered-licorice;
 }

@@ -1,3 +1,5 @@
+@use "../../utility/easings";
+
 .progress {
   position: relative;
 }
@@ -13,17 +15,17 @@
 
 .progress__label {
   position: relative;
-  transition: opacity 1s $in-out-quad;
+  transition: opacity 1s easings.$in-out-quad;
 }
 
 .progress__bar {
   position: absolute;
   inset: 0;
 
-  transform: scaleX(v(progress, 0));
+  transform: scaleX(var(--progress, 0));
   transform-origin: left;
 
-  background: v(accent);
+  background: var(--accent);
 
   // transition: .3s $in-out-quad;
   // transition-property: opacity, transform;

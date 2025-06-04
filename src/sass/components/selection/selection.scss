@@ -1,3 +1,5 @@
+@use "../../abstract/mixins/all-but";
+
 .selection-legend {
   max-width: 34.8rem;
 }
@@ -35,7 +37,7 @@
 .selection__listItem {
   display: inline;
 
-  @include all-but(1) {
+  @include all-but.all-but(1) {
     &::before {
       content: ' / ';
     }

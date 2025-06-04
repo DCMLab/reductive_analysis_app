@@ -1,3 +1,5 @@
+@use "../../utility/easings";
+
 // The fly-out handle.
 
 .fly-out__drag {
@@ -32,7 +34,7 @@
 // }
 
 .fly-out--snapping {
-  --fly-out-transition-easing: #{$out-back};
+  --fly-out-transition-easing: #{easings.$out-back};
   --fly-out-transition-properties: transform;
 
   @media (--no-motion) {

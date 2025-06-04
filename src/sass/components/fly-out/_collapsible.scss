@@ -1,3 +1,5 @@
+@use "../../variables/colors";
+
 .fly-out--collapsed {
   /**
    * Prevent a rounding glitch where the fly-out background slightly overflows
@@ -20,7 +22,7 @@
 .fly-out--expanded {
   .fly-out__toggle {
     --btn-radius: 1rem 0rem 1rem 0rem;
-    --primary: #{$moonless-night};
+    --primary: #{colors.$moonless-night};
 
     .btn__icon {
       transform: rotate(180deg);

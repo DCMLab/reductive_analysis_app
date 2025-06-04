@@ -1,9 +1,11 @@
+@use "../../utility/easings";
+
 .relation,
 .metarelation {
   transform-box: fill-box;
   transform-origin: 50% 50% !important; // overwrite `.svg__container svg *`
 
-  transition: .2s $in-out-quad;
+  transition: .2s easings.$in-out-quad;
   transition-property: fill, stroke;
 
   /**
@@ -23,5 +25,5 @@
   transform: scale(.95);
   visibility: hidden;
 
-  transition-timing-function: $in-quint;
+  transition-timing-function: easings.$in-quint;
 }

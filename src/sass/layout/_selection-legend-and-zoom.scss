@@ -1,3 +1,5 @@
+@use "../utility/easings";
+
 .selection-legend-and-zoom {
   position: absolute;
   top: 0;
@@ -25,6 +27,6 @@
 
 .svg_container {
   @media (--motion) {
-    transition: transform .25s $in-out-quad;
+    transition: transform .25s easings.$in-out-quad;
   }
 }

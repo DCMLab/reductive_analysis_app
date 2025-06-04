@@ -1,3 +1,5 @@
+@use "../../utility/easings";
+
 @keyframes loading-spinner {
   100% { transform: rotate(1turn); }
 }
@@ -13,7 +15,7 @@
   --spinner-size: 6rem;
   --spinner-bullet-diameter: 1.4rem;
 
-  size: v(spinner-size);
+  size: var(--spinner-size);
 
   position: relative;
 
@@ -33,21 +35,21 @@
     var(--spinner-bullet-diameter)
     * (1 - var(--spinner-bullet-index) * .1)
   );
-  size: v(spinner-bullet-size);
+  size: var(--spinner-bullet-size);
 
   position: absolute;
   top: calc((var(--spinner-bullet-diameter) - var(--spinner-bullet-size)) / 2);
   left: calc(50% - var(--spinner-bullet-size) / 2);
   // `calc` 👆 adjust bullets position so they all share the same center.
 
-  background: v(primary);
+  background: var(--primary);
   border-radius: 50%;
 
   opacity: calc(1 - var(--spinner-bullet-index) * .16); // from 1 to 0.3
 
   transform-origin: 50% calc(var(--spinner-size) / 2);
 
-  animation: loading-disc 3.5s infinite $in-out-quart calc(var(--spinner-bullet-index) * .17s);
+  animation: loading-disc 3.5s infinite easings.$in-out-quart calc(var(--spinner-bullet-index) * .17s);
 
   // Bullet index used for staggering of animation delay, opacity and size.
   @for $bullet-index from 1 through 5 {

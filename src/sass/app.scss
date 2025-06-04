@@ -1,37 +1,33 @@
 // Abstract (mixins and functions)
-@import 'family.scss';
-@import 'hsl.scss';
-@import 'v.scss';
-@import 'double-dash.scss';
-@import 'abstract/abstract';
+@use 'utility/_easings' as *;
+@use 'utility/hsl' as *;
+@use 'abstract/abstract' as *;
 
 // Variables
-@import 'variables/variables';
+@use 'variables/variables' as *;
 
 // Browser styles and fonts
-@import 'fonts/fonts';
-@import 'custom-normalize';
-@import 'base';
-
-// @keyframes
-@import 'animations/animations';
+@use 'fonts/fonts' as *;
 
 // Typo
-@import 'typo/typo';
+@use 'typo/typo' as *;
 
 // Utility
-@import 'utility/utility';
+@use 'utility/utility' as *;
 
 // Icons
-@import 'icons/icons';
-
-// Components
-@import 'components/components';
+@use 'icons/icons' as *;
 
 // Elements
-@import 'actions/actions';
+@use 'actions/actions' as *;
 
 // Pages
-@import 'layout/layout';
-@import 'pages/start-screen';
-@import 'score/score';
+@use 'layout/layout';
+@use 'pages/start-screen';
+@use 'score/score';
+
+@use 'custom-normalize';
+@use 'base';
+
+// Components
+@use 'components/components';

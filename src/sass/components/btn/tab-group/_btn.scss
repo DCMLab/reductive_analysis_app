@@ -1,3 +1,5 @@
+@use "../../../variables/colors";
+
 // A button belonging to a tab group.
 
 .btn-tabs__btn {
@@ -12,29 +14,29 @@
   border-radius: 0;
 
   &:first-child {
-    border-start-start-radius: v(btn-default-radius);
-    border-end-start-radius: v(btn-default-radius);
+    border-start-start-radius: var(--btn-default-radius);
+    border-end-start-radius: var(--btn-default-radius);
     border-inline-start-width: .2rem; // should be `revert` but it weirdly gives 3px…
   }
 
   &:last-child {
-    border-start-end-radius: v(btn-default-radius);
-    border-end-end-radius: v(btn-default-radius);
+    border-start-end-radius: var(--btn-default-radius);
+    border-end-end-radius: var(--btn-default-radius);
     border-inline-end-width: .2rem;
   }
 
   // Colors for borders, tabs separators and disabled state.
 
   &:not(.btn--plain) {
-    --btn-border: #{$alto};
-    --tab-separator: #{$alto};
+    --btn-border: #{colors.$alto};
+    --tab-separator: #{colors.$alto};
   }
 
   &.btn--plain {
-    --tab-separator: #{$lacquered-licorice};
+    --tab-separator: #{colors.$lacquered-licorice};
   }
 
   &:disabled {
-    color: $alto;
+    color: colors.$alto;
   }
 }

@@ -1,0 +1,243 @@
+reductive_analysis_app/src/js/option_drag.js:export function setupOptionDrag() {
+reductive_analysis_app/src/js/option_drag.js:export function startOptionDrag(event) {
+reductive_analysis_app/src/js/option_drag.js:export function moveOptionDrag(event) {
+reductive_analysis_app/src/js/option_drag.js:export function endOptionDrag() {
+reductive_analysis_app/src/js/option_drag.js:export function removeOptionDrag() {
+reductive_analysis_app/src/js/utils.js:var vecScale = function (scale, v) {
+reductive_analysis_app/src/js/utils.js:var vecSum = function (pv1, pv2) {
+reductive_analysis_app/src/js/utils.js:var unitNormal = function (p0, p1) {
+reductive_analysis_app/src/js/utils.js:var roundedHull1 = function (polyPoints, hullPadding) {
+reductive_analysis_app/src/js/utils.js:var roundedHull2 = function (polyPoints, hullPadding) {
+reductive_analysis_app/src/js/utils.js:var roundedHullN = function (polyPoints, hullPadding) {
+reductive_analysis_app/src/js/utils.js:  segments = segments.map(function (segment, index) {
+reductive_analysis_app/src/js/utils.js:export function roundedHull(points) {
+reductive_analysis_app/src/js/utils.js:function randomColor() {
+reductive_analysis_app/src/js/utils.js:function getRandomShade(colour) {
+reductive_analysis_app/src/js/utils.js:export function line(p1, p2) {
+reductive_analysis_app/src/js/utils.js:export function circle(p, rad) {
+reductive_analysis_app/src/js/utils.js:export function rect(p, width, height) {
+reductive_analysis_app/src/js/utils.js:export function text(text, p) {
+reductive_analysis_app/src/js/utils.js:export function tspan(text, p, dy, dx = 0) {
+reductive_analysis_app/src/js/utils.js:export function flip_to_bg(elem) {
+reductive_analysis_app/src/js/utils.js:export function add_to_svg_bg(svg_elem, newElement) {
+reductive_analysis_app/src/js/utils.js:function add_to_svg_fg(svg_elem, newElement) {
+reductive_analysis_app/src/js/utils.js:export function g() {
+reductive_analysis_app/src/js/utils.js:export function random_id(n = 5) {
+reductive_analysis_app/src/js/utils.js:export function pitch_offset(n1, n2) {
+reductive_analysis_app/src/js/utils.js:export function time_offset(n1, n2) {
+reductive_analysis_app/src/js/utils.js:export function notes_template(ns) {
+reductive_analysis_app/src/js/utils.js:export function notes_in_range(n_ref, min_p_off, max_p_off, max_t_off) {
+reductive_analysis_app/src/js/utils.js:export function next_measure(m) {
+reductive_analysis_app/src/js/utils.js:export function note_coords(note) {
+reductive_analysis_app/src/js/utils.js:function get_by_oldid_elem(doc, elem) { return get_by_id(doc, get_id(elem)) }
+reductive_analysis_app/src/js/utils.js:export function get_by_oldid(doc, id) {
+reductive_analysis_app/src/js/utils.js:export function get_by_id(doc, id) {
+reductive_analysis_app/src/js/utils.js:export function get_id(elem) {
+reductive_analysis_app/src/js/utils.js:export function id_in_svg(draw_context, id) {
+reductive_analysis_app/src/js/utils.js:function id_in_layer(layer_context, id) {
+reductive_analysis_app/src/js/utils.js:function arcs_where_node_referred_to(mei_graph, id) {
+reductive_analysis_app/src/js/utils.js:export function node_referred_to(id) {
+reductive_analysis_app/src/js/utils.js:function node_to_note_id_layer(layer_context, node) {
+reductive_analysis_app/src/js/utils.js:function node_to_note_id_drawn(draw_context, note) {
+reductive_analysis_app/src/js/utils.js:function node_to_note_id_prefix(prefix, note) {
+reductive_analysis_app/src/js/utils.js:export function node_to_note_id(note) {
+reductive_analysis_app/src/js/utils.js:export function mod(n, m) {
+reductive_analysis_app/src/js/utils.js:function div(n, m) {
+reductive_analysis_app/src/js/utils.js:export function average2(x, y) { return (x + y) / 2 }
+reductive_analysis_app/src/js/utils.js:function note_get_accid(note) {
+reductive_analysis_app/src/js/utils.js:function get_time(note) {
+reductive_analysis_app/src/js/utils.js:export function relation_get_notes(he) {
+reductive_analysis_app/src/js/utils.js:export function relation_get_notes_separated(he) {
+reductive_analysis_app/src/js/utils.js:export function relation_allnodes(mei_graph, he) {
+reductive_analysis_app/src/js/utils.js:export function relation_primaries(mei_graph, he) {
+reductive_analysis_app/src/js/utils.js:export function relation_secondaries(mei_graph, he) {
+reductive_analysis_app/src/js/utils.js:export function relation_type(he) {
+reductive_analysis_app/src/js/utils.js:export function add_mei_node_for(mei_graph, note) {
+reductive_analysis_app/src/js/utils.js:export function hide_note(draw_context, note) {
+reductive_analysis_app/src/js/utils.js:export function hide_note_hier(draw_context, note) {
+reductive_analysis_app/src/js/utils.js:export function hide_he(draw_context, he) {
+reductive_analysis_app/src/js/utils.js:export function hide_he_hier(draw_context, he) {
+reductive_analysis_app/src/js/utils.js:function mark_secondary(item) {
+reductive_analysis_app/src/js/utils.js:function unmark_secondary(item) {
+reductive_analysis_app/src/js/utils.js:export function mark_secondaries(draw_context, mei_graph, he) {
+reductive_analysis_app/src/js/utils.js:export function unmark_secondaries(draw_context, mei_graph, he) {
+reductive_analysis_app/src/js/utils.js:function get_measure(elem) { if (elem.tagName == 'measure') return elem; else return get_measure(elem.parentElement) }
+reductive_analysis_app/src/js/utils.js:export function select_samenote() {
+reductive_analysis_app/src/js/utils.js:function svg_find_from_mei_elem(svg_container, id_prefix, e) {
+reductive_analysis_app/src/js/utils.js:function getBoundingBoxTop (elem) {
+reductive_analysis_app/src/js/utils.js:export function get_class_from_classlist(elem) {
+reductive_analysis_app/src/js/utils.js:function getBoundingBoxCenter (elem) {
+reductive_analysis_app/src/js/utils.js:function getBoundingBoxOffCenter (elem) {
+reductive_analysis_app/src/js/utils.js:export function get_metarelation_target(elem) {
+reductive_analysis_app/src/js/utils.js:function is_empty_relation(elem) {
+reductive_analysis_app/src/js/utils.js:function is_note_node(elem) {
+reductive_analysis_app/src/js/utils.js:function remove_empty_relations(graph) {
+reductive_analysis_app/src/js/utils.js:export function average(l) { return l.reduce((a, b) => a + b, 0) / l.length }
+reductive_analysis_app/src/js/utils.js:export function note_to_text(id) {
+reductive_analysis_app/src/js/utils.js:export function to_text(elems) {
+reductive_analysis_app/src/js/utils.js:export function fix_synonyms(mei) {
+reductive_analysis_app/src/js/utils.js:export function fix_corresp(mei_elem) {
+reductive_analysis_app/src/js/utils.js:export function fix_layers(mei) {
+reductive_analysis_app/src/js/utils.js:export function note_to_rest(mei, note) {
+reductive_analysis_app/src/js/utils.js:export function note_to_space(mei, note) {
+reductive_analysis_app/src/js/utils.js:export function note_to_chord(mei, note) {
+reductive_analysis_app/src/js/utils.js:export function chord_to_space(mei, chord) {
+reductive_analysis_app/src/js/utils.js:export function prefix_ids(elem, prefix) {
+reductive_analysis_app/src/js/utils.js:export function clone_mei(mei) {
+reductive_analysis_app/src/js/utils.js:export function get_id_pairs(elem) {
+reductive_analysis_app/src/js/utils.js:export function new_layer_element() {
+reductive_analysis_app/src/js/utils.js:export function new_view_elements(layer_element) {
+reductive_analysis_app/src/js/utils.js:export function checkbox(value) {
+reductive_analysis_app/src/js/utils.js:export function button(value) {
+reductive_analysis_app/src/js/utils.js:function sanitize_mei(mei) {
+reductive_analysis_app/src/js/utils.js:export function sanitize_xml(xml) {
+reductive_analysis_app/src/js/utils.js:export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
+reductive_analysis_app/src/js/utils.js:export function draw_context_of(elem) {
+reductive_analysis_app/src/js/utils.js:function count_existing_slurs(noteElement) {
+reductive_analysis_app/src/js/utils.js:export function draw_slur(startNote, endNote, isDownward) {
+reductive_analysis_app/src/js/utils.js:export function isSlurDownward(svg_elem, startNote, endNote) {
+reductive_analysis_app/src/js/utils.js:export function scrollThroughRelations() {
+reductive_analysis_app/src/js/utils.js:export function handleFlip(e) {
+reductive_analysis_app/src/js/ui.js:export function toggle_selected(item, extra = null) {
+reductive_analysis_app/src/js/ui.js:export function select_visibles(draw_context) {
+reductive_analysis_app/src/js/ui.js:export function handle_keydown(ev) {
+reductive_analysis_app/src/js/ui.js:export function handle_keyup(ev) {
+reductive_analysis_app/src/js/ui.js:export function handle_click(ev) {
+reductive_analysis_app/src/js/ui.js:export function handle_keypress(ev) {
+reductive_analysis_app/src/js/ui.js:export function toggle_equalize() {
+reductive_analysis_app/src/js/ui.js:function set_non_note_visibility(hidden) {
+reductive_analysis_app/src/js/ui.js:export function toggle_shade(element) {
+reductive_analysis_app/src/js/ui.js:export function do_deselect() {
+reductive_analysis_app/src/js/ui.js:export function getReducedMidi(draw_context = null) {
+reductive_analysis_app/src/js/ui.js:export function handle_curvature_controller(value) {
+reductive_analysis_app/src/js/ui.js:export function drag_selector_installer(svg_elem) {
+reductive_analysis_app/src/js/ui.js:export function clear_top(draw_context) {
+reductive_analysis_app/src/js/ui.js:export function adjust_top(draw_context, ydiff) {
+reductive_analysis_app/src/js/ui.js:export function hide_top(draw_context) {
+reductive_analysis_app/src/js/ui.js:function hide_orphan_notes() {
+reductive_analysis_app/src/js/ui.js:function show_all_notes() {
+reductive_analysis_app/src/js/ui.js:export function toggle_orphan_notes() {
+reductive_analysis_app/src/js/ui.js:export function adjustSvgDimensions(draw_context) {
+reductive_analysis_app/src/js/undo_redo.js:export function do_undo() {
+reductive_analysis_app/src/js/undo_redo.js:export function flush_redo() {
+reductive_analysis_app/src/js/undo_redo.js:export function do_redo() {
+reductive_analysis_app/src/js/undo_redo.js:function emitUndoRedoEvent() {
+reductive_analysis_app/src/js/reductions.js:export function calc_reduce(mei_graph, remaining_relations, target_relations) {
+reductive_analysis_app/src/js/reductions.js:export function do_reduce_pre(draw_context) {
+reductive_analysis_app/src/js/reductions.js:function do_reduce(draw_context, mei_graph, sel, extra) {
+reductive_analysis_app/src/js/reductions.js:export function undo_reduce(draw_context) {
+reductive_analysis_app/src/js/app.js:window.addEventListener('beforeunload', function (e) {
+reductive_analysis_app/src/js/app.js:  window.onerror = function errorHandler(errorMsg, url, lineNumber) {
+reductive_analysis_app/src/js/app.js:export function do_relation(type, id, redoing = false) {
+reductive_analysis_app/src/js/app.js:export function do_comborelation(type) {
+reductive_analysis_app/src/js/app.js:export function do_metarelation(type, id, redoing = false) {
+reductive_analysis_app/src/js/app.js:function add_or_fetch_graph() {
+reductive_analysis_app/src/js/app.js:function save() {
+reductive_analysis_app/src/js/app.js:export function save_orig() {
+reductive_analysis_app/src/js/app.js:export function savesvg() {
+reductive_analysis_app/src/js/app.js:export function load(event) {
+reductive_analysis_app/src/js/app.js:    reader.onload = function (e) {
+reductive_analysis_app/src/js/app.js:export function draw_graph(draw_context) {
+reductive_analysis_app/src/js/app.js:function load_finish(loader_modal) {
+reductive_analysis_app/src/js/app.js:export function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
+reductive_analysis_app/src/js/app.js:export function delete_layer(draw_context) {
+reductive_analysis_app/src/js/app.js:export function create_new_layer(draw_context, sliced = false, tied = false) {
+reductive_analysis_app/src/js/app.js:function finalize_draw_context(new_draw_context) {
+reductive_analysis_app/src/js/app.js:function render_mei(mei) {
+reductive_analysis_app/src/js/app.js:/* export function rerender(draw_context) {
+reductive_analysis_app/src/js/layers.js:function layer_clone_element(changes, elem, new_children) {
+reductive_analysis_app/src/js/layers.js:function layerify(draw_context, elem) {
+reductive_analysis_app/src/js/layers.js:export function new_layer(draw_context = null) {
+reductive_analysis_app/src/js/layers.js:export function mei_for_layer(mei, mdiv_elem) {
+reductive_analysis_app/src/js/delete.js:function delete_relation(elem) {
+reductive_analysis_app/src/js/delete.js:function updateConnectionCircles(childIds) {
+reductive_analysis_app/src/js/delete.js:export function delete_relations(redoing = false) {
+reductive_analysis_app/src/js/delete.js: * This function recursively identifies all such parent relations (parents, grandparents, etc.)
+reductive_analysis_app/src/js/delete.js:function find_all_parent_relations(elem, mei, draw_contexts, svg_hes, processedIds = new Set()) {
+reductive_analysis_app/src/js/coordinates.js:function getPointerSVGCoords() {
+reductive_analysis_app/src/js/coordinates.js:export function compute_measure_map(draw_context) {
+reductive_analysis_app/src/js/coordinates.js:function coord_measure(dc, pt) {
+reductive_analysis_app/src/js/coordinates.js:function staff_midpoint(staff) {
+reductive_analysis_app/src/js/coordinates.js:function staff_third_distance(staff) {
+reductive_analysis_app/src/js/coordinates.js:function staff_divider(staff1, staff2) {
+reductive_analysis_app/src/js/coordinates.js:function coord_staff(dc, pt, measure) {
+reductive_analysis_app/src/js/coordinates.js:function diatonic_note_n(note) {
+reductive_analysis_app/src/js/coordinates.js:export function pitch_grid(staff) {
+reductive_analysis_app/src/js/coordinates.js:function coord_pitch(dc, pt, staff) {
+reductive_analysis_app/src/js/coordinates.js:function closest_note(dc, pt, staff) {
+reductive_analysis_app/src/js/coordinates.js:function note_params() {
+reductive_analysis_app/src/js/coordinates.js:function note_params_coords_sim(pname, oct, note) {
+reductive_analysis_app/src/js/coordinates.js:function show_note(pname, oct, note, sim = true, id = '') {
+reductive_analysis_app/src/js/coordinates.js:function draw_note(pname, oct, note, sim = true, id = '') {
+reductive_analysis_app/src/js/coordinates.js:function add_note(layer_context, pname, oct, note, sim = true, id = '') {
+reductive_analysis_app/src/js/coordinates.js:export function do_note(pname, oct, note, offset, id, redoing = false) {
+reductive_analysis_app/src/js/coordinates.js:export function place_note() {
+reductive_analysis_app/src/js/coordinates.js:export function start_placing_note() {
+reductive_analysis_app/src/js/coordinates.js:export function stop_placing_note() {
+reductive_analysis_app/src/js/coordinates.js:export function toggle_placing_note() {
+reductive_analysis_app/src/js/coordinates.js:export function update_placing_note() {
+reductive_analysis_app/src/js/draw.js:export function draw_relation(draw_context, mei_graph, g_elem) {
+reductive_analysis_app/src/js/draw.js:  group.onmouseover = function () {
+reductive_analysis_app/src/js/draw.js:  group.onmouseout = function () {
+reductive_analysis_app/src/js/draw.js:function redraw_relation(draw_context, g_elem) {
+reductive_analysis_app/src/js/draw.js:export function draw_metarelation(draw_context, mei_graph, g_elem) {
+reductive_analysis_app/src/js/draw.js:  g_elem.onmouseover = function (ev) {
+reductive_analysis_app/src/js/draw.js:  g_elem.onmouseout = function (ev) {
+reductive_analysis_app/src/js/draw.js:function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
+reductive_analysis_app/src/js/draw.js:function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
+reductive_analysis_app/src/js/trees.js:function calculate_initial_y(node, baseline, min_dist) {
+reductive_analysis_app/src/js/trees.js:function adjust_y(node, parent_y, min_dist) {
+reductive_analysis_app/src/js/trees.js:function gather_leaves(node) {
+reductive_analysis_app/src/js/trees.js:function calculate_x(node) {
+reductive_analysis_app/src/js/trees.js:function place_tree(tree, baseline = 0, min_dist = -500) {
+reductive_analysis_app/src/js/trees.js:function draw_node(node, fontSize = 100) {
+reductive_analysis_app/src/js/trees.js:function draw_textbox(txt, padding = 25) {
+reductive_analysis_app/src/js/trees.js:function obj_tree_to_xml(json_tree) {
+reductive_analysis_app/src/js/trees.js:function add_or_replace_tree(elem) {
+reductive_analysis_app/src/js/trees.js:function xml_subtree_to_obj(elem) {
+reductive_analysis_app/src/js/trees.js:function xml_tree_to_obj(elem) {
+reductive_analysis_app/src/js/trees.js:function find_x_tree(draw_context, tree) {
+reductive_analysis_app/src/js/trees.js:export function load_tree(draw_context) {
+reductive_analysis_app/src/js/trees.js:function get_tree_from_input(draw_context) {
+reductive_analysis_app/src/js/trees.js:function has_x_tree(obj) {
+reductive_analysis_app/src/js/trees.js:function is_aligned_tree(obj) {
+reductive_analysis_app/src/js/trees.js:export function save_tree(draw_context) {
+reductive_analysis_app/src/js/trees.js:export function align_tree(draw_context) {
+reductive_analysis_app/src/js/trees.js:export function draw_tree(draw_context, baseline = 0, min_dist = -1000) {
+reductive_analysis_app/src/js/copy_paste.js:export function do_copy() {
+reductive_analysis_app/src/js/copy_paste.js:export function do_paste() {
+reductive_analysis_app/src/js/space_drag.js:// export function setupSpaceDrag() {
+reductive_analysis_app/src/js/space_drag.js:// export function startSpaceDrag(event) {
+reductive_analysis_app/src/js/space_drag.js:// export function moveSpaceDrag(event) {
+reductive_analysis_app/src/js/space_drag.js:// export function endSpaceDrag() {
+reductive_analysis_app/src/js/space_drag.js:// export function removeSpaceDrag() {
+reductive_analysis_app/src/js/space_drag.js:// function getComputedTransformMatrix(element) {
+reductive_analysis_app/src/js/graph.js:export function add_relation(mei_graph, primaries, secondaries, type, he_id_param) {
+reductive_analysis_app/src/js/graph.js:export function add_metarelation(mei_graph, primaries, secondaries, type, he_id_param) {
+reductive_analysis_app/src/js/visualizations.js:function calc_hierarchy(notes, relations, roots_low = true) {
+reductive_analysis_app/src/js/visualizations.js:export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true) {
+reductive_analysis_app/src/js/visualizations.js:    elem.onmouseover = function () {
+reductive_analysis_app/src/js/visualizations.js:    elem.onmouseout = function () {
+reductive_analysis_app/src/js/new/modules/UI/Layers/metaRelation.js:function hide_meta_relations(layer) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/metaRelation.js:function show_meta_relations(layer) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:export function initLayerResize(layersMenu) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function startResize(e) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function startResizeForLayer(layerElement, e) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function handleAutoScroll(clientY) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function onResize(e) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function stopResize() {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function attachResizeHandlers() {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function attachHandlerToLayer(layerElement) {
+reductive_analysis_app/src/js/new/modules/UI/Layers/layer_resize.js:  function updateResizeHandlers() {
+reductive_analysis_app/src/js/new/utils/file.js:export function downloadAs(filedata, filename, mimeType) {
+reductive_analysis_app/src/js/new/events/keyCodes.js:export function isModifier(keyboardEvent, modifiers = null) {
+reductive_analysis_app/src/js/new/events/utils/options.js:function detectSupport(option) {
+reductive_analysis_app/src/js/new/events/prevent.js:export function prevent(event, callback = null) {
+reductive_analysis_app/src/js/new/events/resize.js:export default function debounceResize(callback, delay = DEFAULT_DEBOUNCE_DELAY) {
+reductive_analysis_app/src/js/accidentals.js:export function naturalize_note(elem) {
+reductive_analysis_app/src/js/accidentals.js:function remove_accidental(elem) {
+reductive_analysis_app/src/js/accidentals.js:function remove_mei_accidental(mei_note) {
+reductive_analysis_app/src/js/slicing.js:function slicify(draw_context, mdiv_elem, tied = false) {
+reductive_analysis_app/src/js/slicing.js:export function new_sliced_layer(draw_context, tied = false) {
+reductive_analysis_app/src/sass/utility/_hsl.scss:@function hsl($args...) {
+reductive_analysis_app/src/sass/utility/_hsl.scss:@function hsla($args...) {

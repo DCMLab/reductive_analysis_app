@@ -1,4 +1,3 @@
-import { clamp } from '../../../utils/math'
 import { getDrawContexts } from '../../../../app'
 import JsonTree       from './jsonTree'
 import LayerControls  from './new'

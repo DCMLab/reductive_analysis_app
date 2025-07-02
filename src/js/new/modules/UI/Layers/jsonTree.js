@@ -24,7 +24,7 @@ export default class JsonTree {
     const currentLayerObject = getCurrentDrawContext()
 
     if (target == this.saveBtn) { return save_tree(currentLayerObject) }
-    if (target == this.loadBtn) { return load_tree(currentLayerObject) }
+    if (target == this.loadBtn) { return load_tree() }
     if (target == this.alignBtn) { return align_tree(currentLayerObject) }
   }
 

@@ -1,5 +1,4 @@
 import { doc } from '../../../utils/document'
-import viewport from '../../Viewport'
 
 class Navigation {
   constructor() {

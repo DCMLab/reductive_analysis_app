@@ -64,7 +64,7 @@ import {
   sanitize_xml,
 } from './utils'
 import { compute_measure_map, pitch_grid } from './coordinates'
-import { do_redo, do_undo, flush_redo } from './undo_redo'
+import { flush_redo } from './undo_redo'
 import { comboRelationTypes } from './new/modules/Relations/config'
 import { setAttributes } from './new/utils/dom'
 
@@ -96,7 +96,6 @@ var data
 var reader = new FileReader()
 var filename
 // Did we change the MEI somehow?
-var changes = false
 // Our undo stack. TODO: is this being empty the same as
 // changes being false?
 var undo_actions = []
@@ -160,7 +159,6 @@ export function do_relation(type, id, redoing = false) {
   if (selected.length == 0 && extraselected == 0) {
     return
   }
-  changes = true
   var he_id, mei_elems
   if (selected.concat(extraselected)[0].classList.contains('relation')) {
     var types = []
@@ -209,8 +207,8 @@ export function do_comborelation(type) {
   var all = selected.concat(extraselected)
   if (all.length < 3 || extraselected.length > 2) { return }
   all.sort((a, b) => {
-    var [ax, ay] = note_coords(a)
-    var [bx, by] = note_coords(b)
+    var [ax, ay] = note_coords(a) // ay never used
+    var [bx, by] = note_coords(b) // by never used
     return ax - bx
   })
   var firstNote = all.shift()
@@ -236,7 +234,6 @@ export function do_metarelation(type, id, redoing = false) {
   if (!(ci == 'relation' || ci == 'metarelation')) {
     return
   }
-  changes = true
   var added = []
   var he_id, mei_elems
 
@@ -275,13 +272,6 @@ function add_or_fetch_graph() {
   elem.setAttribute('type', 'directed')
   mei.getElementsByTagName('body')[0].appendChild(elem)
   return elem
-}
-
-// An option to download the MEI with the changes we've made
-function save() {
-  console.debug('Using globals: mei')
-  var saved = new XMLSerializer().serializeToString(mei)
-  downloadAs(saved, filename + '.mei', 'text/xml')
 }
 
 export function save_orig() {
@@ -355,7 +345,7 @@ export function load(event) {
   if (files.length == 1) {
     reader.onload = function (e) {
       data = reader.result
-      load_finish(null)
+      load_finish()
     }
     reader.readAsText(files[0])
 
@@ -391,7 +381,7 @@ export function draw_graph(draw_context) {
 }
 
 // Do all of this when we have the MEI in memory
-function load_finish(loader_modal) {
+function load_finish() {
   console.debug('Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action')
 
   // Parse the original document
@@ -400,10 +390,8 @@ function load_finish(loader_modal) {
     mei = parser.parseFromString(data, 'text/xml')
     if (mei.getElementsByTagName('parsererror').length > 0) {
       console.log('This is not a valid XML or MEI file. However it could be ABC or Humdrum, for instance')
-      // loader_modal.close()
     }
   } catch {
-    // loader_modal.close()
     $('#score-file-picker').val('')
   }
 
@@ -516,10 +504,8 @@ function load_finish(loader_modal) {
     finalize_draw_context(draw_context)
   }
 
-  changes = false
   undo_actions = []
   redo_actions = [] // TODO, maybe?
-  var reduce_actions = []
 
   rerendered_after_action = 0
 
@@ -540,8 +526,6 @@ function load_finish(loader_modal) {
 }
 
 export function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
-//  var mei = draw_context.mei;
-  var svg_elem = draw_context.svg_elem
   var mei2 = mei_for_layer(mei, draw_context.layer.mdiv_elem)
 
   Array.from(mei2.getElementsByTagName('note')).forEach((n) => {
@@ -561,7 +545,6 @@ export function rerender_mei(replace_with_rests = false, draw_context = draw_con
     }
   })
   Array.from(mei2.getElementsByTagName('chord')).forEach((x) => {
-    var paren = x.parentNode
     if (x.getElementsByTagName('note').length == 0) {
       x.parentNode.removeChild(x)
     }
@@ -611,9 +594,6 @@ export function delete_layer(draw_context) {
 
     // 4. Set the current draw context to the first layer
     setCurrentDrawContext(draw_contexts[0])
-
-    // 5. Mark that changes were made
-    changes = true
 
     return true
   } catch (error) {
@@ -717,42 +697,10 @@ function render_mei(mei) {
     footer: 'none',
     header: 'none',
     breaks: 'none',
-    // scaleToPageSize: true,
     svgCss: 'g.notehead, g.stem, g.dots {fill: currentColor;}',
   })
   return [data, svg]
 }
-
-/* export function rerender(draw_context) {
-  var [new_view_elem, new_svg_elem] = new_view_elements(draw_context.layer.layer_elem)
-  var new_mei = rerender_mei(false, draw_context)
-  var [new_data, new_svg] = render_mei(new_mei)
-  if (!new_svg) {
-    console.log('Verovio could not generate SVG from MEI.')
-    return false
-  }
-
-  new_svg_elem.innerHTML = new_svg
-  draw_context.layer.number_of_views += 1
-  var new_draw_context = {
-    // TODO: One draw context per existing score element
-    // already on load.
-    'mei_score': draw_context.mei_score,
-    'svg_elem': new_svg_elem,
-    'view_elem': new_view_elem,
-    'layer': draw_context.layer,
-    'layer_number': draw_context.layer.layer_number,
-    'id_prefix': '',
-    'zoom': 1,
-    'reductions': []
-
-    // if this function 👆 is uncommented: add `forceSaveLayer`, `lockLayer`, `canSave` and `canEdit`
-  }
-
-  new_draw_context.id_prefix = draw_contexts.length
-  prefix_ids(new_draw_context.svg_elem, new_draw_context.id_prefix)
-  finalize_draw_context(new_draw_context)
-} */
 
 console.log('Main webapp library is loaded')
 

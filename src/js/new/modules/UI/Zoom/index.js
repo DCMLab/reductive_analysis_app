@@ -1,6 +1,4 @@
 import { getCurrentDrawContext } from '../../../../ui'
-import { adjustSvgDimensions } from '../../../../ui'
-import { prevent } from '../../../events/prevent'
 
 const ZOOM_DEFAULT = 1
 const ZOOM_STEP = 1.1
@@ -22,7 +20,7 @@ class Zoom {
           event.preventDefault()
           this.out()
         }
-      } 
+      }
     }, { passive: false })
   }
 

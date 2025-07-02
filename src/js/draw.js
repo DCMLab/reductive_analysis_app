@@ -6,9 +6,8 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import newApp from './new/app'
-import { getMeiGraph } from './app'
 import { captureEvent } from './new/events/options'
-import { toggle_selected, toggle_shade, adjustSvgDimensions } from './ui'
+import { toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,
   average,
@@ -194,19 +193,6 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   return added
 }
 
-function redraw_relation(draw_context, g_elem) {
-  var svg_g_elem = get_by_id(document, id_in_svg(draw_context, get_id(g_elem)))
-  if (!svg_g_elem) {
-    console.log('Unable to redraw relation: ', g_elem, ' in draw context ', draw_context)
-    return
-  }
-  unmark_secondaries(draw_context, mei_graph, g_elem)
-  svg_g_elem.parentElement.removeChild(svg_g_elem)
-  svg_g_elem = draw_relation(draw_context, mei_graph, g_elem)
-  mark_secondaries(draw_context, mei_graph, g_elem)
-  return svg_g_elem[0]
-}
-
 // Essentially the same procedure as above, but for metarelations
 export function draw_metarelation(draw_context, mei_graph, g_elem) {
   var added = []
@@ -219,12 +205,6 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   // this drawing style.
   var targets = relation_allnodes(mei_graph, g_elem).map(
     (e) => document.getElementById(draw_context.id_prefix + get_id(e)))
-  var primaries = relation_primaries(mei_graph, g_elem).map(
-    (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
-  )
-  var secondaries = relation_secondaries(mei_graph, g_elem).map(
-    (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
-  )
   // TODO should be possible to draw partial metarelations
   if (targets.indexOf(null) != -1) {
     console.log('Missing relation, not drawing metarelation')

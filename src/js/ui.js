@@ -198,7 +198,6 @@ export function select_visibles(draw_context) {
 
   // Clear out any selections in other contexts.
   if (visibles.length > 0) {
-    var ci = get_class_from_classlist(visibles[0])
     var cd = visibles[0].closest('div')
     if (selected.length > 0 || extraselected.length > 0) {
       var csel = get_class_from_classlist(selected.concat(extraselected)[0])
@@ -411,7 +410,6 @@ export function handle_curvature_controller(value) {
   $('.metarelation').remove()
   var nodes_array = Array.from(mei_graph.getElementsByTagName('node'))
   var relations_nodes = nodes_array.filter(x => x.getAttribute('type') == 'relation')
-  var metarelations_nodes = nodes_array.filter(x => x.getAttribute('type') == 'metarelation')
   draw_contexts.forEach(draw_context => {
     relations_nodes.forEach(g_elem => unmark_secondaries(draw_context, mei_graph, g_elem))
   })
@@ -426,7 +424,7 @@ export function handle_curvature_controller(value) {
   })
 }
 
-export function drag_selector_installer(svg_elem) {
+export function drag_selector_installer() {
   // See https://github.com/ThibaultJanBeyer/DragSelect for API documentation.
 
   window.drag_selector = new DragSelect({
@@ -532,7 +530,6 @@ export function adjust_top(draw_context, ydiff) {
 
 export function hide_top(draw_context) {
   var svg_elem = draw_context.svg_elem
-  var id_prefix = draw_context.id_prefix
   var something_to_clear = clear_top(draw_context)
   if (something_to_clear) {
     svg_elem

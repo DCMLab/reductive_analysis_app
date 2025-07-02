@@ -11,7 +11,7 @@ import { polygonHull } from 'd3-polygon'
 
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
 import { strip_xml_tags } from './conf'
-import { getCurrentDrawContext, toggle_selected, getMouseX, getMouseY } from './ui'
+import { toggle_selected, getMouseX, getMouseY } from './ui'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
@@ -124,23 +124,6 @@ function randomColor() {
   return color
 }
 
-function getRandomShade(colour) {
-  //  Returns a random shade within a specified range
-  var letters = '0123456789ABCDEF'
-  var shade = '#'
-  for (var i = 0; i < 6; i++) {
-    if (
-      ((colour == 'r' || colour == 'y' || colour == 'm') && i < 2) ||
-        ((colour == 'g' || colour == 'y' || colour == 'c') && (i < 4 && i > 1)) ||
-        ((colour == 'b' || colour == 'c' || colour == 'm') && i > 3)
-    )
-      shade += letters[14]// Math.floor(6+Math.random() * 8)];
-    else
-      shade += letters[5]
-  }
-  return shade + '88' // Semitransparency
-}
-
 // Draw a line between points p1 and p2
 export function line(p1, p2) {
   var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'line')
@@ -212,13 +195,6 @@ export function add_to_svg_bg(svg_elem, newElement) {
   var sibling = svg_elem.getElementsByClassName('system')[0]
   var parent = sibling.parentNode
   parent.insertBefore(newElement, sibling)
-}
-
-function add_to_svg_fg(svg_elem, newElement) {
-  // Adds newElement in the foreground of the system element
-  var sibling = svg_elem.getElementsByClassName('system')[0]
-  var parent = sibling.parentNode
-  parent.appendChild(newElement)
 }
 
 export function g() {
@@ -306,8 +282,6 @@ export function note_coords(note) {
     note.getElementsByClassName('notehead')[0].getBBox().y]
 }
 
-function get_by_oldid_elem(doc, elem) { return get_by_id(doc, get_id(elem)) }
-
 // Gets all elements from the doc with the oldid
 export function get_by_oldid(doc, id) {
   if (id[0] == '#') { id = id.slice(1) }
@@ -387,15 +361,6 @@ function id_in_layer(layer_context, id) {
 }
 
 // From graph node to list of all arcs that refer to it
-function arcs_where_node_referred_to(mei_graph, id) {
-  return Array.from(mei_graph.getElementsByTagName('arc'))
-    .filter((x) => {
-      return (x.getAttribute('from') == '#' + id ||
-                x.getAttribute('to') == '#' + id)
-    }).length > 0
-}
-
-// From graph node to list of all arcs that refer to it
 export function node_referred_to(id) {
   console.debug('Using global: mei to find element')
   return Array.from(mei.getElementsByTagName('arc'))
@@ -403,34 +368,6 @@ export function node_referred_to(id) {
       return (x.getAttribute('from') == '#' + id ||
                 x.getAttribute('to') == '#' + id)
     }).length > 0
-}
-
-// From MEI graph node to the note in the layer referring to the same one
-function node_to_note_id_layer(layer_context, node) {
-  var id = node.getElementsByTagName('label')[0].
-    getElementsByTagName('note')[0].
-    getAttribute('corresp')
-  var pair = layer_context.id_mapping.find((x) => ('#' + x[1]) == id)
-  if (pair)
-    return pair[0]
-  else
-    return null
-}
-
-// From MEI graph node to and ID string for the note as drawn in the draw context
-function node_to_note_id_drawn(draw_context, note) {
-  var layer_note = node_to_note_id_layer(draw_context.layer, note)
-  if (draw_context.svg_elem.getRootNode().getElementById(layer_note))
-    return '#' + layer_note
-  else
-    return '#' + draw_context.id_prefix + layer_note
-}
-
-// From MEI graph node to the ID string for its referred note.
-function node_to_note_id_prefix(prefix, note) {
-  return note.getElementsByTagName('label')[0].
-    getElementsByTagName('note')[0].
-    getAttribute('corresp').replace('#', '#' + prefix)
 }
 
 // From MEI graph node to the ID string for its referred note.
@@ -445,11 +382,6 @@ export function node_to_note_id(note) {
 // Always-positive modulo
 export function mod(n, m) {
   return ((n % m) + m) % m
-}
-
-// Integer division
-function div(n, m) {
-  Math.floor(n / m)
 }
 
 export function average2(x, y) { return (x + y) / 2 }
@@ -474,15 +406,6 @@ function note_get_accid(note) {
   if (accid.hasAttribute('accid'))
     return accid.getAttribute('accid')
   return ''
-}
-
-// Get the timestamp for a note
-function get_time(note) {
-  var vrvToolkit = getVerovioToolkit()
-  console.debug('Using globals: document, mei to find element')
-  if (document.contains(note))
-    note = get_by_id(mei, get_id(note))
-  return vrvToolkit.getTimeForElement(note.getAttribute('xml:id'))
 }
 
 // From any relation element to list of MEI note elements
@@ -635,7 +558,6 @@ function unmark_secondary(item) {
 // For a certain MEI relation node, find its secondaries and mark them as
 // secondary in the draw context
 export function mark_secondaries(draw_context, mei_graph, he) {
-  var svg_elem = draw_context.svg_elem
   if (he.tagName != 'node') // TODO: Probably bad, but shouldn't happen from do_relation
     he = get_by_id(mei_graph.getRootNode(), he.id)
   var secondaries = relation_secondaries(mei_graph, he)
@@ -648,7 +570,6 @@ export function mark_secondaries(draw_context, mei_graph, he) {
 // For a certain MEI relation node, find its secondaries and unmark them as
 // secondary in the draw context
 export function unmark_secondaries(draw_context, mei_graph, he) {
-  var svg_elem = draw_context.svg_elem
   if (he.tagName != 'node')
     he = get_by_id(mei_graph.getRootNode(), he.id)
   var secondaries = relation_secondaries(mei_graph, he)
@@ -687,31 +608,6 @@ export function select_samenote() {
   }
 }
 
-// Deprecated
-function svg_find_from_mei_elem(svg_container, id_prefix, e) {
-  if (!e)
-    return null
-  // TODO: Sanity checks
-  var id = id_prefix + e.getAttribute('xml:id')
-  var svg_e = svg_container.getRootNode().getElementById(id)
-  if (svg_e)
-    return svg_e
-  else {
-    id = e.getAttribute('xml:id')
-    svg_e = svg_container.getRootNode().getElementById(id)
-    if (svg_container.contains(svg_e))
-      return svg_e
-  }
-}
-
-// Get the top coordinate of the bounding box of the given element
-function getBoundingBoxTop (elem) {
-  // use the native SVG interface to get the bounding box
-  var bbox = elem.getBBox()
-  // return the center of the bounding box
-  return bbox.y + bbox.height
-}
-
 // Get the Interesting class from a classlist
 export function get_class_from_classlist(elem) {
   if (typeof (elem) == 'undefined') {
@@ -737,17 +633,6 @@ function getBoundingBoxCenter (elem) {
   return [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2]
 }
 
-// "Smart" selection of a coordinate
-function getBoundingBoxOffCenter (elem) {
-  // use the native SVG interface to get the bounding box
-  var bbox = elem.getBBox()
-  // return the center of the bounding box
-  if (bbox.height > 500) {
-    return [bbox.x + bbox.width / 2, bbox.y + 200]
-  }
-  return [bbox.x + bbox.width / 2, bbox.y + bbox.height / 2]
-}
-
 // Get the correct coordinates for where to aim the metarelation
 export function get_metarelation_target(elem) {
   if (elem.classList.contains('metarelation')) {
@@ -760,26 +645,6 @@ export function get_metarelation_target(elem) {
     console.log(elem)
     return [0, 0]
   }
-}
-
-// Is this an empty relation?
-function is_empty_relation(elem) {
-  return relation_get_notes(elem).length == 0
-}
-
-// Are we looking a a single note?
-function is_note_node(elem) {
-  notes = elem.getElementsByTagName('note')
-  return elem.tagName == 'node' && notes.length == 1 && notes[0].getAttribute('corresp')
-}
-
-// Clean up in the graph to remove empty relations
-function remove_empty_relations(graph) {
-  Array.from(graph.getElementsByTagName('node')).forEach((elem) => {
-    if (!is_note_node(elem) && is_empty_relation(elem)) {
-      elem.parentNode.removeChild(elem)
-    }
-  })
 }
 
 // Average over a list of values
@@ -1024,19 +889,6 @@ export function button(value) {
   return button
 }
 
-function sanitize_mei(mei) {
-
-  var sanitized_mei = mei
-
-  strip_mei_tags.forEach(tag => {
-    Array.from(mei.getElementsByTagName(tag)).forEach(e => {
-      e.parentNode.removeChild(e)
-    })
-  })
-
-  return sanitized_mei
-}
-
 export function sanitize_xml(xml) {
 
   var sanitized_xml = xml
@@ -1129,13 +981,8 @@ export function draw_slur(startNote, endNote, isDownward) {
   const maxExistingSlurs = Math.max(nStartSlur, nEndSlur)
   const additionalHeight = maxExistingSlurs * slurOffsetHeightUnit
   const width = Math.abs(adjustedEnd[0] - adjustedStart[0])
-  const heightHeadwise = Math.abs(adjustedEnd[1] - adjustedStart [1])
-  const maxSlurWidth = 100
 
   let pathData
-
-  const minY = Math.min(adjustedStart[1], adjustedEnd[1])
-  const maxY = Math.max(adjustedStart[1], adjustedEnd[1])
 
   // Calculate two control points on axes that are perpendicular to the linear segment between the start and end of the slur,
   // and intersect that segment at 20% and 80% of its length, so that the four points together form a trapezoid.

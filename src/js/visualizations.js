@@ -53,7 +53,6 @@ function calc_hierarchy(notes, relations, roots_low = true) {
 export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low = true) {
   var svg_elem = draw_context.svg_elem
   var id_prefix = draw_context.id_prefix
-  var existing = clear_top(draw_context)
   var g_elem = g()
   g_elem.id = 'hier' + id_prefix
 
@@ -147,7 +146,7 @@ export function draw_hierarchy_graph(draw_context, hullPadding = 200, roots_low 
       elem_in_score.classList.add('relationhover')
       elem_in_score.onmouseover()
     }
-    
+
     elem.onmouseout = function () {
       elem_in_score.classList.remove('relationhover')
       elem_in_score.onmouseout()

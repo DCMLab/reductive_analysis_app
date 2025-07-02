@@ -34,8 +34,6 @@ export function compute_measure_map(draw_context) {
   // which measure we are through a simple find() later
   let svg = draw_context.svg_elem
   var measures = Array.from(svg.getElementsByClassName('measure'))
-  var staves = measures.length ? Array.from(measures[0].getElementsByClassName('staff')) : null // Just look at one measure for now
-  var notes = Array.from(svg.getElementsByClassName('note'))
   // We let the right edge of each measure make up the grid lines
   var measure_map = measures.map((msr) => [msr.getBBox().x + msr.getBBox().width, msr])
   measure_map.sort((x, y) => x[0] - y[0])
@@ -69,13 +67,6 @@ function staff_third_distance(staff) {
   let line_rect1 = staff.children[1]. // Off-center staff line
     getBBox()
   return Math.abs(line_rect0.y - line_rect1.y)
-}
-
-function staff_divider(staff1, staff2) {
-  // The midpoint between two staves
-  let mid1 = staff_midpoint(staff1)
-  let mid2 = staff_midpoint(staff2)
-  return average2(mid1, mid2)
 }
 
 function coord_staff(dc, pt, measure) {
@@ -179,7 +170,6 @@ export function pitch_grid(staff) {
 function coord_pitch(dc, pt, staff) {
   // Compute the diatonic pitch that best matches a specific height
   // relative to a specific staff.
-  var n = staff.getElementsByClassName('note')[0]
   // TODO: Handle if there are no notes in the current staff
   //  var [y_to_p,p_to_y] = pitch_grid(staff,n);
   return staff.y_to_p(pt.y)
@@ -228,15 +218,12 @@ function note_params() {
 
 function note_params_coords_sim(pname, oct, note) {
   var staff = note.closest('.staff') // Assume we're in the same staff
-  var n = staff.getElementsByClassName('note')[0]
   // TODO: Handle if there are no notes in the current staff
   //  var [y_to_p,p_to_y] = pitch_grid(staff,note);
   return [note_coords(note)[0], staff.p_to_y(pname, oct)]
 }
 
 function show_note(pname, oct, note, sim = true, id = '') {
-  var current_draw_context = getCurrentDrawContext()
-  var dc = current_draw_context
   var curr_elem = document.getElementById(id)
   if (curr_elem)
     curr_elem.parentElement.removeChild(curr_elem)
@@ -257,8 +244,6 @@ function show_note(pname, oct, note, sim = true, id = '') {
 }
 
 function draw_note(pname, oct, note, sim = true, id = '') {
-  var current_draw_context = getCurrentDrawContext()
-  var dc = current_draw_context
   var curr_elem = document.getElementById(id)
   var added = []
   if (curr_elem)

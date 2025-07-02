@@ -2,7 +2,7 @@
 // https://github.com/danigb/smplr
 
 import MidiPlayer from 'midi-player-js'
-import { SplendidGrandPiano, Soundfont } from 'smplr'
+import { SplendidGrandPiano } from 'smplr'
 import { getOrigMidi } from '../../../app'
 import { setAttributes } from '../../utils/dom'
 import { clamp, round } from '../../utils/math'

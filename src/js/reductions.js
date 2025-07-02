@@ -14,7 +14,6 @@ import {
   hide_he,
   hide_note_hier,
   hide_note,
-  note_coords,
   relation_primaries,
   relation_secondaries
 } from './utils'

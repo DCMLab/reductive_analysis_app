@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Checks for unused javascript functions in the given folder ($1)
+# Checks for unused functions in the given folder ($1),
+# should ignore unnamed lambdas
 
 # Check for argument
 if [ $# -eq 0 ]

@@ -8,7 +8,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 import $ from 'jquery'
 import DragSelect from 'dragselect'
 
-import newApp from './new/app'
+import newApp from './app'
 import {
   action_conf,
   custom_conf,
@@ -29,7 +29,7 @@ import {
   getVerovioToolkit,
   getData,
   getDrawContexts,
-} from './app'
+} from './bootstrap'
 
 import { do_reduce_pre } from './reductions'
 import { draw_hierarchy_graph } from './visualizations'
@@ -42,12 +42,12 @@ import { place_note, update_placing_note } from './coordinates'
 
 import { delete_relations } from './delete'
 import { do_redo, do_undo } from './undo_redo'
-import { isFieldFocused } from './new/utils/forms'
-import { rootStyles } from './new/utils/document'
-import { metaRelationTypes, relationTypes } from './new/modules/Relations/config'
-import accidentals from './new/modules/UI/Accidentals'
-import bookmarks from './new/modules/UI/Bookmarks'
-import layersMenu from './new/modules/UI/Layers'
+import { isFieldFocused } from './utils/forms'
+import { rootStyles } from './utils/document'
+import { metaRelationTypes, relationTypes } from './modules/Relations/config'
+import accidentals from './modules/UI/Accidentals'
+import bookmarks from './modules/UI/Bookmarks'
+import layersMenu from './modules/UI/Layers'
 import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */

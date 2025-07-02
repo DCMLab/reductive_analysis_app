@@ -5,11 +5,11 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import { getUndoActions } from './app'
+import { getUndoActions } from './bootstrap'
 import { getCurrentDrawContext, getMouseX, getMouseY, getPlacingNote, setPlacingNote, toggle_selected } from './ui'
 import { flush_redo } from './undo_redo'
 import { average2, get_by_id, get_id, mod, note_coords, note_to_chord, random_id } from './utils'
-import newNote from './new/modules/UI/Note'
+import newNote from './modules/UI/Note'
 
 // The functions in this file are all about converting clicks and mouse
 // positions to musically salient information (pitch and time) given a

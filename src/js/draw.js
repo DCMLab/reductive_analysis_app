@@ -5,8 +5,8 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import newApp from './new/app'
-import { captureEvent } from './new/events/options'
+import newApp from './app'
+import { captureEvent } from './events/options'
 import { toggle_selected, toggle_shade } from './ui'
 import {
   add_to_svg_bg,

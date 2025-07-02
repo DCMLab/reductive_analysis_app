@@ -5,7 +5,7 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import { getMeiGraph } from './app'
+import { getMeiGraph } from './bootstrap'
 import { clear_top, adjust_top } from './ui'
 import { add_to_svg_bg, average, g, get_by_id, id_in_svg, line, note_coords, rect, text } from './utils'
 
@@ -151,7 +151,7 @@ export function load_tree() {
 }
 
 function get_tree_from_input() {
-  // temporary, see src/js/new/modules/UI/Layers/relationsTree.js / `onSubmit`
+  // temporary, see src/js/modules/UI/Layers/relationsTree.js / `onSubmit`
   return JSON.parse(document.getElementById('json-tree').value)
 
   var input = document.getElementById('json-tree')

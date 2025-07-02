@@ -9,7 +9,7 @@ import $ from 'jquery'
 import { polygonHull } from 'd3-polygon'
 // import fuzzysearch from 'fuzzysearch'
 
-import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './app'
+import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './bootstrap'
 import { strip_xml_tags } from './conf'
 import { toggle_selected, getMouseX, getMouseY } from './ui'
 

@@ -18,7 +18,7 @@ import { notes_template,
 
 import { toggle_selected } from './ui'
 
-import { do_relation } from './app'
+import { do_relation } from './bootstrap'
 
 var copy = {}
 

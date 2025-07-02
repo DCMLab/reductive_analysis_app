@@ -7,7 +7,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 */
 
 import $ from 'jquery'
-import { getDrawContexts } from './app'
+import { getDrawContexts } from './bootstrap'
 
 // Option drag implementation for metarelations
 let isDragging = false

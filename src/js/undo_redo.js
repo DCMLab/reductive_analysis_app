@@ -14,7 +14,7 @@ import {
   getRerenderedAferAction,
   getUndoActions,
   setRedoActions
-} from './app'
+} from './bootstrap'
 import { do_note } from './coordinates'
 import { delete_relations } from './delete'
 import { toggle_selected, toggle_shade } from './ui'

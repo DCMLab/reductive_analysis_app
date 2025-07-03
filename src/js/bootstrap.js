@@ -24,10 +24,10 @@ window.extraselected = []
 
 // Regular imports
 
-import { add_metarelation, add_relation } from './graph'
-import { mei_for_layer, new_layer } from './layers'
-import { new_sliced_layer } from './slicing'
-import { draw_relation, draw_metarelation } from './draw'
+import { add_metarelation, add_relation } from './action/graph'
+import { mei_for_layer, new_layer } from './utils/layers'
+import { new_sliced_layer } from './utils/slicing'
+import { draw_relation, draw_metarelation } from './action/draw'
 
 import {
   adjustSvgDimensions,
@@ -63,8 +63,8 @@ import {
   prefix_ids,
   sanitize_xml,
 } from './utils/misc'
-import { compute_measure_map, pitch_grid } from './coordinates'
-import { flush_redo } from './undo_redo'
+import { compute_measure_map, pitch_grid } from './modules/UI/utils/coordinates'
+import { flush_redo } from './action/undo_redo'
 import { comboRelationTypes } from './modules/Relations/config'
 import { setAttributes } from './utils/dom'
 

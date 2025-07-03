@@ -1,4 +1,4 @@
-import { do_redo, do_undo } from '../../undo_redo'
+import { do_redo, do_undo } from '../../action/undo_redo'
 
 class History {
   constructor() {

@@ -8,7 +8,7 @@ import {
   start_placing_note,
   stop_placing_note,
   toggle_placing_note,
-} from '../../../coordinates'
+} from '../utils/coordinates'
 
 class NewNote {
   constructor() {

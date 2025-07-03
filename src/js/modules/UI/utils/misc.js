@@ -38,10 +38,10 @@ import { do_copy, do_paste } from './copy_paste'
 
 import { scrollThroughRelations, get_class_from_classlist, select_samenote, unmark_secondaries } from '../../../utils/misc'
 
-import { place_note, update_placing_note } from '../../../coordinates'
+import { place_note, update_placing_note } from './coordinates'
 
-import { delete_relations } from '../../../delete'
-import { do_redo, do_undo } from '../../../undo_redo'
+import { delete_relations } from '../../../action/delete'
+import { do_redo, do_undo } from '../../../action/undo_redo'
 import { isFieldFocused } from '../../../utils/forms'
 import { rootStyles } from '../../../utils/document'
 import { metaRelationTypes, relationTypes } from '../../Relations/config'

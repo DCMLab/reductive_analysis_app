@@ -4,7 +4,7 @@ import {
   do_comborelation,
 } from '../../../bootstrap'
 
-import { delete_relations } from '../../../delete'
+import { delete_relations } from '../../../action/delete'
 import { doc } from '../../../utils/document'
 
 import {

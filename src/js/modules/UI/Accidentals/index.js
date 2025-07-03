@@ -1,4 +1,4 @@
-import { naturalize_note } from '../../../accidentals'
+import { naturalize_note } from './utils'
 import { toggle_selected } from '../utils/misc'
 import { draw_context_of } from '../../../utils/misc'
 import score from '../../Score'

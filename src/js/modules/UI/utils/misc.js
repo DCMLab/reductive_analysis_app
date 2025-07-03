@@ -8,7 +8,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 import $ from 'jquery'
 import DragSelect from 'dragselect'
 
-import newApp from './app'
+import newApp from '../../../app'
 import {
   action_conf,
   custom_conf,
@@ -17,7 +17,7 @@ import {
   meta_conf,
   type_conf,
   navigation_conf,
-} from './conf'
+} from '../../../conf'
 
 import {
   do_relation,
@@ -29,25 +29,25 @@ import {
   getVerovioToolkit,
   getData,
   getDrawContexts,
-} from './bootstrap'
+} from '../../../bootstrap'
 
 import { do_reduce_pre } from './reductions'
 import { draw_hierarchy_graph } from './visualizations'
 
 import { do_copy, do_paste } from './copy_paste'
 
-import { scrollThroughRelations, get_class_from_classlist, select_samenote, unmark_secondaries } from './utils'
+import { scrollThroughRelations, get_class_from_classlist, select_samenote, unmark_secondaries } from '../../../utils/misc'
 
-import { place_note, update_placing_note } from './coordinates'
+import { place_note, update_placing_note } from '../../../coordinates'
 
-import { delete_relations } from './delete'
-import { do_redo, do_undo } from './undo_redo'
-import { isFieldFocused } from './utils/forms'
-import { rootStyles } from './utils/document'
-import { metaRelationTypes, relationTypes } from './modules/Relations/config'
-import accidentals from './modules/UI/Accidentals'
-import bookmarks from './modules/UI/Bookmarks'
-import layersMenu from './modules/UI/Layers'
+import { delete_relations } from '../../../delete'
+import { do_redo, do_undo } from '../../../undo_redo'
+import { isFieldFocused } from '../../../utils/forms'
+import { rootStyles } from '../../../utils/document'
+import { metaRelationTypes, relationTypes } from '../../Relations/config'
+import accidentals from '../Accidentals'
+import bookmarks from '../Bookmarks'
+import layersMenu from '../Layers'
 import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */

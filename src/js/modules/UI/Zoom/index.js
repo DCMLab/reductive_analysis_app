@@ -1,4 +1,4 @@
-import { getCurrentDrawContext } from '../../../ui'
+import { getCurrentDrawContext } from '../utils/misc'
 
 const ZOOM_DEFAULT = 1
 const ZOOM_STEP = 1.1

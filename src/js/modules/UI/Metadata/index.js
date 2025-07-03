@@ -1,4 +1,4 @@
-import { get_by_id, get_id } from '../../../utils'
+import { get_by_id, get_id } from '../../../utils/misc'
 import score from '../../Score'
 
 import config from './config'

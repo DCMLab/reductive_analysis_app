@@ -5,9 +5,9 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import newApp from './app'
-import { getMeiGraph } from './bootstrap'
-import { adjust_top, clear_top, toggle_selected, toggle_shade } from './ui'
+import newApp from '../../../app'
+import { getMeiGraph } from '../../../bootstrap'
+import { adjust_top, clear_top, toggle_selected, toggle_shade } from './misc'
 import {
   add_to_svg_bg,
   circle,
@@ -24,9 +24,9 @@ import {
   roundedHull,
   text,
   tspan,
-} from './utils'
+} from '../../../utils/misc'
 import { calc_reduce } from './reductions'
-import { captureEvent } from './events/options'
+import { captureEvent } from '../../../events/options'
 
 // Returns a list of list of IDs
 function calc_hierarchy(notes, relations, roots_low = true) {

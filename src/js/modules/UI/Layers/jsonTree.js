@@ -1,5 +1,5 @@
-import { align_tree, draw_tree, load_tree, save_tree } from '../../../trees'
-import { getCurrentDrawContext } from '../../../ui'
+import { align_tree, draw_tree, load_tree, save_tree } from '../utils/trees'
+import { getCurrentDrawContext } from '../utils/misc'
 
 export default class JsonTree {
   constructor(layers) {

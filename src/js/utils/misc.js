@@ -9,9 +9,9 @@ import $ from 'jquery'
 import { polygonHull } from 'd3-polygon'
 // import fuzzysearch from 'fuzzysearch'
 
-import { getDrawContexts, getMeiGraph, getVerovioToolkit } from './bootstrap'
-import { strip_xml_tags } from './conf'
-import { toggle_selected, getMouseX, getMouseY } from './ui'
+import { getDrawContexts, getMeiGraph, getVerovioToolkit } from '../bootstrap'
+import { strip_xml_tags } from '../conf'
+import { toggle_selected, getMouseX, getMouseY } from '../modules/UI/utils/misc'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232

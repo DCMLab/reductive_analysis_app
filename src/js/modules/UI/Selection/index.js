@@ -2,7 +2,7 @@ import {
   do_deselect,
   getCurrentDrawContext,
   select_visibles
-} from '../../../ui'
+} from '../utils/misc'
 import SelectionLegend from './legend'
 import SelectionMode from './mode'
 

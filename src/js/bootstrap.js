@@ -15,7 +15,6 @@ import { debug } from './conf'
 
 import newApp from './app'
 import { downloadAs } from './utils/file'
-import { adjustSvgDimensions } from './ui'
 
 // Clicking selects, exposed globally
 window.selected = []
@@ -31,6 +30,7 @@ import { new_sliced_layer } from './slicing'
 import { draw_relation, draw_metarelation } from './draw'
 
 import {
+  adjustSvgDimensions,
   drag_selector_installer,
   getCurrentDrawContext,
   handle_click,
@@ -40,7 +40,7 @@ import {
   toggle_selected,
   toggle_shade,
   setCurrentDrawContext,
-} from './ui'
+} from './modules/UI/utils/misc'
 
 import {
   add_mei_node_for,
@@ -62,7 +62,7 @@ import {
   note_to_rest,
   prefix_ids,
   sanitize_xml,
-} from './utils'
+} from './utils/misc'
 import { compute_measure_map, pitch_grid } from './coordinates'
 import { flush_redo } from './undo_redo'
 import { comboRelationTypes } from './modules/Relations/config'
@@ -75,10 +75,7 @@ import { setAttributes } from './utils/dom'
  * - https://github.com/csstools/postcss-plugins/tree/main/experimental
  */
 import cssHasPseudo from 'css-has-pseudo'
-// const cssHasPseudo = require('css-has-pseudo/browser') // defect
 cssHasPseudo(document)
-
-// require('verovio') // https://github.com/rism-digital/verovio/tree/develop/emscripten/npm
 
 // GLOBALS
 // Load Verovio
@@ -95,9 +92,7 @@ var data
 // We need a reader
 var reader = new FileReader()
 var filename
-// Did we change the MEI somehow?
-// Our undo stack. TODO: is this being empty the same as
-// changes being false?
+// Our undo stack.
 var undo_actions = []
 
 var redo_actions = [] // TODO, maybe?

@@ -6,7 +6,7 @@ import RelationsTree  from './relationsTree'
 import MetaRelation   from './metaRelation'
 import { initLayerResize } from './layer_resize'
 import { navigation_conf } from '../../../conf'
-import { getCurrentDrawContext, setCurrentDrawContext } from '../../../ui'
+import { getCurrentDrawContext, setCurrentDrawContext } from '../utils/misc'
 import { doc } from '../../../utils/document'
 import bookmarks from '../Bookmarks'
 

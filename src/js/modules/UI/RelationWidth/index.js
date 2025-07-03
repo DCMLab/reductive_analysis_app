@@ -1,4 +1,4 @@
-import { handle_curvature_controller } from '../../../ui'
+import { handle_curvature_controller } from '../utils/misc'
 import Progress from './progress'
 
 class RelationWidth {

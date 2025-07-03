@@ -17,8 +17,8 @@ import {
 } from './bootstrap'
 import { do_note } from './coordinates'
 import { delete_relations } from './delete'
-import { toggle_selected, toggle_shade } from './ui'
-import { get_id, get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, mark_secondaries, unmark_secondaries } from './utils'
+import { toggle_selected, toggle_shade } from './modules/UI/utils/misc'
+import { get_id, get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, mark_secondaries, unmark_secondaries } from './utils/misc'
 
 // Oops, undo whatever we did last.
 export function do_undo() {

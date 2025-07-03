@@ -7,7 +7,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 */
 import newApp from './app'
 import { captureEvent } from './events/options'
-import { toggle_selected, toggle_shade } from './ui'
+import { toggle_selected, toggle_shade } from './modules/UI/utils/misc'
 import {
   add_to_svg_bg,
   average,
@@ -27,7 +27,7 @@ import {
   isSlurDownward,
   get_by_id,
   handleFlip
-} from './utils'
+} from './utils/misc'
 
 // Given a draw context and a graph node representing a relation, draw the
 // relation in the draw context.

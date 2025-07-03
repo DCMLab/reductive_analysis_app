@@ -1,4 +1,4 @@
-import { toggle_equalize, toggle_orphan_notes } from '../../../ui'
+import { toggle_equalize, toggle_orphan_notes } from '../utils/misc'
 import { doc } from '../../../utils/document'
 
 const AUTO_CLOSE_TIMEOUT = 10000 // in milliseconds

@@ -1,4 +1,4 @@
-import { to_text } from '../../../utils'
+import { to_text } from '../../../utils/misc'
 import score from '../../Score'
 
 /**

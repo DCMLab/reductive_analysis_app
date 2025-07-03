@@ -14,11 +14,11 @@ import { notes_template,
 	 notes_in_range,
 	 draw_context_of,
   time_offset,
-  pitch_offset, } from './utils'
+  pitch_offset, } from '../../../utils/misc'
 
-import { toggle_selected } from './ui'
+import { toggle_selected } from './misc'
 
-import { do_relation } from './bootstrap'
+import { do_relation } from '../../../bootstrap'
 
 var copy = {}
 

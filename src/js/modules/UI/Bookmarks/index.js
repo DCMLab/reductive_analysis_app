@@ -1,4 +1,4 @@
-import { getCurrentDrawContext } from '../../../ui'
+import { getCurrentDrawContext } from '../utils/misc'
 import { doc } from '../../../utils/document'
 import { getDOMRect } from '../../../utils/dom'
 import score from '../../Score'

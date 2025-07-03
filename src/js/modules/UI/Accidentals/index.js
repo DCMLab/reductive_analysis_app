@@ -1,6 +1,6 @@
 import { naturalize_note } from '../../../accidentals'
-import { toggle_selected } from '../../../ui'
-import { draw_context_of } from '../../../utils'
+import { toggle_selected } from '../utils/misc'
+import { draw_context_of } from '../../../utils/misc'
 import score from '../../Score'
 
 // Accidentals can only be changed on an editable layer.

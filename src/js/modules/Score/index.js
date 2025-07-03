@@ -1,5 +1,5 @@
-import { getCurrentDrawContext } from '../../ui'
-import { draw_context_of } from '../../utils'
+import { getCurrentDrawContext } from '../UI/utils/misc'
+import { draw_context_of } from '../../utils/misc'
 import { CacheMap } from '../../utils/cache'
 import layersMenu from '../UI/Layers'
 

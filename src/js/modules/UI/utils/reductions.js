@@ -5,8 +5,8 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import { getMeiGraph } from './bootstrap'
-import { toggle_selected } from './ui'
+import { getMeiGraph } from '../../../bootstrap'
+import { toggle_selected } from './misc'
 import {
   get_by_id,
   get_id,
@@ -16,7 +16,7 @@ import {
   hide_note,
   relation_primaries,
   relation_secondaries
-} from './utils'
+} from '../../../utils/misc'
 
 export function calc_reduce(mei_graph, remaining_relations, target_relations) {
   // No primary of a remaining relation is removed in this

@@ -1,5 +1,5 @@
 import { create_new_layer, delete_layer } from '../../../bootstrap'
-import { getCurrentDrawContext } from '../../../ui'
+import { getCurrentDrawContext } from '../utils/misc'
 
 export default class LayerControls {
   constructor(layers) {

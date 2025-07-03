@@ -1,5 +1,5 @@
-import { getCurrentDrawContext, hide_top } from '../../../ui'
-import { draw_hierarchy_graph } from '../../../visualizations'
+import { getCurrentDrawContext, hide_top } from '../utils/misc'
+import { draw_hierarchy_graph } from '../utils/visualizations'
 
 export default class RelationsTree {
   constructor(layers) {

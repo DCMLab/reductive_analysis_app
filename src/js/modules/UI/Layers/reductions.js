@@ -1,6 +1,6 @@
-import { do_reduce_pre, undo_reduce } from '../../../reductions'
-import { getReducedMidi } from '../../../ui'
-import { getCurrentDrawContext } from '../../../ui'
+import { do_reduce_pre, undo_reduce } from '../utils/reductions'
+import { getReducedMidi } from '../utils/misc'
+import { getCurrentDrawContext } from '../utils/misc'
 import player from '../../Player'
 
 export default class Reductions {

@@ -1,4 +1,4 @@
-import { getCurrentDrawContext } from '../../../ui'
+import { getCurrentDrawContext } from '../utils/misc'
 
 /**
  * Hide all meta relations in the given layer

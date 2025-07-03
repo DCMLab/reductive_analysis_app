@@ -5,9 +5,9 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import { getMeiGraph } from './bootstrap'
-import { clear_top, adjust_top } from './ui'
-import { add_to_svg_bg, average, g, get_by_id, id_in_svg, line, note_coords, rect, text } from './utils'
+import { getMeiGraph } from '../../../bootstrap'
+import { clear_top, adjust_top } from './misc'
+import { add_to_svg_bg, average, g, get_by_id, id_in_svg, line, note_coords, rect, text } from '../../../utils/misc'
 
 function calculate_initial_y(node, baseline, min_dist) {
   if (node.children.length == 0) {

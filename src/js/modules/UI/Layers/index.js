@@ -10,6 +10,8 @@ import { getCurrentDrawContext, setCurrentDrawContext } from '../utils/misc'
 import { doc } from '../../../utils/document'
 import bookmarks from '../Bookmarks'
 
+const MIN_CURR_HEIGHT = 150
+
 class LayersMenu {
   #visible = false
 
@@ -19,7 +21,7 @@ class LayersMenu {
 
     this.layersEls = document.getElementsByClassName('layer-new-ui')
 
-    this.visibleLayer = 0 // most visible layer on screen
+    this.visibleLayer = 1 // Top layer with min. height
     this.activeLayer = 0
 
     this.$visibleLayer = document.getElementById('visible-layer')
@@ -180,11 +182,26 @@ class LayersMenu {
         }
       })
 
-      // The most visible layer is marked as current.
-      const highestVisibility = Math.max(...this.contexts.map(layer => layer.visibleHeight))
-      const mostVisibleLayer = this.contexts.find(layer => layer.visibleHeight == highestVisibility)
-      this.visibleLayer = parseInt(mostVisibleLayer.layer.layer_elem.dataset.position) + 1
-      this.updateNavigation()
+      // The upper visible layer is marked as current.
+      // Filter out layers that are too small
+      let visLayers = this.contexts.filter(
+        layer => layer.visibleHeight > MIN_CURR_HEIGHT
+      )
+
+      // Take the smallest ID (upper one)
+      let minLayer = visLayers[0]
+      for (let i = 1; i < visLayers.length; i++) {
+        if (visLayers[i].layer_number < minLayer.layer_number) {
+          minLayer = visLayers[i]
+        }
+      }
+
+      // Update navigation
+      if (minLayer) {
+        this.visibleLayer =
+          parseInt(minLayer.layer.layer_elem.dataset.position) + 1
+        this.updateNavigation()
+      }
     }, {
       threshold: [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1],
     })

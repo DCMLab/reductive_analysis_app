@@ -296,18 +296,22 @@ export function handle_keypress(ev) {
     newApp.ui.layersMenu.metaRelation.toggle()
   } else if (ev.key == navigation_conf.pan_left) {
     // Move to the left
+    // TODO: Cleaner, please!
     let vis = document.getElementsByClassName('layer--active')[0]
     let view = vis.getElementsByClassName('view')[0]
-    console.log(vis)
-    console.log(view)
-    view.scrollBy(-50, 0)
+    view.scrollBy({
+      left: -900,
+      behavior: 'smooth',
+    })
   } else if (ev.key == navigation_conf.pan_right) {
     // Move to the right
+    // TODO: Cleaner, please...
     let vis = document.getElementsByClassName('layer--active')[0]
     let view = vis.getElementsByClassName('view')[0]
-    console.log(vis)
-    console.log(view)
-    view.scrollBy(50, 0)
+    view.scrollBy({
+      left: 900,
+      behavior: 'smooth',
+    })
   } else if (ev.key == navigation_conf.jump_to_next_bookmark) {
     // Jump to previous bookmark in current context.
     bookmarks.goTo(-1)

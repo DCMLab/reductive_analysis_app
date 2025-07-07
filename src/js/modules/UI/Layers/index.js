@@ -19,8 +19,8 @@ class LayersMenu {
 
     this.layersEls = document.getElementsByClassName('layer-new-ui')
 
-    this.visibleLayer = 1 // most visible layer on screen
-    this.activeLayer = 1
+    this.visibleLayer = 0 // most visible layer on screen
+    this.activeLayer = 0
 
     this.$visibleLayer = document.getElementById('visible-layer')
     this.$currentLayer = document.getElementById('current-layer')
@@ -193,10 +193,16 @@ class LayersMenu {
   moveBy(distance = 0) {
     const destinationLayer = this.visibleLayer + distance
 
-    const layerEl = this.contexts.reverse()[destinationLayer - 1].layer.layer_elem
-    this.contexts.reverse() // re-reverse array (reverse modifies the original…)
+    let rev_contexts = this.contexts.reverse()
+    if (typeof rev_contexts[destinationLayer - 1] != 'undefined') {
 
-    layerEl.scrollIntoView()
+      const layerEl = rev_contexts[destinationLayer - 1].layer.layer_elem
+      layerEl.scrollIntoView()
+
+    } else {
+      console.log('Asked layer does not exist')
+    }
+    this.contexts.reverse() // re-reverse array (reverse modifies the original…)
   }
 
   addMouseListeners() {

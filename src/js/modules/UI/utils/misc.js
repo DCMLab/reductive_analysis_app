@@ -48,6 +48,7 @@ import { metaRelationTypes, relationTypes } from '../../Relations/config'
 import accidentals from '../Accidentals'
 import bookmarks from '../Bookmarks'
 import layersMenu from '../Layers'
+import relationsMenu from '../Relations'
 import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */
@@ -293,6 +294,20 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.toggle_metarelations) {
     // Toggle meta-relation visibility
     newApp.ui.layersMenu.metaRelation.toggle()
+  } else if (ev.key == navigation_conf.pan_left) {
+    // Move to the left
+    let vis = document.getElementsByClassName('layer--active')[0]
+    let view = vis.getElementsByClassName('view')[0]
+    console.log(vis)
+    console.log(view)
+    view.scrollBy(-50, 0)
+  } else if (ev.key == navigation_conf.pan_right) {
+    // Move to the right
+    let vis = document.getElementsByClassName('layer--active')[0]
+    let view = vis.getElementsByClassName('view')[0]
+    console.log(vis)
+    console.log(view)
+    view.scrollBy(50, 0)
   } else if (ev.key == navigation_conf.jump_to_next_bookmark) {
     // Jump to previous bookmark in current context.
     bookmarks.goTo(-1)
@@ -316,12 +331,16 @@ export function handle_keypress(ev) {
     bookmarks.toggle()
   } else if (ev.key == custom_conf.relation) {
     // Custom relations.
-    ev.preventDefault()
-    // $('#custom_type').select2('open')
+    relationsMenu.compact(
+      relationsMenu.ctn.el.classList.contains('fly-out__compact')
+    )
+    document.getElementById('free-field-relations').select()
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
-    ev.preventDefault()
-    // $('#meta_custom_type').select2('open')
+    relationsMenu.compact(
+      relationsMenu.ctn.el.classList.contains('fly-out__compact')
+    )
+    document.getElementById('free-field-metarelations').select()
   } else if ((e = Object.entries(type_conf).find(c => c[1].key == ev.key))) {
     // Add a relation
     do_relation(e[0])

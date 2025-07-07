@@ -6,11 +6,12 @@ import RelationsTree  from './relationsTree'
 import MetaRelation   from './metaRelation'
 import { initLayerResize } from './layer_resize'
 import { navigation_conf } from '../../../conf'
-import { getCurrentDrawContext, setCurrentDrawContext } from '../utils/misc'
+import {
+  getCurrentDrawContext,
+  setCurrentDrawContext,
+  scrollDoc } from '../utils/misc'
 import { doc } from '../../../utils/document'
 import bookmarks from '../Bookmarks'
-
-const MIN_CURR_HEIGHT = 150
 
 class LayersMenu {
   #visible = false
@@ -21,10 +22,8 @@ class LayersMenu {
 
     this.layersEls = document.getElementsByClassName('layer-new-ui')
 
-    this.visibleLayer = 1 // Top layer with min. height
     this.activeLayer = 0
 
-    this.$visibleLayer = document.getElementById('visible-layer')
     this.$currentLayer = document.getElementById('current-layer')
 
     this.new = new LayerControls(this)
@@ -39,8 +38,6 @@ class LayersMenu {
     this.$saveSettingsCtn = document.getElementById('layer-menu-settings')
     this.$shouldSave = document.getElementById('should-save-layer')
     this.$lockBtn = document.getElementById('layer-lock')
-
-    this.initObserver()
 
     // Initialize layer resize functionality
     this.resizeHandler = initLayerResize(this)
@@ -57,8 +54,8 @@ class LayersMenu {
 
     if (e.target == this.toggleBtn) { return this.toggleVisibility() }
 
-    if (e.target == this.nextLayerBtn) { return this.moveBy(1) }
-    if (e.target == this.previousLayerBtn) { return this.moveBy(-1) }
+    if (e.target == this.nextLayerBtn) { return scrollDoc() }
+    if (e.target == this.previousLayerBtn) { return scrollDoc(false) }
 
     if (e.target == this.$lockBtn) { return this.toggleLock() }
     if (e.target == this.$shouldSave) { return this.toggleSave() }
@@ -134,13 +131,6 @@ class LayersMenu {
     doc.classList.toggle('not-in-layer-1', !layerOneIsActive)
   }
 
-  updateNavigation() {
-    this.$visibleLayer.innerHTML = this.visibleLayer
-
-    this.previousLayerBtn.toggleAttribute('disabled', this.visibleLayer == 1)
-    this.nextLayerBtn.toggleAttribute('disabled', this.visibleLayer == this.contexts.length)
-  }
-
   // Observe intersection of layers with viewport to know the current one.
 
   observe() {
@@ -169,57 +159,6 @@ class LayersMenu {
         this.observer.observe(layer.layer.layer_elem.querySelector('.layer-intersection-landmark'))
         layer.observing = true
       })
-  }
-
-  initObserver() {
-    this.observer = new IntersectionObserver(entries => {
-
-      // Store the height of the layer being visible in the viewport.
-      entries.forEach(entry => {
-        const layer = this.contexts.find(layer => entry.target.dataset.position == layer.layer.layer_number)
-        if (layer) {
-          layer.visibleHeight = entry.intersectionRect.height ?? 0
-        }
-      })
-
-      // The upper visible layer is marked as current.
-      // Filter out layers that are too small
-      let visLayers = this.contexts.filter(
-        layer => layer.visibleHeight > MIN_CURR_HEIGHT
-      )
-
-      // Take the smallest ID (upper one)
-      let minLayer = visLayers[0]
-      for (let i = 1; i < visLayers.length; i++) {
-        if (visLayers[i].layer_number < minLayer.layer_number) {
-          minLayer = visLayers[i]
-        }
-      }
-
-      // Update navigation
-      if (minLayer) {
-        this.visibleLayer =
-          parseInt(minLayer.layer.layer_elem.dataset.position) + 1
-        this.updateNavigation()
-      }
-    }, {
-      threshold: [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1],
-    })
-  }
-
-  moveBy(distance = 0) {
-    const destinationLayer = this.visibleLayer + distance
-
-    let rev_contexts = this.contexts.reverse()
-    if (typeof rev_contexts[destinationLayer - 1] != 'undefined') {
-
-      const layerEl = rev_contexts[destinationLayer - 1].layer.layer_elem
-      layerEl.scrollIntoView()
-
-    } else {
-      console.log('Asked layer does not exist')
-    }
-    this.contexts.reverse() // re-reverse array (reverse modifies the original…)
   }
 
   addMouseListeners() {

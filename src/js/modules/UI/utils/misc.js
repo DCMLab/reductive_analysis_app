@@ -63,6 +63,8 @@ var current_draw_context
 var mouseX
 var mouseY
 
+const SCROLL = 250
+
 export const getMouseX = () => mouseX
 export const getMouseY = () => mouseY
 
@@ -74,6 +76,20 @@ var show_orphans = true
 
 // Stack of note selection. Helps to retrieve the really last selected note.
 const selectedNotesIds = []
+
+/*
+ * Scrolls in the document by a fixed amount smoothly. Down by default.
+ *
+ * @param {boolean} down Specifies the direction
+ *
+ */
+export function scrollDoc(down = true) {
+  let step = down ? SCROLL : -SCROLL
+  document.documentElement.scrollBy({
+    top: step,
+    behavior: 'smooth',
+  })
+}
 
 // Toggle if a thing (for now: note or relation) is selected or not.
 export function toggle_selected(item, extra = null) {
@@ -320,10 +336,10 @@ export function handle_keypress(ev) {
     bookmarks.goTo(1)
   } else if (ev.key == navigation_conf.jump_to_context_below) {
     // Jump to next context.
-    layersMenu.moveBy(1)
+    scrollDoc()
   } else if (ev.key == navigation_conf.jump_to_context_above) {
     // Jump to previous context.
-    layersMenu.moveBy(-1)
+    scrollDoc(false)
   } else if (ev.key == action_conf.deselect_all) {
     // Deselect all.
     do_deselect()

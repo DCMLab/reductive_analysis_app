@@ -913,11 +913,23 @@ export function get_id_pairs(elem) {
 
 export function new_layer_element() {
   var layers_element = document.getElementById('layers')
+  var id = layers_element.children.length
+
+  var new_num = document.createElement('div')
+  var h_num = document.createElement('h1')
+  h_num.innerHTML = id + 1
+  new_num.id = 'layer_num' + id
+  new_num.classList.add('layer_num')
+  new_num.appendChild(h_num)
+
   var new_layer = document.createElement('div')
-  new_layer.id = 'layer' + layers_element.children.length
+  new_layer.id = 'layer' + id
   new_layer.classList.add('layer')
   new_layer.classList.add('layer-new-ui')
+  new_layer.appendChild(new_num)
+
   layers_element.appendChild(new_layer)
+
   return new_layer
 }
 

@@ -70,7 +70,6 @@
   --layers-nav-bg: #{colors.$alto};
   background: var(--layers-nav-bg);
   border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
-
 }
 
 .layers-menu__navBtn {
@@ -120,4 +119,24 @@
 
   background: var(--bg);
   border-bottom: .1rem solid colors.$lacquered-licorice;
+}
+
+.layer_num {
+  position: absolute;
+
+  display:grid;
+  justify-content: center;
+
+  height: 13%;
+  aspect-ratio: 1 / 1;
+
+  top:  80%;
+  left: 95%;
+
+  background: colors.$gallery;
+  border: 0.24rem solid colors.$silver;
+  border-radius: var(--btn-default-radius)
+                 var(--btn-default-radius)
+                 var(--btn-default-radius)
+                 var(--btn-default-radius);
 }

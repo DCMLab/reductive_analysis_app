@@ -71,8 +71,6 @@
   background: var(--layers-nav-bg);
   border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
 
-  transition: transform 1s easings.$in-out-quad;
-  transform: translateX(calc(-100% * var(--layers-nav-hidden, 1)));
 }
 
 .layers-menu__navBtn {

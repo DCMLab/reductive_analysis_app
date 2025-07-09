@@ -28,7 +28,7 @@
   "dependencies": {
     "d3": "^7.9.0",
     "d3-polygon": "^3.0.1",
-    "dragselect": "3.1.1",
+    "dragselect": "^3.1.1",
     "expect-puppeteer": "^11.0.0",
     "jquery": "^3.7.1",
     "midi-player-js": "^2.0.16",

@@ -435,11 +435,13 @@ export function drag_selector_installer() {
     autoScrollSpeed: 0.0001,
   })
 
-  drag_selector.subscribe('Ds:start', ({ items, event, isDragging }) => {
+  window.drag_selector.subscribe('Ds:start', (e) => {
     $('.ds-selector-area').show()
+    console.log('Starting dragging')
   })
 
-  drag_selector.subscribe('Ds:update', ({ items, event, isDragging }) => {
+  window.drag_selector.subscribe('Ds:update', (e) => {
+    console.log('Dragging')
     // Do not drag-select if a note is being added
     if (placing_note == '') {
       if ($('.ds-selector').height() > 10 || $('.ds-selector').width() > 10) {
@@ -483,8 +485,9 @@ export function drag_selector_installer() {
     }
   })
 
-  drag_selector.subscribe('Ds:end', ({ items, event, isDragging }) => {
+  window.drag_selector.subscribe('Ds:end', (e) => {
     document.getElementById('layers').style.cursor = 'default'
+    console.log('Ending dragging')
     $('.ds-selector-area').hide()
   })
 }

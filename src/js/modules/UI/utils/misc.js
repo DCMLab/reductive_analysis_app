@@ -429,19 +429,17 @@ export function drag_selector_installer() {
 
   window.drag_selector = new DragSelect({
     selectables: document.getElementsByClassName('relation'),
-    area: $('#layers')[0],
+    area: document.getElementsByClassName('layer--active')[0],
     draggability: false,
     overflowTolerance: { x: 1, y: 1 },
     autoScrollSpeed: 0.0001,
   })
 
-  window.drag_selector.subscribe('Ds:start', (e) => {
+  drag_selector.subscribe('DS:start', (e) => {
     $('.ds-selector-area').show()
-    console.log('Starting dragging')
   })
 
-  window.drag_selector.subscribe('Ds:update', (e) => {
-    console.log('Dragging')
+  drag_selector.subscribe('DS:update', (e) => {
     // Do not drag-select if a note is being added
     if (placing_note == '') {
       if ($('.ds-selector').height() > 10 || $('.ds-selector').width() > 10) {
@@ -453,7 +451,7 @@ export function drag_selector_installer() {
         .elementsFromPoint(mouseX, mouseY)
         .map(x => {
           switch (x.tagName) {
-            case 'path':
+            case 'arc':
               return x
             case 'use':
               return x.parentElement.parentElement
@@ -485,9 +483,8 @@ export function drag_selector_installer() {
     }
   })
 
-  window.drag_selector.subscribe('Ds:end', (e) => {
+  drag_selector.subscribe('DS:end', (e) => {
     document.getElementById('layers').style.cursor = 'default'
-    console.log('Ending dragging')
     $('.ds-selector-area').hide()
   })
 }

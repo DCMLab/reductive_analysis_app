@@ -355,12 +355,14 @@ export function handle_keypress(ev) {
       relationsMenu.ctn.el.classList.contains('fly-out__compact')
     )
     document.getElementById('free-field-relations').focus()
+    document.getElementById('free-field-relations').value = ''
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
     relationsMenu.compact(
       relationsMenu.ctn.el.classList.contains('fly-out__compact')
     )
     document.getElementById('free-field-metarelations').focus()
+    document.getElementById('free-field-metarelations').value = ''
   } else if ((e = Object.entries(type_conf).find(c => c[1].key == ev.key))) {
     // Add a relation
     do_relation(e[0])

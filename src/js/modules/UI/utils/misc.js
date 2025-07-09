@@ -354,13 +354,13 @@ export function handle_keypress(ev) {
     relationsMenu.compact(
       relationsMenu.ctn.el.classList.contains('fly-out__compact')
     )
-    document.getElementById('free-field-relations').select()
+    document.getElementById('free-field-relations').focus()
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
     relationsMenu.compact(
       relationsMenu.ctn.el.classList.contains('fly-out__compact')
     )
-    document.getElementById('free-field-metarelations').select()
+    document.getElementById('free-field-metarelations').focus()
   } else if ((e = Object.entries(type_conf).find(c => c[1].key == ev.key))) {
     // Add a relation
     do_relation(e[0])

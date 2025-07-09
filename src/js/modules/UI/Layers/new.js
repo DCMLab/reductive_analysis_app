@@ -41,7 +41,6 @@ export default class LayerControls {
 
     if (e.target == this.$createBtn) {
       this.create()
-      console.log(this.layers)
     } else if (e.target == this.$deleteBtn) {
       this.delete()
     }

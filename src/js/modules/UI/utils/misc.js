@@ -36,7 +36,12 @@ import { draw_hierarchy_graph } from './visualizations'
 
 import { do_copy, do_paste } from './copy_paste'
 
-import { scrollThroughRelations, get_class_from_classlist, select_samenote, unmark_secondaries } from '../../../utils/misc'
+import {
+  scrollThroughRelations,
+  get_class_from_classlist,
+  select_samenote,
+  unmark_secondaries,
+} from '../../../utils/misc'
 
 import { place_note, update_placing_note } from './coordinates'
 
@@ -48,6 +53,7 @@ import { metaRelationTypes, relationTypes } from '../../Relations/config'
 import accidentals from '../Accidentals'
 import bookmarks from '../Bookmarks'
 import layersMenu from '../Layers'
+import relationsMenu from '../Relations'
 import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */
@@ -62,6 +68,8 @@ var current_draw_context
 var mouseX
 var mouseY
 
+const SCROLL = 250
+
 export const getMouseX = () => mouseX
 export const getMouseY = () => mouseY
 
@@ -73,6 +81,20 @@ var show_orphans = true
 
 // Stack of note selection. Helps to retrieve the really last selected note.
 const selectedNotesIds = []
+
+/*
+ * Scrolls in the document by a fixed amount smoothly. Down by default.
+ *
+ * @param {boolean} down Specifies the direction
+ *
+ */
+export function scrollDoc(down = true) {
+  let step = down ? SCROLL : -SCROLL
+  document.documentElement.scrollBy({
+    top: step,
+    behavior: 'smooth',
+  })
+}
 
 // Toggle if a thing (for now: note or relation) is selected or not.
 export function toggle_selected(item, extra = null) {
@@ -293,6 +315,24 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.toggle_metarelations) {
     // Toggle meta-relation visibility
     newApp.ui.layersMenu.metaRelation.toggle()
+  } else if (ev.key == navigation_conf.pan_left) {
+    // Move to the left
+    // TODO: Cleaner, please!
+    let vis = document.getElementsByClassName('layer--active')[0]
+    let view = vis.getElementsByClassName('view')[0]
+    view.scrollBy({
+      left: -900,
+      behavior: 'smooth',
+    })
+  } else if (ev.key == navigation_conf.pan_right) {
+    // Move to the right
+    // TODO: Cleaner, please...
+    let vis = document.getElementsByClassName('layer--active')[0]
+    let view = vis.getElementsByClassName('view')[0]
+    view.scrollBy({
+      left: 900,
+      behavior: 'smooth',
+    })
   } else if (ev.key == navigation_conf.jump_to_next_bookmark) {
     // Jump to previous bookmark in current context.
     bookmarks.goTo(-1)
@@ -301,10 +341,10 @@ export function handle_keypress(ev) {
     bookmarks.goTo(1)
   } else if (ev.key == navigation_conf.jump_to_context_below) {
     // Jump to next context.
-    layersMenu.moveBy(1)
+    scrollDoc()
   } else if (ev.key == navigation_conf.jump_to_context_above) {
     // Jump to previous context.
-    layersMenu.moveBy(-1)
+    scrollDoc(false)
   } else if (ev.key == action_conf.deselect_all) {
     // Deselect all.
     do_deselect()
@@ -316,12 +356,18 @@ export function handle_keypress(ev) {
     bookmarks.toggle()
   } else if (ev.key == custom_conf.relation) {
     // Custom relations.
-    ev.preventDefault()
-    // $('#custom_type').select2('open')
+    setTimeout(function () {
+      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
+      document.getElementById('free-field-relations').focus()
+      document.getElementById('free-field-relations').value = ''
+    }, 200)
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
-    ev.preventDefault()
-    // $('#meta_custom_type').select2('open')
+    setTimeout(function () {
+      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
+      document.getElementById('free-field-metarelations').focus()
+      document.getElementById('free-field-metarelations').value = ''
+    }, 200)
   } else if ((e = Object.entries(type_conf).find(c => c[1].key == ev.key))) {
     // Add a relation
     do_relation(e[0])
@@ -609,8 +655,8 @@ export function adjustSvgDimensions(draw_context) {
   })
 
   // Only adjust if the relations actually exceed the current SVG boundaries
-  const needsWidthAdjustment = minX < x || maxX > (x + w)
-  const needsHeightAdjustment = minY < y || maxY > (y + h)
+  const needsWidthAdjustment = minX < x || maxX > x + w
+  const needsHeightAdjustment = minY < y || maxY > y + h
 
   if (!needsWidthAdjustment && !needsHeightAdjustment) {
     return // No adjustment needed

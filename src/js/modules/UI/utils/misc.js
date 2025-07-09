@@ -126,7 +126,7 @@ export function toggle_selected(item, extra = null) {
    * Unless it's explicitely forced (= when `extra` is `true` or `false`), the
    * selection mode is handled by a keyboard shortcut or the visual toggle.
    */
-  if (extra === null) {
+  if (extra == null || extra == 0) {
     extra = newApp.ui.selection.mode.mode == 'primary'
   }
 

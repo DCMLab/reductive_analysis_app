@@ -2,6 +2,9 @@ export default class SelectionMode {
   constructor() {
     this.primary = document.getElementById('selection-mode-primary')
     this.secondary = document.getElementById('selection-mode-secondary')
+
+    this.primary.checked = true
+    this.mode = 'primary'
   }
 
   set(mode) {

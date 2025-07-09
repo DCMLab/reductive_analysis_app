@@ -117,11 +117,6 @@ export function initLayerResize(layersMenu) {
     if (newHeight <= state.minHeight) {
       state.currentLayer.style.height = `${state.minHeight}px`
     }
-
-    // Update any related components if needed
-    if (layersMenu && typeof layersMenu.observe === 'function') {
-      layersMenu.observe()
-    }
   }
 
   /**

@@ -64,8 +64,6 @@ class LayersMenu {
 
     this.setDataPosition()
     this.addMouseListeners()
-    this.observe()
-    this.updateNavigation()
     this.updateLayersCount()
 
     this.reductions.onTap(e)
@@ -129,36 +127,6 @@ class LayersMenu {
     const layerOneIsActive = this.activeLayer == 0
     doc.classList.toggle('in-layer-1', layerOneIsActive)
     doc.classList.toggle('not-in-layer-1', !layerOneIsActive)
-  }
-
-  // Observe intersection of layers with viewport to know the current one.
-
-  observe() {
-
-    // Remove IntersectionObserver if there’s only 1 layer.
-    if (this.contexts.length < 2) {
-      this.contexts[0].observing = false
-
-      // https://w3c.github.io/IntersectionObserver/#lifetime
-      return this.observer.disconnect()
-    }
-
-    this.contexts
-      .filter(layer => !layer.observing)
-      .forEach(layer => {
-
-        /**
-         * Add element that will always intersect respecting ratios.
-         * See `/src/sass/score/score.scss`
-         */
-        if (layer.layer.layer_elem.childElementCount == 1) {
-          layer.layer.layer_elem.insertAdjacentHTML('beforeend',
-            `<div class="layer-intersection-landmark" data-position="${layer.layer.layer_number}"></div>`
-          )
-        }
-        this.observer.observe(layer.layer.layer_elem.querySelector('.layer-intersection-landmark'))
-        layer.observing = true
-      })
   }
 
   addMouseListeners() {

@@ -428,7 +428,7 @@ export function drag_selector_installer() {
   // See https://github.com/ThibaultJanBeyer/DragSelect for API documentation.
 
   window.drag_selector = new DragSelect({
-    area: document.getElementsByClassName('layer--active')[0],
+    area: $('#layers')[0],
     draggability: false,
     overflowTolerance: { x: 1, y: 1 },
     autoScrollSpeed: 0.0001,

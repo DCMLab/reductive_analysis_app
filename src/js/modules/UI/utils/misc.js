@@ -36,7 +36,12 @@ import { draw_hierarchy_graph } from './visualizations'
 
 import { do_copy, do_paste } from './copy_paste'
 
-import { scrollThroughRelations, get_class_from_classlist, select_samenote, unmark_secondaries } from '../../../utils/misc'
+import {
+  scrollThroughRelations,
+  get_class_from_classlist,
+  select_samenote,
+  unmark_secondaries,
+} from '../../../utils/misc'
 
 import { place_note, update_placing_note } from './coordinates'
 
@@ -351,18 +356,18 @@ export function handle_keypress(ev) {
     bookmarks.toggle()
   } else if (ev.key == custom_conf.relation) {
     // Custom relations.
-    relationsMenu.compact(
-      relationsMenu.ctn.el.classList.contains('fly-out__compact')
-    )
-    document.getElementById('free-field-relations').focus()
-    document.getElementById('free-field-relations').value = ''
+    setTimeout(function () {
+      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
+      document.getElementById('free-field-relations').focus()
+      document.getElementById('free-field-relations').value = ''
+    }, 200)
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
-    relationsMenu.compact(
-      relationsMenu.ctn.el.classList.contains('fly-out__compact')
-    )
-    document.getElementById('free-field-metarelations').focus()
-    document.getElementById('free-field-metarelations').value = ''
+    setTimeout(function () {
+      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
+      document.getElementById('free-field-metarelations').focus()
+      document.getElementById('free-field-metarelations').value = ''
+    }, 200)
   } else if ((e = Object.entries(type_conf).find(c => c[1].key == ev.key))) {
     // Add a relation
     do_relation(e[0])
@@ -650,8 +655,8 @@ export function adjustSvgDimensions(draw_context) {
   })
 
   // Only adjust if the relations actually exceed the current SVG boundaries
-  const needsWidthAdjustment = minX < x || maxX > (x + w)
-  const needsHeightAdjustment = minY < y || maxY > (y + h)
+  const needsWidthAdjustment = minX < x || maxX > x + w
+  const needsHeightAdjustment = minY < y || maxY > y + h
 
   if (!needsWidthAdjustment && !needsHeightAdjustment) {
     return // No adjustment needed

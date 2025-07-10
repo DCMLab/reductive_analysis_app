@@ -261,7 +261,7 @@ function draw_note(pname, oct, note, sim = true, id = '') {
       note.getElementsByTagName('use')[0].getAttributeNS('http://www.w3.org/1999/xlink', 'href'))
     // And scale and place it appropriately
     u.setAttribute('x', x - 100)
-    u.setAttribute('y', y)
+    u.setAttribute('y', y + 100)
     u.setAttribute('height', '720px')
     u.setAttribute('width', '720px')
     g.id = id

@@ -587,6 +587,17 @@ export function delete_layer(draw_context) {
     draw_contexts = draw_contexts.filter(ctx => ctx !== draw_context)
     layer_contexts = layer_contexts.filter(ctx => ctx !== draw_context.layer)
 
+    // Re-assigning layer_number for indexing layers
+    // Going through the array backwards, the layers are stored in
+    // reverse order
+    for (let i = draw_contexts.length - 2; i > -1; i--) {
+      if (draw_contexts[i].layer.layer_number - 1 != draw_contexts[i + 1].layer.layer_number) {
+        draw_contexts[i].layer.layer_number =
+          draw_contexts[i + 1].layer.layer_number + 1
+      }
+      console.log(draw_contexts[i].layer.layer_number)
+    }
+
     // 4. Set the current draw context to the first layer
     setCurrentDrawContext(draw_contexts[0])
 

@@ -45,7 +45,6 @@ class ScoreSettings {
 
   onTap(e) {
     // Compact when clicked outside.
-    console.log(e)
     if (!e.composedPath().includes(this.ctn)) {
       return this.toggleVisibility(false)
     }

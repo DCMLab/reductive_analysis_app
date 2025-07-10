@@ -503,6 +503,7 @@ function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, me
     if (!isRoot) element.classList.remove(isPrimary ? 'extrarelationhover' : 'relationhover')
 
     // Get the corresponding MEI node using the oldid attribute
+    // TODO: might be undefined and produce error
     let meiNode = get_by_id(mei_graph, element.getAttribute('oldid') || element.id)
 
     // Recursively remove hover class from the children

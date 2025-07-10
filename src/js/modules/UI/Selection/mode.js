@@ -3,8 +3,8 @@ export default class SelectionMode {
     this.primary = document.getElementById('selection-mode-primary')
     this.secondary = document.getElementById('selection-mode-secondary')
 
-    this.primary.checked = true
-    this.mode = 'primary'
+    this.secondary.checked = true
+    this.mode = 'secondary'
   }
 
   set(mode) {

@@ -459,7 +459,6 @@ function load_finish() {
       'mei': new_mei,
       'layer_elem': layer_element,
       'layer_number': 0,
-      'mdiv_elem': mdiv_elem,
       'score_elem': score_elem,
       'id_mapping': get_id_pairs(mdiv_elem),
       'number_of_views': 1
@@ -473,7 +472,6 @@ function load_finish() {
       // already on load.
 
       mei_mdiv: mdiv_elem,
-      mei_score: score_elem,
       svg_elem: svg_element,
       view_elem: view_element,
       layer: layer_context,
@@ -520,7 +518,7 @@ function load_finish() {
 }
 
 export function rerender_mei(replace_with_rests = false, draw_context = draw_contexts[0]) {
-  var mei2 = mei_for_layer(mei, draw_context.layer.mdiv_elem)
+  var mei2 = mei_for_layer(mei, draw_context.mei_mdiv)
 
   Array.from(mei2.getElementsByTagName('note')).forEach((n) => {
     let x = document.getElementById(id_in_svg(draw_context, get_id(n)))
@@ -625,7 +623,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     'mei': new_mei,
     'layer_elem': layer_element,
     'layer_number': layer_contexts.length,
-    'mdiv_elem': new_mdiv_elem,
     'score_elem': new_score_elem,
     'id_mapping': get_id_pairs(new_mdiv_elem),
     'number_of_views': 1,

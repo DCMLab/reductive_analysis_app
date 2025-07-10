@@ -77,8 +77,9 @@ class Score {
     const currentDrawContext = getCurrentDrawContext()
     const selectionDrawContext = draw_context_of(this.flatSelection[0])
 
-    if (currentDrawContext.layer_number != selectionDrawContext.layer_number) {
-      layersMenu.setCurrentLayer(selectionDrawContext.layer_number)
+    if (currentDrawContext.layer.layer_number !=
+      selectionDrawContext.layer.layer_number) {
+      layersMenu.setCurrentLayer(selectionDrawContext.layer.layer_number)
     }
   }
 

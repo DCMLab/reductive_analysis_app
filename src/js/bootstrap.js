@@ -477,7 +477,6 @@ function load_finish() {
       svg_elem: svg_element,
       view_elem: view_element,
       layer: layer_context,
-      layer_number: 0,
       id_prefix: '',
       zoom: 1,
       reductions: [],
@@ -591,11 +590,8 @@ export function delete_layer(draw_context) {
     // Going through the array backwards, the layers are stored in
     // reverse order
     for (let i = draw_contexts.length - 2; i > -1; i--) {
-      if (draw_contexts[i].layer.layer_number - 1 != draw_contexts[i + 1].layer.layer_number) {
-        draw_contexts[i].layer.layer_number =
-          draw_contexts[i + 1].layer.layer_number + 1
-      }
-      console.log(draw_contexts[i].layer.layer_number)
+      draw_contexts[i].layer.layer_number =
+        draw_contexts[i + 1].layer.layer_number + 1
     }
 
     // 4. Set the current draw context to the first layer
@@ -643,7 +639,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     svg_elem: new_svg_elem,
     view_elem: new_view_elem,
     layer: layer_context,
-    layer_number: layer_context.layer_number,
     id_prefix: '',
     zoom: 1,
     reductions: [],

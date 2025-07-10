@@ -170,6 +170,11 @@ class EventsManager {
 
   onKeyDown(e) {
 
+    // Making sure the selection mode is not the target
+    // (Would create issue with Shift selection mode toggle)
+    document.getElementById('selection-mode-primary').blur()
+    document.getElementById('selection-mode-secondary').blur()
+
     // Ignore keyboard shortcuts if a field is focused.
     if (isFieldFocused()) { return }
 
@@ -204,10 +209,11 @@ class EventsManager {
     }
 
     /**
-     * Use primary selection (Shift)
+     * Toggle selection mode (Shift)
      */
     if (isKey(e, 'shift') && pressedModifiers(e).length === 1) {
-      return this.app.ui.selection.mode.set('primary')
+      let mode = this.app.ui.selection.mode
+      return mode.mode != 'secondary' ? mode.set('secondary') : mode.set('primary')
     }
 
     // All shortcuts starting here don’t need modifiers.
@@ -245,10 +251,11 @@ class EventsManager {
     }
 
     /**
-     * Leave primary selection mode (Shift)
+     * Toggle selection mode (Shift)
      */
     if (isKey(e, 'shift')) {
-      return this.app.ui.selection.mode.set('secondary')
+      let mode = this.app.ui.selection.mode
+      return mode.mode != 'secondary' ? mode.set('secondary') : mode.set('primary')
     }
 
     // All shortcuts starting here don’t need modifiers.

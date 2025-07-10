@@ -468,15 +468,13 @@ export function drag_selector_installer() {
             (x.classList.contains('relation') &&
               !x.classList.contains('relation--filtered') &&
               !x.classList.contains('selectedrelation') &&
-              !x.classList.contains('extraselectedrelation') &&
-              !shiftKey) ||
+              !x.classList.contains('extraselectedrelation')) ||
             ((x.classList.contains('note') || x.classList.contains('notehead')) &&
               !x.classList.contains('selectednote') &&
               !x.classList.contains('extraselectednote')) ||
             (x.classList.contains('metarelation') &&
               !x.classList.contains('selectedrelation') &&
-              !x.classList.contains('extraselectedrelation') &&
-              !shiftKey)
+              !x.classList.contains('extraselectedrelation'))
           )
         })
         .forEach(toggle_selected)

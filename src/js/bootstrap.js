@@ -631,7 +631,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   var new_draw_context = {
     // TODO: One draw context per existing score element
     // already on load.
-    mei_score: new_score_elem,
     mei_mdiv: new_mdiv_elem,
     svg_elem: new_svg_elem,
     view_elem: new_view_elem,

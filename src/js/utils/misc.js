@@ -718,29 +718,50 @@ export function fix_layers(mei) {
   // For each score
   // Create a new mdiv for the score and move it
   Array.from(mei.getElementsByTagName('mdiv')).forEach((mdiv_elem) => {
+
     let prefix_re = /l(\d+)-.*/
     let sliced_re = /-sliced$/
+
+    // Add an ID to mdiv if none
+    let mdiv_id = mdiv_elem.getAttribute('xml:id')
+    if (!mdiv_id) {
+      mdiv_id = random_id()
+      mdiv_elem.setAttribute('xml:id', mdiv_id)
+    }
+
     let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')
     if (scs.length > 1) {
-      let mdiv_id = mdiv_elem.getAttribute('xml:id')
       for (let scix in scs) {
-	  if (scix == 0)
-	    continue
-	  let score_elem = scs[scix]
-	  let score_id = score_elem.getAttribute('xml:id')
-	  if (prefix_re.test(score_id)) {
-	    // We almost certainly have a layer thingy
-	    let score_prefix = prefix_re.exec(score_id)[1]
-	    var new_mdiv_elem = mei.createElement('mdiv')
-	    if (sliced_re.test(score_id))
-	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
-	    else
-	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
-	    mdiv_elem.parentElement.append(new_mdiv_elem)
-	    new_mdiv_elem.append(score_elem)
-	  }
-      }
+        if (scix == 0)
+          continue
+        let score_elem = scs[scix]
 
+        // Add an ID to score if none
+        let score_id = score_elem.getAttribute('xml:id')
+        if (!score_id) {
+          score_id = random_id()
+          score_elem.setAttribute('xml:id', score_id)
+        }
+
+        if (prefix_re.test(score_id)) {
+          // We almost certainly have a layer thingy
+          let score_prefix = prefix_re.exec(score_id)[1]
+          var new_mdiv_elem = mei.createElement('mdiv')
+          if (sliced_re.test(score_id))
+            new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
+          else
+            new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
+          mdiv_elem.parentElement.append(new_mdiv_elem)
+          new_mdiv_elem.append(score_elem)
+        }
+      }
+    } else {
+      // Add an ID to score if none
+      let score_id = scs[0].getAttribute('xml:id')
+      if (!score_id) {
+        score_id = random_id()
+        scs[0].setAttribute('xml:id', score_id)
+      }
     }
   })
 }

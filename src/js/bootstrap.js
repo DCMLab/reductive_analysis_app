@@ -329,7 +329,7 @@ export function savesvg() {
 
 // Load a new MEI
 export function load(event) {
-  console.debug('Using globals: selected_extraselected, upload, reader, filenmae')
+  console.debug('Using globals: selected_extraselected, upload, reader, filename')
 
   const files = event.target.files
 

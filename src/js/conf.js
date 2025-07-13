@@ -155,7 +155,7 @@ export const hide_classes = [
 ]
 
 // MEI and MusicXML tags to be stripped before rendering.
-export const strip_mei_tags = ['label', 'labelAbbr', 'tempo']
+export const strip_mei_tags = ['label', 'labelAbbr', 'tempo', 'dir', 'turn']
 
 export const strip_xml_tags = []
 

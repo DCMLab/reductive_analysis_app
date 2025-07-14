@@ -204,7 +204,16 @@ export function g() {
 }
 
 export function random_id(n = 5) {
-  return Math.floor(Math.random() * (1 << (n * 4))).toString(16)
+
+  let rnd = Math.floor(Math.random() * Math.pow(2, 32))
+  let lgt = rnd.toString().length
+
+  for (let i = 0; i < 16 - lgt; i++) {
+    zeros += '0'
+  }
+  return zeros + rnd
+
+  // return Math.floor(Math.random() * (1 << (n * 4))).toString(16)
 }
 export function pitch_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
@@ -725,8 +734,12 @@ export function fix_layers(mei) {
     // Add an ID to mdiv if none
     let mdiv_id = mdiv_elem.getAttribute('xml:id')
     if (!mdiv_id) {
-      mdiv_id = random_id()
-      mdiv_elem.setAttribute('xml:id', mdiv_id)
+      do {
+        mdiv_id = random_id()
+        mdiv_elem.setAttribute('xml:id', mdiv_id)
+      } while (
+        getDrawContexts().find(ctx => ctx.mei_mdiv.getAttribute('xml:id'))
+      );
     }
 
     let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')

@@ -733,7 +733,7 @@ function create_and_check_id(predicate) {
 
   do {
     id = random_id()
-  } while (!predicate(id));
+  } while (!predicate(id))
 
   return id
 }

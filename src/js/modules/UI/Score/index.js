@@ -16,6 +16,8 @@ class ScoreSettings {
     this.autoCloseTimer = null
 
     this.brightShades = true
+    this.showOrphans = true
+    this.nonNotesHidden = false
   }
 
   get interacting() {
@@ -83,15 +85,14 @@ class ScoreSettings {
   }
 
   toggleOrphanNotes() {
-    show_orphans = !show_orphans
-    show_orphans ? show_all_notes() : hide_orphan_notes()
+    this.showOrphans = !this.showOrphans
+    showOrphans ? show_all_notes() : hide_orphan_notes()
   }
 
   toggleEqualize() {
-    console.debug('Using globals: non_notes_hidden')
-    non_notes_hidden = !non_notes_hidden
-    set_non_note_visibility(non_notes_hidden)
-    if (!non_notes_hidden) show_all_notes()
+    this.nonNotesHidden = !this.nonNotesHidden
+    set_non_note_visibility(this.nonNotesHidden)
+    if (!this.nonNotesHidden) show_all_notes()
   }
 }
 

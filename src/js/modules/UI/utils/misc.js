@@ -58,8 +58,6 @@ import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */
 
-var non_notes_hidden = false
-
 // Hovering and adding notes
 var placing_note = ''
 
@@ -75,9 +73,6 @@ export const getMouseY = () => mouseY
 
 // Last-selected entity in the current selection.
 var last_selected = null
-
-// Show non-related ("orphan") notes by default.
-var show_orphans = true
 
 // Stack of note selection. Helps to retrieve the really last selected note.
 const selectedNotesIds = []

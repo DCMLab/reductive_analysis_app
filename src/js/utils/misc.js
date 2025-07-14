@@ -874,11 +874,7 @@ export function prefix_ids(elem, prefix) {
     // MEI modification
     // No need to set oldid - we have already made links using
     // corresp
-    let suffix =
-      typeof elem.getAttribute('xml:id') == 'undefined' ?
-        elem.getAttribute('xml:id') :
-        ''
-    elem.setAttribute('xml:id', prefix + suffix)
+    elem.setAttribute('xml:id', prefix + elem.getAttribute('xml:id'))
   }
   if (elem.getAttribute('startid'))
     elem.setAttribute('startid', prefix + elem.getAttribute('startid'))

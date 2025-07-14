@@ -126,12 +126,15 @@
 
   display:grid;
   justify-content: center;
+    align-content: center;
 
   height: 13%;
-  aspect-ratio: 1 / 1;
+  min-width: 4.5em;
+
+  padding: 0% 1%;
 
   top:  80%;
-  left: 95%;
+  left: 90%;
 
   background: colors.$gallery;
   border: 0.24rem solid colors.$silver;

@@ -208,6 +208,7 @@ export function random_id(n = 5) {
   let rnd = Math.floor(Math.random() * Math.pow(2, 32))
   let lgt = rnd.toString().length
 
+  let zeros
   for (let i = 0; i < 16 - lgt; i++) {
     zeros += '0'
   }
@@ -873,7 +874,11 @@ export function prefix_ids(elem, prefix) {
     // MEI modification
     // No need to set oldid - we have already made links using
     // corresp
-    elem.setAttribute('xml:id', prefix + elem.getAttribute('xml:id'))
+    let suffix =
+      typeof elem.getAttribute('xml:id') == 'undefined' ?
+        elem.getAttribute('xml:id') :
+        ''
+    elem.setAttribute('xml:id', prefix + suffix)
   }
   if (elem.getAttribute('startid'))
     elem.setAttribute('startid', prefix + elem.getAttribute('startid'))
@@ -915,18 +920,21 @@ export function new_layer_element() {
   var layers_element = document.getElementById('layers')
   var id = layers_element.children.length
 
-  var new_num = document.createElement('div')
-  var h_num = document.createElement('h1')
-  h_num.innerHTML = 'err'
-  new_num.id = 'layer_num' + id
-  new_num.classList.add('layer_num')
-  new_num.appendChild(h_num)
-
   var new_layer = document.createElement('div')
   new_layer.id = 'layer' + id
   new_layer.classList.add('layer')
   new_layer.classList.add('layer-new-ui')
-  new_layer.appendChild(new_num)
+
+  if (id != 0) {
+    var new_num = document.createElement('div')
+    var h_num = document.createElement('h1')
+
+    new_num.id = 'layer_num' + id
+    new_num.classList.add('layer_num')
+    new_num.appendChild(h_num)
+
+    new_layer.appendChild(new_num)
+  }
 
   layers_element.appendChild(new_layer)
 

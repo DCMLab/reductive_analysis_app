@@ -612,6 +612,11 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   }
 
   var layer_element = new_layer_element()
+
+  layer_element
+    .getElementsByClassName('layer_num')[0]
+    .innerHTML = new_mdiv_elem.getAttribute('xml:id')
+
   var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
   new_svg_elem.innerHTML = new_svg
   var layer_context = {

@@ -441,7 +441,11 @@ function load_finish() {
   draw_contexts.curvatureFactor = 0.5
 
   // Segment existing layers
-  var layers = Array.from(mei.getElementsByTagName('body')[0].getElementsByTagName('mdiv'))
+  var layers = Array.from(
+    mei
+      .getElementsByTagName('body')[0]
+      .getElementsByTagName('mdiv')
+  )
   for (let i in layers) {
     let mdiv_elem = layers[i]
     let score_elem = mdiv_elem.children[0]
@@ -453,6 +457,14 @@ function load_finish() {
     }
 
     var layer_element = new_layer_element()
+
+    if (i != 0) {
+      let prefix = mdiv_elem.getAttribute('xml:id')
+      layer_element
+        .getElementsByClassName('layer_num')[0]
+        .innerHTML = prefix.slice(0, prefix.search(/[^l^\-^\d]/g))
+    }
+
     var [view_element, svg_element] = new_view_elements(layer_element)
     svg_element.innerHTML = new_svg
     var layer_context = {

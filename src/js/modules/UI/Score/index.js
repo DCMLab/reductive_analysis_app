@@ -64,7 +64,7 @@ class ScoreSettings {
     }
 
     if (e.target == this.toggleTonesBtn) {
-      return toggle_orphan_notes()
+      return toggleOrphanNotes()
     }
   }
 
@@ -79,7 +79,19 @@ class ScoreSettings {
   }
 
   toggleStems() {
-    toggle_equalize()
+    toggleEqualize()
+  }
+
+  toggleOrphanNotes() {
+    show_orphans = !show_orphans
+    show_orphans ? show_all_notes() : hide_orphan_notes()
+  }
+
+  toggleEqualize() {
+    console.debug('Using globals: non_notes_hidden')
+    non_notes_hidden = !non_notes_hidden
+    set_non_note_visibility(non_notes_hidden)
+    if (!non_notes_hidden) show_all_notes()
   }
 }
 

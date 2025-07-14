@@ -384,14 +384,6 @@ export function handle_keypress(ev) {
 
 /* Large-ish UI functions */
 
-// Toggle showing things other than notes in the score
-export function toggle_equalize() {
-  console.debug('Using globals: non_notes_hidden')
-  non_notes_hidden = !non_notes_hidden
-  set_non_note_visibility(non_notes_hidden)
-  if (!non_notes_hidden) show_all_notes()
-}
-
 function set_non_note_visibility(hidden) {
   console.debug('Using globals: document for element selection')
 
@@ -594,11 +586,6 @@ function hide_orphan_notes() {
 
 function show_all_notes() {
   Array.from(document.querySelectorAll('g.note')).forEach(e => e.classList.remove('hidden'))
-}
-
-export function toggle_orphan_notes() {
-  show_orphans = !show_orphans
-  show_orphans ? show_all_notes() : hide_orphan_notes()
 }
 
 // Functions helping to interact with variable declared here from other files.

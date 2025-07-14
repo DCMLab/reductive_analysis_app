@@ -75,6 +75,12 @@ export function new_layer(draw_context = null) {
   prefix_ids(new_mdiv_elem, prefix) // Compute a better prefix
   // Insert after the previous
   mdiv_elem.parentNode.insertBefore(new_mdiv_elem, mdiv_elem.nextSibling)
+  draw_context
+    .layer
+    .layer_elem
+    .getElementsByClassName('layer_num')[0]
+    .innerHTML = new_mdiv_elem.getAttribute('xml:id')
+
   // The basic algorithm is to take the last score element (if we're doing
   // a linear order of layers, otherwise we need the score element to build
   // off of to be given as an argument), to clone it using cloneNode(), and

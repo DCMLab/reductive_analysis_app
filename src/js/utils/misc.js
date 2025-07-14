@@ -917,7 +917,7 @@ export function new_layer_element() {
 
   var new_num = document.createElement('div')
   var h_num = document.createElement('h1')
-  h_num.innerHTML = id + 1
+  h_num.innerHTML = 'err'
   new_num.id = 'layer_num' + id
   new_num.classList.add('layer_num')
   new_num.appendChild(h_num)

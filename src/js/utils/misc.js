@@ -204,7 +204,17 @@ export function g() {
 }
 
 export function random_id(n = 5) {
-  return Math.floor(Math.random() * (1 << (n * 4))).toString(16)
+
+  let rnd = Math.floor(Math.random() * Math.pow(2, 32))
+  let lgt = rnd.toString().length
+
+  let zeros
+  for (let i = 0; i < 16 - lgt; i++) {
+    zeros += '0'
+  }
+  return zeros + rnd
+
+  // return Math.floor(Math.random() * (1 << (n * 4))).toString(16)
 }
 export function pitch_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
@@ -712,35 +722,85 @@ export function fix_corresp(mei_elem) {
   }
 }
 
+/**
+ * Creates and ID that validate a predicate
+ *
+ * @param {string => boolean} predicate Predicate for the ID to be valid
+ *
+ * @return {string} The generated ID
+ */
+function create_and_check_id(predicate) {
+  let id
+
+  do {
+    id = random_id()
+  } while (!predicate(id))
+
+  return id
+}
+
 export function fix_layers(mei) {
   // Find all mdivs
   // If they have more than one score among its children (i.e. the app did it)
   // For each score
   // Create a new mdiv for the score and move it
   Array.from(mei.getElementsByTagName('mdiv')).forEach((mdiv_elem) => {
+
     let prefix_re = /l(\d+)-.*/
     let sliced_re = /-sliced$/
+
+    // Add an ID to mdiv if none
+    let mdiv_id = mdiv_elem.getAttribute('xml:id')
+    if (!mdiv_id) {
+      mdiv_id = create_and_check_id(id =>
+        !getDrawContexts().find(x =>
+          x.mei_mdiv.getAttribute('xml:id') == id
+        )
+      )
+      mdiv_elem.setAttribute('xml:id', mdiv_id)
+    }
+
     let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')
     if (scs.length > 1) {
-      let mdiv_id = mdiv_elem.getAttribute('xml:id')
       for (let scix in scs) {
-	  if (scix == 0)
-	    continue
-	  let score_elem = scs[scix]
-	  let score_id = score_elem.getAttribute('xml:id')
-	  if (prefix_re.test(score_id)) {
-	    // We almost certainly have a layer thingy
-	    let score_prefix = prefix_re.exec(score_id)[1]
-	    var new_mdiv_elem = mei.createElement('mdiv')
-	    if (sliced_re.test(score_id))
-	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
-	    else
-	      new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
-	    mdiv_elem.parentElement.append(new_mdiv_elem)
-	    new_mdiv_elem.append(score_elem)
-	  }
-      }
+        if (scix == 0)
+          continue
+        let score_elem = scs[scix]
 
+        // Add an ID to score if none
+        let score_id = score_elem.getAttribute('xml:id')
+        if (!score_id) {
+          score_id = create_and_check_id(id =>
+            !getDrawContexts().find(x =>
+              x.mei_score.getAttribute('xml:id') == id
+            )
+          )
+          score_elem.setAttribute('xml:id', score_id)
+        }
+
+        if (prefix_re.test(score_id)) {
+          // We almost certainly have a layer thingy
+          let score_prefix = prefix_re.exec(score_id)[1]
+          var new_mdiv_elem = mei.createElement('mdiv')
+          if (sliced_re.test(score_id))
+            new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
+          else
+            new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id)
+          mdiv_elem.parentElement.append(new_mdiv_elem)
+          new_mdiv_elem.append(score_elem)
+        }
+      }
+    } else {
+      // Add an ID to score if none
+      let score_id = scs[0].getAttribute('xml:id')
+      if (!score_id) {
+        score_id = create_and_check_id(id =>
+          !getDrawContexts().find(x =>
+            x.mei_score.getAttribute('xml:id') == id
+          )
+        )
+        scs[0].setAttribute('xml:id', score_id)
+      }
     }
   })
 }
@@ -854,11 +914,26 @@ export function get_id_pairs(elem) {
 
 export function new_layer_element() {
   var layers_element = document.getElementById('layers')
+  var id = layers_element.children.length
+
   var new_layer = document.createElement('div')
-  new_layer.id = 'layer' + layers_element.children.length
+  new_layer.id = 'layer' + id
   new_layer.classList.add('layer')
   new_layer.classList.add('layer-new-ui')
+
+  if (id != 0) {
+    var new_num = document.createElement('div')
+    var h_num = document.createElement('h1')
+
+    new_num.id = 'layer_num' + id
+    new_num.classList.add('layer_num')
+    new_num.appendChild(h_num)
+
+    new_layer.appendChild(new_num)
+  }
+
   layers_element.appendChild(new_layer)
+
   return new_layer
 }
 

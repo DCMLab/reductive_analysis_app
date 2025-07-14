@@ -40,10 +40,12 @@ export function draw_relation(draw_context, mei_graph, g_elem) {
   var id = id_prefix + g_elem.getAttribute('xml:id')
   var type = relation_type(g_elem)
   // What are the primary and secondary notes in the draw context?
-  var primaries = relation_primaries(mei_graph, g_elem).map(
+  var p = relation_primaries(mei_graph, g_elem)
+  var primaries = p.map(
     (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
   )
-  var secondaries = relation_secondaries(mei_graph, g_elem).map(
+  var s = relation_secondaries(mei_graph, g_elem)
+  var secondaries = s.map(
     (e) => document.getElementById(id_in_svg(draw_context, node_to_note_id(e)))
   )
   var notes = primaries.concat(secondaries)

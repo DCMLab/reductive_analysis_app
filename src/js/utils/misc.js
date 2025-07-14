@@ -721,6 +721,23 @@ export function fix_corresp(mei_elem) {
   }
 }
 
+/**
+ * Creates and ID that validate a predicate
+ *
+ * @param {string => boolean} predicate Predicate for the ID to be valid
+ *
+ * @return {string} The generated ID
+ */
+function create_and_check_id(predicate) {
+  let id
+
+  do {
+    id = random_id()
+  } while (!predicate(id));
+
+  return id
+}
+
 export function fix_layers(mei) {
   // Find all mdivs
   // If they have more than one score among its children (i.e. the app did it)
@@ -734,12 +751,12 @@ export function fix_layers(mei) {
     // Add an ID to mdiv if none
     let mdiv_id = mdiv_elem.getAttribute('xml:id')
     if (!mdiv_id) {
-      do {
-        mdiv_id = random_id()
-        mdiv_elem.setAttribute('xml:id', mdiv_id)
-      } while (
-        getDrawContexts().find(ctx => ctx.mei_mdiv.getAttribute('xml:id'))
-      );
+      mdiv_id = create_and_check_id(id =>
+        !getDrawContexts().find(x =>
+          x.mei_mdiv.getAttribute('xml:id') == id
+        )
+      )
+      mdiv_elem.setAttribute('xml:id', mdiv_id)
     }
 
     let scs = Array.from(mdiv_elem.children).filter((elem) => elem.tagName == 'score')
@@ -752,7 +769,11 @@ export function fix_layers(mei) {
         // Add an ID to score if none
         let score_id = score_elem.getAttribute('xml:id')
         if (!score_id) {
-          score_id = random_id()
+          score_id = create_and_check_id(id =>
+            !getDrawContexts().find(x =>
+              x.mei_score.getAttribute('xml:id') == id
+            )
+          )
           score_elem.setAttribute('xml:id', score_id)
         }
 
@@ -772,7 +793,11 @@ export function fix_layers(mei) {
       // Add an ID to score if none
       let score_id = scs[0].getAttribute('xml:id')
       if (!score_id) {
-        score_id = random_id()
+        score_id = create_and_check_id(id =>
+          !getDrawContexts().find(x =>
+            x.mei_score.getAttribute('xml:id') == id
+          )
+        )
         scs[0].setAttribute('xml:id', score_id)
       }
     }

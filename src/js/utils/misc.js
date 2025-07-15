@@ -375,8 +375,8 @@ export function node_referred_to(id) {
   console.debug('Using global: mei to find element')
   return Array.from(mei.getElementsByTagName('arc'))
     .filter((x) => {
-      return (x.getAttribute('from') == '#' + id ||
-                x.getAttribute('to') == '#' + id)
+      return (x.getAttribute('from') == '#' + id.slice(1) ||
+                x.getAttribute('to') == '#' + id.slice(1))
     }).length > 0
 }
 

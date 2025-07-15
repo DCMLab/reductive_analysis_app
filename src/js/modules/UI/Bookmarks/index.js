@@ -60,11 +60,13 @@ class Bookmarks {
 
     const bookmarkId = `bookmark-${note.id}`
 
+    console.log(noteHead)
+    console.log(noteHead.getAttribute('transform'))
     // add sprite to the score
     const bookmarkIcon = createBookmarkElement({
       id: bookmarkId,
-      x: parseInt(noteHead.getAttribute('x')) + 11,
-      y: parseInt(noteHead.getAttribute('y')) - 500,
+      x: noteHead.style.transform,
+      y: noteHead.style.transform,
       noteId: note.id,
       contextId: context.id_prefix || 0,
     })
@@ -96,8 +98,8 @@ class Bookmarks {
     doc.classList.toggle('has-several-bookmarks-in-context', this.count > 1)
   }
 
-  toPrevious() { this.goTo(-1) }
-  toNext() { this.goTo(1) }
+  toPrevious() { this.goTo(1) }
+  toNext() { this.goTo(-1) }
 
   goTo(dir = 1) {
     let targetBookmark = null

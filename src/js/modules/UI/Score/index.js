@@ -1,4 +1,8 @@
-import { show_all_notes, hide_orphan_notes } from './utils'
+import {
+  show_all_notes,
+  hide_orphan_notes,
+  set_non_note_visibility
+} from './utils'
 import { doc } from '../../../utils/document'
 
 const AUTO_CLOSE_TIMEOUT = 10000 // in milliseconds

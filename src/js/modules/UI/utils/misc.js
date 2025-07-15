@@ -13,7 +13,6 @@ import {
   action_conf,
   custom_conf,
   combo_conf,
-  hide_classes,
   meta_conf,
   type_conf,
   navigation_conf,
@@ -378,22 +377,6 @@ export function handle_keypress(ev) {
 }
 
 /* Large-ish UI functions */
-
-function set_non_note_visibility(hidden) {
-  console.debug('Using globals: document for element selection')
-
-  Array.from(document.getElementsByClassName('beam')).forEach(x =>
-    Array.from(x.children)
-      .filter(x => x.tagName == 'polygon')
-      .forEach(x => x.classList.toggle('hidden', hidden))
-  )
-
-  hide_classes.forEach(cl =>
-    Array.from(document.getElementsByClassName(cl)).forEach(x =>
-      x.classList.toggle('hidden', hidden)
-    )
-  )
-}
 
 /**
  * Toggle the current relation having a type-dependent shade.

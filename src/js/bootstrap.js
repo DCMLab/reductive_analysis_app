@@ -470,7 +470,7 @@ function load_finish() {
     var layer_context = {
       'mei': new_mei,
       'layer_elem': layer_element,
-      'layer_number': 0,
+      'layer_number': i,
       'score_elem': score_elem,
       'id_mapping': get_id_pairs(mdiv_elem),
       'number_of_views': 1

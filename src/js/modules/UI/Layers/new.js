@@ -1,8 +1,4 @@
-import {
-  create_new_layer,
-  delete_layer,
-  getDrawContexts
-} from '../../../bootstrap'
+import { create_new_layer, delete_layer, getDrawContexts } from '../../../bootstrap'
 import { getCurrentDrawContext } from '../utils/misc'
 
 export default class LayerControls {
@@ -25,15 +21,13 @@ export default class LayerControls {
 
   delete() {
     let curr = getCurrentDrawContext()
-    if (getDrawContexts().filter(d =>
-      d
-        .mei_mdiv
-        .getAttribute('xml:id')
-        .includes(curr.mei_mdiv.getAttribute('xml:id'))).length == 1
+    if (
+      getDrawContexts().filter(d =>
+        d.mei_mdiv.getAttribute('xml:id').includes(curr.mei_mdiv.getAttribute('xml:id'))
+      ).length == 1
     )
       delete_layer(curr)
-    else
-      alert('This layer is a dependency')
+    else alert('This layer cannot be deleted because other layers refer to it.')
   }
 
   onChange({ target }) {
@@ -42,7 +36,6 @@ export default class LayerControls {
     //   this.visible = target.value == 'on'
     //   this.draw()
     // }
-
     // if (target == this.drawRoots) {
     //   this.shouldDrawRootsLow = target.checked
     //   this.draw()
@@ -50,7 +43,9 @@ export default class LayerControls {
   }
 
   onTap(e) {
-    if (!e.composedPath().includes(this.$ctn)) { return }
+    if (!e.composedPath().includes(this.$ctn)) {
+      return
+    }
 
     if (e.target == this.$createBtn) {
       this.create()

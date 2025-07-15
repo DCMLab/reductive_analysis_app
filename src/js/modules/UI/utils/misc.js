@@ -569,20 +569,6 @@ export function hide_top(draw_context) {
   }
 }
 
-function hide_orphan_notes() {
-  var mei_graph = getMeiGraph()
-  var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id)
-  var gn_ids = Array.from(mei_graph.getElementsByTagName('arc')).map(e => e.getAttribute('to'))
-  ids.forEach(i => {
-    var ii = i.replace(/(^\d+-?)/, '') // Replace layer or view prefixes.
-    if (!gn_ids.includes(`#gn-${ii}`)) document.getElementById(i).classList.add('hidden')
-  })
-}
-
-function show_all_notes() {
-  Array.from(document.querySelectorAll('g.note')).forEach(e => e.classList.remove('hidden'))
-}
-
 // Functions helping to interact with variable declared here from other files.
 export const getPlacingNote = () => placing_note
 export const setPlacingNote = value => (placing_note = value)

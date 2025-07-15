@@ -1,4 +1,4 @@
-import { toggle_equalize, toggle_orphan_notes } from '../utils/misc'
+import { show_all_notes, hide_orphan_notes } from './utils'
 import { doc } from '../../../utils/document'
 
 const AUTO_CLOSE_TIMEOUT = 10000 // in milliseconds
@@ -66,7 +66,7 @@ class ScoreSettings {
     }
 
     if (e.target == this.toggleTonesBtn) {
-      return toggleOrphanNotes()
+      return this.toggleOrphanNotes()
     }
   }
 
@@ -81,12 +81,12 @@ class ScoreSettings {
   }
 
   toggleStems() {
-    toggleEqualize()
+    this.toggleEqualize()
   }
 
   toggleOrphanNotes() {
     this.showOrphans = !this.showOrphans
-    showOrphans ? show_all_notes() : hide_orphan_notes()
+    this.showOrphans ? show_all_notes() : hide_orphan_notes()
   }
 
   toggleEqualize() {

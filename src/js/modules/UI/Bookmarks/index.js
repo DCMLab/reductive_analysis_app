@@ -158,7 +158,9 @@ class Bookmarks {
      * reproduce the issue, so maybe it’s related to having a SVG in another
      * one, or maybe the transform applied to the parent SVG.
      */
-    doc.scrollBy(
+    let vis = document.getElementsByClassName('layer--active')[0]
+    let view = vis.getElementsByClassName('view')[0]
+    view.scrollBy(
       rect.left + (window.innerWidth / 2 * dir),
       rect.top + (window.innerHeight / 2 * dir)
     )

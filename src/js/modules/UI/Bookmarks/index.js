@@ -104,38 +104,30 @@ class Bookmarks {
     let rect = null
 
     // Next
-
     if (dir > 0) {
       targetBookmark = this.currentContextItems.find(bookmark => {
         rect = getDOMRect(bookmark, ['top', 'right', 'bottom', 'left'])
 
-        return rect.right > viewport.w // out of the viewport right side
-          || (
-            // or at the right of the viewport middle
-            rect.left > (viewport.w / 2)
+        let outOfViewHor = rect.right > viewport.w
+        let rightOfMid = rect.left > (viewport.w / 2)
+        let outOfViewVer = rect.bottom > viewport.h || rect.top < 0
 
-            // and outside of it vertically
-            && (rect.bottom > viewport.h || rect.top < 0)
-          )
+        return outOfViewHor || (rightOfMid && outOfViewVer)
       })
     }
 
     // Previous
-
     if (dir < 0) {
       this.items.reverse()
 
       targetBookmark = this.currentContextItems.find(bookmark => {
         rect = getDOMRect(bookmark, ['top', 'right', 'bottom', 'left'])
 
-        return rect.left < 0// out of the viewport left side
-          || (
-            // or at the right of the viewport middle
-            rect.left < (viewport.w / 2) // (should substract bookmark width…)
+        let outOfViewHor = rect.left < 0
+        let rightOfMid = rect.left < (viewport.w / 2)
+        let outOfViewVer = rect.bottom > viewport.h || rect.top < 0
 
-            // and outside of it vertically
-            && (rect.bottom > viewport.h || rect.top < 0)
-          )
+        return outOfViewHor || (rightOfMid && outOfViewVer)
       })
 
       this.items.reverse()

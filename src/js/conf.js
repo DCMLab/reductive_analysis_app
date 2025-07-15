@@ -18,7 +18,7 @@ export const action_conf = {
   redo: 'I',
   deselect_all: 'd',
   delete_all: 'D',
-  add_bookmark: '^',
+  add_bookmark: 'B',
   move_relation_to_front: 'z',
   reduce_relations: 'r',
   // 'show_hide_notation':      's',

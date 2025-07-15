@@ -105,7 +105,7 @@ class LayersMenu {
 
   setCurrentLayer(layerPosition = 0) {
     const layer = this.contexts.find(layer =>
-      layer.layer.layer_number == layerPosition
+      layer.layer.layer_elem.dataset.position == layerPosition
     )
 
     if (!layer) { return }

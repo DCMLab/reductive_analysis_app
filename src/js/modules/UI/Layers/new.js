@@ -1,4 +1,8 @@
-import { create_new_layer, delete_layer } from '../../../bootstrap'
+import {
+  create_new_layer,
+  delete_layer,
+  getDrawContexts
+} from '../../../bootstrap'
 import { getCurrentDrawContext } from '../utils/misc'
 
 export default class LayerControls {
@@ -20,7 +24,16 @@ export default class LayerControls {
   }
 
   delete() {
-    delete_layer(getCurrentDrawContext())
+    let curr = getCurrentDrawContext()
+    if (getDrawContexts().filter(d =>
+      d
+        .mei_mdiv
+        .getAttribute('xml:id')
+        .includes(curr.mei_mdiv.getAttribute('xml:id'))).length == 1
+    )
+      delete_layer(curr)
+    else
+      alert('This layer is a dependency')
   }
 
   onChange({ target }) {

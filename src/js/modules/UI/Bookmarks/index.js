@@ -60,18 +60,38 @@ class Bookmarks {
 
     const bookmarkId = `bookmark-${note.id}`
 
-    console.log(noteHead)
-    console.log(noteHead.getAttribute('transform'))
+    let x =
+      noteHead
+        .getBoundingClientRect()
+        .left +
+      context
+        .layer
+        .layer_elem
+        .getElementsByClassName('view')
+        .scrollLeft
+    let y =
+      noteHead
+        .getBoundingClientRect()
+        .top +
+      context
+        .layer
+        .layer_elem
+        .getElementsByClassName('view')
+        .scrollTop
+
+    console.log(x, ' ', y)
     // add sprite to the score
     const bookmarkIcon = createBookmarkElement({
       id: bookmarkId,
-      x: noteHead.style.transform,
-      y: noteHead.style.transform,
+      x: x + 20,
+      y: y,
       noteId: note.id,
       contextId: context.id_prefix || 0,
     })
 
-    context.svg_elem.querySelector('.page-margin').insertAdjacentHTML('beforeend', bookmarkIcon)
+    context
+      .svg_elem
+      .insertAdjacentHTML('afterbegin', bookmarkIcon)
 
     // reference the bookmark in the note
     note.dataset.bookmarkId = bookmarkId

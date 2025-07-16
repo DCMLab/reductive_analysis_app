@@ -513,7 +513,6 @@ function load_finish() {
 
   rerendered_after_action = 0
 
-  newApp.ui.scoreSettings.toggleShades(true)
   newApp.ui.bookmarks.init()
   newApp.ui.layersMenu.setDataPosition()
 

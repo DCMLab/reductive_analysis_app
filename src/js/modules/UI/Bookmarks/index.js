@@ -161,7 +161,11 @@ class Bookmarks {
       dir = dir * -1
     }
 
-    view.scrollBy(rect.left - (viewport.w / 3), 0)
+    view.scrollBy({
+      top: 0,
+      left: rect.left - (viewport.w / 3),
+      behavior: 'smooth',
+    })
   }
 
   init() {

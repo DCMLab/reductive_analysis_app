@@ -161,9 +161,6 @@ class Bookmarks {
       dir = dir * -1
     }
 
-    console.log(this.currentContextItems)
-    console.log('Target: ', targetBookmark)
-
     view.scrollBy({
       top: 0,
       left: rect.left - (viewport.w / 3),

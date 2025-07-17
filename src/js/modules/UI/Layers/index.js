@@ -104,6 +104,7 @@ class LayersMenu {
   }
 
   setCurrentLayer(layerPosition = 0) {
+
     const layer = this.contexts.find(layer =>
       layer.layer.layer_elem.dataset.position == layerPosition
     )
@@ -111,6 +112,7 @@ class LayersMenu {
     if (!layer) { return }
 
     setCurrentDrawContext(layer)
+
     this.$currentLayer.innerHTML = layerPosition + 1
     this.activeLayer = layerPosition
     this.updateLayersCount()

@@ -317,7 +317,6 @@ export function handle_keypress(ev) {
     newApp.ui.layersMenu.metaRelation.toggle()
   } else if (ev.key == navigation_conf.pan_left) {
     // Move to the left
-    // TODO: Cleaner, please!
     let vis = document.getElementsByClassName('layer--active')[0]
     let view = vis.getElementsByClassName('view')[0]
     view.scrollBy({
@@ -326,7 +325,6 @@ export function handle_keypress(ev) {
     })
   } else if (ev.key == navigation_conf.pan_right) {
     // Move to the right
-    // TODO: Cleaner, please...
     let vis = document.getElementsByClassName('layer--active')[0]
     let view = vis.getElementsByClassName('view')[0]
     view.scrollBy({
@@ -357,14 +355,18 @@ export function handle_keypress(ev) {
   } else if (ev.key == custom_conf.relation) {
     // Custom relations.
     setTimeout(function () {
-      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
+      relationsMenu.compact(
+        relationsMenu.ctn.el.classList.contains('fly-out__compact')
+      )
       document.getElementById('free-field-relations').focus()
       document.getElementById('free-field-relations').value = ''
     }, 200)
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
     setTimeout(function () {
-      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
+      relationsMenu.compact(
+        relationsMenu.ctn.el.classList.contains('fly-out__compact')
+      )
       document.getElementById('free-field-metarelations').focus()
       document.getElementById('free-field-metarelations').value = ''
     }, 200)

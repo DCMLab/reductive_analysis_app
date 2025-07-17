@@ -60,16 +60,32 @@ class Bookmarks {
 
     const bookmarkId = `bookmark-${note.id}`
 
+    let noteHeadTrans =
+      noteHead
+        .getAttribute('transform')
+        .match(/translate\(\d+, \d+\)/)[0]
+    let noteHeadX =
+      noteHeadTrans
+        .match(/\d+,/)[0]
+        .slice(0, -1)
+    let noteHeadY =
+      noteHeadTrans
+        .match(/, \d+/)[0]
+        .slice(2)
+
     // add sprite to the score
     const bookmarkIcon = createBookmarkElement({
       id: bookmarkId,
-      x: parseInt(noteHead.getAttribute('x')) + 11,
-      y: parseInt(noteHead.getAttribute('y')) - 500,
+      x: noteHeadX - 6,
+      y: 0,
       noteId: note.id,
       contextId: context.id_prefix || 0,
     })
 
-    context.svg_elem.querySelector('.page-margin').insertAdjacentHTML('beforeend', bookmarkIcon)
+    context
+      .svg_elem
+      .querySelector('.page-margin')
+      .insertAdjacentHTML('beforeend', bookmarkIcon)
 
     // reference the bookmark in the note
     note.dataset.bookmarkId = bookmarkId
@@ -79,12 +95,10 @@ class Bookmarks {
     // update bookmarks list and count
     this.items.push(bookmark)
     this.items.sort((a, b) => {
-      const xa = parseInt(a.getAttribute('x'))
-      const xb = parseInt(b.getAttribute('x'))
-      const ya = parseInt(a.getAttribute('y'))
-      const yb = parseInt(b.getAttribute('y'))
+      const xa = parseInt(a.getElementsByTagName('path')[0].getAttribute('x'))
+      const xb = parseInt(b.getElementsByTagName('path')[0].getAttribute('x'))
 
-      return xa != xb ? xa - xb : ya - yb
+      return xa - xb
     })
 
     this.setCount()
@@ -102,44 +116,36 @@ class Bookmarks {
   goTo(dir = 1) {
     let targetBookmark = null
     let rect = null
+    let view =
+      document
+        .getElementsByClassName('layer--active')[0]
+        .getElementsByClassName('view')[0]
 
-    // Next
+    if (!dir) return
 
-    if (dir > 0) {
-      targetBookmark = this.currentContextItems.find(bookmark => {
-        rect = getDOMRect(bookmark, ['top', 'right', 'bottom', 'left'])
-
-        return rect.right > viewport.w // out of the viewport right side
-          || (
-            // or at the right of the viewport middle
-            rect.left > (viewport.w / 2)
-
-            // and outside of it vertically
-            && (rect.bottom > viewport.h || rect.top < 0)
-          )
-      })
-    }
-
-    // Previous
-
-    if (dir < 0) {
+    if (dir < 0) // For 'previous' lookup
       this.items.reverse()
 
-      targetBookmark = this.currentContextItems.find(bookmark => {
-        rect = getDOMRect(bookmark, ['top', 'right', 'bottom', 'left'])
+    targetBookmark = this.currentContextItems.find(bookmark => {
+      rect = getDOMRect(
+        bookmark.getElementsByTagName('path')[0], ['left', 'right']
+      )
 
-        return rect.left < 0// out of the viewport left side
-          || (
-            // or at the right of the viewport middle
-            rect.left < (viewport.w / 2) // (should substract bookmark width…)
+      return dir > 0
+        ? rect.left > (viewport.w / 2)
+        : rect.right < 0
+    })
 
-            // and outside of it vertically
-            && (rect.bottom > viewport.h || rect.top < 0)
-          )
-      })
-
-      this.items.reverse()
+    // Going to next bookmark but scroll is maxed
+    if (
+      dir > 0 &&
+      (view.scrollLeft + viewport.w) == view.scrollWidth
+    ) {
+      targetBookmark = null
     }
+
+    if (dir < 0) // Reordering afterwards
+      this.items.reverse()
 
     // If there’s no next/previous bookmark, we loop to the first/last.
     if (!targetBookmark) {
@@ -147,29 +153,15 @@ class Bookmarks {
         ? this.currentContextItems[0] // first
         : this.currentContextItems[this.count - 1] // last
 
-      rect = getDOMRect(targetBookmark, ['top', 'left'])
+      rect = getDOMRect(
+        targetBookmark.getElementsByTagName('path')[0], ['left']
+      )
 
       // revert scroll direction in `doc.scrollBy`
       dir = dir * -1
     }
 
-    // This 👇 is the prefered method, but Safari fails (see next comment).
-
-    // targetBookmark?.scrollIntoView({ block: 'center', inline: 'center' })
-
-    /**
-     * This 👇 is roughly the same as this 👆, but this 👆 on Safari only works
-     * when the wanted bookmark is on the right or the bottom. Top and left
-     * are ignored.
-     *
-     * A reduce test case (https://codepen.io/meduzen/details/GRyPdaJ) couldn’t
-     * reproduce the issue, so maybe it’s related to having a SVG in another
-     * one, or maybe the transform applied to the parent SVG.
-     */
-    doc.scrollBy(
-      rect.left + (window.innerWidth / 2 * dir),
-      rect.top + (window.innerHeight / 2 * dir)
-    )
+    view.scrollBy(rect.left - (viewport.w / 3), 0)
   }
 
   init() {

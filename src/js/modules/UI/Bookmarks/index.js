@@ -95,8 +95,8 @@ class Bookmarks {
     // update bookmarks list and count
     this.items.push(bookmark)
     this.items.sort((a, b) => {
-      const xa = parseInt(a.getElementsByTagName('path')[0].getAttribute('x'))
-      const xb = parseInt(b.getElementsByTagName('path')[0].getAttribute('x'))
+      const xa = parseInt(a.getAttribute('x'))
+      const xb = parseInt(b.getAttribute('x'))
 
       return xa - xb
     })

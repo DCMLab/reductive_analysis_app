@@ -77,7 +77,7 @@ class Bookmarks {
     const bookmarkIcon = createBookmarkElement({
       id: bookmarkId,
       x: noteHeadX - 6,
-      y: noteHeadY - 450,
+      y: 0,
       noteId: note.id,
       contextId: context.id_prefix || 0,
     })
@@ -95,12 +95,10 @@ class Bookmarks {
     // update bookmarks list and count
     this.items.push(bookmark)
     this.items.sort((a, b) => {
-      const xa = parseInt(a.getAttribute('x'))
-      const xb = parseInt(b.getAttribute('x'))
-      const ya = parseInt(a.getAttribute('y'))
-      const yb = parseInt(b.getAttribute('y'))
+      const xa = parseInt(a.getElementsByTagName('path')[0].getAttribute('x'))
+      const xb = parseInt(b.getElementsByTagName('path')[0].getAttribute('x'))
 
-      return xa != xb ? xa - xb : ya - yb
+      return xa - xb
     })
 
     this.setCount()
@@ -112,42 +110,30 @@ class Bookmarks {
     doc.classList.toggle('has-several-bookmarks-in-context', this.count > 1)
   }
 
-  toPrevious() { this.goTo(1) }
-  toNext() { this.goTo(-1) }
+  toPrevious() { this.goTo(-1) }
+  toNext() { this.goTo(1) }
 
   goTo(dir = 1) {
     let targetBookmark = null
     let rect = null
 
-    // Next
-    if (dir > 0) {
-      targetBookmark = this.currentContextItems.find(bookmark => {
-        rect = getDOMRect(bookmark, ['top', 'right', 'bottom', 'left'])
+    if (!dir) return
 
-        let outOfViewHor = rect.right > viewport.w
-        let rightOfMid = rect.left > (viewport.w / 2)
-        let outOfViewVer = rect.bottom > viewport.h || rect.top < 0
-
-        return outOfViewHor || (rightOfMid && outOfViewVer)
-      })
-    }
-
-    // Previous
-    if (dir < 0) {
+    if (dir < 0) // For 'previous' lookup
       this.items.reverse()
 
-      targetBookmark = this.currentContextItems.find(bookmark => {
-        rect = getDOMRect(bookmark, ['top', 'right', 'bottom', 'left'])
+    targetBookmark = this.currentContextItems.find(bookmark => {
+      rect = getDOMRect(
+        bookmark.getElementsByTagName('path')[0], ['left', 'right']
+      )
 
-        let outOfViewHor = rect.left < 0
-        let rightOfMid = rect.left < (viewport.w / 2)
-        let outOfViewVer = rect.bottom > viewport.h || rect.top < 0
+      return dir > 0
+        ? rect.left > (viewport.w / 2)
+        : rect.right < 0
+    })
 
-        return outOfViewHor || (rightOfMid && outOfViewVer)
-      })
-
+    if (dir < 0) // Reordering afterwards
       this.items.reverse()
-    }
 
     // If there’s no next/previous bookmark, we loop to the first/last.
     if (!targetBookmark) {
@@ -155,31 +141,18 @@ class Bookmarks {
         ? this.currentContextItems[0] // first
         : this.currentContextItems[this.count - 1] // last
 
-      rect = getDOMRect(targetBookmark, ['top', 'left'])
+      rect = getDOMRect(
+        targetBookmark.getElementsByTagName('path')[0], ['left']
+      )
 
       // revert scroll direction in `doc.scrollBy`
       dir = dir * -1
     }
 
-    // This 👇 is the prefered method, but Safari fails (see next comment).
-
-    // targetBookmark?.scrollIntoView({ block: 'center', inline: 'center' })
-
-    /**
-     * This 👇 is roughly the same as this 👆, but this 👆 on Safari only works
-     * when the wanted bookmark is on the right or the bottom. Top and left
-     * are ignored.
-     *
-     * A reduce test case (https://codepen.io/meduzen/details/GRyPdaJ) couldn’t
-     * reproduce the issue, so maybe it’s related to having a SVG in another
-     * one, or maybe the transform applied to the parent SVG.
-     */
-    let vis = document.getElementsByClassName('layer--active')[0]
-    let view = vis.getElementsByClassName('view')[0]
-    view.scrollBy(
-      rect.left + (window.innerWidth / 2 * dir),
-      rect.top + (window.innerHeight / 2 * dir)
-    )
+    document
+      .getElementsByClassName('layer--active')[0]
+      .getElementsByClassName('view')[0]
+      .scrollBy(rect.left + (viewport.w / 2 * dir), 0)
   }
 
   init() {

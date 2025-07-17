@@ -116,6 +116,10 @@ class Bookmarks {
   goTo(dir = 1) {
     let targetBookmark = null
     let rect = null
+    let view =
+      document
+        .getElementsByClassName('layer--active')[0]
+        .getElementsByClassName('view')[0]
 
     if (!dir) return
 
@@ -131,6 +135,14 @@ class Bookmarks {
         ? rect.left > (viewport.w / 2)
         : rect.right < 0
     })
+
+    // Going to next bookmark but scroll is maxed
+    if (
+      dir > 0 &&
+      (view.scrollLeft + viewport.w) == view.scrollWidth
+    ) {
+      targetBookmark = null
+    }
 
     if (dir < 0) // Reordering afterwards
       this.items.reverse()
@@ -149,10 +161,7 @@ class Bookmarks {
       dir = dir * -1
     }
 
-    document
-      .getElementsByClassName('layer--active')[0]
-      .getElementsByClassName('view')[0]
-      .scrollBy(rect.left + (viewport.w / 2 * dir), 0)
+    view.scrollBy(rect.left - (viewport.w / 3), 0)
   }
 
   init() {

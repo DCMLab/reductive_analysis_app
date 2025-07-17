@@ -139,7 +139,7 @@ class Bookmarks {
     // Going to next bookmark but scroll is maxed
     if (
       dir > 0 &&
-      (view.scrollLeft + viewport.w) == view.scrollWidth
+      (view.scrollLeft + viewport.w) >= view.scrollWidth
     ) {
       targetBookmark = null
     }

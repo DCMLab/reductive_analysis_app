@@ -122,6 +122,7 @@ class Bookmarks {
         .getElementsByClassName('view')[0]
 
     if (!dir) return
+    if (!this.items.length) return
 
     if (dir < 0) // For 'previous' lookup
       this.items.reverse()

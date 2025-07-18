@@ -102,6 +102,14 @@ export function new_layer(draw_context = null) {
   return new_mdiv_elem
 }
 
+/**
+ * Creates an MEI that only stores `mdiv_elem`
+ *
+ * @param {MEI} mei Template for the new MEI
+ * @param {MDIV_elem} mdiv_elem Element that should be in the new MEI
+ *
+ * @return {MEI} Newly generated MEI
+ */
 export function mei_for_layer(mei, mdiv_elem) {
   if (!mei.contains(mdiv_elem)) {
     console.log('MDiv element not in MEI, aborting')
@@ -109,10 +117,14 @@ export function mei_for_layer(mei, mdiv_elem) {
   }
   var new_mei = clone_mei(mei)
   var our_mdiv
+
+  // Take the first mdiv in `mei` if no ID given by `mdiv_elem`
   if (!mdiv_elem.hasAttribute('xml:id'))
     our_mdiv = new_mei.getElementsByTagName('mdiv')[0]
   else
     our_mdiv = get_by_id(new_mei, mdiv_elem.getAttribute('xml:id'))
+
+  // Remove every sibling of `our_mdiv`
   var paren = our_mdiv.parentElement
   for (let mdiv of Array.from(paren.getElementsByTagName('mdiv'))) {
     if (mdiv === our_mdiv)
@@ -120,6 +132,7 @@ export function mei_for_layer(mei, mdiv_elem) {
     else
       paren.removeChild(mdiv)
   }
+
   return new_mei
 }
 

@@ -294,6 +294,8 @@ export function note_coords(note) {
 
 // Gets all elements from the doc with the oldid
 export function get_by_oldid(doc, id) {
+  if (!id)
+    return null
   if (id[0] == '#') { id = id.slice(1) }
   var elems = doc.querySelectorAll('[*|oldid=\'' + id + '\']')
   if (elems) {

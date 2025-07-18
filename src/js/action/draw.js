@@ -26,6 +26,7 @@ import {
   draw_slur,
   isSlurDownward,
   get_by_id,
+  get_by_oldid,
   handleFlip
 } from '../utils/misc'
 
@@ -475,8 +476,13 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
     // Add hover class to the meta-relation itself
     if (!isRoot) element.classList.add(isPrimary ? 'extrarelationhover' : 'relationhover')
 
-    // Get the corresponding MEI node using the oldid attribute
-    let meiNode = get_by_id(mei_graph, element.getAttribute('oldid') || element.id)
+    let meiNode = get_by_oldid(mei_graph, element.getAttribute('oldid'))
+    if (!meiNode) {
+      let id = element.id.slice(element.id.match(/^\d/))
+      meiNode = get_by_id(mei_graph, id)
+    }
+
+    if (!meiNode || !meiNode.length) return
 
     // Recursively add hover class to the children
     let primaries = relation_primaries(mei_graph, meiNode).map(
@@ -504,9 +510,13 @@ function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, me
     // Remove hover class from the meta-relation itself
     if (!isRoot) element.classList.remove(isPrimary ? 'extrarelationhover' : 'relationhover')
 
-    // Get the corresponding MEI node using the oldid attribute
-    // TODO: might be undefined and produce error
-    let meiNode = get_by_id(mei_graph, element.getAttribute('oldid') || element.id)
+    let meiNode = get_by_oldid(mei_graph, element.getAttribute('oldid'))
+    if (!meiNode) {
+      let id = element.id.slice(element.id.match(/^\d/))
+      meiNode = get_by_id(mei_graph, id)
+    }
+
+    if (!meiNode || !meiNode.length) return
 
     // Recursively remove hover class from the children
     let primaries = relation_primaries(mei_graph, meiNode).map(

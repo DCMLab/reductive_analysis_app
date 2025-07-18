@@ -95,8 +95,8 @@ class Bookmarks {
     // update bookmarks list and count
     this.items.push(bookmark)
     this.items.sort((a, b) => {
-      const xa = parseInt(a.getElementsByTagName('path')[0].getAttribute('x'))
-      const xb = parseInt(b.getElementsByTagName('path')[0].getAttribute('x'))
+      const xa = parseInt(a.getAttribute('x'))
+      const xb = parseInt(b.getAttribute('x'))
 
       return xa - xb
     })
@@ -122,6 +122,7 @@ class Bookmarks {
         .getElementsByClassName('view')[0]
 
     if (!dir) return
+    if (!this.items.length) return
 
     if (dir < 0) // For 'previous' lookup
       this.items.reverse()
@@ -139,7 +140,7 @@ class Bookmarks {
     // Going to next bookmark but scroll is maxed
     if (
       dir > 0 &&
-      (view.scrollLeft + viewport.w) == view.scrollWidth
+      (view.scrollLeft + viewport.w) >= view.scrollWidth
     ) {
       targetBookmark = null
     }
@@ -161,7 +162,11 @@ class Bookmarks {
       dir = dir * -1
     }
 
-    view.scrollBy(rect.left - (viewport.w / 3), 0)
+    view.scrollBy({
+      top: 0,
+      left: rect.left - (viewport.w / 3),
+      behavior: 'smooth',
+    })
   }
 
   init() {

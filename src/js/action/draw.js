@@ -26,6 +26,7 @@ import {
   draw_slur,
   isSlurDownward,
   get_by_id,
+  get_by_oldid,
   handleFlip
 } from '../utils/misc'
 
@@ -466,6 +467,25 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   return added
 }
 
+/**
+ * Gets the element by old ID, and gets it by ID if not found
+ *
+ * @param {MEI_graph} mei_graph The graph to look the element into
+ * @param {element} el The element to look for
+ *
+ * @return {MEI_node} The node in the MEI of the element
+ */
+function get_by_oldid_and_id(mei_graph, el) {
+
+  let meiNode = get_by_oldid(mei_graph, el.getAttribute('oldid'))
+  if (!meiNode) {
+    let id = el.id.slice(el.id.match(/^\d/))
+    meiNode = get_by_id(mei_graph, id)
+  }
+
+  return meiNode
+}
+
 // Recursively add hover class to elements and their children
 function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
   if (!element) return
@@ -475,8 +495,9 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
     // Add hover class to the meta-relation itself
     if (!isRoot) element.classList.add(isPrimary ? 'extrarelationhover' : 'relationhover')
 
-    // Get the corresponding MEI node using the oldid attribute
-    let meiNode = get_by_id(mei_graph, element.getAttribute('oldid') || element.id)
+    let meiNode = get_by_oldid_and_id(mei_graph, element)
+
+    if (!meiNode || !meiNode.length) return
 
     // Recursively add hover class to the children
     let primaries = relation_primaries(mei_graph, meiNode).map(
@@ -504,9 +525,9 @@ function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, me
     // Remove hover class from the meta-relation itself
     if (!isRoot) element.classList.remove(isPrimary ? 'extrarelationhover' : 'relationhover')
 
-    // Get the corresponding MEI node using the oldid attribute
-    // TODO: might be undefined and produce error
-    let meiNode = get_by_id(mei_graph, element.getAttribute('oldid') || element.id)
+    let meiNode = get_by_oldid_and_id(mei_graph, element)
+
+    if (!meiNode || !meiNode.length) return
 
     // Recursively remove hover class from the children
     let primaries = relation_primaries(mei_graph, meiNode).map(

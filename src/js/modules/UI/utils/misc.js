@@ -43,6 +43,8 @@ import {
   unmark_secondaries,
 } from '../../../utils/misc'
 
+import { getDOMRect } from '../../../utils/dom'
+
 import { place_note, update_placing_note } from './coordinates'
 
 import { delete_relations } from '../../../action/delete'
@@ -674,6 +676,15 @@ export function adjustSvgDimensions(draw_context) {
   const newPixelWidth = Math.ceil(newSvgWidth * scaleX)
   const newPixelHeight = Math.ceil(newSvgHeight * scaleY)
 
+  // Find centre of current SVG
+  let currCentreLeft = getDOMRect(rootSvg, ['width']).width / 2
+  let currCentreTop = getDOMRect(rootSvg, ['height']).height / 2
+
+  // Get current scroll position
+  const view = draw_context['view_elem']
+  const currScrollLeft = view.scrollLeft - currCentreLeft
+  const currScrollTop = view.scrollTop - currCentreTop
+
   // Set the width and height on the container SVG in pixels
   // Only change dimensions if they're actually different
   if (newPixelWidth !== currentWidth) {
@@ -682,4 +693,14 @@ export function adjustSvgDimensions(draw_context) {
   if (newPixelHeight !== currentHeight) {
     rootSvg.setAttribute('height', `${newPixelHeight}px`)
   }
+
+  // Getting new centre of SVG
+  let newCentreLeft = getDOMRect(rootSvg, ['width']).width / 2
+  let newCentreTop = getDOMRect(rootSvg, ['height']).height / 2
+
+  // Getting back to previous position
+  view.scrollTo({
+    top: currScrollTop + newCentreTop,
+    left: currScrollLeft + newCentreLeft,
+  })
 }

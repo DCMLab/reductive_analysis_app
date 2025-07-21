@@ -510,7 +510,7 @@ export function add_mei_node_for(mei_graph, note) {
 export function hide_note(draw_context, note) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), id_in_svg(draw_context, node_to_note_id(note)))
   if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('reduced')
+    elem.classList.add('hidden-reduced')
   return elem
 }
 
@@ -518,7 +518,7 @@ export function hide_note(draw_context, note) {
 export function hide_note_hier(draw_context, note) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + id_in_svg(draw_context, node_to_note_id(note)))
   if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('reduced')
+    elem.classList.add('hidden-reduced')
   return elem
 }
 
@@ -526,7 +526,7 @@ export function hide_note_hier(draw_context, note) {
 export function hide_he(draw_context, he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), draw_context.id_prefix + he.getAttribute('xml:id'))
   if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('reduced')
+    elem.classList.add('hidden-reduced')
   return elem
 }
 
@@ -534,7 +534,7 @@ export function hide_he(draw_context, he) {
 export function hide_he_hier(draw_context, he) {
   var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + draw_context.id_prefix + he.getAttribute('xml:id'))
   if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('reduced')
+    elem.classList.add('hidden-reduced')
   return elem
 }
 

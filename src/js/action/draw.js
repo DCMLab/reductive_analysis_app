@@ -431,7 +431,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       })
 
       // Add the circle to the target
-      target.appendChild(connection_circle)
+      g_elem.appendChild(connection_circle)
     }
   })
 

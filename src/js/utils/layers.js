@@ -52,7 +52,7 @@ function layerify(draw_context, elem) {
   if (elem.nodeType != Node.ELEMENT_NODE)
     return [elem.cloneNode(), false]
   var svg_elem = document.getElementById(id_in_svg(draw_context, get_id(elem)))
-  if (elem.tagName == 'note' && (!svg_elem || svg_elem.classList.contains('hidden'))) // This elem has been reduced away
+  if (elem.tagName == 'note' && (!svg_elem || svg_elem.classList.contains('hidden-reduced'))) // This elem has been reduced away
     return [note_to_space(mei, elem), true] // It may be that we should replace it with a space instead
   var results = Array.from(elem.childNodes).map((e) => layerify(draw_context, e))
   var new_children = results.map((p) => p[0]).filter((x) => x != null)

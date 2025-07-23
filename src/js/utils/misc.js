@@ -325,23 +325,27 @@ export const id_or_oldid = elem => elem.getAttribute('oldid') ?? elem.id
 // either the MEI or the document.
 // Takes an element, gives an ID string
 export function get_id(elem) {
+  let ret
+
   if (document.contains(elem)) {
     // SVG traversal
     if (!elem.hasAttribute('oldid'))
-      return elem.id
+      ret = elem.id
     else
-      return get_id(document.getElementById(elem.getAttribute('oldid')))
+      ret = get_id(document.getElementById(elem.getAttribute('oldid')))
   } else if (elem.hasAttribute('xml:id')) {
     // MEI traversal
     if (elem.hasAttribute('sameas'))
-      return get_id(get_by_id(mei, elem.getAttribute('sameas')))
+      ret = get_id(get_by_id(mei, elem.getAttribute('sameas')))
     else if (elem.hasAttribute('corresp'))
-      return get_id(get_by_id(mei, elem.getAttribute('corresp')))
+      ret = get_id(get_by_id(mei, elem.getAttribute('corresp')))
     else if (elem.hasAttribute('copyof'))
-      return get_id(get_by_id(mei, elem.getAttribute('copyof')))
+      ret = get_id(get_by_id(mei, elem.getAttribute('copyof')))
     else if (elem.hasAttribute('xml:id'))
-      return elem.getAttribute('xml:id')
+      ret = elem.getAttribute('xml:id')
   }
+
+  return ret.slice(ret.search(/[^\d]/))
 }
 
 export function id_in_svg(draw_context, id) {

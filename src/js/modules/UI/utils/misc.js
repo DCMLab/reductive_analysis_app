@@ -13,7 +13,6 @@ import {
   action_conf,
   custom_conf,
   combo_conf,
-  hide_classes,
   meta_conf,
   type_conf,
   navigation_conf,
@@ -58,8 +57,6 @@ import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
 /* UI globals */
 
-var non_notes_hidden = false
-
 // Hovering and adding notes
 var placing_note = ''
 
@@ -75,9 +72,6 @@ export const getMouseY = () => mouseY
 
 // Last-selected entity in the current selection.
 var last_selected = null
-
-// Show non-related ("orphan") notes by default.
-var show_orphans = true
 
 // Stack of note selection. Helps to retrieve the really last selected note.
 const selectedNotesIds = []
@@ -386,30 +380,6 @@ export function handle_keypress(ev) {
 
 /* Large-ish UI functions */
 
-// Toggle showing things other than notes in the score
-export function toggle_equalize() {
-  console.debug('Using globals: non_notes_hidden')
-  non_notes_hidden = !non_notes_hidden
-  set_non_note_visibility(non_notes_hidden)
-  if (!non_notes_hidden) show_all_notes()
-}
-
-function set_non_note_visibility(hidden) {
-  console.debug('Using globals: document for element selection')
-
-  Array.from(document.getElementsByClassName('beam')).forEach(x =>
-    Array.from(x.children)
-      .filter(x => x.tagName == 'polygon')
-      .forEach(x => x.classList.toggle('hidden', hidden))
-  )
-
-  hide_classes.forEach(cl =>
-    Array.from(document.getElementsByClassName(cl)).forEach(x =>
-      x.classList.toggle('hidden', hidden)
-    )
-  )
-}
-
 /**
  * Toggle the current relation having a type-dependent shade.
  *
@@ -582,25 +552,6 @@ export function hide_top(draw_context) {
       .setAttribute('viewBox', draw_context.old_viewbox)
     svg_elem.children[0].setAttribute('height', draw_context.old_height)
   }
-}
-
-function hide_orphan_notes() {
-  var mei_graph = getMeiGraph()
-  var ids = Array.from(document.getElementsByClassName('note')).map(e => e.id)
-  var gn_ids = Array.from(mei_graph.getElementsByTagName('arc')).map(e => e.getAttribute('to'))
-  ids.forEach(i => {
-    var ii = i.replace(/(^\d+-?)/, '') // Replace layer or view prefixes.
-    if (!gn_ids.includes(`#gn-${ii}`)) document.getElementById(i).classList.add('hidden')
-  })
-}
-
-function show_all_notes() {
-  Array.from(document.querySelectorAll('g.note')).forEach(e => e.classList.remove('hidden'))
-}
-
-export function toggle_orphan_notes() {
-  show_orphans = !show_orphans
-  show_orphans ? show_all_notes() : hide_orphan_notes()
 }
 
 // Functions helping to interact with variable declared here from other files.

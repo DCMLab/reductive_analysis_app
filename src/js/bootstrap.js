@@ -377,7 +377,7 @@ export function draw_graph(draw_context) {
 
 // Do all of this when we have the MEI in memory
 function load_finish() {
-  console.debug('Using globals data, parser, mei, jquery document, document, mei_graph, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action')
+  console.debug('Using globals data, parser, mei, jquery document, document, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action')
 
   // Parse the original document
   var parser = new DOMParser()

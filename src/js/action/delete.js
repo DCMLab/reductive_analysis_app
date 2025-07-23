@@ -32,8 +32,8 @@ function delete_relation(elem) {
   // Find all arcs related to this element
   var arcs =
     Array.from(mei.getElementsByTagName('arc')).filter((arc) => {
-      return arc.getAttribute('to') == '#' + elem.id ||
-              arc.getAttribute('from') == '#' + elem.id
+      return (arc.getAttribute('from') == '#' + elem.id.slice(1) ||
+              arc.getAttribute('to') == '#' + elem.id.slice(1))
     })
   // Find meta-relations associated with this relation
   const result = find_all_parent_relations(elem, mei, draw_contexts, svg_hes)
@@ -76,7 +76,8 @@ function delete_relation(elem) {
     // If x corresponds to an SVG note (try!), un-style it as if we were not hovering over the relation.
     // This is necessary when deleting via they keyboard (therefore while hovering).
     try {
-      const element = document.querySelector(`g #${x.getAttribute('to').substring(4)}`)
+      const element =
+        document.querySelector(`g #${x.getAttribute('to').substring(4)}`)
       element.setAttribute('class', 'note')
     } catch (e) {}
     x.parentElement.removeChild(x)

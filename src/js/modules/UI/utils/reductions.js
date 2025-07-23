@@ -78,7 +78,7 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
 
   var remaining_relations = all_relations_nodes.filter((n) => {
     var g = get_by_id(document, draw_context.id_prefix + n.getAttribute('xml:id'))
-    return g != undefined && !g.classList.contains('hidden')
+    return g != undefined && !g.classList.contains('hidden-reduced')
   })
 
   if (target_relations.length == 0)
@@ -120,7 +120,7 @@ export function undo_reduce(draw_context) {
   extraselected.forEach(x => toggle_selected(x, true))
   var [what, elems, sel, extra] = unreduce_actions.pop()
   var [relations, notes, graphicals] = elems
-  graphicals.flat().forEach(x => { if (x) x.classList.remove('hidden') })
+  graphicals.flat().forEach(x => { if (x) x.classList.remove('hidden-reduced') })
   sel.forEach(x => toggle_selected(x, false))
   extra.forEach(x => toggle_selected(x, true))
 }

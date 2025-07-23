@@ -1,4 +1,8 @@
-import { toggle_equalize, toggle_orphan_notes } from '../utils/misc'
+import {
+  show_all_notes,
+  hide_orphan_notes,
+  set_non_note_visibility
+} from './utils'
 import { doc } from '../../../utils/document'
 
 const AUTO_CLOSE_TIMEOUT = 10000 // in milliseconds
@@ -13,6 +17,10 @@ class ScoreSettings {
 
     this.expanded = false
     this.autoCloseTimer = null
+
+    this.brightShades = true
+    this.showOrphans = true
+    this.nonNotesHidden = false
   }
 
   get interacting() {
@@ -57,7 +65,7 @@ class ScoreSettings {
     }
 
     if (e.target == this.toggleTonesBtn) {
-      return toggle_orphan_notes()
+      return this.toggleOrphanNotes()
     }
   }
 
@@ -67,7 +75,18 @@ class ScoreSettings {
   }
 
   toggleStems() {
-    toggle_equalize()
+    this.toggleEqualize()
+  }
+
+  toggleOrphanNotes() {
+    this.showOrphans = !this.showOrphans
+    this.showOrphans ? show_all_notes() : hide_orphan_notes()
+  }
+
+  toggleEqualize() {
+    this.nonNotesHidden = !this.nonNotesHidden
+    set_non_note_visibility(this.nonNotesHidden)
+    if (!this.nonNotesHidden) show_all_notes()
   }
 }
 

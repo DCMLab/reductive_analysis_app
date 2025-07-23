@@ -44,8 +44,8 @@ function delete_relation(elem) {
   let removed = arcs.concat(svg_hes).concat(meta_relations).concat(meta_relation_arcs)
   removed.push(mei_he)
 
-  // Remove duplicates (in case some elements are counted twice)
-  removed = [...new Set(removed)]
+  // Remove duplicates (in case some elements are counted twice) and null
+  removed = [...new Set(removed)].filter(e => e)
 
   // Collect child IDs from metarelation arcs that will be removed
   const childIds = new Set()

@@ -62,7 +62,6 @@ class Filters {
 
   createFiltersGroups = () => [
     new Group('relation', { filterCtnId: 'relations-filters' }),
-    new Group('metarelation', { filterCtnId: 'meta-relations-filters' }),
   ]
 
   createMutationObserver = () => new MutationObserver(mutations => {

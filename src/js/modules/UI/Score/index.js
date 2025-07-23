@@ -12,7 +12,6 @@ class ScoreSettings {
     this.ctn = document.getElementById('player-and-score-settings')
     this.toggleVisibilityBtn = document.getElementById('score-settings-toggle')
 
-    this.toggleShadesBtn = document.getElementById('settings-shades')
     this.toggleStemsBtn = document.getElementById('settings-stems')
     this.toggleTonesBtn = document.getElementById('settings-non-related-tones')
 
@@ -61,10 +60,6 @@ class ScoreSettings {
       return this.toggleVisibility(true)
     }
 
-    if (e.target == this.toggleShadesBtn) {
-      return this.toggleShades()
-    }
-
     if (e.target == this.toggleStemsBtn) {
       return this.toggleStems()
     }
@@ -77,11 +72,6 @@ class ScoreSettings {
   toggleVisibility(state = !this.expanded) {
     this.expanded = state
     doc.classList.toggle('ui-score-settings-visible', state)
-  }
-
-  toggleShades(state = !this.brightShades) {
-    this.brightShades = state
-    doc.classList.toggle('shades-alternate', !state)
   }
 
   toggleStems() {

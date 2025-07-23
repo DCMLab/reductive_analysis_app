@@ -468,12 +468,11 @@ function load_finish() {
     var [view_element, svg_element] = new_view_elements(layer_element)
     svg_element.innerHTML = new_svg
     var layer_context = {
-      'mei': new_mei,
-      'layer_elem': layer_element,
-      'layer_number': 0,
-      'score_elem': score_elem,
-      'id_mapping': get_id_pairs(mdiv_elem),
-      'number_of_views': 1
+      mei: new_mei,
+      layer_elem: layer_element,
+      score_elem: score_elem,
+      id_mapping: get_id_pairs(mdiv_elem),
+      number_of_views: 1
     }
 
     const isFirstLayer = i == 0
@@ -505,6 +504,7 @@ function load_finish() {
       orig_midi = midi
     } else
       draw_context.id_prefix = draw_contexts.length
+
     finalize_draw_context(draw_context)
   }
 
@@ -513,8 +513,8 @@ function load_finish() {
 
   rerendered_after_action = 0
 
-  newApp.ui.scoreSettings.toggleShades(true)
   newApp.ui.bookmarks.init()
+  newApp.ui.layersMenu.setDataPosition()
 
   document.onkeypress = function(ev) { handle_keypress(ev) }
   document.onkeydown = handle_keydown
@@ -596,14 +596,6 @@ export function delete_layer(draw_context) {
     draw_contexts = draw_contexts.filter(ctx => ctx !== draw_context)
     layer_contexts = layer_contexts.filter(ctx => ctx !== draw_context.layer)
 
-    // Re-assigning layer_number for indexing layers
-    // Going through the array backwards, the layers are stored in
-    // reverse order
-    for (let i = draw_contexts.length - 2; i > -1; i--) {
-      draw_contexts[i].layer.layer_number =
-        draw_contexts[i + 1].layer.layer_number + 1
-    }
-
     // 4. Set the current draw context to the first layer
     setCurrentDrawContext(draw_contexts[0])
 
@@ -638,12 +630,11 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
   new_svg_elem.innerHTML = new_svg
   var layer_context = {
-    'mei': new_mei,
-    'layer_elem': layer_element,
-    'layer_number': layer_contexts.length,
-    'score_elem': new_score_elem,
-    'id_mapping': get_id_pairs(new_mdiv_elem),
-    'number_of_views': 1,
+    mei: new_mei,
+    layer_elem: layer_element,
+    score_elem: new_score_elem,
+    id_mapping: get_id_pairs(new_mdiv_elem),
+    number_of_views: 1,
   }
   layer_contexts.push(layer_context)
   var new_draw_context = {

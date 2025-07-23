@@ -3,7 +3,7 @@ export const createBookmarkElement = ({ id, x, y, noteId, contextId }) => `
       id="${id}"
       class="bookmark"
       viewBox="0 0 12 16"
-      width="200" height="267"
+      width="217" height="290"
       x="${x}"
       y="${y}"
       fill="#e42618"

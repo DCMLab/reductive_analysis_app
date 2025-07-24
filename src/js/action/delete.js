@@ -210,12 +210,17 @@ function find_all_parent_relations(elem, mei, draw_contexts, svg_hes, processedI
   let meta_relations = []
   let meta_relation_arcs = []
 
-  const elemId = elem.id || get_id(elem)
+  const elemId = elem.id
+    ? elem.id.slice(elem.id.search(/[^\d]/))
+    : get_id(elem)
 
   // Find arcs that connect meta-relations to this relation
   // Only look for arcs where this element is the target (to) - parent->child
   const meta_arcs = Array.from(mei.getElementsByTagName('arc')).filter(
-    arc => arc.getAttribute('to') == '#' + elemId
+    arc => {
+      console.log(arc.getAttribute('to'))
+      return arc.getAttribute('to') == '#' + elemId
+    }
   )
 
   // For each arc, find the meta-relation nodes that are parents of this element

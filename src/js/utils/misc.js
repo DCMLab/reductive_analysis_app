@@ -319,7 +319,10 @@ export function get_by_id(doc, id) {
 }
 
 // Simple utility to get oldid if available.
-export const id_or_oldid = elem => elem.getAttribute('oldid') ?? elem.id
+export const id_or_oldid = elem => {
+  let ret = elem.getAttribute('oldid') ?? elem.id
+  return ret.slice(ret.search(/[^\d]/))
+}
 
 // More complex utility to fully search until we find the "basic" ID, in
 // either the MEI or the document.

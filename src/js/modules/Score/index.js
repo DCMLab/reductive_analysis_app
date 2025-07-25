@@ -73,6 +73,7 @@ class Score {
     this.lastSelected = detail.lastSelected
 
     if (!this.flatSelection.length) { return }
+    if (!document.getElementById(this.flatSelection[0].id)) { return }
 
     const currentDrawContext = getCurrentDrawContext()
     const selectionDrawContext = draw_context_of(this.flatSelection[0])

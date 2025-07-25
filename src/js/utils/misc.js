@@ -414,7 +414,7 @@ export function average2(x, y) { return (x + y) / 2 }
 function note_get_accid(note) {
   console.debug('Using globals: document, mei to find element')
   if (document.contains(note))
-    note = get_by_id(mei, get_id(note))
+    note = get_by_id(mei, get_raw_id(note))
   if (note.hasAttribute('accid.ges'))
     return note.getAttribute('accid.ges')
   if (note.hasAttribute('accid'))
@@ -478,6 +478,7 @@ export function relation_primaries(mei_graph, he) {
 }
 // Get the MEI-graph nodes that are adjacent and secondary to a relation
 export function relation_secondaries(mei_graph, he) {
+  if (!he) return
   var arcs_array = Array.from(mei_graph.getElementsByTagName('arc'))
   var nodes = []
   arcs_array.forEach((a) => {
@@ -501,7 +502,7 @@ export function relation_type(he) {
 
 // Set up new graph node for a note
 export function add_mei_node_for(mei_graph, note) {
-  var svg_id = get_id(note)
+  var svg_id = get_raw_id(note)
   var id = get_id(get_by_id(mei, svg_id))
   var elem = get_by_id(mei_graph.getRootNode(), 'gn-' + id)
   if (elem != null) {
@@ -696,7 +697,7 @@ export function to_text(elems) {
       const [mx, my] = note_coords(m)
       return (nx - mx == 0) ? my - ny : nx - mx
     })
-    return elems.map(note => note_to_text(get_id(note)))
+    return elems.map(note => note_to_text(get_raw_id(note)))
   }
 }
 

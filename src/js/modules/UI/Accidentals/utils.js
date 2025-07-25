@@ -31,7 +31,7 @@ function remove_accidental(elem) {
   while (!note_elem.classList.contains('note'))
     note_elem = note_elem.parentElement
 
-  var mei_note_id = get_id(note_elem)
+  var mei_note_id = get_raw_id(note_elem)
   var mei_note = get_by_id(mei, mei_note_id)
 
   remove_mei_accidental(mei_note)

@@ -277,13 +277,15 @@ function draw_note(pname, oct, note, sim = true, id = '') {
 }
 
 function add_note(layer_context, pname, oct, note, sim = true, id = '') {
-  var l = get_by_id(mei, get_id(note))
+  var l = get_by_id(mei, get_raw_id(note))
   if (!layer_context.score_elem.contains(l)) {
     return false
   }
   var n = mei.createElement('note')
+  console.log('Note: ', n)
   var added = []
   n.setAttribute('xml:id', id)
+  console.log('With ID: ', n)
   if (sim) {
     let c
     if (l.closest('chord'))

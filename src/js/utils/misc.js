@@ -327,7 +327,7 @@ export const id_or_oldid = elem => {
 // More complex utility to fully search until we find the "basic" ID, in
 // either the MEI or the document.
 // Takes an element, gives an ID string
-export function get_id(elem) {
+export function get_raw_id(elem) {
   let ret
 
   if (document.contains(elem)) {
@@ -348,6 +348,11 @@ export function get_id(elem) {
       ret = elem.getAttribute('xml:id')
   }
 
+  return ret
+}
+
+export function get_id(elem) {
+  let ret = get_raw_id(elem)
   return ret.slice(ret.search(/[^\d]/))
 }
 

@@ -8,7 +8,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 import { getUndoActions } from '../../../bootstrap'
 import { getCurrentDrawContext, getMouseX, getMouseY, getPlacingNote, setPlacingNote, toggle_selected } from './misc'
 import { flush_redo } from '../../../action/undo_redo'
-import { average2, get_by_id, get_id, mod, note_coords, note_to_chord, random_id } from '../../../utils/misc'
+import { average2, get_by_id, get_raw_id, get_id, mod, note_coords, note_to_chord, random_id } from '../../../utils/misc'
 import newNote from '../Note'
 
 // The functions in this file are all about converting clicks and mouse
@@ -91,7 +91,7 @@ function coord_staff(dc, pt, measure) {
 
 function diatonic_note_n(note) {
   // Given an SVG note, what is its signed interval in diatonic steps from C0
-  var mei_note = get_by_id(mei, get_id(note))
+  var mei_note = get_by_id(mei, get_raw_id(note))
   var pname = mei_note.getAttribute('pname')
   var oct = mei_note.getAttribute('oct')
   // Assume the above works for now
@@ -277,13 +277,15 @@ function draw_note(pname, oct, note, sim = true, id = '') {
 }
 
 function add_note(layer_context, pname, oct, note, sim = true, id = '') {
-  var l = get_by_id(mei, get_id(note))
+  var l = get_by_id(mei, get_raw_id(note))
   if (!layer_context.score_elem.contains(l)) {
     return false
   }
   var n = mei.createElement('note')
+  console.log('Note: ', n)
   var added = []
   n.setAttribute('xml:id', id)
+  console.log('With ID: ', n)
   if (sim) {
     let c
     if (l.closest('chord'))

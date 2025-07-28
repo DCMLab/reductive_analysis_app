@@ -602,18 +602,9 @@
                             fly-out__title--big">Active layer: <span id="current-layer">1</span></h4>
                     </div>
 
-                    <!-- Should save layer and can edit it. Not available for the first layer. -->
-                    <div id="layer-menu-settings" class="layers-menu__saveLayer hidden-when-in-layer-1">
-
-                        <label class="checkable" for="should-save-layer">
-                            Save this layer
-                            <input class="checkable__input" type="checkbox" id="should-save-layer">
-                            <span class="checkbox">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use href="#check-path"></use>
-                                </svg>
-                            </span>
-                        </label>
+                    <!-- Can edit layer. Not available for the first layer. -->
+                    <div id="layer-menu-settings"
+                        class="layers-menu__lockLayer hidden-when-in-layer-1">
 
                         <button id="layer-lock" class="lock-path--unlocked | btn flex-center" type="button">
                             <span class="visually-hidden">Unlock</span>

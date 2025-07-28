@@ -44,6 +44,7 @@ export function do_undo() {
   var redo_actions = getRedoActions()
 
   const [what, elems, sel, extra] = undo_actions.pop()
+  console.log(elems)
 
   if (what == 'edges' || what == 'relation' || what == 'metarelation') {
     var added = elems
@@ -62,7 +63,12 @@ export function do_undo() {
         unmark_secondaries(dc, getMeiGraph(), g_elem)
     // Remove added elements
     added.flat().forEach(x => {
-      if (!node_referred_to(x.getAttribute('xml:id')))
+      console.log(x)
+      if (
+        (x.classList.contains('relation') ||
+          x.getAttribute('type') == 'relation') &&
+        !node_referred_to(x.getAttribute('xml:id'))
+      )
         x.parentNode.removeChild(x)
     })
     // Find and remove any leftover graphical elements

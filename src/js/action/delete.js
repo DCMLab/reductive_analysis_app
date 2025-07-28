@@ -63,6 +63,7 @@ function delete_relation(elem) {
         const sourceElement = get_by_id(mei, fromId)
 
         // If the source is a metarelation, add the target as a child ID
+        // TODO: Why?
         if (sourceElement && sourceElement.getAttribute('type') === 'metarelation') {
           childIds.add(toId)
         }
@@ -86,14 +87,14 @@ function delete_relation(elem) {
 
   // After deletion, check if any children need their connection circles removed
   // Store the returned connection circle data for undo
-  if (childIds.size > 0) {
-    const connectionCircleData = updateConnectionCircles(Array.from(childIds))
+  // if (childIds.size > 0) {
+  //   const connectionCircleData = updateConnectionCircles(Array.from(childIds))
 
-    // Add connection circle data to the action_removed array if any was removed
-    if (connectionCircleData.length > 0) {
-      action_removed.push(['connection_circle_data', connectionCircleData])
-    }
-  }
+  //   // Add connection circle data to the action_removed array if any was removed
+  //   if (connectionCircleData.length > 0) {
+  //     action_removed.push(['connection_circle_data', connectionCircleData])
+  //   }
+  // }
 
   // Adjust SVG dimensions after deletion
   draw_contexts.forEach(draw_context => {
@@ -210,7 +211,9 @@ function find_all_parent_relations(elem, mei, draw_contexts, svg_hes, processedI
   let meta_relations = []
   let meta_relation_arcs = []
 
-  const elemId = elem.id || get_id(elem)
+  const elemId = elem.id
+    ? elem.id.slice(elem.id.search(/[^\d]/))
+    : get_id(elem)
 
   // Find arcs that connect meta-relations to this relation
   // Only look for arcs where this element is the target (to) - parent->child

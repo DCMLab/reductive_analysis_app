@@ -817,9 +817,10 @@ export function fix_layers(mei) {
       let score_id = scs[0].getAttribute('xml:id')
       if (!score_id) {
         score_id = create_and_check_id(id =>
-          !getDrawContexts().find(x =>
-            x.mei_score.getAttribute('xml:id') == id
-          )
+          !getDrawContexts().find(x => {
+            if (!x.mei_score) return
+            return x.mei_score.getAttribute('xml:id') == id
+          })
         )
         scs[0].setAttribute('xml:id', score_id)
       }

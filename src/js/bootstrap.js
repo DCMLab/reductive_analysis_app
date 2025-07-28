@@ -365,7 +365,19 @@ export function draw_graph(draw_context) {
   // need... First we get the nodes from the graph element.
   var nodes_array = Array.from(mei_graph.getElementsByTagName('node'))
   // Get the nodes representing relations
-  var relations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'relation' })
+  var relations_nodes = nodes_array.filter((x) => {
+    if (x.getAttribute('type') != 'relation') return false
+
+    let id = x.getAttribute('xml:id')
+    let red = true
+
+    if (getCurrentDrawContext())
+      red = !document
+        .getElementById(id_in_svg(getCurrentDrawContext(), id))
+        .classList
+        .contains('hidden-reduced')
+    return red
+  })
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'metarelation' })
   relations_nodes.forEach((g_elem) => {

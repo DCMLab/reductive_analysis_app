@@ -1117,9 +1117,12 @@ export function isSlurDownward(svg_elem, startNote, endNote) {
 
 export function scrollThroughRelations() {
   var elem = document.elementFromPoint(getMouseX(), getMouseY())
+
   if (elem.tagName != 'g') elem = elem.closest('g')
+  if (!elem) return
   flip_to_bg(elem)
   if (elem.onmouseout) elem.onmouseout()
+
   var elem = document.elementFromPoint(getMouseX(), getMouseY())
   if (elem.tagName != 'g') elem = elem.closest('g')
   if (elem.onmouseover) elem.onmouseover()

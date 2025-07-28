@@ -394,6 +394,7 @@ function id_in_layer(layer_context, id) {
 // From graph node to list of all arcs that refer to it
 export function node_referred_to(id) {
   console.debug('Using global: mei to find element')
+  if (!id) return
   return Array.from(mei.getElementsByTagName('arc'))
     .filter((x) => {
       return (x.getAttribute('from') == '#' + id.slice(1) ||
@@ -403,6 +404,7 @@ export function node_referred_to(id) {
 
 // From MEI graph node to the ID string for its referred note.
 export function node_to_note_id(note) {
+  if (!note) return
   if (note.getElementsByTagName('label')[0].children.length == 0)
     return note.getAttribute('xml:id')
   return note.getElementsByTagName('label')[0].
@@ -1018,6 +1020,9 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
     var p_s = relation_get_notes_separated(r)
     var p = p_s[0]
     var s = p_s[1]
+
+    if (!p || !p[0] || !s || !s[0]) return
+
     p = p.map(i => i.getAttribute('xml:id'))
       .sort((a, b) => a < b)
     s = s.map(i => i.getAttribute('xml:id'))

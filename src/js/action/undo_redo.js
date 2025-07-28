@@ -63,7 +63,6 @@ export function do_undo() {
         unmark_secondaries(dc, getMeiGraph(), g_elem)
     // Remove added elements
     added.flat().forEach(x => {
-      console.log(x)
       if (
         (x.classList.contains('relation') ||
           x.getAttribute('type') == 'relation') &&

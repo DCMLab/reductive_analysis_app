@@ -64,8 +64,8 @@ export function do_undo() {
     // Remove added elements
     added.flat().forEach(x => {
       if (
-        (x.classList.contains('relation') ||
-          x.getAttribute('type') == 'relation') &&
+        (x.classList.contains(what) ||
+          x.getAttribute('type') == what) &&
         !node_referred_to(x.getAttribute('xml:id'))
       )
         x.parentNode.removeChild(x)

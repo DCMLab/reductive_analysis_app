@@ -370,10 +370,10 @@ export function draw_graph(draw_context) {
 
     let id = x.getAttribute('xml:id')
     let red = true
+    let elem = document.getElementById(getCurrentDrawContext(), id)
 
-    if (getCurrentDrawContext())
-      red = !document
-        .getElementById(id_in_svg(getCurrentDrawContext(), id))
+    if (getCurrentDrawContext() && elem)
+      red = !elem
         .classList
         .contains('hidden-reduced')
     return red

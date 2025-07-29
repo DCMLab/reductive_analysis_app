@@ -125,7 +125,9 @@ export function toggle_selected(item, extra = null) {
       'selectednote',
       'extraselectednote',
       'selectedrelation',
-      'extraselectedrelation'
+      'extraselectedrelation',
+      'selectedmetarelation',
+      'extraselectedmetarelation'
     )
 
     selected = selected.filter(x => x !== item)
@@ -175,13 +177,31 @@ export function toggle_selected(item, extra = null) {
 
   // Select relation.
 
-  if (itemType == 'relation' || itemType == 'metarelation') {
+  if (itemType == 'relation') {
     if (!isAlreadySelected) {
       if (extra) {
         item.classList.add('extraselectedrelation')
         extraselected.push(item)
       } else {
         item.classList.add('selectedrelation')
+        selected.push(item)
+      }
+      last_selected = item
+    }
+    if (selected.concat(extraselected).length == 0) {
+      last_selected = null
+    }
+  }
+
+  // Select meta-relation
+
+  if (itemType == 'metarelation') {
+    if (!isAlreadySelected) {
+      if (extra) {
+        item.classList.add('extraselectedmetarelation')
+        extraselected.push(item)
+      } else {
+        item.classList.add('selectedmetarelation')
         selected.push(item)
       }
       last_selected = item

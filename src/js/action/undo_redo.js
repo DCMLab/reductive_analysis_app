@@ -44,7 +44,6 @@ export function do_undo() {
   var redo_actions = getRedoActions()
 
   const [what, elems, sel, extra] = undo_actions.pop()
-  console.log(elems)
 
   if (what == 'edges' || what == 'relation' || what == 'metarelation') {
     var added = elems
@@ -58,17 +57,26 @@ export function do_undo() {
       return
     }
     // Replace below with delete_relation()?
-    if (what == 'relation')
-      for (const dc of draw_contexts)
-        unmark_secondaries(dc, getMeiGraph(), g_elem)
     // Remove added elements
+    let corresp_hes = []
+    for (const dc of draw_contexts) {
+      added.forEach(elem => {
+        elem.forEach(x => {
+          const svg_he = get_by_id(document, dc.id_prefix + get_id(x))
+          if (svg_he) corresp_hes.push(svg_he)
+        })
+      })
+      if (what == 'relation')
+        unmark_secondaries(dc, getMeiGraph(), g_elem)
+    }
+    added = added.concat(corresp_hes)
     added.flat().forEach(x => {
       if (
         (x.classList.contains(what) ||
           x.getAttribute('type') == what) &&
         !node_referred_to(x.getAttribute('xml:id'))
       )
-        x.parentNode.removeChild(x)
+        x.remove()
     })
     // Find and remove any leftover graphical elements
     Array.from(document.querySelectorAll('[oldid="' + id + '"]')).forEach(x => x.parentNode.removeChild(x))

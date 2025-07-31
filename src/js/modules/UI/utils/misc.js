@@ -590,64 +590,51 @@ export const setCurrentDrawContext = drawContext => {
 export function adjustSvgDimensions(draw_context) {
   const svg_elem = draw_context.svg_elem
   const rootSvg = svg_elem.getElementsByTagName('svg')[0] // The root SVG element from verovio
-  const definitionScale = svg_elem.getElementsByClassName('definition-scale')[0]
-  const viewBox = definitionScale.getAttribute('viewBox')
-  let [x, y, w, h] = viewBox.split(' ').map(Number)
+
+  let bb = getDOMRect(rootSvg, ['y', 'height'])
+  let y = bb.y
+  let h = bb.height
 
   // Get current dimensions to calculate scale factor
-  const currentWidth = rootSvg.clientWidth || rootSvg.width.baseVal.value
   const currentHeight = rootSvg.clientHeight || rootSvg.height.baseVal.value
 
   // Calculate scale factors (pixels per SVG unit)
-  const scaleX = currentWidth / w
   const scaleY = currentHeight / h
 
   // Get all relations
   const allRelations = Array.from(svg_elem.getElementsByClassName('relation'))
   const allMetarelations = Array.from(svg_elem.getElementsByClassName('metarelation'))
 
-  // If no relations, don't adjust anything
-  if (allRelations.length === 0 && allMetarelations.length === 0) {
-    return
-  }
-
   // Calculate bounding box of all relations
-  let minX = Infinity,
-    minY = Infinity,
-    maxX = -Infinity,
+  let minY = Infinity,
     maxY = -Infinity
 
   const allElements = [...allRelations, ...allMetarelations]
   allElements.forEach(relation => {
-    const bbox = relation.getBBox()
-    minX = Math.min(minX, bbox.x)
-    minY = Math.min(minY, bbox.y)
-    maxX = Math.max(maxX, bbox.x + bbox.width)
-    maxY = Math.max(maxY, bbox.y + bbox.height)
+    const dom = getDOMRect(relation, ['y', 'height'])
+    minY = Math.min(minY, dom.y)
+    maxY = Math.max(maxY, dom.y + dom.height)
   })
 
   // Only adjust if the relations actually exceed the current SVG boundaries
-  const needsWidthAdjustment = minX < x || maxX > x + w
   const needsHeightAdjustment = minY < y || maxY > y + h
 
-  if (!needsWidthAdjustment && !needsHeightAdjustment) {
+  if (!needsHeightAdjustment) {
     return // No adjustment needed
   }
 
-  // Calculate new dimensions only for directions that need adjustment
-  const newMinX = needsWidthAdjustment ? Math.min(x, minX) : x
-  const newMinY = needsHeightAdjustment ? Math.min(y, minY) : y
-  const newMaxX = needsWidthAdjustment ? Math.max(x + w, maxX) : x + w
-  const newMaxY = needsHeightAdjustment ? Math.max(y + h, maxY) : y + h
+  // Calculate new dimensions
+  const newMinY = Math.min(y, minY)
+  const newMaxY = Math.max(y + h, maxY)
 
-  const newSvgWidth = newMaxX - newMinX
   const newSvgHeight = newMaxY - newMinY
 
   // Convert SVG units to pixels using the scale factors
-  const newPixelWidth = Math.ceil(newSvgWidth * scaleX)
-  const newPixelHeight = Math.ceil(newSvgHeight * scaleY)
+  // Multiply by 2 since increasing height is centre-wise; space is added above
+  // and below the score
+  const newPixelHeight = Math.ceil(newSvgHeight * scaleY * 2)
 
-  // Find centre of current SVG
+  // Get centre of current SVG
   let currCentreLeft = getDOMRect(rootSvg, ['width']).width / 2
   let currCentreTop = getDOMRect(rootSvg, ['height']).height / 2
 
@@ -658,18 +645,15 @@ export function adjustSvgDimensions(draw_context) {
 
   // Set the width and height on the container SVG in pixels
   // Only change dimensions if they're actually different
-  if (newPixelWidth !== currentWidth) {
-    rootSvg.setAttribute('width', `${newPixelWidth}px`)
-  }
   if (newPixelHeight !== currentHeight) {
     rootSvg.setAttribute('height', `${newPixelHeight}px`)
   }
 
-  // Getting new centre of SVG
+  // Get new centre of SVG
   let newCentreLeft = getDOMRect(rootSvg, ['width']).width / 2
   let newCentreTop = getDOMRect(rootSvg, ['height']).height / 2
 
-  // Getting back to previous position
+  // Get back to previous position
   view.scrollTo({
     top: currScrollTop + newCentreTop,
     left: currScrollLeft + newCentreLeft,

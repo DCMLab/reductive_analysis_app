@@ -53,7 +53,6 @@ import { rootStyles } from '../../../utils/document'
 import { metaRelationTypes, relationTypes } from '../../Relations/config'
 import accidentals from '../Accidentals'
 import bookmarks from '../Bookmarks'
-import layersMenu from '../Layers'
 import relationsMenu from '../Relations'
 import { setupOptionDrag, removeOptionDrag } from './option_drag'
 
@@ -587,7 +586,7 @@ export const setCurrentDrawContext = drawContext => {
   current_draw_context.layer.layer_elem.classList.add('layer--active')
 }
 
-export function adjustSvgDimensions(draw_context) {
+function adjustSvgDimensions(draw_context) {
   const svg_elem = draw_context.svg_elem
   const rootSvg = svg_elem.getElementsByTagName('svg')[0] // The root SVG element from verovio
 
@@ -658,4 +657,11 @@ export function adjustSvgDimensions(draw_context) {
     top: currScrollTop + newCentreTop,
     left: currScrollLeft + newCentreLeft,
   })
+}
+
+/**
+ * Adjust the dimensions of all layers.
+ */
+export function adjustAllLayersSvgDimensions() {
+  getDrawContexts().forEach(adjustSvgDimensions)
 }

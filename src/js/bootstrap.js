@@ -30,7 +30,7 @@ import { new_sliced_layer } from './utils/slicing'
 import { draw_relation, draw_metarelation } from './action/draw'
 
 import {
-  adjustSvgDimensions,
+  adjustAllLayersSvgDimensions,
   drag_selector_installer,
   getCurrentDrawContext,
   handle_click,
@@ -195,7 +195,7 @@ export function do_relation(type, id, redoing = false) {
   // Update hierarchy tree if visible
   window.relationTreeInstance?.updateIfVisible()
 
-  adjustSvgDimensions(getCurrentDrawContext())
+  adjustAllLayersSvgDimensions()
 }
 
 export function do_comborelation(type) {
@@ -249,7 +249,7 @@ export function do_metarelation(type, id, redoing = false) {
   // Update hierarchy tree if visible
   window.relationTreeInstance?.updateIfVisible()
 
-  adjustSvgDimensions(getCurrentDrawContext())
+  adjustAllLayersSvgDimensions()
 }
 
 var rerendered_after_action
@@ -689,7 +689,7 @@ function finalize_draw_context(new_draw_context) {
   }
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
-  adjustSvgDimensions(new_draw_context)
+  adjustAllLayersSvgDimensions()
 
   // Add resize handlers directly to the layer element
   const layerElement = new_draw_context.layer.layer_elem

@@ -274,7 +274,8 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   // TODO: Use classlist for types
   g_elem.setAttribute('type', type)
   g_elem.setAttribute('start-relation', targets[0].id)
-  g_elem.setAttribute('end-relation', targets[1].id)
+  if (targets[1])
+    g_elem.setAttribute('end-relation', targets[1].id)
   g_elem.setAttribute('is-downward', isDownward)
   // Draw the metarelation as a circle connected with lines to each of its
   // targets

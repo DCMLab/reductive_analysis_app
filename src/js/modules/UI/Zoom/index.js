@@ -1,4 +1,5 @@
 import { getCurrentDrawContext } from '../utils/misc'
+import { getDOMRect } from '../../../utils/dom'
 
 const ZOOM_DEFAULT = 1
 const ZOOM_STEP = 1.1
@@ -12,8 +13,7 @@ class Zoom {
     this.levelEl = document.getElementById('zoom-level')
     this.zoomSlider = document.getElementById('zoom-slider')
 
-    this.zoomSlider.oninput =
-      () => this.slide(this.zoomSlider, this.levelEl, this.format)
+    this.zoomSlider.oninput = () => this.slide()
 
     window.addEventListener('wheel', (event) => {
       if (event.ctrlKey) {
@@ -40,14 +40,32 @@ class Zoom {
     }
   }
 
-  slide(zoomSlider, levelEl, format) {
+  updateZoom() {
+    const context = getCurrentDrawContext()
+    const rootSvg = context.svg_elem
+
+    // Get centre of SVG
+    let centreX = getDOMRect(rootSvg, ['width']).width / 2
+    let centreY = getDOMRect(rootSvg, ['height']).height / 2
+
+    // Get final translation coordinate
+    let x = centreX - context.zoom * centreX
+    let y = centreY - context.zoom * centreY
+
+    // Translate to centre, zoom and translate back to origin
+    // That way, the view stays stable during zoom
+    rootSvg.style.transform =
+      `matrix(${context.zoom}, 0, 0, ${context.zoom}, ${x}, ${y})`
+    this.levelEl.innerHTML = this.format(context.zoom)
+  }
+
+  slide() {
     const context = getCurrentDrawContext()
 
     if (!context) return
 
-    context.zoom = zoomSlider.value / 100
-    context.svg_elem.style.transform = `scale(${context.zoom})`
-    levelEl.innerHTML = format(context.zoom)
+    context.zoom = this.zoomSlider.value / 100
+    this.updateZoom()
   }
 
   in() {
@@ -67,8 +85,7 @@ class Zoom {
     }
 
     context.zoom = cx == ZOOM_DEFAULT ? ZOOM_DEFAULT : context.zoom * cx
-    context.svg_elem.style.transform = `scale(${context.zoom})`
-    this.levelEl.innerHTML = this.format(context.zoom)
+    this.updateZoom()
   }
 
   format(zoom) {

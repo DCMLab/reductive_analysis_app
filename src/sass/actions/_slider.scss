@@ -1,0 +1,40 @@
+@use '../variables/colors' as *;
+
+.slidecontainer {
+  width: 30%;
+}
+
+.slider {
+  -webkit-appearance: none;
+
+  height: 7px;
+
+  border-radius: 20px;
+  background: $silver;
+  outline: none;
+  opacity: 0.7;
+
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+  background: $black;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+
+  border-radius: 50%;
+  background: $black;
+  cursor: pointer;
+}

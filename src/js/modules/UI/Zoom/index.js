@@ -10,6 +10,10 @@ class Zoom {
     this.zoomOutBtn = document.getElementById('zoom-out')
     this.resetBtn = document.getElementById('zoom-reset')
     this.levelEl = document.getElementById('zoom-level')
+    this.zoomSlider = document.getElementById('zoom-slider')
+
+    this.zoomSlider.oninput =
+      () => this.slide(this.zoomSlider, this.levelEl, this.format)
 
     window.addEventListener('wheel', (event) => {
       if (event.ctrlKey) {
@@ -34,6 +38,16 @@ class Zoom {
     if (target == this.resetBtn) {
       return this.reset()
     }
+  }
+
+  slide(zoomSlider, levelEl, format) {
+    const context = getCurrentDrawContext()
+
+    if (!context) return
+
+    context.zoom = zoomSlider.value / 100
+    context.svg_elem.style.transform = `scale(${context.zoom})`
+    levelEl.innerHTML = format(context.zoom)
   }
 
   in() {

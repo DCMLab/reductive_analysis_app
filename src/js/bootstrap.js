@@ -60,6 +60,7 @@ import {
   new_view_elements,
   note_coords,
   note_to_rest,
+  relation_get_notes,
   prefix_ids,
   sanitize_xml,
 } from './utils/misc'
@@ -380,7 +381,18 @@ export function draw_graph(draw_context) {
   })
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'metarelation' })
+
+  // Verify that no relations contain duplicate notes, otherwise alert the user and stop drawing.
   relations_nodes.forEach((g_elem) => {
+    let nodes = relation_get_notes(g_elem)
+    for (let i in nodes) {
+      for (let j in nodes) {
+        if (nodes[i].isSameNode(nodes[j]) && i !== j) {
+          alert(`Graph error: Multiple instances of note ${nodes[i].getAttribute('xml:id')} found in relation ${g_elem.getAttribute('xml:id')}.`)
+          return false
+        }
+      }
+    }
     if (draw_relation(draw_context, mei_graph, g_elem))
       mark_secondaries(draw_context, mei_graph, g_elem)
   })

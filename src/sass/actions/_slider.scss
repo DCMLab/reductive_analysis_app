@@ -7,10 +7,10 @@
 .slider {
   -webkit-appearance: none;
 
-  height: 7px;
+  height: 4px;
 
-  border-radius: 20px;
-  background: $silver;
+  border-radius: 50px;
+  background: linear-gradient(to right, $black, $silver);
   outline: none;
   opacity: 0.7;
 
@@ -18,23 +18,29 @@
   transition: opacity .2s;
 }
 
+.slider:focus {
+  outline: none;
+}
+
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
 
-  width: 15px;
-  height: 15px;
+  width:  20px;
+  height: 20px;
 
+  border-width: 0;
   border-radius: 50%;
-  background: $black;
+  background: linear-gradient($black, $silver);
   cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
-  width: 15px;
-  height: 15px;
+  width:  20px;
+  height: 20px;
 
+  border-width: 0;
   border-radius: 50%;
-  background: $black;
+  background: linear-gradient($black, $silver);
   cursor: pointer;
 }

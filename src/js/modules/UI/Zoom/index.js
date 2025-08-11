@@ -42,21 +42,14 @@ class Zoom {
 
   updateZoom() {
     const context = getCurrentDrawContext()
-    const rootSvg = context.svg_elem
+    const rootSvg = context.svg_elem.getElementsByTagName('svg')[0]
 
-    // Get centre of SVG
-    let centreX = getDOMRect(rootSvg, ['width']).width / 2
-    let centreY = getDOMRect(rootSvg, ['height']).height / 2
+    // Scale with centre origin
+    rootSvg.setAttribute('transform-origin', 'center')
+    rootSvg.setAttributeNS(null, 'transform', 'scale(' + context.zoom + ')')
 
-    // Get final translation coordinate
-    let x = centreX - context.zoom * centreX
-    let y = centreY - context.zoom * centreY
-
-    // Translate to centre, zoom and translate back to origin
-    // That way, the view stays stable during zoom
-    rootSvg.style.transform =
-      `matrix(${context.zoom}, 0, 0, ${context.zoom}, ${x}, ${y})`
     this.levelEl.innerHTML = this.format(context.zoom)
+    this.zoomSlider.value = context.zoom * 100
   }
 
   slide() {

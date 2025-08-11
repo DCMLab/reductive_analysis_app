@@ -51,7 +51,7 @@ class Zoom {
 
     // Scale with screen centre origin
     rootSvg.setAttribute('transform-origin', `${centreX} ${centreY}`)
-    rootSvg.setAttributeNS(null, 'transform', 'scale(' + context.zoom + ')')
+    rootSvg.style.transform = 'scale(' + context.zoom + ')'
 
     this.levelEl.innerHTML = this.format(context.zoom)
     this.zoomSlider.value = context.zoom * 100

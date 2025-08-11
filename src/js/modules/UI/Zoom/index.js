@@ -42,10 +42,15 @@ class Zoom {
 
   updateZoom() {
     const context = getCurrentDrawContext()
+    const viewEl = context.view_elem
     const rootSvg = context.svg_elem.getElementsByTagName('svg')[0]
 
-    // Scale with centre origin
-    rootSvg.setAttribute('transform-origin', 'center')
+    // Find visible centre of the SVG
+    const centreX = (viewEl.scrollLeft + viewEl.clientWidth / 2)
+    const centreY = (viewEl.scrollTop + viewEl.clientHeight / 2)
+
+    // Scale with screen centre origin
+    rootSvg.setAttribute('transform-origin', `${centreX} ${centreY}`)
     rootSvg.setAttributeNS(null, 'transform', 'scale(' + context.zoom + ')')
 
     this.levelEl.innerHTML = this.format(context.zoom)

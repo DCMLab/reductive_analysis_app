@@ -22,7 +22,8 @@ export function initLayerResize(layersMenu) {
   }
 
   /**
-   * Start the resize operation when mouse is pressed on the layer bottom border
+   * Start the resize operation when mouse is pressed on the layer
+   * bottom border or when slider is being moved
    * @param {MouseEvent} e - The mouse event
    */
   function startResize(e) {
@@ -116,6 +117,36 @@ export function initLayerResize(layersMenu) {
     // Force minimum height constraint
     if (newHeight <= state.minHeight) {
       state.currentLayer.style.height = `${state.minHeight}px`
+    }
+  }
+
+  /**
+   * Resize the current layer (`state.currentLayer`) to the height given
+   * by the slider value
+   */
+  function sliderResize() {
+    // Should handle autoscroll
+
+    let layers = document.getElementsByClassName('layer')
+
+    let value = document.getElementById('resize-slider').value
+    // This is based on the height assigned for
+    // the layer class in CSS, would be best to
+    // have a way to sync the values
+    const defValueVh = 35
+    const defValuePx =
+      document.documentElement.clientHeight * defValueVh / 100
+
+    let newHeight = defValuePx * value / 100
+
+    for (let layer of layers) {
+      layer.style.height = `${newHeight}px`
+    }
+
+    if (newHeight <= state.minHeight) {
+      for (let layer of layers) {
+        layer.style.height = `${state.minHeight}px`
+      }
     }
   }
 
@@ -214,6 +245,9 @@ export function initLayerResize(layersMenu) {
     // Start observing the container with the configured parameters
     observer.observe(layersContainer, { childList: true, subtree: true })
   }
+
+  // Resize on input from resize slider
+  document.getElementById('resize-slider').oninput = () => sliderResize()
 
   // Listen for the scoreload event which is dispatched when a score is loaded
   document.addEventListener('scoreload', () => {

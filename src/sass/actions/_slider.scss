@@ -1,7 +1,13 @@
 @use '../variables/colors' as *;
 
 .slidecontainer {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-between;
+
   width: 30%;
+  height: 30px;
 }
 
 .slider {

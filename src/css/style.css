@@ -476,7 +476,8 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
 }
 
 .view {
-  overflow: scroll;
+  overflow-y: hidden;
+  overflow-x: scroll;
   position: relative;
   height: 100%;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
   width: 100%;

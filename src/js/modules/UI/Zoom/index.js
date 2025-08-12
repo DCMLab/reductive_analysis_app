@@ -74,13 +74,14 @@ class Zoom {
   }
   reset() {
     this.by(ZOOM_DEFAULT)
+    // Update UI in case no drawContext yet
+    this.levelEl.innerHTML = this.format(ZOOM_DEFAULT)
+    this.zoomSlider.value = ZOOM_DEFAULT * 100
   }
 
   by(cx = 1) {
     const context = getCurrentDrawContext()
-    if (!context) {
-      return
-    }
+    if (!context) return
 
     context.zoom = cx == ZOOM_DEFAULT ? ZOOM_DEFAULT : context.zoom * cx
     this.updateZoom()

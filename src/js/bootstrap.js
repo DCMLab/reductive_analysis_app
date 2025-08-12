@@ -444,6 +444,10 @@ function load_finish() {
     return false
   }
 
+  // Reset range sliders and zoom
+  newApp.ui.zoom.reset()
+  newApp.ui.layersMenu.layerResizer.resetSlider()
+
   // Clear the old (if any)
   draw_contexts = []
   layer_contexts = []
@@ -690,21 +694,6 @@ function finalize_draw_context(new_draw_context) {
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
   adjustAllLayersSvgDimensions()
-
-  // Add resize handlers directly to the layer element
-  const layerElement = new_draw_context.layer.layer_elem
-  if (layerElement && !layerElement._hasResizeHandler && newApp.ui.layers && newApp.ui.layers.resizeHandler) {
-    layerElement.addEventListener('mousedown', function(e) {
-      // Check if the click is near the bottom border (resize handle area)
-      const rect = this.getBoundingClientRect()
-      const bottomArea = rect.bottom - 6
-
-      if (e.clientY >= bottomArea) {
-        newApp.ui.layers.resizeHandler.startResizeForLayer(this, e)
-      }
-    })
-    layerElement._hasResizeHandler = true
-  }
 }
 
 function render_mei(mei) {

@@ -29,6 +29,54 @@ class LayerResizer {
     this.resizeSlider.oninput = () => this.sliderResize()
   }
 
+  /**
+   * Handle auto-scrolling during resize when mouse is near viewport edges
+   * @param {number} clientY - Current mouse Y position
+   */
+  function handleAutoScroll(clientY) {
+
+    let clientY =
+
+    // Clear any existing scroll interval
+    if (state.scrollInterval) {
+      clearInterval(state.scrollInterval)
+      state.scrollInterval = null
+    }
+
+    const viewportHeight = window.innerHeight
+    const distanceFromBottom = viewportHeight - clientY
+
+    let views = document.getElementsByClassName('view')
+    for (let view of views) {
+      view.style.overflowY = "scroll"
+    }
+
+    const scrollSpeed =
+      Math.ceil((state.scrollThreshold - distanceFromBottom) / 5)
+    state.scrollInterval = setInterval(() => {
+      window.scrollBy(0, scrollSpeed)
+
+      // Update layer height based on the new scroll position
+      const newHeight =
+        state
+          .currentLayer
+          .getBoundingClientRect()
+          .height + scrollSpeed
+
+      state.currentLayer.style.height = `${newHeight}px`
+
+      // Update related components
+      if (layersMenu && typeof layersMenu.observe === 'function') {
+        layersMenu.observe()
+      }
+    }, 16) // ~60fps
+
+    for (let view of views) {
+      view.style.overflowY = "hidden"
+    }
+  }
+
+
   resetSlider() {
     this.currentHeight = HEIGHT_PX_DEFAULT
     this.resizeSlider.value = SLIDER_DEFAULT

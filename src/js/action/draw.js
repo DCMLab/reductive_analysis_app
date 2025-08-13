@@ -206,9 +206,10 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   var type = relation_type(g_elem)
   // Get the targets - we don't differentiate primaries and secondaries in
   // this drawing style.
-  var targets = relation_allnodes(mei_graph, g_elem).map(
-    (e) => document.getElementById(draw_context.id_prefix + get_id(e)))
-  // TODO should be possible to draw partial metarelations
+  var targets = relation_allnodes(mei_graph, g_elem).map((e) => {
+    let he = document.getElementById(draw_context.id_prefix + get_id(e))
+    return he.classList.contains('hidden-reduced') ? null : he
+  })
   if (targets.indexOf(null) != -1) {
     console.log('Missing relation, not drawing metarelation')
     return []

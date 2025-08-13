@@ -373,6 +373,8 @@ export function id_in_svg(draw_context, id) {
   // that's how it is), then dc.id_prefix to calculate the final id
   var layer_id = id_in_layer(draw_context.layer, id)
   var svg_note = document.getElementById(layer_id)
+  if (svg_note.classList.contains('hidden-reduced'))
+    return null
   if (draw_context.svg_elem.contains(svg_note))
     return layer_id
   if (layer_id)

@@ -7,9 +7,6 @@
 
 const STATE = {
   minHeight: 100, // Minimum layer height in pixels
-  scrollInterval: null, // For auto-scrolling
-  scrollSpeed: 10, // Pixels per scroll adjustment
-  scrollThreshold: 50 // Distance from viewport edge to trigger scrolling
 }
 
 // This is based on the height assigned for the layer class in CSS,
@@ -24,58 +21,31 @@ class LayerResizer {
     this.resizeSlider.value = SLIDER_DEFAULT
 
     this.currentHeight = HEIGHT_PX_DEFAULT
+    this.prevHeight = this.currentHeight
 
     // Resize on input from resize slider
     this.resizeSlider.oninput = () => this.sliderResize()
   }
 
   /**
-   * Handle auto-scrolling during resize when mouse is near viewport edges
-   * @param {number} clientY - Current mouse Y position
+   * Auto-scrolls according to the new height so that the score
+   * is at the y-centre of the layer
    */
-  function handleAutoScroll(clientY) {
+  autoScroll() {
 
-    let clientY =
-
-    // Clear any existing scroll interval
-    if (state.scrollInterval) {
-      clearInterval(state.scrollInterval)
-      state.scrollInterval = null
-    }
-
-    const viewportHeight = window.innerHeight
-    const distanceFromBottom = viewportHeight - clientY
+    // Compute scroll value
+    let scroll = (this.prevHeight - this.currentHeight) / 2
 
     let views = document.getElementsByClassName('view')
     for (let view of views) {
-      view.style.overflowY = "scroll"
+      view.style.overflowY = 'scroll'
+      view.scrollBy({
+        top: scroll,
+      })
+      view.style.overflowY = 'hidden'
     }
 
-    const scrollSpeed =
-      Math.ceil((state.scrollThreshold - distanceFromBottom) / 5)
-    state.scrollInterval = setInterval(() => {
-      window.scrollBy(0, scrollSpeed)
-
-      // Update layer height based on the new scroll position
-      const newHeight =
-        state
-          .currentLayer
-          .getBoundingClientRect()
-          .height + scrollSpeed
-
-      state.currentLayer.style.height = `${newHeight}px`
-
-      // Update related components
-      if (layersMenu && typeof layersMenu.observe === 'function') {
-        layersMenu.observe()
-      }
-    }, 16) // ~60fps
-
-    for (let view of views) {
-      view.style.overflowY = "hidden"
-    }
   }
-
 
   resetSlider() {
     this.currentHeight = HEIGHT_PX_DEFAULT
@@ -86,7 +56,6 @@ class LayerResizer {
    * Updates the height of all layers
    */
   updateHeight() {
-    // TODO: Should handle autoscroll
 
     let layers = document.getElementsByClassName('layer')
 
@@ -100,6 +69,7 @@ class LayerResizer {
         layer.style.height = `${this.currentHeight}px`
       }
     }
+
   }
 
   /**
@@ -107,9 +77,12 @@ class LayerResizer {
    */
   sliderResize() {
 
+    this.prevHeight = this.currentHeight
     this.currentHeight =
       HEIGHT_PX_DEFAULT * this.resizeSlider.value / 100
+
     this.updateHeight()
+    this.autoScroll()
 
   }
 }

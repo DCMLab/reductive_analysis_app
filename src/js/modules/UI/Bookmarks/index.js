@@ -113,6 +113,21 @@ class Bookmarks {
   toPrevious() { this.goTo(-1) }
   toNext() { this.goTo(1) }
 
+  /**
+   * Scrolls on all layers
+   * @param {float} by - Value by which the layer scrolls
+   */
+  scrollAllLayers(by) {
+    let views = document.getElementsByClassName('view')
+
+    for (let view of views) {
+      view.scrollBy({
+        left: by,
+        behavior: 'smooth',
+      })
+    }
+  }
+
   goTo(dir = 1) {
     let targetBookmark = null
     let rect = null
@@ -162,11 +177,7 @@ class Bookmarks {
       dir = dir * -1
     }
 
-    view.scrollBy({
-      top: 0,
-      left: rect.left - (viewport.w / 3),
-      behavior: 'smooth',
-    })
+    this.scrollAllLayers(rect.left - (viewport.w / 3))
   }
 
   init() {

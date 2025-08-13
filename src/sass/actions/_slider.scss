@@ -1,13 +1,25 @@
 @use '../variables/colors' as *;
 
-.slidecontainer {
+#sliders-container {
   display: flex;
 
   flex-direction: column;
   justify-content: space-between;
+  align-items: start;
 
   width: 30%;
-  height: 30px;
+  height: 40px;
+}
+
+.labeled-slider {
+  display: flex;
+
+  flex-direction: row;
+  align-items: center;
+}
+
+.slider-label {
+  width: 50px;
 }
 
 .slider {

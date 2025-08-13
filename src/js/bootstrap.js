@@ -643,8 +643,27 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     .getElementsByClassName('layer_num')[0]
     .innerHTML = prefix.slice(0, prefix.search(/[^l^\-^\d]/g))
 
-  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
+  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element)
+
   new_svg_elem.innerHTML = new_svg
+
+  // Replicating the source layer's settings
+  let newRootSvg = new_svg_elem.getElementsByTagName('svg')[0]
+  let oldRootSvg = draw_context.svg_elem.getElementsByTagName('svg')[0]
+  newRootSvg
+    .getElementsByClassName('definition-scale')[0]
+    .setAttribute('viewBox',
+      oldRootSvg
+        .getElementsByClassName('definition-scale')[0]
+        .getAttribute('viewBox'))
+  newRootSvg.setAttribute('width',
+    oldRootSvg
+      .getAttribute('width'))
+  newRootSvg.setAttribute('height',
+    oldRootSvg
+      .getAttribute('height'))
+  new_view_elem.scrollTop = draw_context.view_elem.scrollTop
+
   var layer_context = {
     mei: new_mei,
     layer_elem: layer_element,

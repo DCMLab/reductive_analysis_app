@@ -208,6 +208,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   // this drawing style.
   var targets = relation_allnodes(mei_graph, g_elem).map((e) => {
     let he = document.getElementById(draw_context.id_prefix + get_id(e))
+    if (!he) return
     return he.classList.contains('hidden-reduced') ? null : he
   })
   if (targets.indexOf(null) != -1) {

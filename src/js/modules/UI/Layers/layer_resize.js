@@ -38,11 +38,9 @@ class LayerResizer {
 
     let views = document.getElementsByClassName('view')
     for (let view of views) {
-      view.style.overflowY = 'scroll'
       view.scrollBy({
         top: scroll,
       })
-      view.style.overflowY = 'hidden'
     }
 
   }

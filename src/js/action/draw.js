@@ -211,12 +211,14 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     if (!he) return
     return he.classList.contains('hidden-reduced') ? null : he
   })
-  if (targets.indexOf(null) != -1) {
+  if (!targets[0]) {
     console.log('Missing relation, not drawing metarelation')
     return []
   }
 
-  const isDownward = targets.every(target => target.getAttribute('is-downward') === 'true')
+  const isDownward = targets.every(
+    target => target.getAttribute('is-downward') === 'true'
+  )
 
   // Where are our targets
   var coords = targets.map(target => {

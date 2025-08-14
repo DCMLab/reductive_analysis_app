@@ -653,6 +653,19 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
 
   var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
   new_svg_elem.innerHTML = new_svg
+
+  let views = document.getElementsByClassName('view')
+  for (let viewScrolling of views) {
+    viewScrolling.onscroll = () => {
+      if (viewScrolling.classList.contains('panning')) return
+      for (let viewToScroll of views) {
+        if (viewToScroll != viewScrolling) {
+          viewToScroll.scrollLeft = viewScrolling.scrollLeft
+        }
+      }
+    }
+  }
+
   var layer_context = {
     mei: new_mei,
     layer_elem: layer_element,

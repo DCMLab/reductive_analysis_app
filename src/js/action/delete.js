@@ -32,8 +32,8 @@ function delete_relation(elem) {
   // Find all arcs related to this element
   var arcs =
     Array.from(mei.getElementsByTagName('arc')).filter((arc) => {
-      return (arc.getAttribute('from') == '#' + elem.id.slice(1) ||
-              arc.getAttribute('to') == '#' + elem.id.slice(1))
+      return (arc.getAttribute('from') == '#' + elem.id ||
+              arc.getAttribute('to') == '#' + elem.id)
     })
   // Find meta-relations associated with this relation
   const result = find_all_parent_relations(elem, mei, draw_contexts, svg_hes)

@@ -655,9 +655,15 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   new_svg_elem.innerHTML = new_svg
 
   let views = document.getElementsByClassName('view')
+  var ignoreScrollEvents = false
   for (let viewScrolling of views) {
     viewScrolling.onscroll = () => {
       if (viewScrolling.classList.contains('panning')) return
+      var ignore = ignoreScrollEvents
+      ignoreScrollEvents = false
+      if (ignore) return
+
+      ignoreScrollEvents = true
       for (let viewToScroll of views) {
         if (viewToScroll != viewScrolling) {
           viewToScroll.scrollLeft = viewScrolling.scrollLeft

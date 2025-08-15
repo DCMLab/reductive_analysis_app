@@ -40,8 +40,33 @@ function delete_relation(elem) {
   const meta_relations = result.meta_relations
   const meta_relation_arcs = result.meta_relation_arcs
 
+  // Find related notes in the MEI graph
+  let nodes = Array.from(mei.getElementsByTagName('node')).filter(n =>
+    arcs
+      .map(a => a.getAttribute('to').slice(1))
+      .includes(n.getAttribute('xml:id'))
+  )
+
+  // Keep the notes that are related to no other arcs
+  let unrelated_notes = nodes.filter(n =>
+
+    // Check that length of related arcs is zero
+    !Array.from(mei.getElementsByTagName('arc')).filter(a =>
+
+      a.getAttribute('from').slice(1) != elem.id &&
+      n.getAttribute('xml:id') == a.getAttribute('to').slice(1)
+
+    ).length
+
+  )
+
   // Combine all elements that need to be removed
-  let removed = arcs.concat(svg_hes).concat(meta_relations).concat(meta_relation_arcs)
+  let removed =
+    arcs
+      .concat(svg_hes)
+      .concat(meta_relations)
+      .concat(meta_relation_arcs)
+      .concat(unrelated_notes)
   removed.push(mei_he)
 
   // Remove duplicates (in case some elements are counted twice) and null

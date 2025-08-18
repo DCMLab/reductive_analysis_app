@@ -474,7 +474,7 @@ function load_finish() {
     let mdiv_elem = layers[i]
     let score_elem = mdiv_elem.children[0]
     let new_mei = mei_for_layer(mei, mdiv_elem)
-    let [new_data, new_svg] = render_mei(new_mei)
+    let [_new_data, new_svg] = render_mei(new_mei)
     if (!new_svg) {
       console.log('Verovio could not generate SVG from MEI.')
       return false
@@ -516,11 +516,11 @@ function load_finish() {
 
       // first layer is always saved and never editable
       forceSaveLayer: isFirstLayer,
-      lockLayer: isFirstLayer,
+      lockLayer: !isFirstLayer,
 
       // by default, all layers are saved and editable, but the first isn't editable
       canSave: true,
-      canEdit: !isFirstLayer,
+      canEdit: isFirstLayer,
     }
 
     if (isFirstLayer) {
@@ -590,8 +590,8 @@ export function rerender_mei(replace_with_rests = false, draw_context = draw_con
  */
 export function delete_layer(draw_context) {
   // Check if the layer can be edited
-  if (!draw_context || !draw_context.canEdit) {
-    alert('This layer cannot be deleted (not editable)')
+  if (!draw_context || draw_context.canEdit) {
+    alert('This layer cannot be deleted')
     return false
   }
 
@@ -638,7 +638,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     new_mdiv_elem = new_layer(draw_context)
   let new_score_elem = new_mdiv_elem.children[0]
   let new_mei = mei_for_layer(mei, new_mdiv_elem)
-  var [new_data, new_svg] = render_mei(new_mei)
+  var [_new_data, new_svg] = render_mei(new_mei)
   if (!new_svg) {
     console.log('Verovio could not generate SVG from MEI.')
     return false
@@ -673,9 +673,9 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     reductions: [],
 
     forceSaveLayer: false,
-    lockLayer: false,
+    lockLayer: true,
     canSave: true,
-    canEdit: true,
+    canEdit: false,
   }
 
   // prefix_draw_context(new_draw_context);

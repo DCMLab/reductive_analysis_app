@@ -1,9 +1,3 @@
-/**
- * @todo:
- * - update button styles when new note feat. is “active” (awaiting for design)
- * - hide the button when on the initial view (only works starting 2nd view)
- */
-
 import {
   start_placing_note,
   stop_placing_note,

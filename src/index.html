@@ -521,7 +521,8 @@
 
         <div id="metadata-and-note-toggle" class="metadata-and-note-toggle">
 
-            <button id="new-note" class="btn btn--hollow btn--small-icon | hidden-when-in-layer-1" type="button">
+            <button id="new-note" class="btn btn--hollow btn--small-icon |
+                hidden-when-not-in-layer-1" type="button">
                 <svg class="btn__icon" width="14" height="15">
                     <use href="#add-note-path"/>
                 </svg>
@@ -604,7 +605,7 @@
 
                     <!-- Can edit layer. Not available for the first layer. -->
                     <div id="layer-menu-settings"
-                        class="layers-menu__lockLayer hidden-when-in-layer-1">
+                        class="layers-menu__lockLayer hidden-when-not-in-layer-1">
 
                         <button id="layer-lock" class="lock-path--unlocked | btn flex-center" type="button">
                             <span class="visually-hidden">Unlock</span>

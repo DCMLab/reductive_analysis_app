@@ -99,6 +99,14 @@ export function toggle_selected(item, extra = null) {
     return
   }
 
+  let layer = item.closest('layer')
+  let context = getCurrentDrawContext()
+  for (let c of getDrawContexts()) {
+    context = c.layer.layer_elem == layer ? c : context
+  }
+
+  if (!context.canEdit) return
+
   const flatSelection = selected.concat(extraselected)
 
   /**

@@ -36,6 +36,7 @@ class Score {
   // Cached members.
 
   get flatSelection() {
+    if (typeof this.selection == 'undefined' || !this.selection) return
     return this.#cache.remember('flatSelection', () => Object.values(this.selection).flat())
   }
 
@@ -46,6 +47,7 @@ class Score {
   get selectionType() {
     return this.#cache.remember('selectionType', () => {
       return SELECTABLE_TYPES.find(type => {
+        if (!this.flatSelection) return
         return this.flatSelection[0]?.classList.contains(type)
       }) ?? null
     })

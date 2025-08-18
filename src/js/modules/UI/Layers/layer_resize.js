@@ -13,7 +13,7 @@ const STATE = {
 // would be best to have a way to sync the values
 const HEIGHT_PX_DEFAULT =
   document.documentElement.clientHeight * 35 / 100
-const SLIDER_DEFAULT = 130
+const SLIDER_DEFAULT = 50
 
 class LayerResizer {
   constructor() {
@@ -75,9 +75,16 @@ class LayerResizer {
    */
   sliderResize() {
 
+    let maxHeight =
+      document
+        .getElementsByClassName('svg_container')[0]
+        .getElementsByTagName('svg')[0]
+        .getAttribute('height')
+    maxHeight = maxHeight.slice(0, -2)
+
     this.prevHeight = this.currentHeight
     this.currentHeight =
-      HEIGHT_PX_DEFAULT * this.resizeSlider.value / 100
+      maxHeight * this.resizeSlider.value / 100
 
     this.updateHeight()
     this.autoScroll()

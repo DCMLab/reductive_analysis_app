@@ -42,6 +42,7 @@ function delete_relation(elem) {
 
   // Find related notes in the MEI graph
   let nodes = Array.from(mei.getElementsByTagName('node')).filter(n =>
+    !['relation', 'metarelation'].includes(n.getAttribute('type')) &&
     arcs
       .map(a => a.getAttribute('to').slice(1))
       .includes(n.getAttribute('xml:id'))

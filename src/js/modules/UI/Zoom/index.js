@@ -1,5 +1,5 @@
+import { getDrawContexts } from '../../../bootstrap'
 import { getCurrentDrawContext } from '../utils/misc'
-import { getDOMRect } from '../../../utils/dom'
 
 const ZOOM_DEFAULT = 1
 const ZOOM_STEP = 1.1
@@ -42,27 +42,32 @@ class Zoom {
 
   updateZoom() {
     const context = getCurrentDrawContext()
-    const viewEl = context.view_elem
-    const rootSvg = context.svg_elem.getElementsByTagName('svg')[0]
+    const contexts = getDrawContexts()
 
-    // Find visible centre of the SVG
-    const centreX = (viewEl.scrollLeft + viewEl.clientWidth / 2)
-    const centreY = (viewEl.scrollTop + viewEl.clientHeight / 2)
+    for (let c of contexts) {
+      const viewEl = c.view_elem
+      const rootSvg = c.svg_elem.getElementsByTagName('svg')[0]
 
-    // Scale with screen centre origin
-    rootSvg.setAttribute('transform-origin', `${centreX} ${centreY}`)
-    rootSvg.style.transform = 'scale(' + context.zoom + ')'
+      // Find visible centre of the SVG
+      const centreX = (viewEl.scrollLeft + viewEl.clientWidth / 2)
+      const centreY = (viewEl.scrollTop + viewEl.clientHeight / 2)
+
+      // Scale with screen centre origin
+      rootSvg.setAttribute('transform-origin', `${centreX} ${centreY}`)
+      rootSvg.style.transform = 'scale(' + c.zoom + ')'
+    }
 
     this.levelEl.innerHTML = this.format(context.zoom)
     this.zoomSlider.value = context.zoom * 100
   }
 
   slide() {
-    const context = getCurrentDrawContext()
+    const contexts = getDrawContexts()
 
-    if (!context) return
+    if (!contexts || typeof getCurrentDrawContext() == 'undefined') return
 
-    context.zoom = this.zoomSlider.value / 100
+    for (let c of contexts)
+      c.zoom = this.zoomSlider.value / 100
     this.updateZoom()
   }
 
@@ -80,10 +85,12 @@ class Zoom {
   }
 
   by(cx = 1) {
-    const context = getCurrentDrawContext()
-    if (!context) return
+    const contexts = getDrawContexts()
 
-    context.zoom = cx == ZOOM_DEFAULT ? ZOOM_DEFAULT : context.zoom * cx
+    if (!contexts || typeof getCurrentDrawContext() == 'undefined') return
+
+    for (let c of contexts)
+      c.zoom = cx == ZOOM_DEFAULT ? ZOOM_DEFAULT : c.zoom * cx
     this.updateZoom()
   }
 

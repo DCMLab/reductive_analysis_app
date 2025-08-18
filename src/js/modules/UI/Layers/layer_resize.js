@@ -5,6 +5,8 @@
  * the appropriate range slider
  */
 
+import { getDrawContexts } from '../../../bootstrap'
+
 const STATE = {
   minHeight: 100, // Minimum layer height in pixels
 }
@@ -55,16 +57,15 @@ class LayerResizer {
    */
   updateHeight() {
 
-    let layers = document.getElementsByClassName('layer')
+    let contexts = getDrawContexts()
 
-    for (let layer of layers) {
-      layer.style.height = `${this.currentHeight}px`
+    for (let c of contexts) {
+      c.layer.layer_elem.style.height = `${this.currentHeight * c.zoom}px`
     }
 
     if (this.currentHeight <= STATE.minHeight) {
-      this.currentHeight = STATE.minHeight
-      for (let layer of layers) {
-        layer.style.height = `${this.currentHeight}px`
+      for (let c of contexts) {
+        c.layer.layer_elem.style.height = `${STATE.minHeight}px`
       }
     }
 

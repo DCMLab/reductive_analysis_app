@@ -632,7 +632,10 @@ export function delete_layer(draw_context) {
   }
 }
 
-export function create_new_layer(draw_context, sliced = false, tied = false) {
+export function create_new_layer(sliced = false, tied = false) {
+
+  const draw_context = getDrawContexts().find(e => e.canEdit)
+
   var new_mdiv_elem
   if (sliced)
     new_mdiv_elem = new_sliced_layer(draw_context, tied)

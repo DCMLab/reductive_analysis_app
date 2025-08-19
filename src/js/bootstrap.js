@@ -444,10 +444,6 @@ function load_finish() {
     return false
   }
 
-  // Reset range sliders and zoom
-  newApp.ui.zoom.reset()
-  newApp.ui.layersMenu.layerResizer.resetSlider()
-
   // Clear the old (if any)
   draw_contexts = []
   layer_contexts = []

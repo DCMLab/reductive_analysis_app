@@ -339,21 +339,47 @@
             </fieldset>
 
             <div id="sliders-container">
+
+                <!-- Zoom -->
                 <div class="labeled-slider">
+
+                    <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
+                        <svg class="btn__icon" width="12" height="12">
+                            <use href="#minus-path"/>
+                        </svg>
+                        <span class="visually-hidden">Zoom out</span>
+                    </button>
+
                     <div class="slider-label">Zoom</div>
-                    <input
-                        type="range"
-                        min="1" max="200" value="100"
-                        class="slider" id="zoom-slider"
-                    />
+
+                    <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
+                        <svg class="btn__icon" width="12" height="12">
+                            <use href="#plus-path"/>
+                        </svg>
+                        <span class="visually-hidden">Zoom in</span>
+                    </button>
+
                 </div>
+
+                <!-- Resize -->
                 <div class="labeled-slider">
+
+                    <button id="dec-size" class="btn btn--small btn--hollow" type="button">
+                        <svg class="btn__icon" width="12" height="12">
+                            <use href="#minus-path"/>
+                        </svg>
+                        <span class="visually-hidden">Decrease size</span>
+                    </button>
+
                     <div class="slider-label">Resize</div>
-                    <input
-                        type="range"
-                        min="0" max="100" value="50"
-                        class="slider" id="resize-slider"
-                    />
+
+                    <button id="inc-size" class="btn btn--small btn--hollow" type="button">
+                        <svg class="btn__icon" width="12" height="12">
+                            <use href="#plus-path"/>
+                        </svg>
+                        <span class="visually-hidden">Increase size</span>
+                    </button>
+
                 </div>
             </div>
 
@@ -389,23 +415,8 @@
                 <button id="zoom-reset" class="btn btn--plain zoom__reset" type="button">
                     <span class="visually-hidden">Reset zoom</span>
 
-                    <!-- @todo: Check semantic of button > label + output -->
                     <label for="zoom-level" class="visually-hidden">Current zoom level:</label>
                     <output id="zoom-level" for="zoom-in zoom-out">100%</output>
-                </button>
-
-                <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
-                    <svg class="btn__icon" width="12" height="12">
-                        <use href="#plus-path"/>
-                    </svg>
-                    <span class="visually-hidden">Zoom in</span>
-                </button>
-
-                <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
-                    <svg class="btn__icon" width="12" height="12">
-                        <use href="#minus-path"/>
-                    </svg>
-                    <span class="visually-hidden">Zoom out</span>
                 </button>
             </div>
 

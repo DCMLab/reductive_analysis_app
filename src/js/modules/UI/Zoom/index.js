@@ -11,9 +11,6 @@ class Zoom {
     this.zoomOutBtn = document.getElementById('zoom-out')
     this.resetBtn = document.getElementById('zoom-reset')
     this.levelEl = document.getElementById('zoom-level')
-    this.zoomSlider = document.getElementById('zoom-slider')
-
-    this.zoomSlider.oninput = () => this.slide()
 
     window.addEventListener('wheel', (event) => {
       if (event.ctrlKey) {
@@ -58,17 +55,6 @@ class Zoom {
     }
 
     this.levelEl.innerHTML = this.format(context.zoom)
-    this.zoomSlider.value = context.zoom * 100
-  }
-
-  slide() {
-    const contexts = getDrawContexts()
-
-    if (!contexts || typeof getCurrentDrawContext() == 'undefined') return
-
-    for (let c of contexts)
-      c.zoom = this.zoomSlider.value / 100
-    this.updateZoom()
   }
 
   in() {
@@ -81,7 +67,6 @@ class Zoom {
     this.by(ZOOM_DEFAULT)
     // Update UI in case no drawContext yet
     this.levelEl.innerHTML = this.format(ZOOM_DEFAULT)
-    this.zoomSlider.value = ZOOM_DEFAULT * 100
   }
 
   by(cx = 1) {

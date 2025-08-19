@@ -1,8 +1,7 @@
 /**
  * Layer resize handler
  *
- * This file contains functions to enable resizing of layers by sliding
- * the appropriate range slider
+ * This file contains functions to enable resizing of layers
  */
 
 import { getDrawContexts } from '../../../bootstrap'
@@ -15,18 +14,17 @@ const STATE = {
 // would be best to have a way to sync the values
 const HEIGHT_PX_DEFAULT =
   document.documentElement.clientHeight * 35 / 100
-const SLIDER_DEFAULT = 50
 
 class LayerResizer {
   constructor() {
-    this.resizeSlider = document.getElementById('resize-slider')
-    this.resizeSlider.value = SLIDER_DEFAULT
-
     this.currentHeight = HEIGHT_PX_DEFAULT
     this.prevHeight = this.currentHeight
 
-    // Resize on input from resize slider
-    this.resizeSlider.oninput = () => this.sliderResize()
+    this.incHeightBtn = document.getElementById('inc-size')
+    this.decHeightBtn = document.getElementById('dec-size')
+
+    this.incHeightBtn.onclick = () => this.computeSizeAndUpdate(100)
+    this.decHeightBtn.onclick = () => this.computeSizeAndUpdate(-100)
   }
 
   /**
@@ -45,11 +43,6 @@ class LayerResizer {
       })
     }
 
-  }
-
-  resetSlider() {
-    this.currentHeight = HEIGHT_PX_DEFAULT
-    this.resizeSlider.value = SLIDER_DEFAULT
   }
 
   /**
@@ -74,7 +67,7 @@ class LayerResizer {
   /**
    * Computes new layer size and updates
    */
-  sliderResize() {
+  computeSizeAndUpdate(step) {
 
     let maxHeight =
       document
@@ -84,8 +77,7 @@ class LayerResizer {
     maxHeight = maxHeight.slice(0, -2)
 
     this.prevHeight = this.currentHeight
-    this.currentHeight =
-      maxHeight * this.resizeSlider.value / 100
+    this.currentHeight += step
 
     this.updateHeight()
     this.autoScroll()

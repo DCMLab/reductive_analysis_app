@@ -490,9 +490,6 @@ function load_finish() {
 
     if (i != 0) {
       let prefix = mdiv_elem.getAttribute('xml:id')
-      layer_element
-        .getElementsByClassName('layer_num')[0]
-        .innerHTML = prefix.slice(0, prefix.search(/[^l^\-^\d]/g))
     }
 
     var [view_element, svg_element] = new_view_elements(layer_element)
@@ -652,9 +649,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   var layer_element = new_layer_element()
 
   let prefix = new_mdiv_elem.getAttribute('xml:id')
-  layer_element
-    .getElementsByClassName('layer_num')[0]
-    .innerHTML = prefix.slice(0, prefix.search(/[^l^\-^\d]/g))
 
   var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
   new_svg_elem.innerHTML = new_svg

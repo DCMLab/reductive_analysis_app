@@ -20,13 +20,13 @@ function delete_relation(elem) {
   const svg_hes = []
   const is_meta_relation = get_class_from_classlist(elem) == 'metarelation'
   const mei_graph = getMeiGraph()
-  const draw_contexts = getDrawContexts()
-  for (const draw_context of draw_contexts) {
-    const svg_he = get_by_id(document, draw_context.id_prefix + mei_id)
-    if (svg_he) {
-      svg_hes.push(svg_he)
-      if (!is_meta_relation) unmark_secondaries(draw_context, mei_graph, mei_he)
-    }
+
+  const draw_context = getDrawContexts().find(e => e.canEdit)
+
+  const svg_he = get_by_id(document, draw_context.id_prefix + mei_id)
+  if (svg_he) {
+    svg_hes.push(svg_he)
+    if (!is_meta_relation) unmark_secondaries(draw_context, mei_graph, mei_he)
   }
 
   // Find all arcs related to this element
@@ -36,7 +36,7 @@ function delete_relation(elem) {
               arc.getAttribute('to') == '#' + elem.id.slice(1))
     })
   // Find meta-relations associated with this relation
-  const result = find_all_parent_relations(elem, mei, draw_contexts, svg_hes)
+  const result = find_all_parent_relations(elem, mei, draw_context, svg_hes)
   const meta_relations = result.meta_relations
   const meta_relation_arcs = result.meta_relation_arcs
 
@@ -205,7 +205,7 @@ export function delete_relations(redoing = false) {
  *   - meta_relations: Array of MEI meta-relation nodes that reference the relation
  *   - meta_relation_arcs: Array of arcs connecting these meta-relations
  */
-function find_all_parent_relations(elem, mei, draw_contexts, svg_hes, processedIds = new Set()) {
+function find_all_parent_relations(elem, mei, draw_context, svg_hes, processedIds = new Set()) {
   let meta_relations = []
   let meta_relation_arcs = []
 
@@ -236,11 +236,9 @@ function find_all_parent_relations(elem, mei, draw_contexts, svg_hes, processedI
       meta_relations.push(meta_node)
 
       // Find SVG elements for this meta-relation
-      for (const draw_context of draw_contexts) {
-        let svg_meta = get_by_id(document, draw_context.id_prefix + meta_id)
-        if (svg_meta) {
-          svg_hes.push(svg_meta)
-        }
+      let svg_meta = get_by_id(document, draw_context.id_prefix + meta_id)
+      if (svg_meta) {
+        svg_hes.push(svg_meta)
       }
 
       // Find all arcs related to this meta-relation

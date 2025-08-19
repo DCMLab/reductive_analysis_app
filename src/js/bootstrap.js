@@ -522,7 +522,6 @@ function load_finish() {
 
       // first layer is always saved and never editable
       forceSaveLayer: isFirstLayer,
-      lockLayer: !isFirstLayer,
 
       // by default, all layers are saved and editable, but the first isn't editable
       canSave: true,
@@ -668,8 +667,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   }
   layer_contexts.push(layer_context)
   var new_draw_context = {
-    // TODO: One draw context per existing score element
-    // already on load.
     mei_mdiv: new_mdiv_elem,
     svg_elem: new_svg_elem,
     view_elem: new_view_elem,
@@ -679,7 +676,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     reductions: [],
 
     forceSaveLayer: false,
-    lockLayer: true,
     canSave: true,
     canEdit: false,
   }

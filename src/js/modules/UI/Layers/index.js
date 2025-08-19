@@ -36,7 +36,6 @@ class LayersMenu {
     this.nextLayerBtn = document.getElementById('layers-nav-next')
 
     this.$saveSettingsCtn = document.getElementById('layer-menu-settings')
-    this.$lockBtn = document.getElementById('layer-lock')
 
     // Initialize layer resize functionality
     this.resizeHandler = initLayerResize(this)
@@ -55,8 +54,6 @@ class LayersMenu {
 
     if (e.target == this.nextLayerBtn) { return scrollDoc() }
     if (e.target == this.previousLayerBtn) { return scrollDoc(false) }
-
-    if (e.target == this.$lockBtn) { return this.toggleLock() }
 
     this.new.onTap(e)
 
@@ -114,7 +111,6 @@ class LayersMenu {
     this.$currentLayer.innerHTML = layerPosition + 1
     this.activeLayer = layerPosition
     this.updateLayersCount()
-    this.checkLockState(layer.canEdit)
     this.tree.updateToggles(layer)
     this.metaRelation.updateToggles(layer)
     bookmarks.setCount()
@@ -149,17 +145,6 @@ class LayersMenu {
 
   markAsCurrent(e) {
     this.setCurrentLayer(parseInt(e.target.dataset.position))
-  }
-
-  toggleLock(state = !getCurrentDrawContext().canEdit) {
-    getCurrentDrawContext().canEdit = state
-    this.checkLockState(state)
-  }
-
-  // Only the “visible” one
-  checkLockState(state) {
-    this.$lockBtn.classList.toggle('lock-path--unlocked', state)
-    doc.classList.toggle('can-edit-layer', state)
   }
 }
 

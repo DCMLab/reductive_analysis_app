@@ -155,6 +155,9 @@ export function do_relation(type, id, redoing = false) {
   if (selected.length == 0 && extraselected == 0) {
     return
   }
+
+  const draw_context = draw_contexts.find(e => e.canEdit)
+
   var he_id, mei_elems
   if (selected.concat(extraselected)[0].classList.contains('relation')) {
     var types = []
@@ -180,13 +183,13 @@ export function do_relation(type, id, redoing = false) {
     added.push(primaries.concat(secondaries));
     [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
     added.push(mei_elems)
-    for (var i = 0; i < draw_contexts.length; i++) {
-      let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-      if (g_elem) {
-        added.push(g_elem) // Draw the edge
-        mark_secondaries(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-      }
+
+    let g_elem = draw_relation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+    if (g_elem) {
+      added.push(g_elem) // Draw the edge
+      mark_secondaries(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
     }
+
     undo_actions.push(['relation', added.reverse(), selected, extraselected])
     selected.concat(extraselected).forEach(toggle_selected) // De-select
   }
@@ -226,6 +229,9 @@ export function do_metarelation(type, id, redoing = false) {
   if (selected.length == 0 && extraselected == 0) {
     return
   }
+
+  const draw_context = draw_contexts.find(e => e.canEdit)
+
   var ci = get_class_from_classlist(selected.concat(extraselected)[0])
   if (!(ci == 'relation' || ci == 'metarelation')) {
     return
@@ -239,8 +245,8 @@ export function do_metarelation(type, id, redoing = false) {
     get_by_id(mei_graph.getRootNode(), id_or_oldid(e)))
   var [he_id, mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type, id)
   added.push(mei_elems)
-  for (var i = 0; i < draw_contexts.length; i++)
-    added.push(draw_metarelation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
+
+  added.push(draw_metarelation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
 
   undo_actions.push(['metarelation', added, selected, extraselected])
   selected.concat(extraselected).forEach(toggle_selected) // De-select

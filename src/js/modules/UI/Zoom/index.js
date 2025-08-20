@@ -52,10 +52,13 @@ class Zoom {
       const centreX = (viewEl.scrollLeft + viewEl.clientWidth / 2)
       const centreY = (viewEl.scrollTop + viewEl.clientHeight / 2)
 
+      const newCentreY = centreY * c.zoom
+
       // TODO: Scale with screen centre origin
       // Right now, it's top left
       rootSvg.setAttribute('transform-origin', `0 0`)
-      rootSvg.style.transform = 'scale(' + c.zoom + ')'
+      rootSvg.style.transform =
+        `scale(${c.zoom}) translateY(${(centreY - newCentreY) / c.zoom}px)`
     }
 
     this.levelEl.innerHTML = this.format(context.zoom)

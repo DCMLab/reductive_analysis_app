@@ -479,6 +479,7 @@ function load_finish() {
 
     var [view_element, svg_element] = new_view_elements(layer_element)
     svg_element.innerHTML = new_svg
+
     var layer_context = {
       mei: new_mei,
       layer_elem: layer_element,
@@ -516,6 +517,17 @@ function load_finish() {
       orig_midi = midi
     } else
       draw_context.id_prefix = draw_contexts.length
+
+    let [_x, _y, _w, h] =
+      svg_element
+        .getElementsByTagName('svg')[0]
+        .getElementsByClassName('definition-scale')[0]
+        .getAttribute('viewBox')
+        .split(' ')
+
+    view_element.scrollTo({
+      top: (h / 2) - view_element.clientHeight,
+    })
 
     finalize_draw_context(draw_context)
   }
@@ -659,6 +671,8 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     oldRootSvg
       .getAttribute('height'))
   new_view_elem.scrollTop = draw_context.view_elem.scrollTop
+
+  layer_element.style.height = draw_context.layer.layer_elem.style.height
 
   var layer_context = {
     mei: new_mei,

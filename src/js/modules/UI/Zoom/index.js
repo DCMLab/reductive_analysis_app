@@ -1,5 +1,8 @@
 import { getDrawContexts } from '../../../bootstrap'
-import { getCurrentDrawContext } from '../utils/misc'
+import {
+  getCurrentDrawContext,
+  adjustAllLayersSvgDimensions
+} from '../utils/misc'
 
 const ZOOM_DEFAULT = 1
 const ZOOM_STEP = 1.1
@@ -49,8 +52,9 @@ class Zoom {
       const centreX = (viewEl.scrollLeft + viewEl.clientWidth / 2)
       const centreY = (viewEl.scrollTop + viewEl.clientHeight / 2)
 
-      // Scale with screen centre origin
-      rootSvg.setAttribute('transform-origin', `${centreX} ${centreY}`)
+      // TODO: Scale with screen centre origin
+      // Right now, it's top left
+      rootSvg.setAttribute('transform-origin', `0 0`)
       rootSvg.style.transform = 'scale(' + c.zoom + ')'
     }
 

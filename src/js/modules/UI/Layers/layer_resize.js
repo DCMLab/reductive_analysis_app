@@ -12,8 +12,7 @@ const STATE = {
 
 // This is based on the height assigned for the layer class in CSS,
 // would be best to have a way to sync the values
-const HEIGHT_PX_DEFAULT =
-  document.documentElement.clientHeight * 35 / 100
+const HEIGHT_PX_DEFAULT = 400
 
 class LayerResizer {
   constructor() {

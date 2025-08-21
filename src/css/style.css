@@ -468,7 +468,7 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
 }
 
 .layer {
-  height: 35vh;  /* Should be large enough to avoid displacements when the filter menu is expanded and the layer below is empty.*/
+  height: 400px;  /* Should be large enough to avoid displacements when the filter menu is expanded and the layer below is empty.*/
   width: 100vw;
   border-bottom: gray solid;
   border-top: gray solid;

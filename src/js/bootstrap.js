@@ -525,11 +525,12 @@ function load_finish() {
         .getAttribute('viewBox')
         .split(' ')
 
-    view_element.scrollTo({
-      top: (h / 2) - view_element.clientHeight,
-    })
-
     finalize_draw_context(draw_context)
+
+    view_element.scrollTop =
+      layer_element
+        .getBoundingClientRect()
+        .height / 2 + view_element.clientHeight / 1.4
   }
 
   undo_actions = []

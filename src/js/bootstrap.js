@@ -527,14 +527,11 @@ function load_finish() {
 
     finalize_draw_context(draw_context)
 
-    view_element.scrollTop =
-      layer_element
-        .getBoundingClientRect()
-        .height / 2 + view_element.clientHeight / 1.4
+    newApp.ui.zoom.initSvg(svg_element)
   }
 
   undo_actions = []
-  redo_actions = [] // TODO, maybe?
+  redo_actions = []
 
   rerendered_after_action = 0
 
@@ -703,6 +700,8 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   // prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length
   finalize_draw_context(new_draw_context)
+
+  newApp.ui.zoom.initSvg(new_svg)
 
   return new_draw_context
 }

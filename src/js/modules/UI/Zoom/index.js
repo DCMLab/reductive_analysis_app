@@ -5,8 +5,7 @@ import {
 } from '../utils/misc'
 
 const ZOOM_DEFAULT = 1
-const ZOOM_STEP = 1.1
-const ZOOM_STEP_REVERSED = 1 / ZOOM_STEP
+const ZOOM_STEP = 0.1
 
 class Zoom {
   constructor() {
@@ -14,6 +13,8 @@ class Zoom {
     this.zoomOutBtn = document.getElementById('zoom-out')
     this.resetBtn = document.getElementById('zoom-reset')
     this.levelEl = document.getElementById('zoom-level')
+
+    this.state = { scale: ZOOM_DEFAULT }
 
     window.addEventListener('wheel', (event) => {
       if (event.ctrlKey) {
@@ -65,10 +66,12 @@ class Zoom {
   }
 
   in() {
-    this.by(ZOOM_STEP)
+    // this.by(ZOOM_STEP)
+    this.setScale(ZOOM_STEP)
   }
   out() {
-    this.by(ZOOM_STEP_REVERSED)
+    // this.by(-ZOOM_STEP)
+    this.setScale(-ZOOM_STEP)
   }
   reset() {
     this.by(ZOOM_DEFAULT)
@@ -88,6 +91,50 @@ class Zoom {
 
   format(zoom) {
     return `${Math.round(zoom * 100)}%`
+  }
+
+  /* ******** New approach ******** */
+
+  initSvg(svg) {
+    const [_x, _y, w, h] =
+      svg
+        .getElementsByClassName('definition-scale')[0]
+        .getAttribute('viewBox')
+        .split(' ')
+
+    svg.setAttribute('width', `${w}px`)
+    svg.setAttribute('height', `${h}px`)
+
+    this.baseW = w
+    this.baseH = h
+
+    this.updateContainerSize(svg, 1)
+  }
+
+  updateContainerSize(svg, scale) {
+    const container = svg.parentElement.parentElement.parentElement
+
+    container.style.width = this.baseW * scale + 'px'
+    container.style.height = this.baseH * scale + 'px'
+
+    svg.setAttribute('width', this.baseW * scale + 'px')
+    svg.setAttribute('height', this.baseH * scale + 'px')
+
+    svg
+      .getElementsByClassName('definition-scale')[0]
+      .setAttribute(
+        'viewBox',
+        `0 0 ${this.baseW / scale} ${this.baseH / scale}`
+      )
+  }
+
+  setScale(s) {
+    this.state.scale = Math.max(0.05, this.state.scale + s)
+    document
+      .querySelectorAll('.svg_container > svg')
+      .forEach((svg) => this.updateContainerSize(svg, this.state.scale))
+
+    this.format(this.state.scale)
   }
 }
 

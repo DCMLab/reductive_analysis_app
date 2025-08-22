@@ -646,6 +646,13 @@ function adjustSvgDimensions(draw_context) {
   // Only change dimensions if they're actually different
   if (newPixelHeight !== currentHeight) {
     rootSvg.setAttribute('height', `${newPixelHeight}px`)
+
+    let def =
+      rootSvg
+        .getElementsByClassName('definition-scale')[0]
+
+    let [x, y, w, _h] = def.getAttribute('viewBox').split(' ')
+    def.setAttribute('viewBox', `${x} ${y} ${w} ${newPixelHeight}`)
   }
 
   // Get new centre of SVG

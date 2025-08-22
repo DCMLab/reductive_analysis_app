@@ -670,5 +670,16 @@ function adjustSvgDimensions(draw_context) {
  * Adjust the dimensions of all layers.
  */
 export function adjustAllLayersSvgDimensions() {
-  getDrawContexts().forEach(adjustSvgDimensions)
+  // getDrawContexts().forEach(adjustSvgDimensions)
+  for (let context of getDrawContexts()) {
+    newApp
+      .ui
+      .zoom
+      .initSvg(
+        context
+          .svg_elem
+          .getElementsByTagName('svg')[0]
+          .getElementsByClassName('definition-scale')[0]
+      )
+  }
 }

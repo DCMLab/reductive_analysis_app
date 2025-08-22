@@ -539,12 +539,12 @@ function load_finish() {
   // Install drag-select controller.
   drag_selector_installer()
 
-  for (let layer of getDrawContexts()) {
+  for (let context of getDrawContexts()) {
     newApp
       .ui
       .zoom
       .initSvg(
-        layer
+        context
           .svg_elem
           .getElementsByTagName('svg')[0]
           .getElementsByClassName('definition-scale')[0]
@@ -704,12 +704,12 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   new_draw_context.id_prefix = draw_contexts.length
   finalize_draw_context(new_draw_context)
 
-  for (let layer of getDrawContexts()) {
+  for (let context of getDrawContexts()) {
     newApp
       .ui
       .zoom
       .initSvg(
-        layer
+        context
           .svg_elem
           .getElementsByTagName('svg')[0]
           .getElementsByClassName('definition-scale')[0]

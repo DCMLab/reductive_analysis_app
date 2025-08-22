@@ -128,6 +128,9 @@ class Zoom {
         .width
         .slice(0, -2) /
       svg.dataset.baseW
+
+    rect = this._computeDim(svg)
+    rect = this._computeDim(svg)
   }
 
   updateContainerSize(svg, scale) {

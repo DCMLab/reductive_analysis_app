@@ -5,7 +5,7 @@ import {
 } from '../utils/misc'
 
 const ZOOM_DEFAULT = 1
-const ZOOM_STEP = 0.1
+const ZOOM_STEP = 0.02
 
 class Zoom {
   constructor() {
@@ -101,10 +101,7 @@ class Zoom {
         .getElementsByClassName('page-margin')[0]
         .getBoundingClientRect()
 
-    console.log(rect)
-
     svg.setAttribute('viewBox', `${rect.x} ${rect.y} ${rect.width} ${rect.height}`)
-    console.log(svg.getAttribute('viewBox'))
 
     return rect
   }
@@ -123,13 +120,20 @@ class Zoom {
     svg.dataset.baseW = rect.width
     svg.dataset.baseH = rect.height
 
+    this.state.scale =
+      svg
+        .parentElement
+        .parentElement
+        .style
+        .width
+        .slice(0, -2) /
+      svg.dataset.baseW
+
   }
 
   updateContainerSize(svg, scale) {
     const bw = +svg.dataset.baseW
     const bh = +svg.dataset.baseH
-
-    console.log(bw, bh)
 
     const container = svg.parentElement.parentElement
 
@@ -138,7 +142,7 @@ class Zoom {
   }
 
   setScale(s) {
-    this.state.scale = Math.max(0.05, s)
+    this.state.scale = Math.max(0.02, s)
     document
       .querySelectorAll('.svg_container > svg > .definition-scale')
       .forEach((svg) => this.updateContainerSize(svg, this.state.scale))

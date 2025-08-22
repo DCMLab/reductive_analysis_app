@@ -26,18 +26,8 @@ body {
 /* General visual stuff */
 
 #layers {
-  /*
-  width: fit-content;
-  width: -moz-fit-content;
-  margin-bottom: 33vh;
-  top: 8vh;
-  padding-bottom: 200px;
-  min-height: 100vh;
-  */
   display: block;
   min-width: 100%;
-
-  overflow-x: auto;
 }
 
 .file-input {
@@ -455,60 +445,26 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   visibility: hidden
 }
 
-
-.svg_container {
-  /*
-  height: auto;
-  width: auto;
-  padding-left: 255px;
-  transform-origin: left center;
-  overflow: visible;
-  padding-top: 30px;
-  transform-origin: 0 0;
-  */
-
-  display: block;
-  overflow: visible;
-}
-
-.svg_container svg {
-  /*
-  overflow: visible;
-  width: auto;
-  max-width: none;
-  height: auto;
-  */
-
-  display: block;
+#layers-wrapper {
+  overflow-x: auto;
   width: 100%;
-  height: 100%;
-  overflow: scroll;
 }
 
 .layer {
-  /*
-  height: 400px;
-  width: 100vw;
-  border-bottom: gray solid;
-  border-top: gray solid;
-  overflow: hidden;
-  */
-
   border-bottom: 2px solid #eee;
 }
 
-.view {
-  /*
-  overflow-y: hidden;
-  overflow-x: scroll;
-  position: relative;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  */
+.view,
+.svg_container {
   display: block;
 }
+
+.svg_container svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 
 .view_buttons {
   width: 30px;

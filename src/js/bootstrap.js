@@ -527,7 +527,7 @@ function load_finish() {
 
     finalize_draw_context(draw_context)
 
-    newApp.ui.zoom.initSvg(svg_element)
+    newApp.ui.zoom.initSvg(svg_element.getElementsByTagName('svg')[0].getElementsByClassName('definition-scale')[0])
   }
 
   undo_actions = []
@@ -701,7 +701,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   new_draw_context.id_prefix = draw_contexts.length
   finalize_draw_context(new_draw_context)
 
-  newApp.ui.zoom.initSvg(new_svg)
+  newApp.ui.zoom.initSvg(new_svg_elem.getElementsByTagName('svg')[0].getElementsByClassName('definition-scale')[0])
 
   return new_draw_context
 }

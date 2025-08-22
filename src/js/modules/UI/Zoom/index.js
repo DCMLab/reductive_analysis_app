@@ -67,11 +67,11 @@ class Zoom {
 
   in() {
     // this.by(ZOOM_STEP)
-    this.setScale(ZOOM_STEP)
+    this.setScale(this.state.scale + ZOOM_STEP)
   }
   out() {
     // this.by(-ZOOM_STEP)
-    this.setScale(-ZOOM_STEP)
+    this.setScale(this.state.scale - ZOOM_STEP)
   }
   reset() {
     this.by(ZOOM_DEFAULT)
@@ -98,40 +98,35 @@ class Zoom {
   initSvg(svg) {
     const [_x, _y, w, h] =
       svg
-        .getElementsByClassName('definition-scale')[0]
         .getAttribute('viewBox')
-        .split(' ')
+        .split(/\s+/)
+        .map(Number)
 
-    svg.setAttribute('width', `${w}px`)
-    svg.setAttribute('height', `${h}px`)
+    svg.dataset.baseW = w
+    svg.dataset.baseH = h
 
-    this.baseW = w
-    this.baseH = h
+    console.log(svg)
 
     this.updateContainerSize(svg, 1)
   }
 
   updateContainerSize(svg, scale) {
-    const container = svg.parentElement.parentElement.parentElement
+    console.log(svg)
+    const bw = +svg.dataset.baseW
+    const bh = +svg.dataset.baseH
 
-    container.style.width = this.baseW * scale + 'px'
-    container.style.height = this.baseH * scale + 'px'
+    const container = svg.parentElement.parentElement
 
-    svg.setAttribute('width', this.baseW * scale + 'px')
-    svg.setAttribute('height', this.baseH * scale + 'px')
+    container.style.width = bw * scale + 'px'
+    container.style.height = bh * scale + 'px'
 
-    svg
-      .getElementsByClassName('definition-scale')[0]
-      .setAttribute(
-        'viewBox',
-        `0 0 ${this.baseW / scale} ${this.baseH / scale}`
-      )
+    svg.setAttribute('viewBox', `0 0 ${bw} ${bh}`)
   }
 
   setScale(s) {
-    this.state.scale = Math.max(0.05, this.state.scale + s)
+    this.state.scale = Math.max(0.05, s)
     document
-      .querySelectorAll('.svg_container > svg')
+      .querySelectorAll('.svg_container > svg > .definition-scale')
       .forEach((svg) => this.updateContainerSize(svg, this.state.scale))
 
     this.format(this.state.scale)

@@ -128,7 +128,6 @@ class Zoom {
         .width
         .slice(0, -2) /
       svg.dataset.baseW
-
   }
 
   updateContainerSize(svg, scale) {
@@ -147,7 +146,7 @@ class Zoom {
       .querySelectorAll('.svg_container > svg > .definition-scale')
       .forEach((svg) => this.updateContainerSize(svg, this.state.scale))
 
-    this.format(this.state.scale)
+    this.levelEl.innerHTML = this.format(this.state.scale)
   }
 }
 

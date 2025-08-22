@@ -518,13 +518,6 @@ function load_finish() {
     } else
       draw_context.id_prefix = draw_contexts.length
 
-    let [_x, _y, _w, h] =
-      svg_element
-        .getElementsByTagName('svg')[0]
-        .getElementsByClassName('definition-scale')[0]
-        .getAttribute('viewBox')
-        .split(' ')
-
     finalize_draw_context(draw_context)
 
     newApp.ui.zoom.initSvg(svg_element.getElementsByTagName('svg')[0].getElementsByClassName('definition-scale')[0])

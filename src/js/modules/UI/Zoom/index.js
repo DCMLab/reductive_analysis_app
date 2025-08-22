@@ -95,32 +95,46 @@ class Zoom {
 
   /* ******** New approach ******** */
 
-  initSvg(svg) {
-    const [_x, _y, w, h] =
+  _computeDim(svg) {
+    const rect =
       svg
-        .getAttribute('viewBox')
-        .split(/\s+/)
-        .map(Number)
+        .getElementsByClassName('page-margin')[0]
+        .getBoundingClientRect()
 
-    svg.dataset.baseW = w
-    svg.dataset.baseH = h
+    console.log(rect)
 
-    console.log(svg)
+    svg.setAttribute('viewBox', `${rect.x} ${rect.y} ${rect.width} ${rect.height}`)
+    console.log(svg.getAttribute('viewBox'))
+
+    return rect
+  }
+
+  initSvg(svg) {
+
+    let rect = this._computeDim(svg)
+
+    svg.dataset.baseW = rect.width
+    svg.dataset.baseH = rect.height
 
     this.updateContainerSize(svg, 1)
+
+    rect = this._computeDim(svg)
+
+    svg.dataset.baseW = rect.width
+    svg.dataset.baseH = rect.height
+
   }
 
   updateContainerSize(svg, scale) {
-    console.log(svg)
     const bw = +svg.dataset.baseW
     const bh = +svg.dataset.baseH
+
+    console.log(bw, bh)
 
     const container = svg.parentElement.parentElement
 
     container.style.width = bw * scale + 'px'
     container.style.height = bh * scale + 'px'
-
-    svg.setAttribute('viewBox', `0 0 ${bw} ${bh}`)
   }
 
   setScale(s) {

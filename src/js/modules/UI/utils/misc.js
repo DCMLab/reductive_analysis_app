@@ -465,10 +465,15 @@ export function drag_selector_installer() {
   // See https://github.com/ThibaultJanBeyer/DragSelect for API documentation.
 
   window.drag_selector = new DragSelect({
-    area: $('#layers')[0],
+    area: $('#svg0 > svg')[0],
     draggability: false,
     overflowTolerance: { x: 1, y: 1 },
     autoScrollSpeed: 0.0001,
+  })
+
+  drag_selector.subscribe('DS:start', (e) => {
+    console.log('Moving')
+    return false
   })
 
   drag_selector.subscribe('DS:update', (e) => {

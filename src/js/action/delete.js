@@ -252,7 +252,7 @@ function find_all_parent_relations(elem, mei, draw_context, svg_hes, processedId
       const result = find_all_parent_relations(
         { id: meta_id },
         mei,
-        draw_contexts,
+        draw_context,
         svg_hes,
         processedIds
       )

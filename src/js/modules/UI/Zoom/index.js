@@ -1,15 +1,20 @@
-import { getCurrentDrawContext } from '../utils/misc'
+import { getDrawContexts } from '../../../bootstrap'
+import {
+  getCurrentDrawContext,
+  adjustAllLayersSvgDimensions
+} from '../utils/misc'
 
 const ZOOM_DEFAULT = 1
-const ZOOM_STEP = 1.1
-const ZOOM_STEP_REVERSED = 1 / ZOOM_STEP
+const ZOOM_STEP = 0.02
+const PRECIS = 7
 
 class Zoom {
   constructor() {
     this.zoomInBtn = document.getElementById('zoom-in')
     this.zoomOutBtn = document.getElementById('zoom-out')
-    this.resetBtn = document.getElementById('zoom-reset')
     this.levelEl = document.getElementById('zoom-level')
+
+    this.state = { scale: ZOOM_DEFAULT }
 
     window.addEventListener('wheel', (event) => {
       if (event.ctrlKey) {
@@ -31,34 +36,67 @@ class Zoom {
     if (target == this.zoomOutBtn) {
       return this.out()
     }
-    if (target == this.resetBtn) {
-      return this.reset()
-    }
   }
 
   in() {
-    this.by(ZOOM_STEP)
+    this.setScale(this.state.scale + ZOOM_STEP)
   }
   out() {
-    this.by(ZOOM_STEP_REVERSED)
-  }
-  reset() {
-    this.by(ZOOM_DEFAULT)
+    this.setScale(this.state.scale - ZOOM_STEP)
   }
 
-  by(cx = 1) {
-    const context = getCurrentDrawContext()
-    if (!context) {
-      return
+  _computeDim(svg) {
+    const rect =
+      svg
+        .getElementsByClassName('page-margin')[0]
+        .getBoundingClientRect()
+
+    svg.setAttribute('viewBox', `${rect.x} ${rect.y} ${rect.width} ${rect.height}`)
+
+    return rect
+  }
+
+  initSvg(svg) {
+
+    let rect = this._computeDim(svg)
+
+    svg.dataset.baseW = rect.width
+    svg.dataset.baseH = rect.height
+
+    this.updateContainerSize(svg, 1)
+
+    for (let i = 0; i < PRECIS; ++i) {
+      rect = this._computeDim(svg)
     }
 
-    context.zoom = cx == ZOOM_DEFAULT ? ZOOM_DEFAULT : context.zoom * cx
-    context.svg_elem.style.transform = `scale(${context.zoom})`
-    this.levelEl.innerHTML = this.format(context.zoom)
+    svg.dataset.baseW = rect.width
+    svg.dataset.baseH = rect.height
+
+    this.state.scale =
+      svg
+        .parentElement
+        .parentElement
+        .style
+        .width
+        .slice(0, -2) /
+      svg.dataset.baseW
   }
 
-  format(zoom) {
-    return `${Math.round(zoom * 100)}%`
+  updateContainerSize(svg, scale) {
+    const bw = +svg.dataset.baseW
+    const bh = +svg.dataset.baseH
+
+    const container = svg.parentElement.parentElement
+
+    container.style.width = bw * scale + 'px'
+    container.style.height = bh * scale + 'px'
+  }
+
+  setScale(s) {
+    this.state.scale = Math.max(0.01, s)
+    document
+      .querySelectorAll('.svg_container > svg > .definition-scale')
+      .forEach((svg) => this.updateContainerSize(svg, this.state.scale))
   }
 }
 

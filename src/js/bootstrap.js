@@ -155,6 +155,9 @@ export function do_relation(type, id, redoing = false) {
   if (selected.length == 0 && extraselected == 0) {
     return
   }
+
+  const draw_context = draw_contexts.find(e => e.canEdit)
+
   var he_id, mei_elems
   if (selected.concat(extraselected)[0].classList.contains('relation')) {
     var types = []
@@ -180,13 +183,13 @@ export function do_relation(type, id, redoing = false) {
     added.push(primaries.concat(secondaries));
     [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
     added.push(mei_elems)
-    for (var i = 0; i < draw_contexts.length; i++) {
-      let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-      if (g_elem) {
-        added.push(g_elem) // Draw the edge
-        mark_secondaries(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-      }
+
+    let g_elem = draw_relation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+    if (g_elem) {
+      added.push(g_elem) // Draw the edge
+      mark_secondaries(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
     }
+
     undo_actions.push(['relation', added.reverse(), selected, extraselected])
     selected.concat(extraselected).forEach(toggle_selected) // De-select
   }
@@ -226,6 +229,9 @@ export function do_metarelation(type, id, redoing = false) {
   if (selected.length == 0 && extraselected == 0) {
     return
   }
+
+  const draw_context = draw_contexts.find(e => e.canEdit)
+
   var ci = get_class_from_classlist(selected.concat(extraselected)[0])
   if (!(ci == 'relation' || ci == 'metarelation')) {
     return
@@ -239,8 +245,8 @@ export function do_metarelation(type, id, redoing = false) {
     get_by_id(mei_graph.getRootNode(), id_or_oldid(e)))
   var [he_id, mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type, id)
   added.push(mei_elems)
-  for (var i = 0; i < draw_contexts.length; i++)
-    added.push(draw_metarelation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
+
+  added.push(draw_metarelation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
 
   undo_actions.push(['metarelation', added, selected, extraselected])
   selected.concat(extraselected).forEach(toggle_selected) // De-select
@@ -474,7 +480,7 @@ function load_finish() {
     let mdiv_elem = layers[i]
     let score_elem = mdiv_elem.children[0]
     let new_mei = mei_for_layer(mei, mdiv_elem)
-    let [new_data, new_svg] = render_mei(new_mei)
+    let [_new_data, new_svg] = render_mei(new_mei)
     if (!new_svg) {
       console.log('Verovio could not generate SVG from MEI.')
       return false
@@ -491,6 +497,7 @@ function load_finish() {
 
     var [view_element, svg_element] = new_view_elements(layer_element)
     svg_element.innerHTML = new_svg
+
     var layer_context = {
       mei: new_mei,
       layer_elem: layer_element,
@@ -511,16 +518,14 @@ function load_finish() {
       view_elem: view_element,
       layer: layer_context,
       id_prefix: '',
-      zoom: 1,
       reductions: [],
 
       // first layer is always saved and never editable
       forceSaveLayer: isFirstLayer,
-      lockLayer: isFirstLayer,
 
       // by default, all layers are saved and editable, but the first isn't editable
       canSave: true,
-      canEdit: !isFirstLayer,
+      canEdit: isFirstLayer,
     }
 
     if (isFirstLayer) {
@@ -533,7 +538,7 @@ function load_finish() {
   }
 
   undo_actions = []
-  redo_actions = [] // TODO, maybe?
+  redo_actions = []
 
   rerendered_after_action = 0
 
@@ -549,6 +554,18 @@ function load_finish() {
 
   // Install drag-select controller.
   drag_selector_installer()
+
+  for (let context of getDrawContexts()) {
+    newApp
+      .ui
+      .zoom
+      .initSvg(
+        context
+          .svg_elem
+          .getElementsByTagName('svg')[0]
+          .getElementsByClassName('definition-scale')[0]
+      )
+  }
 
   return true
 }
@@ -590,8 +607,8 @@ export function rerender_mei(replace_with_rests = false, draw_context = draw_con
  */
 export function delete_layer(draw_context) {
   // Check if the layer can be edited
-  if (!draw_context || !draw_context.canEdit) {
-    alert('This layer cannot be deleted (not editable)')
+  if (!draw_context || draw_context.canEdit) {
+    alert('This layer cannot be deleted')
     return false
   }
 
@@ -630,7 +647,10 @@ export function delete_layer(draw_context) {
   }
 }
 
-export function create_new_layer(draw_context, sliced = false, tied = false) {
+export function create_new_layer(sliced = false, tied = false) {
+
+  const draw_context = getDrawContexts().find(e => e.canEdit)
+
   var new_mdiv_elem
   if (sliced)
     new_mdiv_elem = new_sliced_layer(draw_context, tied)
@@ -638,7 +658,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     new_mdiv_elem = new_layer(draw_context)
   let new_score_elem = new_mdiv_elem.children[0]
   let new_mei = mei_for_layer(mei, new_mdiv_elem)
-  var [new_data, new_svg] = render_mei(new_mei)
+  var [_new_data, new_svg] = render_mei(new_mei)
   if (!new_svg) {
     console.log('Verovio could not generate SVG from MEI.')
     return false
@@ -651,8 +671,10 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     .getElementsByClassName('layer_num')[0]
     .innerHTML = prefix.slice(0, prefix.search(/[^l^\-^\d]/g))
 
-  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
+  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element)
+
   new_svg_elem.innerHTML = new_svg
+
   var layer_context = {
     mei: new_mei,
     layer_elem: layer_element,
@@ -662,25 +684,40 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   }
   layer_contexts.push(layer_context)
   var new_draw_context = {
-    // TODO: One draw context per existing score element
-    // already on load.
     mei_mdiv: new_mdiv_elem,
     svg_elem: new_svg_elem,
     view_elem: new_view_elem,
     layer: layer_context,
     id_prefix: '',
-    zoom: 1,
     reductions: [],
 
     forceSaveLayer: false,
-    lockLayer: false,
     canSave: true,
-    canEdit: true,
+    canEdit: false,
   }
 
   // prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length
   finalize_draw_context(new_draw_context)
+
+  // Replicating the source layer's settings
+  let newSvgCont = new_draw_context.svg_elem
+  let oldSvgCont = draw_context.svg_elem
+
+  let newRootSvg = newSvgCont.getElementsByTagName('svg')[0]
+  let oldRootSvg = oldSvgCont.getElementsByTagName('svg')[0]
+
+  newRootSvg
+    .getElementsByClassName('definition-scale')[0]
+    .setAttribute('viewBox',
+      oldRootSvg
+        .getElementsByClassName('definition-scale')[0]
+        .getAttribute('viewBox'))
+
+  newSvgCont.style.width = oldSvgCont.style.width
+  newSvgCont.style.height = oldSvgCont.style.height
+
+  newApp.ui.zoom.setScale(newApp.ui.zoom.state.scale)
 
   return new_draw_context
 }
@@ -702,21 +739,6 @@ function finalize_draw_context(new_draw_context) {
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
   adjustAllLayersSvgDimensions()
-
-  // Add resize handlers directly to the layer element
-  const layerElement = new_draw_context.layer.layer_elem
-  if (layerElement && !layerElement._hasResizeHandler && newApp.ui.layers && newApp.ui.layers.resizeHandler) {
-    layerElement.addEventListener('mousedown', function(e) {
-      // Check if the click is near the bottom border (resize handle area)
-      const rect = this.getBoundingClientRect()
-      const bottomArea = rect.bottom - 6
-
-      if (e.clientY >= bottomArea) {
-        newApp.ui.layers.resizeHandler.startResizeForLayer(this, e)
-      }
-    })
-    layerElement._hasResizeHandler = true
-  }
 }
 
 function render_mei(mei) {

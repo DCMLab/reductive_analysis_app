@@ -72,44 +72,12 @@
   border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
 }
 
-.layers-menu__navBtn {
-  --btn-bg: var(--layers-nav-bg);
-  --btn-border: var(--layers-nav-bg);
-  --btn-radius: none;
-
-  &:first-of-type {
-    border-top-right-radius: var(--btn-default-radius);
-    border-bottom: none;
-  }
-
-  &:last-of-type {
-    border-top: none;
-    border-bottom-right-radius: var(--btn-default-radius);
-  }
-
-  &:hover,
-  &:focus {
-    --btn-bg: #{colors.$gallery};
-    --btn-border: #{colors.$gallery};
-  }
-
-  &:disabled {
-    --btn-color: #{colors.$silver};
-  }
-}
-
 .layers-menu__visibleLayer {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
 
   pointer-events: none;
-}
-
-.layers-menu__lockLayer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .layers-menu__layerTitle {

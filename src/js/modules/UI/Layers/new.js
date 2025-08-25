@@ -16,7 +16,7 @@ export default class LayerControls {
   }
 
   create() {
-    create_new_layer(getCurrentDrawContext(), this.$sliced.checked, this.$tied.checked)
+    create_new_layer(this.$sliced.checked, this.$tied.checked)
   }
 
   delete() {

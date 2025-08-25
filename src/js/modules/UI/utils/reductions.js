@@ -5,7 +5,7 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import { getMeiGraph } from '../../../bootstrap'
+import { getMeiGraph, getDrawContexts } from '../../../bootstrap'
 import { toggle_selected } from './misc'
 import {
   get_by_id,
@@ -62,9 +62,14 @@ export function calc_reduce(mei_graph, remaining_relations, target_relations) {
 
 }
 
-export function do_reduce_pre(draw_context) {
+export function do_reduce_pre() {
   var mei_graph = getMeiGraph()
-  do_reduce(draw_context, mei_graph, selected, extraselected)
+  do_reduce(
+    getDrawContexts().find(e => e.canEdit),
+    mei_graph,
+    selected,
+    extraselected
+  )
 }
 
 // Do a reduction in the context, using the given graph and the
@@ -127,8 +132,11 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
   draw_context['reductions'].push(['reduce', undo, sel, extra])
 }
 
-export function undo_reduce(draw_context) {
+export function undo_reduce() {
   console.log('Using globals: selected/extraselected')
+
+  const draw_context = getDrawContexts().find(e => e.canEdit)
+
   var unreduce_actions = draw_context['reductions']
   // Get latest unreduce_actions
   if (unreduce_actions.length == 0) {

@@ -3,20 +3,6 @@
   display: flex; // see comment in `.layer-intersection-landmark`
   align-items: stretch;
 
-  // Add resize handle at the bottom of each layer
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    cursor: row-resize;
-    background-color: transparent;
-    z-index: 10;
-    transition: background-color 0.2s ease;
-  }
-
   // Add extra padding at the bottom to create more resize space for the last layer
   &:last-child {
     margin-bottom: 150px;

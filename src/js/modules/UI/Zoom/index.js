@@ -12,7 +12,6 @@ class Zoom {
   constructor() {
     this.zoomInBtn = document.getElementById('zoom-in')
     this.zoomOutBtn = document.getElementById('zoom-out')
-    this.resetBtn = document.getElementById('zoom-reset')
     this.levelEl = document.getElementById('zoom-level')
 
     this.state = { scale: ZOOM_DEFAULT }
@@ -44,10 +43,6 @@ class Zoom {
   }
   out() {
     this.setScale(this.state.scale - ZOOM_STEP)
-  }
-
-  format(zoom) {
-    return `${Math.round(zoom * 100)}%`
   }
 
   _computeDim(svg) {
@@ -102,8 +97,6 @@ class Zoom {
     document
       .querySelectorAll('.svg_container > svg > .definition-scale')
       .forEach((svg) => this.updateContainerSize(svg, this.state.scale))
-
-    this.levelEl.innerHTML = this.format(this.state.scale)
   }
 }
 

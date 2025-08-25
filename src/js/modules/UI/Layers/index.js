@@ -24,8 +24,6 @@ class LayersMenu {
 
     this.activeLayer = 0
 
-    this.$currentLayer = document.getElementById('current-layer')
-
     this.new = new LayerControls(this)
     this.reductions = new Reductions(this)
     this.tree = new RelationsTree(this)
@@ -108,7 +106,6 @@ class LayersMenu {
 
     setCurrentDrawContext(layer)
 
-    this.$currentLayer.innerHTML = layerPosition + 1
     this.activeLayer = layerPosition
     this.updateLayersCount()
     this.tree.updateToggles(layer)

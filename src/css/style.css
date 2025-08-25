@@ -454,6 +454,10 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   scrollbar-width: none;
 }
 
+.layer {
+    margin-bottom: 10px;
+}
+
 .view,
 .svg_container {
   display: block;

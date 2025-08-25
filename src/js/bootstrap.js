@@ -500,7 +500,6 @@ function load_finish() {
       view_elem: view_element,
       layer: layer_context,
       id_prefix: '',
-      zoom: 1,
       reductions: [],
 
       // first layer is always saved and never editable
@@ -656,25 +655,6 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
 
   new_svg_elem.innerHTML = new_svg
 
-  // Replicating the source layer's settings
-  let newRootSvg = new_svg_elem.getElementsByTagName('svg')[0]
-  let oldRootSvg = draw_context.svg_elem.getElementsByTagName('svg')[0]
-  newRootSvg
-    .getElementsByClassName('definition-scale')[0]
-    .setAttribute('viewBox',
-      oldRootSvg
-        .getElementsByClassName('definition-scale')[0]
-        .getAttribute('viewBox'))
-  newRootSvg.setAttribute('width',
-    oldRootSvg
-      .getAttribute('width'))
-  newRootSvg.setAttribute('height',
-    oldRootSvg
-      .getAttribute('height'))
-  new_view_elem.scrollTop = draw_context.view_elem.scrollTop
-
-  layer_element.style.height = draw_context.layer.layer_elem.style.height
-
   var layer_context = {
     mei: new_mei,
     layer_elem: layer_element,
@@ -684,14 +664,11 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   }
   layer_contexts.push(layer_context)
   var new_draw_context = {
-    // TODO: One draw context per existing score element
-    // already on load.
     mei_mdiv: new_mdiv_elem,
     svg_elem: new_svg_elem,
     view_elem: new_view_elem,
     layer: layer_context,
     id_prefix: '',
-    zoom: 1,
     reductions: [],
 
     forceSaveLayer: false,
@@ -704,21 +681,23 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
   new_draw_context.id_prefix = draw_contexts.length
   finalize_draw_context(new_draw_context)
 
-  for (let context of getDrawContexts()) {
-    newApp
-      .ui
-      .zoom
-      .initSvg(
-        context
-          .svg_elem
-          .getElementsByTagName('svg')[0]
-          .getElementsByClassName('definition-scale')[0]
-      )
-    newApp
-      .ui
-      .zoom
-      .setScale(newApp.ui.zoom.state.scale)
-  }
+  // Replicating the source layer's settings
+  let newSvgCont = new_draw_context.svg_elem
+  let oldSvgCont = draw_context.svg_elem
+
+  let newRootSvg = newSvgCont.getElementsByTagName('svg')[0]
+  let oldRootSvg = oldSvgCont.getElementsByTagName('svg')[0]
+
+  newRootSvg
+    .getElementsByClassName('definition-scale')[0]
+    .setAttribute('viewBox',
+      oldRootSvg
+        .getElementsByClassName('definition-scale')[0]
+        .getAttribute('viewBox'))
+  newSvgCont.style.width = oldSvgCont.getAttribute('width')
+  newSvgCont.style.height = oldSvgCont.getAttribute('height')
+
+  newApp.ui.zoom.setScale(newApp.ui.zoom.state.scale)
 
   return new_draw_context
 }

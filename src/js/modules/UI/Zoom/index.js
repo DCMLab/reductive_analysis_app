@@ -6,6 +6,7 @@ import {
 
 const ZOOM_DEFAULT = 1
 const ZOOM_STEP = 0.02
+const PRECIS = 7
 
 class Zoom {
   constructor() {
@@ -69,7 +70,9 @@ class Zoom {
 
     this.updateContainerSize(svg, 1)
 
-    rect = this._computeDim(svg)
+    for (let i = 0; i < PRECIS; ++i) {
+      rect = this._computeDim(svg)
+    }
 
     svg.dataset.baseW = rect.width
     svg.dataset.baseH = rect.height
@@ -82,12 +85,6 @@ class Zoom {
         .width
         .slice(0, -2) /
       svg.dataset.baseW
-
-    rect = this._computeDim(svg)
-    rect = this._computeDim(svg)
-
-    svg.dataset.baseW = rect.width
-    svg.dataset.baseH = rect.height
   }
 
   updateContainerSize(svg, scale) {

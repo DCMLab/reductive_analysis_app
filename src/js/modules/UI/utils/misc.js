@@ -332,17 +332,15 @@ export function handle_keypress(ev) {
     newApp.ui.layersMenu.metaRelation.toggle()
   } else if (ev.key == navigation_conf.pan_left) {
     // Move to the left
-    let vis = document.getElementsByClassName('layer--active')[0]
-    let view = vis.getElementsByClassName('view')[0]
-    view.scrollBy({
+    let wrap = document.getElementById('layers-wrapper')
+    wrap.scrollBy({
       left: -900,
       behavior: 'smooth',
     })
   } else if (ev.key == navigation_conf.pan_right) {
     // Move to the right
-    let vis = document.getElementsByClassName('layer--active')[0]
-    let view = vis.getElementsByClassName('view')[0]
-    view.scrollBy({
+    let wrap = document.getElementById('layers-wrapper')
+    wrap.scrollBy({
       left: 900,
       behavior: 'smooth',
     })

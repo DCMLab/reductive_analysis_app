@@ -471,11 +471,6 @@ export function drag_selector_installer() {
     autoScrollSpeed: 0.0001,
   })
 
-  drag_selector.subscribe('DS:start', (e) => {
-    console.log('Moving')
-    return false
-  })
-
   drag_selector.subscribe('DS:update', (e) => {
     // Do not drag-select if a note is being added
     if (placing_note == '') {

@@ -231,7 +231,7 @@ export function delete_relations(redoing = false) {
  *   - meta_relations: Array of MEI meta-relation nodes that reference the relation
  *   - meta_relation_arcs: Array of arcs connecting these meta-relations
  */
-function find_all_parent_relations(elem, mei, draw_context, svg_hes, processedIds = new Set()) {
+export function find_all_parent_relations(elem, mei, draw_context, svg_hes, processedIds = new Set()) {
   let meta_relations = []
   let meta_relation_arcs = []
 

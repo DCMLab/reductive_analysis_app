@@ -31,9 +31,6 @@ class LayersMenu {
     this.jsonTree = new JsonTree(this)
     this.metaRelation = new MetaRelation(this)
 
-    this.previousLayerBtn = document.getElementById('layers-nav-previous')
-    this.nextLayerBtn = document.getElementById('layers-nav-next')
-
     this.$saveSettingsCtn = document.getElementById('layer-menu-settings')
     this.$lockBtn = document.getElementById('layer-lock')
   }

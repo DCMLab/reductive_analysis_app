@@ -714,6 +714,10 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
           .getElementsByTagName('svg')[0]
           .getElementsByClassName('definition-scale')[0]
       )
+    newApp
+      .ui
+      .zoom
+      .setScale(newApp.ui.zoom.state.scale)
   }
 
   return new_draw_context

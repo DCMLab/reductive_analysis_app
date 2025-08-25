@@ -101,7 +101,7 @@ export default class RelationsGroup {
                 <span class="hide-when-compact">Bookmark note</span>
             </button>
             <button
-                class="fly-out__secondaryBtn | btn btn--hollow btn--small-icon hidden-when-in-layer-1 hidden-when-can-not-edit-layer"
+                class="fly-out__secondaryBtn | btn btn--hollow btn--small-icon hidden-when-not-in-layer-1 hidden-when-can-not-edit-layer"
                 type="button"
                 id="naturalize-note"
                 aria-label="Naturalize note"

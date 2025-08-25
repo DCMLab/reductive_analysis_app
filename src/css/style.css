@@ -458,6 +458,10 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
     margin-bottom: 10px;
 }
 
+.definition-scale {
+    overflow-y: visible;
+}
+
 .view,
 .svg_container {
   display: block;

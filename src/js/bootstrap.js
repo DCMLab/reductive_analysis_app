@@ -694,8 +694,9 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
       oldRootSvg
         .getElementsByClassName('definition-scale')[0]
         .getAttribute('viewBox'))
-  newSvgCont.style.width = oldSvgCont.getAttribute('width')
-  newSvgCont.style.height = oldSvgCont.getAttribute('height')
+
+  newSvgCont.style.width = oldSvgCont.style.width
+  newSvgCont.style.height = oldSvgCont.style.height
 
   newApp.ui.zoom.setScale(newApp.ui.zoom.state.scale)
 

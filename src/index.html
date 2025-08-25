@@ -518,7 +518,8 @@
 
         <div id="metadata-and-note-toggle" class="metadata-and-note-toggle">
 
-            <button id="new-note" class="btn btn--hollow btn--small-icon | hidden-when-in-layer-1" type="button">
+            <button id="new-note" class="btn btn--hollow btn--small-icon |
+                hidden-when-not-in-layer-1" type="button">
                 <svg class="btn__icon" width="14" height="15">
                     <use href="#add-note-path"/>
                 </svg>
@@ -576,29 +577,8 @@
             <div id="main-menu" class="fly-out fly-out--dark  fly-out--layers-menu">
 
                 <div class="fly-out__inner" style="--fly-out-max-height: 40rem;">
-                    <div class="layers-menu__layerTitle | fly-out__headerRow">
-                        <h4 class="fly-out__title
-                            fly-out__title--big">Active layer: <span id="current-layer">1</span></h4>
-                    </div>
 
-                    <!-- Can edit layer. Not available for the first layer. -->
-                    <div id="layer-menu-settings"
-                        class="layers-menu__lockLayer hidden-when-in-layer-1">
-
-                        <button id="layer-lock" class="lock-path--unlocked | btn flex-center" type="button">
-                            <span class="visually-hidden">Unlock</span>
-                            <span class="visually-hidden">Lock</span>
-                            <svg width="13" height="18">
-                                <use href="#lock-path"/>
-                            </svg>
-                        </button>
-
-                    </div>
-
-                    <hr class="fly-out__hr">
-
-
-                    <!-- New layer settings. Only shows starting the second layer. -->
+                    <!-- New layer settings. -->
                     <div id="layer-menu-new" class="btn-group">
 
                         <label class="checkable" for="layer-sliced">
@@ -622,11 +602,11 @@
                         </label>
 
                         <button id="layer-new" class="btn btn--plain btn--small" type="button">
-                            Create new layer
+                            Create new snapshot
                         </button>
 
                         <button id="layer-delete" class="btn btn--plain btn--small" type="button">
-                            Delete current layer
+                            Delete current snapshot
                         </button>
 
                     </div>

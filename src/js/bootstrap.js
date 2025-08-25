@@ -60,6 +60,7 @@ import {
   new_view_elements,
   note_coords,
   note_to_rest,
+  relation_get_notes,
   prefix_ids,
   sanitize_xml,
 } from './utils/misc'
@@ -154,6 +155,9 @@ export function do_relation(type, id, redoing = false) {
   if (selected.length == 0 && extraselected == 0) {
     return
   }
+
+  const draw_context = draw_contexts.find(e => e.canEdit)
+
   var he_id, mei_elems
   if (selected.concat(extraselected)[0].classList.contains('relation')) {
     var types = []
@@ -179,13 +183,13 @@ export function do_relation(type, id, redoing = false) {
     added.push(primaries.concat(secondaries));
     [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
     added.push(mei_elems)
-    for (var i = 0; i < draw_contexts.length; i++) {
-      let g_elem = draw_relation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-      if (g_elem) {
-        added.push(g_elem) // Draw the edge
-        mark_secondaries(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-      }
+
+    let g_elem = draw_relation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+    if (g_elem) {
+      added.push(g_elem) // Draw the edge
+      mark_secondaries(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
     }
+
     undo_actions.push(['relation', added.reverse(), selected, extraselected])
     selected.concat(extraselected).forEach(toggle_selected) // De-select
   }
@@ -225,6 +229,9 @@ export function do_metarelation(type, id, redoing = false) {
   if (selected.length == 0 && extraselected == 0) {
     return
   }
+
+  const draw_context = draw_contexts.find(e => e.canEdit)
+
   var ci = get_class_from_classlist(selected.concat(extraselected)[0])
   if (!(ci == 'relation' || ci == 'metarelation')) {
     return
@@ -238,8 +245,8 @@ export function do_metarelation(type, id, redoing = false) {
     get_by_id(mei_graph.getRootNode(), id_or_oldid(e)))
   var [he_id, mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type, id)
   added.push(mei_elems)
-  for (var i = 0; i < draw_contexts.length; i++)
-    added.push(draw_metarelation(draw_contexts[i], mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
+
+  added.push(draw_metarelation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
 
   undo_actions.push(['metarelation', added, selected, extraselected])
   selected.concat(extraselected).forEach(toggle_selected) // De-select
@@ -380,7 +387,18 @@ export function draw_graph(draw_context) {
   })
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'metarelation' })
+
+  // Verify that no relations contain duplicate notes, otherwise alert the user.
   relations_nodes.forEach((g_elem) => {
+    let nodes = relation_get_notes(g_elem)
+    for (let i in nodes) {
+      for (let j in nodes) {
+        if (nodes[i].isSameNode(nodes[j]) && i !== j) {
+          alert(`Graph error: Multiple instances of note ${nodes[i].getAttribute('xml:id')} found in relation ${g_elem.getAttribute('xml:id')}.\n\nAttempting to continue drawing, although the graph plot is likely to be inconsistent.`)
+          return false
+        }
+      }
+    }
     if (draw_relation(draw_context, mei_graph, g_elem))
       mark_secondaries(draw_context, mei_graph, g_elem)
   })
@@ -462,7 +480,7 @@ function load_finish() {
     let mdiv_elem = layers[i]
     let score_elem = mdiv_elem.children[0]
     let new_mei = mei_for_layer(mei, mdiv_elem)
-    let [new_data, new_svg] = render_mei(new_mei)
+    let [_new_data, new_svg] = render_mei(new_mei)
     if (!new_svg) {
       console.log('Verovio could not generate SVG from MEI.')
       return false
@@ -504,11 +522,10 @@ function load_finish() {
 
       // first layer is always saved and never editable
       forceSaveLayer: isFirstLayer,
-      lockLayer: isFirstLayer,
 
       // by default, all layers are saved and editable, but the first isn't editable
       canSave: true,
-      canEdit: !isFirstLayer,
+      canEdit: isFirstLayer,
     }
 
     if (isFirstLayer) {
@@ -590,8 +607,8 @@ export function rerender_mei(replace_with_rests = false, draw_context = draw_con
  */
 export function delete_layer(draw_context) {
   // Check if the layer can be edited
-  if (!draw_context || !draw_context.canEdit) {
-    alert('This layer cannot be deleted (not editable)')
+  if (!draw_context || draw_context.canEdit) {
+    alert('This layer cannot be deleted')
     return false
   }
 
@@ -630,7 +647,10 @@ export function delete_layer(draw_context) {
   }
 }
 
-export function create_new_layer(draw_context, sliced = false, tied = false) {
+export function create_new_layer(sliced = false, tied = false) {
+
+  const draw_context = getDrawContexts().find(e => e.canEdit)
+
   var new_mdiv_elem
   if (sliced)
     new_mdiv_elem = new_sliced_layer(draw_context, tied)
@@ -638,7 +658,7 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     new_mdiv_elem = new_layer(draw_context)
   let new_score_elem = new_mdiv_elem.children[0]
   let new_mei = mei_for_layer(mei, new_mdiv_elem)
-  var [new_data, new_svg] = render_mei(new_mei)
+  var [_new_data, new_svg] = render_mei(new_mei)
   if (!new_svg) {
     console.log('Verovio could not generate SVG from MEI.')
     return false
@@ -672,9 +692,8 @@ export function create_new_layer(draw_context, sliced = false, tied = false) {
     reductions: [],
 
     forceSaveLayer: false,
-    lockLayer: false,
     canSave: true,
-    canEdit: true,
+    canEdit: false,
   }
 
   // prefix_draw_context(new_draw_context);

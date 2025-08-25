@@ -99,6 +99,14 @@ export function toggle_selected(item, extra = null) {
     return
   }
 
+  let layer = item.closest('layer')
+  let context = getCurrentDrawContext()
+  for (let c of getDrawContexts()) {
+    context = c.layer.layer_elem == layer ? c : context
+  }
+
+  if (!context.canEdit) return
+
   const flatSelection = selected.concat(extraselected)
 
   /**
@@ -319,7 +327,7 @@ export function handle_keypress(ev) {
     do_paste()
   } else if (ev.key == action_conf.reduce_relations) {
     // Reduce relations
-    do_reduce_pre(current_draw_context)
+    do_reduce_pre()
   } else if (ev.key == action_conf.select_same_notes) {
     // Select same notes in the measure
     select_samenote()

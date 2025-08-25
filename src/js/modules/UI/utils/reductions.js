@@ -103,8 +103,10 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
     if (parent_relations.meta_relations.length) {
       for (let par of parent_relations.meta_relations) {
         let svg_par = document.getElementById(get_id(par))
-        svg_par.classList.add('hidden-reduced')
-        graphicals.push(svg_par)
+        if (!svg_par.classList.contains('hidden-reduced')) {
+          svg_par.classList.add('hidden-reduced')
+          graphicals.push(svg_par)
+        }
       }
     }
   }

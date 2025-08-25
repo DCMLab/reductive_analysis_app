@@ -584,91 +584,10 @@ export const setCurrentDrawContext = drawContext => {
   current_draw_context.layer.layer_elem.classList.add('layer--active')
 }
 
-function adjustSvgDimensions(draw_context) {
-  const svg_elem = draw_context.svg_elem
-  const rootSvg = svg_elem.getElementsByTagName('svg')[0] // The root SVG element from verovio
-
-  let bb = getDOMRect(rootSvg, ['y', 'height'])
-  let y = bb.y
-  let h = bb.height
-
-  // Get current dimensions to calculate scale factor
-  const currentHeight = rootSvg.clientHeight || rootSvg.height.baseVal.value
-
-  // Calculate scale factors (pixels per SVG unit)
-  const scaleY = currentHeight / h
-
-  // Get all relations
-  const allRelations = Array.from(svg_elem.getElementsByClassName('relation'))
-  const allMetarelations = Array.from(svg_elem.getElementsByClassName('metarelation'))
-
-  // Calculate bounding box of all relations
-  let minY = Infinity,
-    maxY = -Infinity
-
-  const allElements = [...allRelations, ...allMetarelations]
-  allElements.forEach(relation => {
-    const dom = getDOMRect(relation, ['y', 'height'])
-    minY = Math.min(minY, dom.y)
-    maxY = Math.max(maxY, dom.y + dom.height)
-  })
-
-  // Only adjust if the relations actually exceed the current SVG boundaries
-  const needsHeightAdjustment = minY < y || maxY > y + h
-
-  if (!needsHeightAdjustment) {
-    return // No adjustment needed
-  }
-
-  // Calculate new dimensions
-  const newMinY = Math.min(y, minY)
-  const newMaxY = Math.max(y + h, maxY)
-
-  const newSvgHeight = newMaxY - newMinY
-
-  // Convert SVG units to pixels using the scale factors
-  // Multiply by 2 since increasing height is centre-wise; space is added above
-  // and below the score
-  const newPixelHeight = Math.ceil(newSvgHeight * scaleY * 2)
-
-  // Get centre of current SVG
-  let currCentreLeft = getDOMRect(rootSvg, ['width']).width / 2
-  let currCentreTop = getDOMRect(rootSvg, ['height']).height / 2
-
-  // Get current scroll position
-  const view = draw_context['view_elem']
-  const currScrollLeft = view.scrollLeft - currCentreLeft
-  const currScrollTop = view.scrollTop - currCentreTop
-
-  // Set the width and height on the container SVG in pixels
-  // Only change dimensions if they're actually different
-  if (newPixelHeight !== currentHeight) {
-    rootSvg.setAttribute('height', `${newPixelHeight}px`)
-
-    let def =
-      rootSvg
-        .getElementsByClassName('definition-scale')[0]
-
-    let [x, y, w, _h] = def.getAttribute('viewBox').split(' ')
-    def.setAttribute('viewBox', `${x} ${y} ${w} ${newPixelHeight}`)
-  }
-
-  // Get new centre of SVG
-  let newCentreLeft = getDOMRect(rootSvg, ['width']).width / 2
-  let newCentreTop = getDOMRect(rootSvg, ['height']).height / 2
-
-  // Get back to previous position
-  view.scrollTo({
-    top: currScrollTop + newCentreTop,
-    left: currScrollLeft + newCentreLeft,
-  })
-}
-
 /**
  * Adjust the dimensions of all layers.
  */
 export function adjustAllLayersSvgDimensions() {
-  // getDrawContexts().forEach(adjustSvgDimensions)
   for (let context of getDrawContexts()) {
     newApp
       .ui

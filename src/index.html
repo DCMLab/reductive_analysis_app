@@ -338,6 +338,30 @@
 
             </fieldset>
 
+            <div id="sliders-container">
+
+                <!-- Zoom -->
+                <div class="labeled-slider">
+
+                    <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
+                        <svg class="btn__icon" width="12" height="12">
+                            <use href="#minus-path"/>
+                        </svg>
+                        <span class="visually-hidden">Zoom out</span>
+                    </button>
+
+                    <div class="slider-label">Zoom</div>
+
+                    <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
+                        <svg class="btn__icon" width="12" height="12">
+                            <use href="#plus-path"/>
+                        </svg>
+                        <span class="visually-hidden">Zoom in</span>
+                    </button>
+
+                </div>
+            </div>
+
         </div>
 
         <!-- Selection legend and zoom controls -->
@@ -363,33 +387,6 @@
 
                 </div>
             </div>
-
-            <!-- Zoom -->
-
-            <div id="zoom" class="zoom">
-                <button id="zoom-reset" class="btn btn--plain zoom__reset" type="button">
-                    <span class="visually-hidden">Reset zoom</span>
-
-                    <!-- @todo: Check semantic of button > label + output -->
-                    <label for="zoom-level" class="visually-hidden">Current zoom level:</label>
-                    <output id="zoom-level" for="zoom-in zoom-out">100%</output>
-                </button>
-
-                <button id="zoom-in" class="btn btn--small btn--hollow" type="button">
-                    <svg class="btn__icon" width="12" height="12">
-                        <use href="#plus-path"/>
-                    </svg>
-                    <span class="visually-hidden">Zoom in</span>
-                </button>
-
-                <button id="zoom-out" class="btn btn--small btn--hollow" type="button">
-                    <svg class="btn__icon" width="12" height="12">
-                        <use href="#minus-path"/>
-                    </svg>
-                    <span class="visually-hidden">Zoom out</span>
-                </button>
-            </div>
-
         </div>
 
         <!-- In-score navigation -->
@@ -553,24 +550,6 @@
             <!-- Toggle button and layers navigation -->
 
             <div class="layers-menu__controls">
-
-                <div class="layers-menu__nav">
-
-                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-previous">
-                        <span class="visually-hidden">Previous layer</span>
-                        <svg class="btn__icon" width="10" height="8">
-                            <use href="#triangle-path"/>
-                        </svg>
-                    </button>
-
-                    <button class="layers-menu__navBtn | btn" type="button" id="layers-nav-next">
-                        <span class="visually-hidden">Next layer</span>
-                        <svg class="btn__icon triangle triangle--down" width="10" height="8">
-                            <use href="#triangle-path"/>
-                        </svg>
-                    </button>
-
-                </div>
 
                 <button
                     class="layers-menu__toggleBtn | btn btn--plain flex-center"
@@ -745,7 +724,10 @@
 
     <!-- Layers and views -->
 
-    <div id="layers"></div>
+    <div id="layers-wrapper">
+        <div id="layers">
+        </div>
+    </div>
 
     <div class="tooltip fly-out fly-out--small fly-out--dark">
         <div class="tooltip__content | fly-out__inner" id="score-tooltip"></div>

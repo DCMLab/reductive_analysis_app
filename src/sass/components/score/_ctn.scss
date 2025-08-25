@@ -2,23 +2,10 @@
 @use "../../variables/colors";
 
 .layer {
-
-  &::before {
-    content: '';
-
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-
-    background: colors.$gallery;
-    pointer-events: none;
-
-    transition: opacity .5s easings.$in-out-quad;
-  }
+  padding-left: 5px;
 }
 
 .layer--active {
-  &::before {
-    opacity: 0;
-  }
+  padding-left: 0;
+  border-left: solid 5px mediumvioletred;
 }

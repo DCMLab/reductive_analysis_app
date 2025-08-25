@@ -1,0 +1,67 @@
+@use '../variables/colors' as *;
+
+#sliders-container {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: start;
+
+  width: 30%;
+  height: 40px;
+}
+
+.labeled-slider {
+  display: flex;
+
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.slider-label {
+  text-align: center;
+  width: 50px;
+}
+
+.slider {
+  -webkit-appearance: none;
+
+  height: 4px;
+
+  border-radius: 50px;
+  background: linear-gradient(to right, $black, $silver);
+  outline: none;
+  opacity: 0.7;
+
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:focus {
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width:  20px;
+  height: 20px;
+
+  border-width: 0;
+  border-radius: 50%;
+  background: linear-gradient($black, $silver);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width:  20px;
+  height: 20px;
+
+  border-width: 0;
+  border-radius: 50%;
+  background: linear-gradient($black, $silver);
+  cursor: pointer;
+}

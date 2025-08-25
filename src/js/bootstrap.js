@@ -497,6 +497,7 @@ function load_finish() {
 
     var [view_element, svg_element] = new_view_elements(layer_element)
     svg_element.innerHTML = new_svg
+
     var layer_context = {
       mei: new_mei,
       layer_elem: layer_element,
@@ -517,7 +518,6 @@ function load_finish() {
       view_elem: view_element,
       layer: layer_context,
       id_prefix: '',
-      zoom: 1,
       reductions: [],
 
       // first layer is always saved and never editable
@@ -538,7 +538,7 @@ function load_finish() {
   }
 
   undo_actions = []
-  redo_actions = [] // TODO, maybe?
+  redo_actions = []
 
   rerendered_after_action = 0
 
@@ -554,6 +554,18 @@ function load_finish() {
 
   // Install drag-select controller.
   drag_selector_installer()
+
+  for (let context of getDrawContexts()) {
+    newApp
+      .ui
+      .zoom
+      .initSvg(
+        context
+          .svg_elem
+          .getElementsByTagName('svg')[0]
+          .getElementsByClassName('definition-scale')[0]
+      )
+  }
 
   return true
 }
@@ -659,8 +671,10 @@ export function create_new_layer(sliced = false, tied = false) {
     .getElementsByClassName('layer_num')[0]
     .innerHTML = prefix.slice(0, prefix.search(/[^l^\-^\d]/g))
 
-  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element, new_svg)
+  var [new_view_elem, new_svg_elem] = new_view_elements(layer_element)
+
   new_svg_elem.innerHTML = new_svg
+
   var layer_context = {
     mei: new_mei,
     layer_elem: layer_element,
@@ -675,7 +689,6 @@ export function create_new_layer(sliced = false, tied = false) {
     view_elem: new_view_elem,
     layer: layer_context,
     id_prefix: '',
-    zoom: 1,
     reductions: [],
 
     forceSaveLayer: false,
@@ -686,6 +699,25 @@ export function create_new_layer(sliced = false, tied = false) {
   // prefix_draw_context(new_draw_context);
   new_draw_context.id_prefix = draw_contexts.length
   finalize_draw_context(new_draw_context)
+
+  // Replicating the source layer's settings
+  let newSvgCont = new_draw_context.svg_elem
+  let oldSvgCont = draw_context.svg_elem
+
+  let newRootSvg = newSvgCont.getElementsByTagName('svg')[0]
+  let oldRootSvg = oldSvgCont.getElementsByTagName('svg')[0]
+
+  newRootSvg
+    .getElementsByClassName('definition-scale')[0]
+    .setAttribute('viewBox',
+      oldRootSvg
+        .getElementsByClassName('definition-scale')[0]
+        .getAttribute('viewBox'))
+
+  newSvgCont.style.width = oldSvgCont.style.width
+  newSvgCont.style.height = oldSvgCont.style.height
+
+  newApp.ui.zoom.setScale(newApp.ui.zoom.state.scale)
 
   return new_draw_context
 }
@@ -707,21 +739,6 @@ function finalize_draw_context(new_draw_context) {
   draw_graph(new_draw_context)
   setCurrentDrawContext(new_draw_context)
   adjustAllLayersSvgDimensions()
-
-  // Add resize handlers directly to the layer element
-  const layerElement = new_draw_context.layer.layer_elem
-  if (layerElement && !layerElement._hasResizeHandler && newApp.ui.layers && newApp.ui.layers.resizeHandler) {
-    layerElement.addEventListener('mousedown', function(e) {
-      // Check if the click is near the bottom border (resize handle area)
-      const rect = this.getBoundingClientRect()
-      const bottomArea = rect.bottom - 6
-
-      if (e.clientY >= bottomArea) {
-        newApp.ui.layers.resizeHandler.startResizeForLayer(this, e)
-      }
-    })
-    layerElement._hasResizeHandler = true
-  }
 }
 
 function render_mei(mei) {

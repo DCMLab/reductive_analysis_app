@@ -116,10 +116,7 @@ class Bookmarks {
   goTo(dir = 1) {
     let targetBookmark = null
     let rect = null
-    let view =
-      document
-        .getElementsByClassName('layer--active')[0]
-        .getElementsByClassName('view')[0]
+    let view = document.getElementById('layers-wrapper')
 
     if (!dir) return
     if (!this.items.length) return

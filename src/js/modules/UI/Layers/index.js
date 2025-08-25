@@ -4,7 +4,6 @@ import LayerControls  from './new'
 import Reductions     from './reductions'
 import RelationsTree  from './relationsTree'
 import MetaRelation   from './metaRelation'
-import { initLayerResize } from './layer_resize'
 import { navigation_conf } from '../../../conf'
 import {
   getCurrentDrawContext,
@@ -30,13 +29,7 @@ class LayersMenu {
     this.jsonTree = new JsonTree(this)
     this.metaRelation = new MetaRelation(this)
 
-    this.previousLayerBtn = document.getElementById('layers-nav-previous')
-    this.nextLayerBtn = document.getElementById('layers-nav-next')
-
     this.$saveSettingsCtn = document.getElementById('layer-menu-settings')
-
-    // Initialize layer resize functionality
-    this.resizeHandler = initLayerResize(this)
   }
 
   get contexts() {
@@ -77,11 +70,6 @@ class LayersMenu {
     this.updateLayersCount()
     this.tree.onScoreLoad()
     this.metaRelation.onScoreLoad()
-
-    // Update resize handlers for newly loaded layers
-    if (this.resizeHandler) {
-      this.resizeHandler.updateResizeHandlers()
-    }
   }
 
   toggleVisibility(state = !this.#visible) {

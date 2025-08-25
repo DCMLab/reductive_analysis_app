@@ -1,4 +1,7 @@
-import { handle_curvature_controller } from '../utils/misc'
+import {
+  handle_curvature_controller,
+  adjustAllLayersSvgDimensions
+} from '../utils/misc'
 import Progress from './progress'
 
 class RelationWidth {
@@ -22,6 +25,7 @@ class RelationWidth {
       const value = target.value
       this.progressBar.update(value)
       handle_curvature_controller(value)
+      adjustAllLayersSvgDimensions()
       this.throttling = false
     })
   }

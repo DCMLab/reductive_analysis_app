@@ -26,12 +26,8 @@ body {
 /* General visual stuff */
 
 #layers {
-  width: fit-content;
-  width: -moz-fit-content;
-  margin-bottom: 33vh;
-  top: 8vh;
-  padding-bottom: 200px;
-  min-height: 100vh;
+  display: block;
+  min-width: 100%;
 }
 
 .file-input {
@@ -449,40 +445,34 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   visibility: hidden
 }
 
+#layers-wrapper {
+  overflow-x: auto;
+  width: 100%;
 
-.svg_container {
-  height: auto;
-  width: auto;
-  padding-left: 255px; /* Should be greater than the width of `filterdiv`, which is now removed. */
-  transform-origin: left center;
-  overflow: visible;
-  padding-top: 30px;
-  transform-origin: 0 0;
-}
+  margin-top: 100px;
 
-.svg_container svg {
-  overflow: visible;
-  width: auto;
-  max-width: none;
-  height: auto;
+  scrollbar-width: none;
 }
 
 .layer {
-  height: 35vh;  /* Should be large enough to avoid displacements when the filter menu is expanded and the layer below is empty.*/
-  width: 100vw;
-  border-bottom: gray solid;
-  border-top: gray solid;
-  overflow: hidden;
+    margin-bottom: 10px;
 }
 
-.view {
-  overflow: scroll;
-  position: relative;
-  height: 100%;  /* Should be large enough to avoid displacements when the filter menu is expanded and the view below is empty.*/
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
+.definition-scale {
+    overflow-y: visible;
 }
+
+.view,
+.svg_container {
+  display: block;
+}
+
+.svg_container svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 
 .view_buttons {
   width: 30px;

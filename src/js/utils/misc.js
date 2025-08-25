@@ -946,6 +946,17 @@ export function new_layer_element() {
   new_layer.classList.add('layer')
   new_layer.classList.add('layer-new-ui')
 
+  if (id != 0) {
+    var new_num = document.createElement('div')
+    var h_num = document.createElement('h1')
+
+    new_num.id = 'layer_num' + id
+    new_num.classList.add('layer_num')
+    new_num.appendChild(h_num)
+
+    new_layer.appendChild(new_num)
+  }
+
   layers_element.appendChild(new_layer)
 
   return new_layer

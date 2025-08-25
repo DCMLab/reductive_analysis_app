@@ -4,7 +4,6 @@ import LayerControls  from './new'
 import Reductions     from './reductions'
 import RelationsTree  from './relationsTree'
 import MetaRelation   from './metaRelation'
-import layerResizer   from './layer_resize'
 import { navigation_conf } from '../../../conf'
 import {
   getCurrentDrawContext,
@@ -31,7 +30,6 @@ class LayersMenu {
     this.tree = new RelationsTree(this)
     this.jsonTree = new JsonTree(this)
     this.metaRelation = new MetaRelation(this)
-    this.layerResizer = layerResizer
 
     this.previousLayerBtn = document.getElementById('layers-nav-previous')
     this.nextLayerBtn = document.getElementById('layers-nav-next')

@@ -36,64 +36,18 @@ class Zoom {
     if (target == this.zoomOutBtn) {
       return this.out()
     }
-    if (target == this.resetBtn) {
-      return this.reset()
-    }
-  }
-
-  updateZoom() {
-    const context = getCurrentDrawContext()
-    const contexts = getDrawContexts()
-
-    for (let c of contexts) {
-      const viewEl = c.view_elem
-      const rootSvg = c.svg_elem.getElementsByTagName('svg')[0]
-
-      // Find visible centre of the SVG
-      const centreX = (viewEl.scrollLeft + viewEl.clientWidth / 2)
-      const centreY = (viewEl.scrollTop + viewEl.clientHeight / 2)
-
-      const newCentreY = centreY * c.zoom
-
-      // TODO: Scale with screen centre origin
-      // Right now, it's top left
-      rootSvg.setAttribute('transform-origin', `0 0`)
-      rootSvg.style.transform =
-        `scale(${c.zoom}) translateY(${(centreY - newCentreY) / c.zoom}px)`
-    }
-
-    this.levelEl.innerHTML = this.format(context.zoom)
   }
 
   in() {
-    // this.by(ZOOM_STEP)
     this.setScale(this.state.scale + ZOOM_STEP)
   }
   out() {
-    // this.by(-ZOOM_STEP)
     this.setScale(this.state.scale - ZOOM_STEP)
-  }
-  reset() {
-    this.by(ZOOM_DEFAULT)
-    // Update UI in case no drawContext yet
-    this.levelEl.innerHTML = this.format(ZOOM_DEFAULT)
-  }
-
-  by(cx = 1) {
-    const contexts = getDrawContexts()
-
-    if (!contexts || typeof getCurrentDrawContext() == 'undefined') return
-
-    for (let c of contexts)
-      c.zoom = cx == ZOOM_DEFAULT ? ZOOM_DEFAULT : c.zoom * cx
-    this.updateZoom()
   }
 
   format(zoom) {
     return `${Math.round(zoom * 100)}%`
   }
-
-  /* ******** New approach ******** */
 
   _computeDim(svg) {
     const rect =

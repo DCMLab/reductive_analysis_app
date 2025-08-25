@@ -17,6 +17,7 @@ import {
   relation_primaries,
   relation_secondaries
 } from '../../../utils/misc'
+import { find_all_parent_relations } from '../../../action/delete'
 
 export function calc_reduce(mei_graph, remaining_relations, target_relations) {
   // No primary of a remaining relation is removed in this
@@ -90,10 +91,27 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
     remaining_relations,
     target_relations)
   var graphicals = []
+
+  for (let he of removed_relations) {
+    let parent_relations =
+      find_all_parent_relations(
+        he,
+        mei_graph,
+        [draw_context],
+        Array.from(document.getElementsByClassName('metarelation'))
+      )
+    if (parent_relations.meta_relations.length) {
+      for (let par of parent_relations.meta_relations) {
+        let svg_par = document.getElementById(get_id(par))
+        svg_par.classList.add('hidden-reduced')
+        graphicals.push(svg_par)
+      }
+    }
+  }
+
   graphicals.push(removed_relations.map(
     (r) => hide_he(draw_context, r)
   ))
-
   graphicals.push(removed_notes.map(
     (n) => hide_note(draw_context, n)
   ))

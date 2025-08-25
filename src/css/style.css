@@ -448,6 +448,8 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
 #layers-wrapper {
   overflow-x: auto;
   width: 100%;
+
+  scrollbar-width: none;
 }
 
 .layer {

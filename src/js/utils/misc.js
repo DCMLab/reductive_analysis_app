@@ -369,6 +369,7 @@ export function id_in_svg(draw_context, id) {
   // Computes the relevant ID string for the element in the draw
   // context that correlates to the given ID string
   if (id[0] == '#') { id = id.slice(1) }
+  if (id.slice(0, 3) == 'gn-') { id = id.slice(3) }
   // use the layer.id_mapping to find the things in the layer score (if
   // that's how it is), then dc.id_prefix to calculate the final id
   var layer_id = id_in_layer(draw_context.layer, id)

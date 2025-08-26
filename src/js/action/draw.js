@@ -479,9 +479,9 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 function get_by_oldid_and_id(mei_graph, el) {
 
   let meiNode = get_by_oldid(mei_graph, el.getAttribute('oldid'))
-  if (!meiNode) {
+  if (!meiNode || !meiNode.length) {
     let id = el.id.slice(el.id.match(/^\d/))
-    meiNode = get_by_id(mei_graph, id)
+    meiNode = [get_by_id(mei_graph, id)]
   }
 
   return meiNode
@@ -496,7 +496,10 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
     // Add hover class to the meta-relation itself
     if (!isRoot) element.classList.add(isPrimary ? 'extrarelationhover' : 'relationhover')
 
-    let meiNode = get_by_oldid_and_id(mei_graph, element)
+    let meiNode = get_by_id(
+      mei_graph,
+      element.id.slice(element.id.match(/^\d/))
+    )
 
     if (!meiNode) return
 
@@ -526,7 +529,10 @@ function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, me
     // Remove hover class from the meta-relation itself
     if (!isRoot) element.classList.remove(isPrimary ? 'extrarelationhover' : 'relationhover')
 
-    let meiNode = get_by_oldid_and_id(mei_graph, element)
+    let meiNode = get_by_id(
+      mei_graph,
+      element.id.slice(element.id.match(/^\d/))
+    )
 
     if (!meiNode) return
 

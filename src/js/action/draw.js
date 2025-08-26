@@ -498,7 +498,7 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
 
     let meiNode = get_by_oldid_and_id(mei_graph, element)
 
-    if (!meiNode || !meiNode.length) return
+    if (!meiNode) return
 
     // Recursively add hover class to the children
     let primaries = relation_primaries(mei_graph, meiNode).map(
@@ -528,7 +528,7 @@ function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, me
 
     let meiNode = get_by_oldid_and_id(mei_graph, element)
 
-    if (!meiNode || !meiNode.length) return
+    if (!meiNode) return
 
     // Recursively remove hover class from the children
     let primaries = relation_primaries(mei_graph, meiNode).map(

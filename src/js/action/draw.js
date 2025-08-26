@@ -498,7 +498,7 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
 
     let meiNode = get_by_id(
       mei_graph,
-      element.id.slice(element.id.match(/^\d/))
+      get_id(element)
     )
 
     if (!meiNode) return
@@ -531,7 +531,7 @@ function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, me
 
     let meiNode = get_by_id(
       mei_graph,
-      element.id.slice(element.id.match(/^\d/))
+      get_id(element)
     )
 
     if (!meiNode) return

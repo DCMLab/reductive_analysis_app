@@ -379,7 +379,7 @@ export function id_in_svg(draw_context, id) {
     return draw_context.id_prefix + layer_id
 }
 
-function id_in_layer(layer_context, id) {
+export function id_in_layer(layer_context, id) {
   // Computes the relevant ID string for the element in the layer
   // context that correlates to the given ID string
   if (id[0] == '#') { id = id.slice(1) }

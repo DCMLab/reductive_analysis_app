@@ -488,7 +488,7 @@ function get_by_oldid_and_id(mei_graph, el) {
 }
 
 // Recursively add hover class to elements and their children
-function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
+export function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
   if (!element) return
 
   // For meta-relations
@@ -521,7 +521,7 @@ function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_g
 }
 
 // Recursively remove hover class from elements and their children
-function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
+export function removeHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
   if (!element) return
 
   // For meta-relations

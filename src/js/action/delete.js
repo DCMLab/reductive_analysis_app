@@ -6,15 +6,27 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import { getDrawContexts, getMeiGraph, getUndoActions } from '../bootstrap'
-import { toggle_selected, adjustAllLayersSvgDimensions } from '../modules/UI/utils/misc'
+import {
+  toggle_selected,
+  adjustAllLayersSvgDimensions,
+  getCurrentDrawContext
+} from '../modules/UI/utils/misc'
 import { flush_redo } from './undo_redo'
 import { get_by_id, get_class_from_classlist, get_id, unmark_secondaries } from '../utils/misc'
+import { removeHoverClassToChildren } from './draw'
 
 // This also delete meta-relations
 function delete_relation(elem) {
   console.debug('Using globals: mei for element selection')
   // Assume no meta-edges for now, meaning we only have to
   // remove the SVG elem, the MEI node, and any involved arcs
+  removeHoverClassToChildren(
+    elem,
+    true,
+    true,
+    getCurrentDrawContext(),
+    getMeiGraph()
+  )
   const mei_id = get_id(elem)
   const mei_he = get_by_id(mei, mei_id)
   const svg_hes = []

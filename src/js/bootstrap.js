@@ -366,8 +366,15 @@ export function load(event) {
 // Draw the existing graph
 export function draw_graph(draw_context) {
   console.debug('Using globals: mei_graph, mei, selected, extraselected, document')
-  // var mei = draw_context.mei;
-  // var mei_graph = mei.getElementsByTagName("graph")[0];
+
+  let ctxt = getDrawContexts().find(c => c.canEdit)
+
+  let reduced_id = Array.from(
+    ctxt
+      .view_elem
+      .getElementsByClassName('hidden-reduced')
+  ).map(get_id)
+
   // There's a multi-stage process to get all the info we
   // need... First we get the nodes from the graph element.
   var nodes_array = Array.from(mei_graph.getElementsByTagName('node'))
@@ -375,15 +382,9 @@ export function draw_graph(draw_context) {
   var relations_nodes = nodes_array.filter((x) => {
     if (x.getAttribute('type') != 'relation') return false
 
-    let id = x.getAttribute('xml:id')
-    let red = true
-    let elem = document.getElementById(getCurrentDrawContext(), id)
-
-    if (getCurrentDrawContext() && elem)
-      red = !elem
-        .classList
-        .contains('hidden-reduced')
-    return red
+    return reduced_id
+      ? !reduced_id.includes(id_in_svg(ctxt, get_id(x)))
+      : true
   })
   // Get the nodes representing metarelations
   var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'metarelation' })

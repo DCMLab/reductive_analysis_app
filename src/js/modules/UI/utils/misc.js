@@ -105,8 +105,6 @@ export function toggle_selected(item, extra = null) {
     context = c.layer.layer_elem == layer ? c : context
   }
 
-  if (!context.canEdit) return
-
   const flatSelection = selected.concat(extraselected)
 
   /**
@@ -157,64 +155,67 @@ export function toggle_selected(item, extra = null) {
     extra = newApp.ui.selection.mode.mode == 'primary'
   }
 
-  // Select note.
+  if (context.canEdit) {
 
-  if (itemType == 'note') {
-    if (!isAlreadySelected) {
-      selectedNotesIds.push(item.id)
+    // Select note.
 
-      if (extra) {
-        item.classList.add('extraselectednote')
-        extraselected.push(item)
+    if (itemType == 'note') {
+      if (!isAlreadySelected) {
+        selectedNotesIds.push(item.id)
+
+        if (extra) {
+          item.classList.add('extraselectednote')
+          extraselected.push(item)
+        } else {
+          item.classList.add('selectednote')
+          selected.push(item)
+        }
       } else {
-        item.classList.add('selectednote')
-        selected.push(item)
+        const noteIdIndex = selectedNotesIds.findIndex(id => item.id == id)
+        selectedNotesIds.splice(noteIdIndex, 1)
       }
-    } else {
-      const noteIdIndex = selectedNotesIds.findIndex(id => item.id == id)
-      selectedNotesIds.splice(noteIdIndex, 1)
+
+      const selectionSize = selectedNotesIds.length
+
+      last_selected = selectionSize
+        ? document.getElementById(selectedNotesIds[selectionSize - 1])
+        : null
     }
 
-    const selectionSize = selectedNotesIds.length
+    // Select relation.
 
-    last_selected = selectionSize
-      ? document.getElementById(selectedNotesIds[selectionSize - 1])
-      : null
-  }
-
-  // Select relation.
-
-  if (itemType == 'relation') {
-    if (!isAlreadySelected) {
-      if (extra) {
-        item.classList.add('extraselectedrelation')
-        extraselected.push(item)
-      } else {
-        item.classList.add('selectedrelation')
-        selected.push(item)
+    if (itemType == 'relation') {
+      if (!isAlreadySelected) {
+        if (extra) {
+          item.classList.add('extraselectedrelation')
+          extraselected.push(item)
+        } else {
+          item.classList.add('selectedrelation')
+          selected.push(item)
+        }
+        last_selected = item
       }
-      last_selected = item
-    }
-    if (selected.concat(extraselected).length == 0) {
-      last_selected = null
-    }
-  }
-
-  // Select meta-relation
-
-  if (itemType == 'metarelation') {
-    if (!isAlreadySelected) {
-      if (extra) {
-        item.classList.add('extraselectedmetarelation')
-        extraselected.push(item)
-      } else {
-        item.classList.add('selectedmetarelation')
-        selected.push(item)
+      if (selected.concat(extraselected).length == 0) {
+        last_selected = null
       }
-      last_selected = item
     }
-    if (selected.concat(extraselected).length == 0) {
-      last_selected = null
+
+    // Select meta-relation
+
+    if (itemType == 'metarelation') {
+      if (!isAlreadySelected) {
+        if (extra) {
+          item.classList.add('extraselectedmetarelation')
+          extraselected.push(item)
+        } else {
+          item.classList.add('selectedmetarelation')
+          selected.push(item)
+        }
+        last_selected = item
+      }
+      if (selected.concat(extraselected).length == 0) {
+        last_selected = null
+      }
     }
   }
 

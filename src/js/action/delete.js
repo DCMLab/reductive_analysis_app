@@ -113,14 +113,14 @@ function delete_relation(elem) {
 
   // After deletion, check if any children need their connection circles removed
   // Store the returned connection circle data for undo
-  // if (childIds.size > 0) {
-  //   const connectionCircleData = updateConnectionCircles(Array.from(childIds))
+  if (childIds.size > 0) {
+    const connectionCircleData = updateConnectionCircles(Array.from(childIds))
 
-  //   // Add connection circle data to the action_removed array if any was removed
-  //   if (connectionCircleData.length > 0) {
-  //     action_removed.push(['connection_circle_data', connectionCircleData])
-  //   }
-  // }
+    // Add connection circle data to the action_removed array if any was removed
+    if (connectionCircleData.length > 0) {
+      action_removed.push(['connection_circle_data', connectionCircleData])
+    }
+  }
 
   // Adjust SVG dimensions after deletion
   adjustAllLayersSvgDimensions()

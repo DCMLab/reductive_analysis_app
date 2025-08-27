@@ -430,10 +430,8 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
         newApp.ui.layersMenu.metaRelation?.updateToggles()
       })
-
-      // Add the circle to the target
-      g_elem.appendChild(connection_circle)
     }
+    info = connection_circle
   })
 
   /**
@@ -462,6 +460,11 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
   // Add it to the SVG
   add_to_svg_bg(svg_elem, g_elem)
+  // Add the circle to the target
+  for (let c of connectionPoints) {
+    console.log(c)
+    console.log(g_elem.insertAdjacentElement('afterend', c))
+  }
   // Remember what we're adding
   added.push(g_elem)
 

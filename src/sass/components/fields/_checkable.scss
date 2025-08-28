@@ -4,7 +4,7 @@
 
 .checkable {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
 
   color: var(--primary);
@@ -15,7 +15,7 @@
 
   &:hover {
     .checkbox::before {
-      opacity: 1;
+      opacity: 0.4;
       transition: none;
     }
   }
@@ -47,7 +47,7 @@
 }
 
 .checkbox {
-  --checkbox-radius: .4rem;
+  --checkbox-radius: 1rem;
 
   flex-shrink: 0;
   position: relative;
@@ -70,9 +70,9 @@
     position: absolute;
     inset: 0;
 
-    background: var(--primary);
+    background: slategrey;
     border-radius: var(--checkbox-radius);
-    opacity: .1;
+    opacity: .2;
   }
 
   // Inner background with radius (= the reason we have pseudo-elements here).
@@ -81,7 +81,6 @@
     position: absolute;
     inset: calc(var(--checkbox-radius) / 2);
 
-    background: var(--relation, var(--checkbox, colors.$young-night));
     border-radius: calc(var(--checkbox-radius) / 2);
   }
 }
@@ -90,5 +89,10 @@
   z-index: 1;
   margin-left: 0.1rem;
 
-  transition: .3s transform easings.$out-back;
+  width:  20px;
+  height: 20px;
+
+  transition: .1s transform easings.$out-back;
+
+  color: mediumvioletred;
 }

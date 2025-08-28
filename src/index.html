@@ -207,7 +207,7 @@
                                     Repeat
                                     <input class="checkable__input" type="checkbox" id="filter-repeat" checked>
                                     <span class="checkbox checkbox--colored">
-                                        <svg class="checkable__icon btn__icon" width="12" height="10">
+                                        <svg class="checkable__icon btn__icon">
                                             <use href="#check-path"/>
                                         </svg>
                                     </span>
@@ -217,7 +217,7 @@
                                 Passing
                                 <input class="checkable__input" type="checkbox" id="filter-passing" checked>
                                 <span class="checkbox checkbox--colored">
-                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <svg class="checkable__icon btn__icon">
                                         <use href="#check-path"/>
                                     </svg>
                                 </span>
@@ -226,7 +226,7 @@
                                 Neighbour
                                 <input class="checkable__input" type="checkbox" id="filter-neighbour" checked>
                                 <span class="checkbox checkbox--colored">
-                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <svg class="checkable__icon btn__icon">
                                         <use href="#check-path"/>
                                     </svg>
                                 </span>
@@ -235,7 +235,7 @@
                                 Harmonic
                                 <input class="checkable__input" type="checkbox" id="filter-harmonic" checked>
                                 <span class="checkbox checkbox--colored">
-                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <svg class="checkable__icon btn__icon">
                                         <use href="#check-path"/>
                                     </svg>
                                 </span>
@@ -244,7 +244,7 @@
                                 Arpeggio
                                 <input class="checkable__input" type="checkbox" id="filter-arpeggio" checked>
                                 <span class="checkbox checkbox--colored">
-                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <svg class="checkable__icon btn__icon">
                                         <use href="#check-path"/>
                                     </svg>
                                 </span>
@@ -253,7 +253,7 @@
                                 Urlinie
                                 <input class="checkable__input" type="checkbox" id="filter-urlinie" checked>
                                 <span class="checkbox checkbox--colored">
-                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <svg class="checkable__icon btn__icon">
                                         <use href="#check-path"/>
                                     </svg>
                                 </span>
@@ -262,7 +262,7 @@
                                 Bassbrechung
                                 <input class="checkable__input" type="checkbox" id="filter-bassbrechung" checked>
                                 <span class="checkbox checkbox--colored">
-                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <svg class="checkable__icon btn__icon">
                                         <use href="#check-path"/>
                                     </svg>
                                 </span>
@@ -271,7 +271,7 @@
                                 Something else
                                 <input class="checkable__input" type="checkbox" id="filter-something-else" checked>
                                 <span class="checkbox">
-                                    <svg class="checkable__icon btn__icon" width="12" height="10">
+                                    <svg class="checkable__icon btn__icon">
                                         <use href="#check-path"/>
                                     </svg>
                                 </span>
@@ -475,7 +475,7 @@
             </div>
 
             <button id="score-settings-toggle" class="more-options | hidden-when-score-settings-visible | btn btn--small btn--hollow" type="button">
-                More <br>options
+                More options
                 <span class="more-options__dots" aria-hidden="true">•••</span>
             </button>
 
@@ -545,175 +545,162 @@
 
         <!-- Menu and filters -->
 
-        <div id="layers-menu" class="layers-menu">
+        <div id="layers-menu">
 
-            <!-- Toggle button and layers navigation -->
+            <!-- Toggle button -->
 
-            <div class="layers-menu__controls">
+            <button
+                class="layers-menu__toggleBtn | btn btn--plain flex-center"
+                id="layers-menu__toggle"
+                type="button"
+            >
+                <!-- Show layers -->
+                <span class="hide-when-visible visually-hidden">Show layers menu</span>
+                <svg class="hide-when-visible" width="20" height="22">
+                    <use href="#layers-path"/>
+                </svg>
 
-                <button
-                    class="layers-menu__toggleBtn | btn btn--plain flex-center"
-                    id="layers-menu-toggle"
-                    type="button"
-                >
-                    <!-- Show layers -->
-                    <span class="hide-when-visible visually-hidden">Show layers menu</span>
-                    <svg class="hide-when-visible" width="20" height="22">
-                        <use href="#layers-path"/>
-                    </svg>
-
-                    <!-- Hide layers -->
-                    <span class="hide-when-not-visible visually-hidden">Hide layers menu</span>
-                    <svg class="hide-when-not-visible" width="11" height="11">
-                        <use href="#cross-path"/>
-                    </svg>
-                </button>
-
-            </div>
+                <!-- Hide layers -->
+                <span class="hide-when-not-visible visually-hidden">Hide layers menu</span>
+                <svg class="hide-when-not-visible" width="11" height="11">
+                    <use href="#cross-path"/>
+                </svg>
+            </button>
 
 
             <!-- Main menu fly-out -->
 
-            <div id="main-menu" class="fly-out fly-out--dark  fly-out--layers-menu">
+            <div id="layers-menu__settings">
 
-                <div class="fly-out__inner" style="--fly-out-max-height: 40rem;">
+                <!-- New layer settings. -->
+                <div id="layer-menu-new" class="btn-group">
+                    <h1>Snapshots</h1>
 
-                    <!-- New layer settings. -->
-                    <div id="layer-menu-new" class="btn-group">
-
-                        <label class="checkable" for="layer-sliced">
-                            Sliced
-                            <input class="checkable__input" type="checkbox" id="layer-sliced">
-                            <span class="checkbox">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use href="#check-path"></use>
-                                </svg>
-                            </span>
-                        </label>
-
-                        <label class="checkable" for="layer-tied">
-                            Tied
-                            <input class="checkable__input" type="checkbox" id="layer-tied">
-                            <span class="checkbox">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use href="#check-path"></use>
-                                </svg>
-                            </span>
-                        </label>
-
-                        <button id="layer-new" class="btn btn--plain btn--small" type="button">
-                            Create new snapshot
-                        </button>
-
-                        <button id="layer-delete" class="btn btn--plain btn--small" type="button">
-                            Delete current snapshot
-                        </button>
-
-                    </div>
-
-                    <hr class="fly-out__hr">
-
-                    <!-- Reductions -->
-
-                    <div id="layers-menu-reductions" class="btn-group">
-                        <!-- (2nd+ layer) -->
-                        <button id="layers-menu-reduce" class="btn btn--plain btn--small" type="button">Reduce</button>
-                        <!-- (2nd+ layer) -->
-                        <button id="layers-menu-unreduce" class="btn btn--plain btn--small" type="button">Unreduce</button>
-
-                        <button
-                            id="layers-menu-play-reduction"
-                            class="btn btn--plain btn--small btn--small-icon"
-                            type="button"
-                        >
-                            Play reduction
-                            <svg class="btn__icon triangle triangle--right" width="10" height="8">
-                                <use href="#triangle-path"/>
+                    <label class="checkable" for="layer-sliced">
+                        Sliced
+                        <input class="checkable__input" type="checkbox" id="layer-sliced">
+                        <span class="checkbox">
+                            <svg class="checkable__icon btn__icon">
+                                <use href="#check-path"></use>
                             </svg>
-                        </button>
+                        </span>
+                    </label>
+
+                    <label class="checkable" for="layer-tied">
+                        Tied
+                        <input class="checkable__input" type="checkbox" id="layer-tied">
+                        <span class="checkbox">
+                            <svg class="checkable__icon btn__icon">
+                                <use href="#check-path"></use>
+                            </svg>
+                        </span>
+                    </label>
+
+                    <button id="layer-new" class="btn btn--plain btn--small" type="button">
+                        Create new snapshot
+                    </button>
+
+                    <button id="layer-delete" class="btn btn--plain btn--small" type="button">
+                        Delete current snapshot
+                    </button>
+
+                </div>
+
+                <!-- Reductions -->
+
+                <div id="layers-menu-reductions" class="btn-group">
+                    <h1>Reductions</h1>
+                    <!-- (2nd+ layer) -->
+                    <button id="layers-menu-reduce" class="btn btn--plain btn--small" type="button">Reduce</button>
+                    <!-- (2nd+ layer) -->
+                    <button id="layers-menu-unreduce" class="btn btn--plain btn--small" type="button">Unreduce</button>
+
+                    <button
+                        id="layers-menu-play-reduction"
+                        class="btn btn--plain btn--small btn--small-icon"
+                        type="button"
+                    >
+                        Play reduction
+                        <svg class="btn__icon triangle triangle--right" width="10" height="8">
+                            <use href="#triangle-path"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <form class="ssbtn-group ssbtn-group--free-field" id="json-tree-form">
+                    <h1>Draw Tree</h1>
+
+                    <div class="btn-group btn-group--free-field">
+                        <label class="fillable fly-out__relationsField" for="json-tree">
+
+                            <!-- @todo transform into a textarea in a modal, actually move the whole feature into a modal because JSON editing requires a bit of space -->
+                            <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree" required>
+                        </label>
+
+                        <button class="btn btn--plain btn--small">Draw</button>
                     </div>
-
-                    <hr class="fly-out__hr">
-
-                    <!-- Hierarchy tree visibility -->
 
                     <div class="btn-group">
-                        <label class="checkable" for="relations-tree-roots-low">
-                            Draw roots low
-                            <input class="checkable__input" type="checkbox" id="relations-tree-roots-low">
-                            <span class="checkbox">
-                                <svg class="checkable__icon btn__icon" width="12" height="10">
-                                    <use href="#check-path"></use>
-                                </svg>
-                            </span>
-                        </label>
-
-
-                        <div class="checkable">
-                            <h4>Hierarchy tree</h4>
-                            <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
-                                <legend class="visually-hidden">Hierarchy tree visibility</legend>
-
-                                <!-- On -->
-                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-on" data-label="On">
-                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-on" value="on">
-                                    <span class="btn btn--hollow btn-tabs__accent">On</span>
-                                </label>
-
-                                <!-- Off -->
-                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-off" data-label="Off">
-                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-off" value="off" checked>
-                                    <span class="btn btn--hollow btn-tabs__accent">Off</span>
-                                </label>
-
-                            </fieldset>
-                        </div>
-
-                        <div class="checkable">
-                            <h4>Meta-relations</h4>
-                            <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
-                                <legend class="visually-hidden">Meta-relation visibility</legend>
-
-                                <!-- On -->
-                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="meta-relation-on" data-label="On">
-                                    <input class="btn-tabs__radio" type="radio" name="meta-relation" id="meta-relation-on" value="on">
-                                    <span class="btn btn--hollow btn-tabs__accent">Visible</span>
-                                </label>
-
-                                <!-- Off -->
-                                <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="meta-relation-off" data-label="Off">
-                                    <input class="btn-tabs__radio" type="radio" name="meta-relation" id="meta-relation-off" value="off" checked>
-                                    <span class="btn btn--hollow btn-tabs__accent">Hidden</span>
-                                </label>
-
-                            </fieldset>
-                        </div>
+                        <button id="json-tree-save" class="btn btn--plain btn--small" type="button">Save tree</button>
+                        <button id="json-tree-load" class="btn btn--plain btn--small" type="button">Load tree</button>
+                        <button id="json-tree-align" class="btn btn--plain btn--small" type="button">Align tree to selection</button>
                     </div>
+                </form>
 
-                    <hr class="fly-out__hr">
+                <!-- Hierarchy tree visibility -->
 
-                    <form class="ssbtn-group ssbtn-group--free-field" id="json-tree-form">
-                        Draw tree <!-- turn this into a heading -->
+                <div class="btn-group">
+                    <h1>Miscellaneous</h1>
+                    <label class="checkable" for="relations-tree-roots-low">
+                        Draw roots low
+                        <input class="checkable__input" type="checkbox" id="relations-tree-roots-low">
+                        <span class="checkbox">
+                            <svg class="checkable__icon btn__icon">
+                                <use href="#check-path"></use>
+                            </svg>
+                        </span>
+                    </label>
 
-                        <div class="btn-group btn-group--free-field">
-                            <label class="fillable fly-out__relationsField" for="json-tree">
-                                <span class="visually-hidden">Draw tree</span>
 
-                                <!-- @todo transform into a textarea in a modal, actually move the whole feature into a modal because JSON editing requires a bit of space -->
-                                <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree" required>
+                    <div class="checkable">
+                        <h4>Hierarchy tree</h4>
+                        <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
+                            <legend class="visually-hidden">Hierarchy tree visibility</legend>
+
+                            <!-- On -->
+                            <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-on" data-label="On">
+                                <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-on" value="on">
+                                <span class="btn btn--hollow btn-tabs__accent">On</span>
                             </label>
 
-                            <button class="btn btn--plain btn--small">Draw</button>
-                        </div>
+                            <!-- Off -->
+                            <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-off" data-label="Off">
+                                <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-off" value="off" checked>
+                                <span class="btn btn--hollow btn-tabs__accent">Off</span>
+                            </label>
 
-                        <div class="btn-group">
-                            <button id="json-tree-save" class="btn btn--plain btn--small" type="button">Save tree</button>
-                            <button id="json-tree-load" class="btn btn--plain btn--small" type="button">Load tree</button>
-                            <button id="json-tree-align" class="btn btn--plain btn--small" type="button">Align tree to selection</button>
-                        </div>
+                        </fieldset>
+                    </div>
 
-                    </form>
+                    <div class="checkable">
+                        <h4>Meta-relations</h4>
+                        <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
+                            <legend class="visually-hidden">Meta-relation visibility</legend>
 
+                            <!-- On -->
+                            <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="meta-relation-on" data-label="On">
+                                <input class="btn-tabs__radio" type="radio" name="meta-relation" id="meta-relation-on" value="on">
+                                <span class="btn btn--hollow btn-tabs__accent">Visible</span>
+                            </label>
+
+                            <!-- Off -->
+                            <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="meta-relation-off" data-label="Off">
+                                <input class="btn-tabs__radio" type="radio" name="meta-relation" id="meta-relation-off" value="off" checked>
+                                <span class="btn btn--hollow btn-tabs__accent">Hidden</span>
+                            </label>
+
+                        </fieldset>
+                    </div>
                 </div>
 
             </div>

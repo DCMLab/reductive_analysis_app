@@ -17,7 +17,7 @@ class LayersMenu {
 
   constructor() {
     this.ctn = document.getElementById('layers-menu')
-    this.toggleBtn = document.getElementById('layers-menu-toggle')
+    this.toggleBtn = document.getElementById('layers-menu__toggle')
 
     this.layersEls = document.getElementsByClassName('layer-new-ui')
 
@@ -29,7 +29,7 @@ class LayersMenu {
     this.jsonTree = new JsonTree(this)
     this.metaRelation = new MetaRelation(this)
 
-    this.$saveSettingsCtn = document.getElementById('layer-menu-settings')
+    this.$saveSettingsCtn = document.getElementById('layer-menu__settings')
   }
 
   get contexts() {

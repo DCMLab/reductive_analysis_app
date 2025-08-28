@@ -17,8 +17,7 @@
   transition: var(--btn-transition, .1s) easings.$in-out-quad;
   transition-property: background-color, border-color, color;
 
-  &:hover,
-  &:focus {
+  &:hover {
     --btn-bg: var(--bg);
     --btn-border: var(--primary);
     --btn-color: var(--primary);
@@ -26,6 +25,10 @@
     outline: none;
 
     transition-duration: var(--btn-hover-transition, var(--btn-transition, 0s));
+  }
+
+  &:focus {
+    outline: none;
   }
 
   &:active {

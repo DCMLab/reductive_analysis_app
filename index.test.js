@@ -185,7 +185,7 @@ describe('reductive_analysis_test_suite', () => {
       'input[type=file]',
       path.join(__dirname, 'test_scores', 'mozart13.xml')
     );
-    await expect(page).toMatchElement('div.layer'); 
+    await expect(page).toMatchElement('div.layer');
   });
 
 
@@ -466,14 +466,14 @@ describe('reductive_analysis_test_suite', () => {
 
     // Confirm that the relation node is removed from the graph.
     await expect(page.evaluate(`
-      document.querySelectorAll('path[id="${expected_relation_id}"]')[0] 
+      document.querySelectorAll('path[id="${expected_relation_id}"]')[0]
     `)).resolves.toBeNil();
 
     // Confirm that the relevant note nodes are removed from the graph.
     await expect(page.evaluate(`
       // Checking for any residual nodes is enough because the only possibly remaining
       // (relation) node has already been ruled out.
-      window.mei.querySelector('node');  
+      window.mei.querySelector('node');
     `)).resolves.toBeNull();
 
     // Confirm that the relevant arcs are removed from the graph.
@@ -492,7 +492,7 @@ describe('reductive_analysis_test_suite', () => {
 
     // First we need to get the reducebutton to be shown
     await page.keyboard.press('-');
-    var buttons_id = "layers-menu-toggle";
+    var buttons_id = "layers-menu__toggle";
     await expect(page).toClick(`#${buttons_id}`);
     await wait(1000)
     var reducebutton_id = "layers-menu-reduce";

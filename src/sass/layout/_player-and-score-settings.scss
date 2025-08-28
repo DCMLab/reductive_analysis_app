@@ -14,12 +14,13 @@
 
 .player-and-score-settings {
   position: absolute;
-  bottom: 0;
-  left: 50%;
+  bottom:  0%;
+  left:   90%;
   transform: translateX(-50%);
 
-  display: grid;
-  grid-auto-flow: column;
+  display: flex;
+
+  flex-direction: column;
   gap: 1.5rem;
 
   /**
@@ -35,13 +36,13 @@
 }
 
 .more-options {
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: start;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
   gap: .7rem;
 
-  font-size: 1.1rem;
-  line-height: 1;
+  font-size: 1.3rem;
+  line-height: 2;
 
   &:hover,
   &:focus {
@@ -71,6 +72,8 @@ html.shades-alternate {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+
+  width: 100%;
 }
 
 .relation-width__progress-range {

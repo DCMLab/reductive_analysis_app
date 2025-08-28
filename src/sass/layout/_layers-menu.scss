@@ -1,18 +1,25 @@
 @use "../utility/easings";
 @use "../variables/colors";
 
-.layers-menu {
-  --fly-out-inner-space: 2rem;
-  max-width: 36rem; // design: :26rem, but design scale is lower
+$toggle-size:  46px;
+$panel-size : 250px;
 
-  position: absolute;
-  top: 12rem;
-  left: 0;
+#layers-menu {
+  position: fixed;
 
-  transition: transform .4s easings.$in-out-quad;
+  top:  100vh;
+  left:  50%;
+
+  transform: translate(-50%, -$toggle-size);
+
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
 
   &.layers-menu--visible {
-    transition: transform .3s easings.$out-cubic;
+    transform: translate(-50%, -300px);
+    transition: .2s;
 
     .hide-when-visible {
       display: none;
@@ -20,71 +27,58 @@
   }
 
   &:not(.layers-menu--visible) {
-    transform: translateX(calc(-100% - 2rem)); // -2rem for container (.ui) offset
-    transition: transform .3s easings.$out-back;
+    transition: .2s;
 
     .hide-when-not-visible {
       display: none;
     }
   }
-}
 
-.has-many-layers {
-  --layers-nav-hidden: 0;
-}
+  & > #layers-menu__toggle {
+    height: $toggle-size;
+  }
 
-.layers-menu__controls {
-  position: absolute;
-  top: 4rem;
-  right: 0;
-  transform: translateX(100%);
+  & > #layers-menu__settings {
+    height: $panel-size;
 
-  display: grid;
-  grid-template-rows: auto auto;
-  // display: flex;
-  // flex-direction: column-reverse;
-  gap: 1.5rem;
-}
+    display: flex;
 
-.layers-menu__toggleBtn {
-  size: 4rem;
-  padding: 0;
+    flex-direction: row;
+    column-gap: 20px;
 
-  border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
+    padding: 10px;
 
-  &:hover,
-  &:focus {
-    --layers-sub-path-animate: 1;
+    background: oldlace;
+
+    border: solid 2px pink;
+    border-radius: 1em;
+
+    & > * {
+      position: relative;
+
+      display: grid;
+
+      align-items:     stretch;
+      justify-content: center;
+
+      & > h1 {
+        width: 100%;
+
+        font-size: 1.7em;
+        color: slateblue;
+      }
+    }
   }
 }
 
-.layers-menu__nav {
-  position: relative;
+#json-tree {
+  width: 125px;
 
-  display: grid;
-  grid-template-rows: 4.2rem 4.2rem;
-  justify-items: center;
+  outline: none;
 
-  text-align: center;
+  transition: .1s;
 
-  --layers-nav-bg: #{colors.$alto};
-  background: var(--layers-nav-bg);
-  border-radius: 0 var(--btn-default-radius) var(--btn-default-radius) 0;
-}
-
-.layers-menu__visibleLayer {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-
-  pointer-events: none;
-}
-
-.layers-menu__layerTitle {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-
-  background: var(--bg);
-  border-bottom: .1rem solid colors.$lacquered-licorice;
+  &:hover, &:focus {
+    outline: solid 3px slateblue;
+  }
 }

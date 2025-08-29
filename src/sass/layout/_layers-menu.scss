@@ -10,6 +10,8 @@ $panel-size : 250px;
   top:  100vh;
   left:  50%;
 
+  max-width: 60%;
+
   transform: translate(-50%, -$toggle-size);
 
   display: flex;
@@ -39,6 +41,7 @@ $panel-size : 250px;
   }
 
   & > #layers-menu__settings {
+    width: 100%;
     height: $panel-size;
 
     display: flex;
@@ -52,6 +55,8 @@ $panel-size : 250px;
 
     border: solid 2px pink;
     border-radius: 1em;
+
+    overflow-x: scroll;
 
     & > * {
       position: relative;

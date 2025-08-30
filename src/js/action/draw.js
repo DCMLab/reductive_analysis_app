@@ -430,9 +430,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
         newApp.ui.layersMenu.metaRelation?.updateToggles()
       })
-
-      // Add the circle to the target
-      g_elem.appendChild(connection_circle)
+      targets[connectionPoints.indexOf(info)].appendChild(connection_circle)
     }
   })
 

@@ -712,6 +712,12 @@ export function create_new_layer(sliced = false, tied = false) {
   newSvgCont.style.width = oldSvgCont.style.width
   newSvgCont.style.height = oldSvgCont.style.height
 
+  newApp.ui.zoom.initSvg(
+    newSvgCont
+      .getElementsByTagName('svg')[0]
+      .getElementsByClassName('definition-scale')[0]
+  )
+
   newApp.ui.zoom.setScale(newApp.ui.zoom.state.scale)
 
   return new_draw_context

@@ -156,7 +156,6 @@ export function toggle_selected(item, extra = null) {
   }
 
   if (context.canEdit) {
-
     // Select note.
 
     if (itemType == 'note') {
@@ -377,18 +376,14 @@ export function handle_keypress(ev) {
   } else if (ev.key == custom_conf.relation) {
     // Custom relations.
     setTimeout(function () {
-      relationsMenu.compact(
-        relationsMenu.ctn.el.classList.contains('fly-out__compact')
-      )
+      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
       document.getElementById('free-field-relations').focus()
       document.getElementById('free-field-relations').value = ''
     }, 200)
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
     setTimeout(function () {
-      relationsMenu.compact(
-        relationsMenu.ctn.el.classList.contains('fly-out__compact')
-      )
+      relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
       document.getElementById('free-field-metarelations').focus()
       document.getElementById('free-field-metarelations').value = ''
     }, 200)
@@ -432,6 +427,13 @@ export function toggle_shade(element) {
 export function do_deselect() {
   selected.forEach(x => toggle_selected(x, false))
   extraselected.forEach(x => toggle_selected(x, true))
+  // Focus on the topmost draw context.
+  const drawContexts = getDrawContexts()
+  if (!drawContexts) return null
+  if (Array.isArray(drawContexts)) {
+    const topmost_context = drawContexts.find(c => c?.layer?.layer_elem?.id === 'layer0') || null
+    if (topmost_context) setCurrentDrawContext(topmost_context)
+  }
 }
 
 export function getReducedMidi(draw_context = null) {
@@ -480,7 +482,7 @@ export function drag_selector_installer() {
     autoScrollSpeed: 0.0001,
   })
 
-  drag_selector.subscribe('DS:update', (e) => {
+  drag_selector.subscribe('DS:update', e => {
     // Do not drag-select if a note is being added
     if (placing_note == '') {
       if ($('.ds-selector').height() > 10 || $('.ds-selector').width() > 10) {
@@ -497,9 +499,7 @@ export function drag_selector_installer() {
               return x.parentElement
             // Selecting note by the notehead
             case 'use':
-              return x
-                .parentElement
-                .parentElement
+              return x.parentElement.parentElement
             // Selecting metarelation by the text
             case 'text':
               return x.parentElement
@@ -527,7 +527,7 @@ export function drag_selector_installer() {
     }
   })
 
-  drag_selector.subscribe('DS:end', (e) => {
+  drag_selector.subscribe('DS:end', e => {
     document.getElementById('layers').style.cursor = 'default'
   })
 }
@@ -598,14 +598,8 @@ export const setCurrentDrawContext = drawContext => {
  */
 export function adjustAllLayersSvgDimensions() {
   for (let context of getDrawContexts()) {
-    newApp
-      .ui
-      .zoom
-      .initSvg(
-        context
-          .svg_elem
-          .getElementsByTagName('svg')[0]
-          .getElementsByClassName('definition-scale')[0]
-      )
+    newApp.ui.zoom.initSvg(
+      context.svg_elem.getElementsByTagName('svg')[0].getElementsByClassName('definition-scale')[0]
+    )
   }
 }

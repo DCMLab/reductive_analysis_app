@@ -61,7 +61,6 @@ import {
   note_coords,
   note_to_rest,
   relation_get_notes,
-  prefix_ids,
   sanitize_xml,
 } from './utils/misc'
 import { compute_measure_map, pitch_grid } from './modules/UI/utils/coordinates'

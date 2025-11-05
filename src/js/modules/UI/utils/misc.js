@@ -453,17 +453,16 @@ export function getReducedMidi(draw_context = null) {
 export function handle_curvature_controller(value) {
   var mei_graph = getMeiGraph()
   var draw_contexts = getDrawContexts()
+  let ctxt = draw_contexts.find(c => c.canEdit)
+
   do_deselect()
-  $('.relation').remove()
-  $('.metarelation').remove()
   var nodes_array = Array.from(mei_graph.getElementsByTagName('node'))
   var relations_nodes = nodes_array.filter(x => x.getAttribute('type') == 'relation')
   draw_contexts.forEach(draw_context => {
     relations_nodes.forEach(g_elem => unmark_secondaries(draw_context, mei_graph, g_elem))
   })
   draw_contexts.curvatureFactor = value
-  console.log('Updating relation width controller with value', value)
-  draw_contexts.forEach(draw_graph)
+  draw_graph(ctxt)
 
   // update hierarchy trees
   draw_contexts.forEach(context => {

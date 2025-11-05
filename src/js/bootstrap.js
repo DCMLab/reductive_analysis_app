@@ -368,28 +368,33 @@ export function draw_graph(draw_context) {
 
   let ctxt = getDrawContexts().find(c => c.canEdit)
 
-  let reduced_id = Array.from(
+  let reduced_svg_el = Array.from(
     ctxt
       .view_elem
       .getElementsByClassName('hidden-reduced')
-  ).map(get_id)
+  )
+  let reduced_svg_el_ids = reduced_svg_el.map(get_id)
 
   // There's a multi-stage process to get all the info we
-  // need... First we get the nodes from the graph element.
-  var nodes_array = Array.from(mei_graph.getElementsByTagName('node'))
-  // Get the nodes representing relations
-  var relations_nodes = nodes_array.filter((x) => {
+  // need... First we get the nodes from the graph MEI element.
+  var all_mei_nodes = Array.from(mei_graph.getElementsByTagName('node'))
+  // Get the MEI nodes representing non-hidden (not reduced) relations
+  var visible_mei_rel_nodes = all_mei_nodes.filter((x) => {
     if (x.getAttribute('type') != 'relation') return false
-
-    return reduced_id
-      ? !reduced_id.includes(id_in_svg(ctxt, get_id(x)))
+    let is_visible_rel = reduced_svg_el_ids
+      ? !reduced_svg_el_ids.includes(id_in_svg(ctxt, get_id(x)))
       : true
+    return is_visible_rel
   })
   // Get the nodes representing metarelations
-  var metarelations_nodes = nodes_array.filter((x) => { return x.getAttribute('type') == 'metarelation' })
+  var metarelations_nodes = all_mei_nodes.filter((x) => { return x.getAttribute('type') == 'metarelation' })
+
+  // Remove any already drawn relations and meta-relations from the SVG so they will not be duplicated.
+  $(draw_context.view_elem).find('.relation').not('.hidden-reduced').remove()
+  $(draw_context.view_elem).find('.metarelation').not('.hidden-reduced').remove()
 
   // Verify that no relations contain duplicate notes, otherwise alert the user.
-  relations_nodes.forEach((g_elem) => {
+  visible_mei_rel_nodes.forEach((g_elem) => {
     let nodes = relation_get_notes(g_elem)
     for (let i in nodes) {
       for (let j in nodes) {
@@ -399,7 +404,8 @@ export function draw_graph(draw_context) {
         }
       }
     }
-    if (draw_relation(draw_context, mei_graph, g_elem))
+    let d = draw_relation(draw_context, mei_graph, g_elem)
+    if (d)
       mark_secondaries(draw_context, mei_graph, g_elem)
   })
   metarelations_nodes.forEach((g_elem) => draw_metarelation(draw_context, mei_graph, g_elem))

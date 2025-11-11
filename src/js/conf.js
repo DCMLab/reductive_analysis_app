@@ -133,7 +133,7 @@ export const meta_full_conf = [
   'parallel_octaves',
 ]
 
-// MEI classes to be hidden after rendering.
+// MEI classes with togglable visibility.
 export const hide_classes = [
   'artic',
   'barLineAttr',
@@ -146,15 +146,21 @@ export const hide_classes = [
   'rest',
   'slur',
   'stem',
-  'tempo',
   'tie',
   'trill',
+  'turn',
   'tupletNum',
   'verse',
 ]
 
 // MEI and MusicXML tags to be stripped before rendering.
-export const strip_mei_tags = ['label', 'labelAbbr', 'tempo', 'dir', 'turn']
+export const strip_mei_tags = [
+  'dir',
+  'label',
+  'labelAbbr',
+  'tempo',
+  'text',
+]
 
 export const strip_xml_tags = []
 

@@ -10,7 +10,7 @@ import { polygonHull } from 'd3-polygon'
 // import fuzzysearch from 'fuzzysearch'
 
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from '../bootstrap'
-import { strip_xml_tags } from '../conf'
+import { strip_mei_tags, strip_xml_tags } from '../conf'
 import { toggle_selected, getMouseX, getMouseY } from '../modules/UI/utils/misc'
 
 // Vector operations, taken from
@@ -984,6 +984,12 @@ export function sanitize_xml(xml) {
   var sanitized_xml = xml
 
   strip_xml_tags.forEach(tag => {
+    Array.from(xml.getElementsByTagName(tag)).forEach(e => {
+      e.parentNode.removeChild(e)
+    })
+  })
+
+  strip_mei_tags.forEach(tag => {
     Array.from(xml.getElementsByTagName(tag)).forEach(e => {
       e.parentNode.removeChild(e)
     })

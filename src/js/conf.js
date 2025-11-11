@@ -135,21 +135,22 @@ export const meta_full_conf = [
 
 // MEI classes to be hidden after rendering.
 export const hide_classes = [
-  'barLineAttr',
-  'fermata',
-  'rest',
-  'stem',
-  'flag',
-  'tie',
   'artic',
-  'slur',
-  'dynam',
-  'tempo',
-  'tupletNum',
+  'barLineAttr',
   'dir',
-  'verse',
-  'mRest',
+  'dynam',
+  'fermata',
+  'flag',
   'hairpin',
+  'mRest',
+  'rest',
+  'slur',
+  'stem',
+  'tempo',
+  'tie',
+  'trill',
+  'tupletNum',
+  'verse',
 ]
 
 // MEI and MusicXML tags to be stripped before rendering.

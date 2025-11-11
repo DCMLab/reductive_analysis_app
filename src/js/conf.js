@@ -149,6 +149,7 @@ export const hide_classes = [
   'dir',
   'verse',
   'mRest',
+  'hairpin',
 ]
 
 // MEI and MusicXML tags to be stripped before rendering.

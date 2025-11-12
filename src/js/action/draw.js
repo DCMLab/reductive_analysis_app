@@ -7,7 +7,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 */
 import newApp from '../app'
 import { captureEvent } from '../events/options'
-import { toggle_selected, toggle_shade } from '../modules/UI/utils/misc'
+import { toggle_selected, toggle_shade, adjustAllLayersSvgDimensions } from '../modules/UI/utils/misc'
 import {
   add_to_svg_bg,
   average,
@@ -431,6 +431,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
         newApp.ui.layersMenu.metaRelation?.updateToggles()
       })
       targets[connectionPoints.indexOf(info)].appendChild(connection_circle)
+      adjustAllLayersSvgDimensions()
     }
   })
 

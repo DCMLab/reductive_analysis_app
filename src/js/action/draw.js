@@ -7,7 +7,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 */
 import newApp from '../app'
 import { captureEvent } from '../events/options'
-import { toggle_selected, toggle_shade, adjustAllLayersSvgDimensions } from '../modules/UI/utils/misc'
+import { toggle_selected, toggle_shade, adjustAllLayersSvgDimensions, do_deselect } from '../modules/UI/utils/misc'
 import {
   add_to_svg_bg,
   average,
@@ -392,6 +392,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       // Add click event listener for toggle show/hide functionality
       connection_circle.addEventListener('click', (e) => {
         e.stopPropagation() // Prevent event from bubbling to parent elements
+        do_deselect()
 
         // Find all metarelations connected to this target
         const connectedMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
@@ -428,10 +429,10 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
           }
         })
 
+        adjustAllLayersSvgDimensions()
         newApp.ui.layersMenu.metaRelation?.updateToggles()
       })
       targets[connectionPoints.indexOf(info)].appendChild(connection_circle)
-      adjustAllLayersSvgDimensions()
     }
   })
 

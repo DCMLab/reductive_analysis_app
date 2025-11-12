@@ -1,4 +1,4 @@
-import { getCurrentDrawContext } from '../utils/misc'
+import { getCurrentDrawContext, adjustAllLayersSvgDimensions } from '../utils/misc'
 
 /**
  * Hide all meta relations in the given layer
@@ -7,6 +7,7 @@ import { getCurrentDrawContext } from '../utils/misc'
 function hide_meta_relations(layer) {
   const metaRelations = layer.svg_elem.querySelectorAll('.metarelation')
   metaRelations.forEach(elem => elem.classList.add('hidden'))
+  adjustAllLayersSvgDimensions()
 }
 
 /**
@@ -16,6 +17,7 @@ function hide_meta_relations(layer) {
 function show_meta_relations(layer) {
   const metaRelations = layer.svg_elem.querySelectorAll('.metarelation')
   metaRelations.forEach(elem => elem.classList.remove('hidden'))
+  adjustAllLayersSvgDimensions()
 }
 
 export default class MetaRelation {

@@ -10,24 +10,25 @@ class RelationCurvature {
 
     const { min, max, value } = this.input
     this.progressBar = new Progress('relation-width', { min, max, value })
-
-    this.throttling = false
   }
 
   onInput({ target }) {
-    if (target != this.input || this.throttling) {
+    if (target != this.input) {
+      return
+    }
+    const value = target.value
+    this.progressBar.update(value)
+  }
+
+  onTapEnd({ target }) {
+    if (target != this.input) {
       return
     }
 
-    this.throttling = true
-
-    requestAnimationFrame(() => {
-      const value = target.value
-      this.progressBar.update(value)
-      handle_curvature_controller(value)
-      adjustAllLayersSvgDimensions()
-      this.throttling = false
-    })
+    const value = target.value
+    this.progressBar.update(value)
+    handle_curvature_controller(value)
+    adjustAllLayersSvgDimensions()
   }
 }
 

@@ -90,7 +90,8 @@ class EventsManager {
   }
 
   // touchend, mouseup
-  onTapEnd() {
+  onTapEnd(e) {
+    this.app.ui?.relationCurvature?.onTapEnd(e)
     this.app.ui?.onTapEnd()
   }
 

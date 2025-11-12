@@ -14,7 +14,7 @@ class RelationCurvature {
     this.throttling = false
   }
 
-  onInput({ target }) {
+  onTapEnd({ target }) {
     if (target != this.input || this.throttling) {
       return
     }

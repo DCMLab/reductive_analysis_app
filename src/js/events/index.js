@@ -40,7 +40,6 @@ class EventsManager {
 
     // fields
     document.addEventListener('change', this.onChange.bind(this), captureEvent)
-    document.addEventListener('input', this.onInput.bind(this), captureEvent)
     document.addEventListener('submit', this.onSubmit.bind(this), captureEvent)
 
     // core app events
@@ -90,7 +89,8 @@ class EventsManager {
   }
 
   // touchend, mouseup
-  onTapEnd() {
+  onTapEnd(e) {
+    this.app.ui?.relationCurvature?.onTapEnd(e)
     this.app.ui?.onTapEnd()
   }
 
@@ -129,10 +129,6 @@ class EventsManager {
     this.app.ui?.startScreen?.onChange(e)
     this.app.ui?.selection?.mode?.onChange(e)
     this.app.ui?.layersMenu?.onChange(e)
-  }
-
-  onInput(e) {
-    this.app.ui?.relationCurvature?.onInput(e)
   }
 
   onSubmit(e) {

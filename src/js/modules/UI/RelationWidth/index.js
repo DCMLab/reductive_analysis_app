@@ -4,7 +4,7 @@ import {
 } from '../utils/misc'
 import Progress from './progress'
 
-class RelationWidth {
+class RelationCurvature {
   constructor() {
     this.input = document.getElementById('relation-width')
 
@@ -31,6 +31,6 @@ class RelationWidth {
   }
 }
 
-const relationWidth = new RelationWidth()
+const relationCurvature = new RelationCurvature()
 
-export default relationWidth
+export default relationCurvature

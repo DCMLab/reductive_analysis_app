@@ -132,7 +132,7 @@ class EventsManager {
   }
 
   onInput(e) {
-    this.app.ui?.relationWidth?.onInput(e)
+    this.app.ui?.relationCurvature?.onInput(e)
   }
 
   onSubmit(e) {

@@ -9,7 +9,7 @@ import zoom       from './Zoom'
 import bookmarks  from './Bookmarks'
 import accidentals  from './Accidentals'
 import newNote    from './Note'
-import relationWidth from './RelationWidth'
+import relationCurvature from './RelationWidth'
 import scoreSettings from './Score'
 import layersMenu from './Layers'
 
@@ -85,7 +85,7 @@ class UI {
     this.bookmarks = bookmarks
     this.accidentals = accidentals
     this.newNote = newNote
-    this.relationWidth = relationWidth
+    this.relationCurvature = relationCurvature
     this.scoreSettings = scoreSettings
     this.layersMenu = layersMenu
 

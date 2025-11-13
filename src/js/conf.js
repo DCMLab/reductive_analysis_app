@@ -136,7 +136,7 @@ export const meta_full_conf = [
 // MEI classes with togglable visibility.
 export const hide_classes = [
   'artic',
-  'barLineAttr',
+  'barLine',
   'dir',
   'dynam',
   'fermata',

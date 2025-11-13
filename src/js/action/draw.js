@@ -273,9 +273,9 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.classList.add('metarelation')
   // TODO: Use classlist for types
   g_elem.setAttribute('type', type)
-  g_elem.setAttribute('start-relation', targets[0].id)
+  g_elem.setAttribute('data-relation-0', targets[0].id)
   if (targets[1])
-    g_elem.setAttribute('end-relation', targets[1].id)
+    g_elem.setAttribute('data-relation-1', targets[1].id)
   g_elem.setAttribute('is-downward', isDownward)
   // Draw the metarelation as a circle connected with lines to each of its
   // targets
@@ -396,8 +396,8 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
         // Find all metarelations connected to this target
         const connectedMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
-          const startId = meta.getAttribute('start-relation')
-          const endId = meta.getAttribute('end-relation')
+          const startId = meta.getAttribute('data-relation-0')
+          const endId = meta.getAttribute('data-relation-1')
           return startId === target.id || endId === target.id
         })
 
@@ -408,8 +408,8 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
           // Find parent metarelations
           const parentMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
-            const startId = meta.getAttribute('start-relation')
-            const endId = meta.getAttribute('end-relation')
+            const startId = meta.getAttribute('data-relation-0')
+            const endId = meta.getAttribute('data-relation-1')
             return startId === metarelation.id || endId === metarelation.id
           })
 

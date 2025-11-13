@@ -273,7 +273,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.classList.add('metarelation')
   // TODO: Use classlist for types
   g_elem.setAttribute('type', type)
-  // let target_str = ''
+  let target_str = ''
   targets.forEach(function (target) { target_str = target_str + target.id + ' ' })
   g_elem.dataset.relation = target_str
   g_elem.setAttribute('is-downward', isDownward)

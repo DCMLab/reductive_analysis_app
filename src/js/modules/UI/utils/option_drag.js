@@ -166,7 +166,7 @@ export function moveOptionDrag(event) {
 
     // Find parent metarelations that connect to this one
     const parentMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
-      const children_ids = meta.getAttribute('data-relation').split(' ')
+      const children_ids = meta.getAttribute('data-children').split(' ')
       return children_ids.includes(currentMetarelation.id)
     })
 

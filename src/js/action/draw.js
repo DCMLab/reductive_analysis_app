@@ -275,7 +275,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   g_elem.setAttribute('type', type)
   let target_str = ''
   targets.forEach(function (target) { target_str = target_str + target.id + ' ' })
-  g_elem.dataset.relation = target_str
+  g_elem.dataset.children = target_str
   g_elem.setAttribute('is-downward', isDownward)
   // Draw the metarelation as a circle connected with lines to each of its
   // targets
@@ -396,7 +396,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
         // Find all metarelations connected to this target
         const connectedMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
-          const children_ids = meta.getAttribute('data-relation').split(' ')
+          const children_ids = meta.getAttribute('data-children').split(' ')
           return children_ids.includes(target.id)
         })
 
@@ -407,7 +407,7 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
 
           // Find parent metarelations
           const parentMetarelations = Array.from(document.querySelectorAll('.metarelation')).filter(meta => {
-            const children_ids = meta.getAttribute('data-relation').split(' ')
+            const children_ids = meta.getAttribute('data-children').split(' ')
             return children_ids.includes(metarelation.id)
           })
 

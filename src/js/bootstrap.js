@@ -342,6 +342,8 @@ export function load(event) {
   /* Cancel loading if changes are not saved? alert */
   selected = []
   extraselected = []
+  mei = ''
+  window.relationTreeInstance = null
 
   if (files.length == 1) {
     reader.onload = function (e) {

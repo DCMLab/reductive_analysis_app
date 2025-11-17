@@ -354,8 +354,12 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
     const target = targets[connectionPoints.indexOf(info)]
     let connection_circle = target.querySelector('.connection-circle')
 
-    if (!connection_circle) {
-      // Draw a connection circle at the connection point if not already present
+    if (connection_circle) {
+      // Do not draw a connection circle at the connection point if one is already present
+      const circleId = connection_circle.getAttribute('id')
+      line_elem.setAttribute('circle:id', circleId)
+    } else {
+      // Draw a connection circle at the connection point if one is not already present
       const radius = info.width / 2
       const adjustedPoint = [info.point[0], isDownward ? info.point[1] - radius / 2 : info.point[1] + radius / 2]
       connection_circle = circle(adjustedPoint, radius)

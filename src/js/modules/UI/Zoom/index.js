@@ -5,7 +5,7 @@ import {
 } from '../utils/misc'
 
 const ZOOM_DEFAULT = 1
-const ZOOM_STEP = 0.02
+const ZOOM_STEP = 0.002
 const PRECIS = 7
 
 class Zoom {

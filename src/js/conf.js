@@ -21,7 +21,6 @@ export const action_conf = {
   add_bookmark: 'B',
   move_relation_to_front: 'z',
   reduce_relations: 'r',
-  select_same_notes: '+',
   naturalize_note: 'Z',
   copy: 'C',
   paste: 'V',
@@ -36,102 +35,8 @@ export const navigation_conf = {
   jump_to_previous_bookmark: '}',
   jump_to_context_below: ',', // next layer
   jump_to_context_above: '.', // previous layer
-  toggle_palette: '-',
-  // 'zoom_out':                   '(',
-  // 'zoom_in':                    ')',
   switch_context_on_hover: false,
 }
-
-// Custon (meta-)relation shortcuts.
-export const custom_conf = {
-  relation: 'R',
-  meta_relation: 'M',
-}
-
-// Meta-relation types and shortcuts.
-export const meta_conf = {
-  context: { key: 'c', colour: 0 },
-  layer: { key: 'l', colour: 6 },
-  phrase: { key: 'r', colour: 2 },
-  section: { key: 't', colour: 3 },
-}
-
-// Relation types and shortcuts.
-export const type_conf = {
-  repeat: { key: 'e', colour: 0 },
-  passing: { key: 'p', colour: 6 },
-  neighbour: { key: 'n', colour: 2 },
-  harmonic: { key: 'i', colour: 3 },
-  arpeggio: { key: 'a', colour: 4 },
-  urlinie: { key: 'u', colour: 5 },
-  bassbrechung: { key: 'b', colour: 5 },
-}
-
-// Composite ("combo") relation types and shortcuts.
-export const combo_conf = {
-  passing_comb: { key: 'P', total: 'passing', outer: 'arpeggio' },
-  neighbour_comb: { key: 'N', total: 'neighbour', outer: 'repeat' },
-}
-
-export const type_synonym = {
-  prolongation: 'passing',
-  arp: 'arpeggio',
-  bassbrech: 'bassbrechung',
-}
-
-// The full list of pre-defined relations.
-// Should sufficiently represent the analytical technique(s) at hand.
-// These values will populate the relations drop-down menu.
-export const type_full_conf = [
-  'neighbour',
-  'repetition',
-  'arpeggiation',
-  'passing',
-  'back_relating_dominant',
-  'displacement',
-  'register_transfer',
-  '56_shift',
-  'added_root',
-  'initial_ascent',
-  'arpeggiated_ascent',
-  'urlinie',
-  'urlinie_transference',
-  'bassbrechung_component',
-  'coupling',
-  'voice_exchange_component',
-  'voice_exchange_component_chromaticized',
-  'mixture',
-  'phrygian_ii',
-]
-
-// The full list of pre-defined meta-relations.
-// Should sufficiently represent the analytical technique(s) at hand.
-// These labels will populate the meta-relations drop-down menu.
-export const meta_full_conf = [
-  'auxiliary_cadence',
-  'superposition',
-  'reaching_over',
-  'urlinie_meta',
-  'ursatz',
-  'bassbrechung',
-  'bassbrechung_transference',
-  'ursatz_transference',
-  'unfolding',
-  'motion_into_the_inner_voice',
-  'motion_from_the_inner_voice',
-  'linear_intervallic_progression',
-  'linear_intervallic_progression_module',
-  'interruption',
-  'interruption_branch_1',
-  'interruption_branch_2',
-  'voice_exchange',
-  'motivic_parallelism',
-  'motive',
-  'contradiction',
-  'indeterminacy',
-  'parallel_fifths',
-  'parallel_octaves',
-]
 
 // MEI classes with togglable visibility.
 export const hide_classes = [

@@ -11,10 +11,6 @@ import DragSelect from 'dragselect'
 import newApp from '../../../app'
 import {
   action_conf,
-  custom_conf,
-  combo_conf,
-  meta_conf,
-  type_conf,
   navigation_conf,
 } from '../../../conf'
 
@@ -50,7 +46,7 @@ import { delete_relations } from '../../../action/delete'
 import { do_redo, do_undo } from '../../../action/undo_redo'
 import { isFieldFocused } from '../../../utils/forms'
 import { rootStyles } from '../../../utils/document'
-import { metaRelationTypes, relationTypes } from '../../Relations/config'
+import { metaRelationTypes, relationTypes, custom_conf, comboRelationTypes } from '../../Relations/config'
 import accidentals from '../Accidentals'
 import bookmarks from '../Bookmarks'
 import relationsMenu from '../Relations'
@@ -387,13 +383,13 @@ export function handle_keypress(ev) {
       document.getElementById('free-field-metarelations').focus()
       document.getElementById('free-field-metarelations').value = ''
     }, 200)
-  } else if ((e = Object.entries(type_conf).find(c => c[1].key == ev.key))) {
+  } else if ((e = Object.entries(relationTypes.main).find(c => c[1].key == ev.key))) {
     // Add a relation
     do_relation(e[0])
-  } else if ((e = Object.entries(meta_conf).find(c => c[1].key == ev.key))) {
+  } else if ((e = Object.entries(metaRelationTypes.main).find(c => c[1].key == ev.key))) {
     // Add a metarelation
     do_metarelation(e[0])
-  } else if ((e = Object.entries(combo_conf).find(c => c[1].key == ev.key))) {
+  } else if ((e = Object.entries(comboRelationTypes.main).find(c => c[1].key == ev.key))) {
     // Add a comborelation
     do_comborelation(e[0])
   } else {

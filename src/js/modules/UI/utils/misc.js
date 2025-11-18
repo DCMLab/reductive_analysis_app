@@ -26,7 +26,7 @@ import {
   getDrawContexts,
 } from '../../../bootstrap'
 
-import { do_reduce_pre } from './reductions'
+import { do_reduce_pre, undo_reduce } from './reductions'
 import { draw_hierarchy_graph } from './visualizations'
 
 import { do_copy, do_paste } from './copy_paste'
@@ -323,6 +323,9 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.reduce_relations) {
     // Reduce relations
     do_reduce_pre()
+  } else if (ev.key == action_conf.expand_relations) {
+    // Reduce relations
+    undo_reduce()
   } else if (ev.key == action_conf.naturalize_note) {
     // Naturalize note.
     accidentals.naturalize()

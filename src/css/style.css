@@ -621,3 +621,14 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 .hidden {
   display: none;
 }
+
+:disabled, .disabled {
+  -webkit-filter: grayscale(100%) !important;
+  -moz-filter: grayscale(100%) !important;
+  -ms-filter: grayscale(100%) !important;
+  -o-filter: grayscale(100%) !important;
+  filter: grayscale(100%) !important;
+  filter: gray !important;
+  opacity: 50% !important;
+  cursor: not-allowed !important;
+}

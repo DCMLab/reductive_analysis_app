@@ -635,12 +635,12 @@
 
                     <hr class="fly-out__hr">
 
-                    <!-- Hierarchy tree visibility -->
+                    <!-- Hierarchy tree and meta-relation visibility -->
 
                     <div class="btn-group">
-                        <label class="checkable" for="relations-tree-roots-low">
+                        <label class="checkable disabled" for="relations-tree-roots-low">
                             Draw roots low
-                            <input class="checkable__input" type="checkbox" id="relations-tree-roots-low">
+                            <input class="checkable__input" type="checkbox" id="relations-tree-roots-low" disabled>
                             <span class="checkbox">
                                 <svg class="checkable__icon btn__icon" width="12" height="10">
                                     <use href="#check-path"></use>
@@ -649,20 +649,20 @@
                         </label>
 
 
-                        <div class="checkable">
+                        <div class="checkable disabled">
                             <h4>Hierarchy tree</h4>
                             <fieldset class="btn btn--hollow btn-tabs btn-tabs--radio">
                                 <legend class="visually-hidden">Hierarchy tree visibility</legend>
 
                                 <!-- On -->
                                 <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-on" data-label="On">
-                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-on" value="on">
+                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-on" value="on" disabled>
                                     <span class="btn btn--hollow btn-tabs__accent">On</span>
                                 </label>
 
                                 <!-- Off -->
                                 <label class="btn-tabs__btn" style="--btn-checked: hsl(0, 100%, 100%);" for="relations-tree-off" data-label="Off">
-                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-off" value="off" checked>
+                                    <input class="btn-tabs__radio" type="radio" name="relations-tree" id="relations-tree-off" value="off" checked disabled>
                                     <span class="btn btn--hollow btn-tabs__accent">Off</span>
                                 </label>
 
@@ -692,7 +692,7 @@
 
                     <hr class="fly-out__hr">
 
-                    <form class="ssbtn-group ssbtn-group--free-field" id="json-tree-form">
+                    <form class="ssbtn-group ssbtn-group--free-field disabled" id="json-tree-form">
                         Draw tree <!-- turn this into a heading -->
 
                         <div class="btn-group btn-group--free-field">
@@ -700,16 +700,16 @@
                                 <span class="visually-hidden">Draw tree</span>
 
                                 <!-- @todo transform into a textarea in a modal, actually move the whole feature into a modal because JSON editing requires a bit of space -->
-                                <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree" required>
+                                <input class="fillable__input" id="json-tree" type="text" placeholder="Paste JSON tree" required disabled>
                             </label>
 
-                            <button class="btn btn--plain btn--small">Draw</button>
+                            <button class="btn btn--plain btn--small" disabled>Draw</button>
                         </div>
 
                         <div class="btn-group">
-                            <button id="json-tree-save" class="btn btn--plain btn--small" type="button">Save tree</button>
-                            <button id="json-tree-load" class="btn btn--plain btn--small" type="button">Load tree</button>
-                            <button id="json-tree-align" class="btn btn--plain btn--small" type="button">Align tree to selection</button>
+                            <button id="json-tree-save" class="btn btn--plain btn--small" type="button" disabled>Save tree</button>
+                            <button id="json-tree-load" class="btn btn--plain btn--small" type="button" disabled>Load tree</button>
+                            <button id="json-tree-align" class="btn btn--plain btn--small" type="button" disabled>Align tree to selection</button>
                         </div>
 
                     </form>

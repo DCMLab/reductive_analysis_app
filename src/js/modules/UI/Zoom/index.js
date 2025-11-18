@@ -17,6 +17,10 @@ class Zoom {
     this.state = { scale: ZOOM_DEFAULT }
 
     window.addEventListener('wheel', (event) => {
+      let highlights = document.getElementsByClassName('selecthover') 
+      if (highlights.length > 0) {
+        Array.from(highlights).forEach(e => e.classList.remove('selecthover'))
+      }
       if (event.ctrlKey) {
         if (event.deltaY < 0) {
           event.preventDefault()
@@ -93,33 +97,11 @@ class Zoom {
   }
 
   setScale(s) {
-    // Move mouse cursor to (1,1) to neutralize any hover events.
-    let old_x = document.documentElement.style.getPropertyValue('--mouse-x')
-    let old_y = document.documentElement.style.getPropertyValue('--mouse-y')
-    const ev = new MouseEvent('mousemove', {
-      view: window,
-      bubbles: true,
-      cancelable: true,
-      clientX: 1,
-      clientY: 11,
-    })
-    document.dispatchEvent(ev)
-
     // Zoom.
     this.state.scale = Math.max(0.01, s)
     document
       .querySelectorAll('.svg_container > svg > .definition-scale')
       .forEach((svg) => this.updateContainerSize(svg, this.state.scale))
-
-    // Move mouse cursor back to original position.
-    const ev2 = new MouseEvent('mousemove', {
-      view: window,
-      bubbles: true,
-      cancelable: true,
-      clientX: old_x || 0,
-      clientY: old_y || 0,
-    })
-    document.dispatchEvent(ev2)
   }
 }
 

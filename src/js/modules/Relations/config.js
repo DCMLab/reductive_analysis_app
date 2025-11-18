@@ -25,13 +25,11 @@ export const relationTypes = {
 
   // Main relation types, keyboards shortcuts and colors.
   main: {
-    repeat:       { key: 'e', color: 1, shadeColor: 0, },
-    passing:      { key: 'p', color: 2, shadeColor: 6, },
-    neighbour:    { key: 'n', color: 3, shadeColor: 2, },
+    arpeggiation:     { key: 'a', color: 5, shadeColor: 4, },
     harmonic:     { key: 'i', color: 4, shadeColor: 3, },
-    arpeggio:     { key: 'a', color: 5, shadeColor: 4, },
-    urlinie:      { key: 'u', color: 6, shadeColor: 5, },
-    bassbrechung: { key: 'b', color: 7, shadeColor: 5, },
+    neighbor:    { key: 'n', color: 3, shadeColor: 2, },
+    passing:      { key: 'p', color: 2, shadeColor: 6, },
+    repetition:       { key: 'e', color: 1, shadeColor: 0, },
     untyped:      { color: 5 },
   },
 
@@ -39,25 +37,21 @@ export const relationTypes = {
   // Should sufficiently represent the analytical technique(s) at hand.
   // These values will populate the relations drop-down menu.
   additional: [
-    // 'neighbour', // isn’t it a duplicate of `relationTypes.main.neighbour`?
-    'repetition',
-    'arpeggiation',
-    // 'passing', // isn’t it a duplicate of `relationTypes.main.neighbour`?
-    'back_relating_dominant',
-    'displacement',
-    'register_transfer',
     '56_shift',
     'added_root',
-    'initial_ascent',
     'arpeggiated_ascent',
-    // 'urlinie', // isn’t it a duplicate of `relationTypes.main.neighbour`?
-    'urlinie_transference',
+    'back_relating_dominant',
     'bassbrechung_component',
     'coupling',
+    'displacement',
+    'initial_ascent',
+    'mixture',
+    'phrygian_ii',
+    'register_transfer',
+    'urlinie',
+    'urlinie_transference',
     'voice_exchange_component',
     'voice_exchange_component_chromaticized',
-    'mixture',
-    'phrygian_ii'
   ]
 }
 
@@ -67,8 +61,8 @@ export const metaRelationTypes = {
 
   // Main relation types, keyboards shortcuts and colors.
   main: {
-    context:  { key: 'c', color: 1, shadeColor: 0 },
-    layer:    { key: 'l', color: 2, shadeColor: 6 },
+    linear_progression: { key: 'l', color: 1, shadeColor: 6 },
+    motive:   { key: 'm', color: 4, shadeColor: 5 },
     phrase:   { key: 'r', color: 3, shadeColor: 2 },
     section:  { key: 't', color: 5, shadeColor: 3 },
   },
@@ -78,38 +72,36 @@ export const metaRelationTypes = {
   // These labels will populate the meta-relations drop-down menu.
   additional: [
     'auxiliary_cadence',
-    'superposition',
-    'reaching_over',
-    'urlinie_meta',
-    'ursatz',
     'bassbrechung',
     'bassbrechung_transference',
-    'ursatz_transference',
-    'unfolding',
-    'motion_into_the_inner_voice',
-    'motion_from_the_inner_voice',
-    'linear_intervallic_progression',
-    'linear_intervallic_progression_module',
+    'contradiction',
+    'indeterminacy',
     'interruption',
     'interruption_branch_1',
     'interruption_branch_2',
-    'voice_exchange',
-    'motivic_parallelism',
+    'linear_intervallic_progression',
+    'linear_intervallic_progression_module',
+    'motion_from_the_inner_voice',
+    'motion_into_the_inner_voice',
     'motive',
-    'contradiction',
-    'indeterminacy',
     'parallel_fifths',
-    'parallel_octaves'
+    'parallel_octaves',
+    'reaching_over',
+    'superposition',
+    'unfolding',
+    'urlinie',
+    'ursatz',
+    'ursatz_transference',
+    'voice_exchange',
   ],
 }
 
 // Composite (“combo”) relation types and shortcuts.
 export const comboRelationTypes = {
-  name: 'comborelation',
+  name: 'composite relation',
 
   main: {
-    'passing comborelation': { key: 'P', total: 'passing', outer: 'arpeggio' },
-    'neighbour comborelation': { key: 'N', total: 'neighbour', outer: 'repeat' },
+    'hierarchical arpeggiation': { key: 'P', total: 'passing', outer: 'arpeggiation' },
   }
 }
 

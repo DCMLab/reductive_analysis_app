@@ -34,7 +34,6 @@ import { do_copy, do_paste } from './copy_paste'
 import {
   scrollThroughRelations,
   get_class_from_classlist,
-  select_samenote,
   unmark_secondaries,
 } from '../../../utils/misc'
 
@@ -324,10 +323,6 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.reduce_relations) {
     // Reduce relations
     do_reduce_pre()
-  } else if (ev.key == action_conf.select_same_notes) {
-    // Select same notes in the measure
-    select_samenote()
-    do_relation('repeat')
   } else if (ev.key == action_conf.naturalize_note) {
     // Naturalize note.
     accidentals.naturalize()

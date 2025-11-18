@@ -617,32 +617,6 @@ export function unmark_secondaries(draw_context, mei_graph, he) {
 // Find the measure this MEI score element occurs in
 function get_measure(elem) { if (elem.tagName == 'measure') return elem; else return get_measure(elem.parentElement) }
 
-// If we have a single note selected, find all other notes of the same
-// pitch in this measure, and select them as secondary, and the previously
-// selected one as primary
-export function select_samenote() {
-  console.debug('Using globals: document, mei to find elems')
-  if ((selected.length == 1 || extraselected.length == 1)
-   && !(selected.length == 1 && extraselected.length == 1)) {
-    var svg_note
-    if (selected.length == 1)
-      svg_note = selected[0]
-    else
-      svg_note = extraselected[0]
-    var note = get_by_id(mei, svg_note.getAttribute('id'))
-    var measure = get_measure(note)
-    var candidates = Array.from(measure.getElementsByTagName('note'))
-    candidates.forEach((x) => {
-      if (
-        x.getAttribute('oct') == note.getAttribute('oct') &&
-                  x.getAttribute('pname') == note.getAttribute('pname'))
-        toggle_selected(get_by_id(document, x.getAttribute('xml:id')))
-    })
-    // This is an ugly hack
-    toggle_selected(svg_note, true)
-  }
-}
-
 // Get the Interesting class from a classlist
 export function get_class_from_classlist(elem) {
   if (typeof (elem) == 'undefined') {

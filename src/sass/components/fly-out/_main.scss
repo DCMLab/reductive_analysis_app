@@ -84,6 +84,12 @@
   --fly-out-bg: var(--bg);
 }
 
+.fly-out--dark-semi {
+  --bg: #{colors.$cod-gray-semi};
+  --primary: var(--white);
+  --fly-out-bg: var(--bg);
+}
+
 // @todo
 .fly-out--light {
   --fly-out-bg: var(--bg);

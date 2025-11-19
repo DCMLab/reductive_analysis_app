@@ -323,6 +323,10 @@ export function save_txt() {
           attributes: attributes
         }
         
+        if (mei_node.tagName == 'note') {
+          mei_node_dict.tagName = 'mei_note'
+        }
+        
         if (mei_node.tagName == 'node' && attributes['type'] == 'relation') {
           do {
             mei_node = mei_walker.nextNode()
@@ -332,12 +336,28 @@ export function save_txt() {
               Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
             let label = label_attributes['type']
             mei_node_dict.attributes.label = label
+          } else {
+            console.log('MEI to plaintext: Suspected parsing error! Check for lost graph content in text output.')
           }
         }
 
-        if (mei_node.tagName == 'note' && !attributes['type']) {
+        if (mei_node.tagName == 'node' && !attributes['type']) {
           mei_node_dict.attributes['type'] = 'note'
-          mei_node_dict.tagName = 'node'
+          do {
+            mei_node = mei_walker.nextNode()
+          } while (!mei_node.tagName || mei_node.tagName != 'note')
+          let note_attributes = Object.fromEntries(
+            Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
+          if (mei_node.tagName == 'note' && note_attributes['corresp']) {
+            mei_node_dict.attributes['corresp'] = note_attributes['corresp'].slice(1)
+          } else {
+            console.log('MEI to plaintext: Suspected parsing error! Check for lost graph content in text output.')
+          }
+        }
+        
+        if (mei_node.tagName == 'arc') {
+          mei_node_dict.attributes['from'] = mei_node_dict.attributes['from'].slice(1)
+          mei_node_dict.attributes['to'] = mei_node_dict.attributes['to'].slice(1)
         }
 
         saved += JSON.stringify(mei_node_dict, null, 4)

@@ -2,15 +2,11 @@
  * @todo: Check how to inject data using Webpack so that these classes are
  * automatically generated.
  */
-.color-relation-repetition {--relation: var(--relation-1); }
-.color-relation-passing {--relation: var(--relation-2); }
-.color-relation-neighbor {--relation: var(--relation-3); }
-.color-relation-harmonic {--relation: var(--relation-4); }
-.color-relation-arpeggiation {--relation: var(--relation-5); }
-.color-relation-urlinie {--relation: var(--relation-6); }
-.color-relation-bassbrechung {--relation: var(--relation-7); }
+.color-relation-1 {--relation: var(--relation-1); }
+.color-relation-2 {--relation: var(--relation-2); }
+.color-relation-3 {--relation: var(--relation-3); }
+.color-relation-4 {--relation: var(--relation-4); }
+.color-relation-5 {--relation: var(--relation-5); }
+.color-relation-6 {--relation: var(--relation-6); }
+.color-relation-7 {--relation: var(--relation-7); }
 
-.color-relation-linear_progression {--relation: var(--relation-1); }
-.color-relation-motive {--relation: var(--relation-2); }
-.color-relation-phrase {--relation: var(--relation-3); }
-.color-relation-section {--relation: var(--relation-5); }

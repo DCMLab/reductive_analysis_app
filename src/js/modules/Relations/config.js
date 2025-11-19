@@ -24,20 +24,21 @@ export const relationTypes = {
   name: 'relation',
 
   // Main relation types, keyboards shortcuts and colors.
+  // To view or add color codes, see __colors.scss.
   main: {
-    arpeggiation:     { key: 'a', color: 5, shadeColor: 4, },
-    harmonic:     { key: 'i', color: 4, shadeColor: 3, },
-    neighbor:    { key: 'n', color: 3, shadeColor: 2, },
-    passing:      { key: 'p', color: 2, shadeColor: 6, },
-    repetition:       { key: 'e', color: 1, shadeColor: 0, },
-    untyped:      { color: 5 },
+    arpeggiation: { key: 'a', color: 1 },
+    harmonic:     { key: 'i', color: 2 },
+    neighbor:     { key: 'n', color: 3 },
+    passing:      { key: 'p', color: 4 },
+    repetition:   { key: 'e', color: 5 },
+    untyped:      { color: 6 },
   },
 
   // The full list of pre-defined relations.
   // Should sufficiently represent the analytical technique(s) at hand.
   // These values will populate the relations drop-down menu.
   additional: [
-    '56_shift',
+    '5_6_shift',
     'added_root',
     'arpeggiated_ascent',
     'back_relating_dominant',
@@ -61,10 +62,10 @@ export const metaRelationTypes = {
 
   // Main relation types, keyboards shortcuts and colors.
   main: {
-    linear_progression: { key: 'l', color: 1, shadeColor: 6 },
-    motive:   { key: 'm', color: 4, shadeColor: 5 },
-    phrase:   { key: 'r', color: 3, shadeColor: 2 },
-    section:  { key: 't', color: 5, shadeColor: 3 },
+    linear_progression: { key: 'l', color: 1 },
+    motive:   { key: 'm', color: 2 },
+    phrase:   { key: 'r', color: 3 },
+    section:  { key: 't', color: 4 },
   },
 
   // The full list of pre-defined meta-relations.

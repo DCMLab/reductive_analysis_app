@@ -1,5 +1,6 @@
 import { capitalize } from '../../../utils/string'
 import score from '../../Score'
+import { relationTypes } from '../../Relations/config'
 
 /**
  * A group of filters for a category of relations.
@@ -55,13 +56,14 @@ export default class FilterGroup {
   }
 
   render() {
-    let filtersDomString = this.fields.map(relationType => this.createFilterElement(relationType)).join(' ')
+    let filtersDomString = this.fields.map((relationType) => 
+      this.createFilterElement(relationType.type, true)).join(' ')
     this.ctn.innerHTML = filtersDomString
   }
 
-  createFilterElement = ({ type, checked }) => `
+  createFilterElement = (type, checked) => `
     <li>
-        <label class="checkable color-relation-${type}" for="${this.namespace}-filter-${type}">
+        <label class="checkable color-relation-${relationTypes.main[type]?.color}" for="${this.namespace}-filter-${type}">
             ${capitalize(type)}
             <input class="checkable__input" type="checkbox" id="${this.namespace}-filter-${type}" data-type="${type}" ${checked ? 'checked' : ''}>
             <span class="checkbox checkbox--colored">

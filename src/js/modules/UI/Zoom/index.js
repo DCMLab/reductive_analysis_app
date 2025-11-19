@@ -17,9 +17,9 @@ class Zoom {
     this.state = { scale: ZOOM_DEFAULT }
 
     window.addEventListener('wheel', (event) => {
-      let highlights = document.getElementsByClassName('selecthover') 
+      let highlights = document.querySelectorAll('.selecthover, .extrahover, .relationhover, .extrarelationhover') 
       if (highlights.length > 0) {
-        Array.from(highlights).forEach(e => e.classList.remove('selecthover'))
+        Array.from(highlights).forEach(e => e.classList.remove('selecthover', 'extrahover', 'relationhover', 'extrarelationhover'))
       }
       if (event.ctrlKey) {
         if (event.deltaY < 0) {

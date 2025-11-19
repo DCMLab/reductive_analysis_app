@@ -279,7 +279,6 @@ function _remove_empty_xmlns(mei) {
   mei.querySelectorAll('*').forEach(el => {
     if (el.getAttribute('xmlns') === '') el.removeAttribute('xmlns')
   })
-  console.log(mei)
   return mei
 }
 
@@ -315,11 +314,13 @@ export function save_txt() {
     if (mei_node.tagName && ['node', 'note', 'arc', 'label'].includes(mei_node.tagName)) {
       const attributes = Object.fromEntries(
         Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
-      const mei_node_dict = {
-        tagName: mei_node.tagName,
-        attributes: attributes
+      if (Object.keys(attributes).length > 0) {
+        const mei_node_dict = {
+          tagName: mei_node.tagName,
+          attributes: attributes
+        }
+        saved += JSON.stringify(mei_node_dict, null, 4)
       }
-      saved += JSON.stringify(mei_node_dict, null, 4)
     }
   }
 

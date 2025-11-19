@@ -326,6 +326,11 @@ export function savesvg() {
   const bookmarks = cloneSvgElement.getElementsByClassName('bookmark')
   Array.from(bookmarks).forEach(bookmark => bookmark.remove())
 
+  // Remove circle:id attributes, as they do not belong in the namespace and may cause parsing errors.
+  cloneSvgElement.querySelectorAll('[circle\\:id]').forEach(el => {
+    el.removeAttribute('circle:id')
+  })
+
   // Get SVG string and remove the clone from the DOM.
   const cloneSvgStr = new XMLSerializer().serializeToString(cloneSvgElement)
   cloneSvgElement.remove()

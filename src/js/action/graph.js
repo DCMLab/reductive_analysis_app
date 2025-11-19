@@ -22,7 +22,7 @@ export function add_relation(mei_graph, primaries, secondaries, type, he_id_para
   var he_id
   // If we're given a parameter ID, use that, otherwise generate a new one
   if (typeof he_id_param == 'undefined')
-    he_id = 'he-' + random_id(5)
+    he_id = 'he-' + Math.floor(Math.random() * (1 << 20)).toString(16)
   else
     he_id = he_id_param
   he_elem.setAttribute('xml:id', he_id)

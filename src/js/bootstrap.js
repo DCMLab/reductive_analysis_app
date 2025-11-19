@@ -279,7 +279,6 @@ function _remove_empty_xmlns(mei) {
   mei.querySelectorAll('*').forEach(el => {
     if (el.getAttribute('xmlns') === '') el.removeAttribute('xmlns')
   })
-  console.log(mei)
   return mei
 }
 
@@ -296,6 +295,77 @@ export function save_mei() {
   mei_clone = _remove_empty_xmlns(mei_clone)
   var saved = new XMLSerializer().serializeToString(mei_clone)
   downloadAs(saved, filename + '.mei', 'text/xml')
+}
+
+export function save_txt() {
+  var mei_clone = mei.cloneNode(true)
+  mei_clone = _remove_empty_xmlns(mei_clone)
+
+  const mei_walker = mei_clone.createTreeWalker(
+    mei_clone,
+    NodeFilter.SHOW_ALL,
+    null,
+    false
+  )
+
+  let saved = ''
+  let mei_node = Object.create(NamedNodeMap)
+
+  while (mei_node = mei_walker.nextNode()) {
+    if (mei_node.tagName && ['node', 'note', 'arc'].includes(mei_node.tagName)) {
+
+      const attributes = Object.fromEntries(
+        Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
+      
+      if (Object.keys(attributes).length > 0) {
+        const mei_node_dict = {
+          tagName: mei_node.tagName,
+          attributes: attributes
+        }
+        
+        if (mei_node.tagName == 'note') {
+          mei_node_dict.tagName = 'mei_note'
+        }
+        
+        if (mei_node.tagName == 'node' && attributes['type'] == 'relation') {
+          do {
+            mei_node = mei_walker.nextNode()
+          } while (!mei_node.tagName || !['node', 'note', 'arc', 'label'].includes(mei_node.tagName))
+          if (mei_node.tagName == 'label') {
+            let label_attributes = Object.fromEntries(
+              Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
+            let label = label_attributes['type']
+            mei_node_dict.attributes.label = label
+          } else {
+            console.log('MEI to plaintext: Suspected parsing error! Check for lost graph content in text output.')
+          }
+        }
+
+        if (mei_node.tagName == 'node' && !attributes['type']) {
+          mei_node_dict.attributes['type'] = 'note'
+          do {
+            mei_node = mei_walker.nextNode()
+          } while (!mei_node.tagName || mei_node.tagName != 'note')
+          let note_attributes = Object.fromEntries(
+            Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
+          if (mei_node.tagName == 'note' && note_attributes['corresp']) {
+            mei_node_dict.attributes['corresp'] = note_attributes['corresp'].slice(1)
+          } else {
+            console.log('MEI to plaintext: Suspected parsing error! Check for lost graph content in text output.')
+          }
+        }
+        
+        if (mei_node.tagName == 'arc') {
+          mei_node_dict.attributes['from'] = mei_node_dict.attributes['from'].slice(1)
+          mei_node_dict.attributes['to'] = mei_node_dict.attributes['to'].slice(1)
+        }
+
+        saved += JSON.stringify(mei_node_dict, null, 4)
+      }
+    }
+  }
+
+  downloadAs(saved, filename + '.txt', 'text/plain')
 }
 
 const inlineStyles = element => {
@@ -318,7 +388,7 @@ const inlineStyles = element => {
  * add it in the spritesheet block. This way, it can inherit the
  * global CSS while remaining hidden (spritesheet is hidden).
  */
-export function savesvg() {
+export function save_svg() {
   const svg = getCurrentDrawContext().svg_elem.children[0]
 
   // Append cloned SVG.

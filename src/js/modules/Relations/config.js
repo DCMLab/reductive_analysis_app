@@ -101,7 +101,7 @@ export const comboRelationTypes = {
   name: 'composite relation',
 
   main: {
-    'hierarchical arpeggiation': { key: 'P', total: 'passing', outer: 'arpeggiation' },
+    'hierarchical_arpeggiation': { key: 'P', total: 'passing', outer: 'arpeggiation' },
   }
 }
 

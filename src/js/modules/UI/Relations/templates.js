@@ -21,10 +21,10 @@ export const createBtn = (name, type, index) => `
   <button
       type="button"
       class="
-        btn btn--hollow btn--relation color-relation-${name}
+        btn btn--hollow btn--relation color-relation-${name.split(' ')[0]}
         ${index > 2 ? CSS.hideIfCompact : ''}
       "
-      data-relation-name="${name}"
+      data-relation-name="${name.split(' ')[0]}"
       data-relation-type="${type}"
   >
       ${capitalize(name)}

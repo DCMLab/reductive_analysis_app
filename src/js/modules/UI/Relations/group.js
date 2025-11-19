@@ -66,7 +66,7 @@ export default class RelationsGroup {
 
     // buttons with main relations
     let btnsHtml = Object.keys(config.main)
-      .map((name, index) => createBtn(`${name}${config.main[name].key ? ' [' + config.main[name].key + ']' : ''}`, this.type, index))
+      .map((name, index) => createBtn(`${name}${config.main[name].key ? ' [' + config.main[name].key + ']' : ''}`, this.type, config.main[name].color, index))
       .join('')
 
     // button to toggle visibility of more relation buttons

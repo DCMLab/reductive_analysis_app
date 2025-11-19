@@ -35,8 +35,9 @@ export const navigation_conf = {
 
 // MEI classes with togglable visibility.
 export const hide_classes = [
+  'arpeg',
   'artic',
-  'barLine',
+  // 'barLine',
   'dir',
   'dots',
   'dynam',

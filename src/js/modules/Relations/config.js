@@ -30,7 +30,7 @@ export const relationTypes = {
     harmonic:     { key: 'i', color: 2 },
     neighbor:     { key: 'n', color: 3 },
     passing:      { key: 'p', color: 4 },
-    repetition:   { key: 'e', color: 5 },
+    repetition:   { key: 't', color: 5 },
     untyped:      { color: 6 },
   },
 
@@ -65,7 +65,7 @@ export const metaRelationTypes = {
     linear_progression: { key: 'l', color: 1 },
     motive:   { key: 'm', color: 2 },
     phrase:   { key: 'r', color: 3 },
-    section:  { key: 't', color: 4 },
+    section:  { key: 'o', color: 4 },
   },
 
   // The full list of pre-defined meta-relations.

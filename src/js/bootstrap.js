@@ -310,14 +310,29 @@ export function save_txt() {
 
   let saved = ''
   let mei_node = Object.create(NamedNodeMap)
+
   while (mei_node = mei_walker.nextNode()) {
     if (mei_node.tagName && ['node', 'note', 'arc', 'label'].includes(mei_node.tagName)) {
+
       const attributes = Object.fromEntries(
         Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
+      
       if (Object.keys(attributes).length > 0) {
         const mei_node_dict = {
           tagName: mei_node.tagName,
           attributes: attributes
+        }
+        
+        if (mei_node.tagName == 'node' && attributes['type'] == 'relation') {
+          do {
+            mei_node = mei_walker.nextNode()
+          } while (!mei_node.tagName || !['node', 'note', 'arc', 'label'].includes(mei_node.tagName))
+          if (mei_node.tagName == 'label') {
+            let label_attributes = Object.fromEntries(
+              Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
+            let label = label_attributes['type']
+            mei_node_dict.attributes.label = label
+          }
         }
         saved += JSON.stringify(mei_node_dict, null, 4)
       }

@@ -66,6 +66,8 @@ export const strip_mei_tags = [
 
 export const strip_xml_tags = []
 
+// To edit relation categories and shortcuts, see config.js.
+
 // Trap (true) or ignore (false) runtime errors.
 export const debug = false
 

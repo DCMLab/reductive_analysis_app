@@ -17,11 +17,11 @@ export const createTitle = name => `
 
 // Add relation <button>
 
-export const createBtn = (name, type, index) => `
+export const createBtn = (name, type, color, index) => `
   <button
       type="button"
       class="
-        btn btn--hollow btn--relation color-relation-${name.split(' ')[0]}
+        btn btn--hollow btn--relation color-relation-${color}
         ${index > 2 ? CSS.hideIfCompact : ''}
       "
       data-relation-name="${name.split(' ')[0]}"

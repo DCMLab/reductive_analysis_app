@@ -4,7 +4,7 @@
  * order to do that (e.g. CollapsibleFlyOut extending the FlyOut class).
  */
 
-import { load, savesvg, save_orig } from '../../../bootstrap'
+import { load, save_svg, save_mei, save_txt } from '../../../bootstrap'
 
 class MainMenu {
   constructor() {
@@ -18,6 +18,7 @@ class MainMenu {
     this.filePicker = document.getElementById('score-file-picker')
     this.saveFile = document.getElementById('save-file')
     this.saveAsSvg = document.getElementById('save-file-svg')
+    this.saveAsTxt = document.getElementById('save-graph-txt')
   }
 
   onTap({ target }) {
@@ -26,11 +27,15 @@ class MainMenu {
     }
 
     if (target == this.saveFile) {
-      return save_orig()
+      return save_mei()
     }
 
     if (target == this.saveAsSvg) {
-      savesvg()
+      save_svg()
+    }
+
+    if (target == this.saveAsTxt) {
+      save_txt()
     }
   }
 

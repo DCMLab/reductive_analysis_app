@@ -289,6 +289,34 @@ export function save_orig() {
   downloadAs(saved, filename + '.mei', 'text/xml')
 }
 
+export function save_txt() {
+  var mei_clone = mei.cloneNode(true)
+  mei_clone = _remove_empty_xmlns(mei_clone)
+
+  const mei_walker = mei_clone.createTreeWalker(
+    mei_clone,
+    NodeFilter.SHOW_ALL,
+    null,
+    false
+  )
+
+  let saved = ''
+  let mei_node = Object.create(NamedNodeMap)
+  while (mei_node = mei_walker.nextNode()) {
+    if (mei_node.tagName && ['node', 'note', 'arc', 'label'].includes(mei_node.tagName)) {
+      const attributes = Object.fromEntries(
+        Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
+      const mei_node_dict = {
+        tagName: mei_node.tagName,
+        attributes: attributes
+      }
+      saved += JSON.stringify(mei_node_dict, null, 4)
+    }
+  }
+
+  downloadAs(saved, filename + '.txt', 'text/plain')
+}
+
 const inlineStyles = element => {
   const styles = getComputedStyle(element)
   setAttributes(element, {
@@ -309,7 +337,7 @@ const inlineStyles = element => {
  * add it in the spritesheet block. This way, it can inherit the
  * global CSS while remaining hidden (spritesheet is hidden).
  */
-export function savesvg() {
+export function save_svg() {
   const svg = getCurrentDrawContext().svg_elem.children[0]
 
   // Append cloned SVG.

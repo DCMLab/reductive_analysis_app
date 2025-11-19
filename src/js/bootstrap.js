@@ -312,7 +312,7 @@ export function save_txt() {
   let mei_node = Object.create(NamedNodeMap)
 
   while (mei_node = mei_walker.nextNode()) {
-    if (mei_node.tagName && ['node', 'note', 'arc', 'label'].includes(mei_node.tagName)) {
+    if (mei_node.tagName && ['node', 'note', 'arc'].includes(mei_node.tagName)) {
 
       const attributes = Object.fromEntries(
         Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
@@ -334,6 +334,12 @@ export function save_txt() {
             mei_node_dict.attributes.label = label
           }
         }
+
+        if (mei_node.tagName == 'note' && !attributes['type']) {
+          mei_node_dict.attributes['type'] = 'note'
+          mei_node_dict.tagName = 'node'
+        }
+
         saved += JSON.stringify(mei_node_dict, null, 4)
       }
     }

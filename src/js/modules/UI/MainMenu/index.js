@@ -15,7 +15,7 @@ class MainMenu {
     this.toggleBtn = document.getElementById('main-menu-toggle')
 
     // File actions
-    this.filePicker = document.getElementById('score-file-picker')
+    this.closeFile = document.getElementById('close-file')
     this.saveFile = document.getElementById('save-file')
     this.saveAsSvg = document.getElementById('save-file-svg')
     this.saveAsTxt = document.getElementById('save-graph-txt')
@@ -24,6 +24,10 @@ class MainMenu {
   onTap({ target }) {
     if (target == this.toggleBtn) {
       return this.toggle()
+    }
+
+    if (target == this.closeFile) {
+      window.location.reload()
     }
 
     if (target == this.saveFile) {
@@ -40,10 +44,11 @@ class MainMenu {
   }
 
   onChange(e) {
-    if (e.composedPath().includes(this.filePicker)) {
-      load(e)
-      this.toggle(false)
-    }
+  //   if (e.composedPath().includes(this.filePicker)) {
+  //     load(e)
+  //     this.toggle(false)
+  //   }
+    return
   }
 
   toggle(state = !this.visible) {

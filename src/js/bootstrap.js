@@ -509,7 +509,8 @@ function load_finish() {
       console.log('This is not a valid XML or MEI file. However it could be ABC or Humdrum, for instance')
     }
   } catch {
-    $('#score-file-picker').val('')
+    console.log('This is not a valid XML or MEI file. However it could be ABC or Humdrum, for instance')
+    return false
   }
 
   vrvToolkit = new verovio.toolkit()
@@ -521,8 +522,6 @@ function load_finish() {
     } catch {
       if (!new_svg) {
         console.log('Verovio could not generate SVG from non-MEI file.')
-        // loader_modal.close()
-        $('#score-file-picker').val('')
         return false
       }
     }
@@ -533,8 +532,6 @@ function load_finish() {
       mei = parser.parseFromString(data, 'text/xml')
     } catch {
       alert('Cannot parse this XML file as valid MEI.')
-      // loader_modal.close()
-      $('#score-file-picker').val('')
       return false
     }
   } else {
@@ -550,7 +547,6 @@ function load_finish() {
   } catch {
     alert('Cannot parse this XML file as valid MEI.')
     // loader_modal.close()
-    $('#score-file-picker').val('')
     return false
   }
 

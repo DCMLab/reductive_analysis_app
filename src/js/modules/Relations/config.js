@@ -31,7 +31,7 @@ export const relationTypes = {
     neighbor:     { key: 'n', color: 3 },
     passing:      { key: 'p', color: 4 },
     repetition:   { key: 't', color: 5 },
-    untyped:      { color: 6 },
+    untyped:      { key: 'y', color: 6 },
   },
 
   // The full list of pre-defined relations.

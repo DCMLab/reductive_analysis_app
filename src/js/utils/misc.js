@@ -203,19 +203,10 @@ export function g() {
   return newElement
 }
 
-export function random_id(n = 5) {
-
-  let rnd = Math.floor(Math.random() * Math.pow(2, 32))
-  let lgt = rnd.toString().length
-
-  let zeros
-  for (let i = 0; i < 16 - lgt; i++) {
-    zeros += '0'
-  }
-  return zeros + rnd
-
-  // return Math.floor(Math.random() * (1 << (n * 4))).toString(16)
+export function random_id() {
+  return Math.floor(Math.random() * (1 << 28)).toString(16)
 }
+
 export function pitch_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
   // Pitch offset in MIDI steps

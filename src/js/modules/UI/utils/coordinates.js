@@ -311,7 +311,7 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
 }
 
 export function do_note(pname, oct, note, offset, id, redoing = false) {
-  var new_element_id = 'new-' + random_id()
+  var new_element_id = 'added-' + random_id()
   let n = note
   if (typeof (id) != 'undefined')
     new_element_id = id

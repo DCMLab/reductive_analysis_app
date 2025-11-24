@@ -132,7 +132,8 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
   // Lock the layer once more if it is further reduced
   if (graphicals.length > 0) {
     draw_context.distance_from_surface += 1
-    console.log(`LAYER LOCKED`)
+    console.log(`Layer locked`)
+    draw_context.svg_elem.classList.add('locked')
   }
   console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
 
@@ -148,7 +149,7 @@ export function undo_reduce() {
   var unreduce_actions = draw_context['reductions']
   // Get latest unreduce_actions
   if (unreduce_actions.length == 0) {
-    console.log('Nothing to unreduce')
+    console.log('Nothing to expand')
     return
   }
   // Deselect the current selection, if any
@@ -163,6 +164,7 @@ export function undo_reduce() {
   if (graphicals.length > 0) draw_context.distance_from_surface -= 1
   console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
   if (draw_context.distance_from_surface == 0) {
-    console.log(`LAYER UNLOCKED`)
+    console.log(`Layer unlocked`)
+    draw_context.svg_elem.classList.remove('locked')
   }
 }

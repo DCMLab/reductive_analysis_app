@@ -94,6 +94,11 @@ export function toggle_selected(item, extra = null) {
     return
   }
 
+  let draw_context = getCurrentDrawContext()
+  if (draw_context.svg_elem.classList.contains('locked')) {
+    return
+  }
+
   let layer = item.closest('layer')
   let context = getCurrentDrawContext()
   for (let c of getDrawContexts()) {

@@ -632,3 +632,7 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   opacity: 50% !important;
   cursor: not-allowed !important;
 }
+
+.locked * {
+  cursor: not-allowed;
+}

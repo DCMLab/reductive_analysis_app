@@ -134,6 +134,7 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
     draw_context.distance_from_surface += 1
     console.log(`Layer locked`)
     draw_context.svg_elem.classList.add('locked')
+    document.getElementById('reduction-counter').innerText = `Reductive iteration: -${draw_context.distance_from_surface}`
   }
   console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
 
@@ -163,8 +164,10 @@ export function undo_reduce() {
   // Unlock the layer if it has reached the surface
   if (graphicals.length > 0) draw_context.distance_from_surface -= 1
   console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
+  document.getElementById('reduction-counter').innerText = `Reductive iteration: -${draw_context.distance_from_surface}`
   if (draw_context.distance_from_surface == 0) {
     console.log(`Layer unlocked`)
     draw_context.svg_elem.classList.remove('locked')
+    document.getElementById('reduction-counter').innerText = ''
   }
 }

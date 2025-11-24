@@ -128,6 +128,14 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
   graphicals.push(removed_notes.map(
     (n) => hide_note_hier(draw_context, n)
   ))
+
+  // Lock the layer once more if it is further reduced
+  if (graphicals.length > 0) {
+    draw_context.distance_from_surface += 1
+    console.log(`LAYER LOCKED`)
+  }
+  console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
+
   var undo = [removed_relations, removed_notes, graphicals]
   draw_context['reductions'].push(['reduce', undo, sel, extra])
 }
@@ -146,9 +154,15 @@ export function undo_reduce() {
   // Deselect the current selection, if any
   selected.forEach(x => toggle_selected(x, false))
   extraselected.forEach(x => toggle_selected(x, true))
-  var [what, elems, sel, extra] = unreduce_actions.pop()
-  var [relations, notes, graphicals] = elems
+  var [_, elems, sel, extra] = unreduce_actions.pop()
+  var [_, _, graphicals] = elems
   graphicals.flat().forEach(x => { if (x) x.classList.remove('hidden-reduced') })
   sel.forEach(x => toggle_selected(x, false))
   extra.forEach(x => toggle_selected(x, true))
+  // Unlock the layer if it has reached the surface
+  if (graphicals.length > 0) draw_context.distance_from_surface -= 1
+  console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
+  if (draw_context.distance_from_surface == 0) {
+    console.log(`LAYER UNLOCKED`)
+  }
 }

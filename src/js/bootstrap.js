@@ -602,6 +602,7 @@ function load_finish() {
       svg_elem: svg_element,
       view_elem: view_element,
       layer: layer_context,
+      distance_from_surface: 0,
       id_prefix: '',
       reductions: [],
 

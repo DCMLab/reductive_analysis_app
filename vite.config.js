@@ -38,7 +38,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         app: thePath('./src/index.html'),
-        components: thePath('./src/components.html'),
       },
       // external: [
       //   // 'css/vendor/style.css',

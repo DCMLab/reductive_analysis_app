@@ -217,6 +217,15 @@ class EventsManager {
       return mode.mode != 'secondary' ? mode.set('secondary') : mode.set('primary')
     }
 
+    /**
+     * Toggle disconnected notes (C)
+     */
+    if (isKey(e, 's')) {
+      if (isModifier(e, 'shift')) {
+        return this.app.ui.scoreSettings.toggleOrphanNotes()
+      }
+    }
+
     // All shortcuts starting here don’t need modifiers.
 
     if (isModifier(e)) { return }

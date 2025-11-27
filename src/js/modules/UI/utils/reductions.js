@@ -14,6 +14,8 @@ import {
   hide_he,
   hide_note_hier,
   hide_note,
+  id_in_svg,
+  node_to_note_id,
   relation_primaries,
   relation_secondaries
 } from '../../../utils/misc'
@@ -82,64 +84,76 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
 
   var all_relations_nodes = Array.from(mei_graph.getElementsByTagName('node')).filter(x => x.getAttribute('type') == 'relation')
 
-  var remaining_relations = all_relations_nodes.filter((n) => {
+  var all_notes_nodes = Array.from(mei_graph.getElementsByTagName('node')).filter(x => x.getAttribute('type') === null || x.getAttribute('type') == '')
+
+  const remaining_relations = all_relations_nodes.filter((n) => {
     var g = get_by_id(document, draw_context.id_prefix + n.getAttribute('xml:id'))
+    return g != undefined && !g.classList.contains('hidden-reduced')
+  })
+
+  const remaining_notes = all_notes_nodes.filter((n) => {
+    var g = get_by_id(draw_context.svg_elem.getRootNode(), id_in_svg(draw_context, node_to_note_id(n)))
+    // var g = get_by_id(document, draw_context.id_prefix + n.getAttribute('xml:id'))
     return g != undefined && !g.classList.contains('hidden-reduced')
   })
 
   if (target_relations.length == 0)
     target_relations = remaining_relations
 
-  // The removed notes we get are _nodes in the graph_, but
-  // hide_note is built with that in mind.
+  // `calc_reduce` below is the function to redefine
+  // for various reduction algorithms
   var [removed_relations, removed_notes] = calc_reduce(mei_graph,
     remaining_relations,
     target_relations)
   var graphicals = []
 
-  for (let he of removed_relations) {
-    let parent_relations =
-      find_all_parent_relations(
-        he,
-        mei_graph,
-        [draw_context],
-        Array.from(document.getElementsByClassName('metarelation'))
-      )
-    if (parent_relations.meta_relations.length) {
-      for (let par of parent_relations.meta_relations) {
-        let svg_par = document.getElementById(get_id(par))
-        if (!svg_par.classList.contains('hidden-reduced')) {
-          svg_par.classList.add('hidden-reduced')
-          graphicals.push(svg_par)
+  if (remaining_notes.length > 0 && removed_notes.length > 0) {
+    // Recursively hide any connected metarelations
+    for (let he of removed_relations) {
+      let parent_relations =
+        find_all_parent_relations(
+          he,
+          mei_graph,
+          [draw_context],
+          Array.from(document.getElementsByClassName('metarelation'))
+        )
+      if (parent_relations.meta_relations.length) {
+        for (let par of parent_relations.meta_relations) {
+          let svg_par = document.getElementById(get_id(par))
+          if (!svg_par.classList.contains('hidden-reduced')) {
+            svg_par.classList.add('hidden-reduced')
+            graphicals.push(svg_par)
+          }
         }
       }
     }
+
+    // Hide the reduced out graphics
+    // and prepare updates to the undo list while at it
+    graphicals.push(removed_relations.map(
+      (r) => hide_he(draw_context, r)
+    ))
+    graphicals.push(removed_notes.map(
+      (n) => hide_note(draw_context, n)
+    ))
+    graphicals.push(removed_relations.map(
+      (r) => hide_he_hier(draw_context, r)
+    ))
+    graphicals.push(removed_notes.map(
+      (n) => hide_note_hier(draw_context, n)
+    ))
+
+    // Lock the layer once more if it is further reduced
+    if (graphicals.length > 0) {
+      draw_context.distance_from_surface += 1
+      draw_context.svg_elem.classList.add('locked')
+      document.getElementById('reduction-counter').innerText = `Reductive iteration: -${draw_context.distance_from_surface}`
+    }
+
+    // Update undo list
+    var undo = [removed_relations, removed_notes, graphicals]
+    draw_context['reductions'].push(['reduce', undo, sel, extra])
   }
-
-  graphicals.push(removed_relations.map(
-    (r) => hide_he(draw_context, r)
-  ))
-  graphicals.push(removed_notes.map(
-    (n) => hide_note(draw_context, n)
-  ))
-  graphicals.push(removed_relations.map(
-    (r) => hide_he_hier(draw_context, r)
-  ))
-  graphicals.push(removed_notes.map(
-    (n) => hide_note_hier(draw_context, n)
-  ))
-
-  // Lock the layer once more if it is further reduced
-  if (graphicals.length > 0) {
-    draw_context.distance_from_surface += 1
-    console.log(`Layer locked`)
-    draw_context.svg_elem.classList.add('locked')
-    document.getElementById('reduction-counter').innerText = `Reductive iteration: -${draw_context.distance_from_surface}`
-  }
-  console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
-
-  var undo = [removed_relations, removed_notes, graphicals]
-  draw_context['reductions'].push(['reduce', undo, sel, extra])
 }
 
 export function undo_reduce() {
@@ -163,10 +177,8 @@ export function undo_reduce() {
   extra.forEach(x => toggle_selected(x, true))
   // Unlock the layer if it has reached the surface
   if (graphicals.length > 0) draw_context.distance_from_surface -= 1
-  console.log(`Distance from surface: ${draw_context.distance_from_surface}`)
   document.getElementById('reduction-counter').innerText = `Reductive iteration: -${draw_context.distance_from_surface}`
   if (draw_context.distance_from_surface == 0) {
-    console.log(`Layer unlocked`)
     draw_context.svg_elem.classList.remove('locked')
     document.getElementById('reduction-counter').innerText = ''
   }

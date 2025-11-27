@@ -1052,8 +1052,8 @@ export function draw_slur(startNote, endNote, isDownward) {
   // and intersect that segment at 20% and 80% of its length, so that the four points together form a trapezoid.
   const cpMult = isDownward ? 1 : -1
   const cpScaler = 4 * curvature_factor / Math.log(width) + additionalHeight / 5000
-  const cp1x = (4 * adjustedStart[0] + adjustedEnd[0]) / 5 - cpMult * cpScaler * (adjustedEnd[1] - adjustedStart[1])
-  const cp2x = (adjustedStart[0] + 4 * adjustedEnd[0]) / 5 - cpMult * cpScaler * (adjustedEnd[1] - adjustedStart[1])
+  const cp1x = Math.max((4 * adjustedStart[0] + adjustedEnd[0]) / 5 - cpMult * cpScaler * (adjustedEnd[1] - adjustedStart[1]), adjustedStart[0] + 100)
+  const cp2x = Math.max((adjustedStart[0] + 4 * adjustedEnd[0]) / 5 - cpMult * cpScaler * (adjustedEnd[1] - adjustedStart[1]), adjustedStart[0] + 100)
   const cp1y = (4 * adjustedStart[1] + adjustedEnd[1]) / 5 + cpMult * cpScaler * (adjustedEnd[0] - adjustedStart[0])
   const cp2y = (adjustedStart[1] + 4 * adjustedEnd[1]) / 5 + cpMult * cpScaler * (adjustedEnd[0] - adjustedStart[0])
 

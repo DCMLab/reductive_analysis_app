@@ -619,5 +619,7 @@ export function adjustAllLayersSvgDimensions() {
 export function getViewNumberForElement(element) {
   if (typeof element == 'undefined') return false
   if (typeof element.closest == 'undefined') return false
-  return /\d+$/.exec(element.closest('.view').id)[0]
+  let view_match = /\d+$/.exec(element.closest('.view')?.id)
+  if (view_match) return view_match[0]
+  return false
 }

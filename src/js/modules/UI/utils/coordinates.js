@@ -281,7 +281,7 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
   if (!layer_context.score_elem.contains(l)) {
     return false
   }
-  var n = mei.createElement('note')
+  var n = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'note')
   console.log('Note: ', n)
   var added = []
   n.setAttribute('xml:id', id)

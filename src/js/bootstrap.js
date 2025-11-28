@@ -269,7 +269,7 @@ function add_or_fetch_graph() {
     // TODO: Not just grab the first one.
     return existing[0]
   }
-  var elem = mei.createElement('graph')
+  var elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'graph')
   elem.setAttribute('type', 'directed')
   mei.getElementsByTagName('body')[0].appendChild(elem)
   return elem

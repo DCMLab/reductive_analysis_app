@@ -12,9 +12,9 @@ import { random_id } from '../utils/misc'
 export function add_relation(mei_graph, primaries, secondaries, type, he_id_param) {
   var added = []
   // Add a new node for the relation
-  var he_elem = mei_graph.getRootNode().createElement('node')
+  var he_elem = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'node')
   he_elem.setAttribute('type', 'relation')
-  var he_label = mei_graph.getRootNode().createElement('label')
+  var he_label = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'label')
   if (typeof type != 'undefined')
     he_label.setAttribute('type', type)
   he_elem.appendChild(he_label)
@@ -30,7 +30,7 @@ export function add_relation(mei_graph, primaries, secondaries, type, he_id_para
   added.push(he_elem)
   // Set up the connections to the given primaries and secondaries
   for (var i = 0; i < primaries.length; i++) {
-    var elem = mei.createElement('arc')
+    var elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'arc')
     elem.setAttribute('from', '#' + he_id)
     elem.setAttribute('to', '#' + primaries[i].getAttribute('xml:id'))
     elem.setAttribute('type', 'primary')
@@ -38,7 +38,7 @@ export function add_relation(mei_graph, primaries, secondaries, type, he_id_para
     added.push(elem)
   }
   for (var i = 0; i < secondaries.length; i++) {
-    var elem = mei.createElement('arc')
+    var elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'arc')
     elem.setAttribute('from', '#' + he_id)
     elem.setAttribute('to', '#' + secondaries[i].getAttribute('xml:id'))
     elem.setAttribute('type', 'secondary')
@@ -51,9 +51,9 @@ export function add_relation(mei_graph, primaries, secondaries, type, he_id_para
 export function add_metarelation(mei_graph, primaries, secondaries, type, he_id_param) {
   var added = []
   // Add a new node for the relation
-  var he_elem = mei_graph.getRootNode().createElement('node')
+  var he_elem = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'node')
   he_elem.setAttribute('type', 'metarelation')
-  var he_label = mei_graph.getRootNode().createElement('label')
+  var he_label = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'label')
   if (typeof type != 'undefined')
     he_label.setAttribute('type', type)
   he_elem.appendChild(he_label)
@@ -69,7 +69,7 @@ export function add_metarelation(mei_graph, primaries, secondaries, type, he_id_
 
   // Set up the connections to the given primaries and secondaries
   for (var i = 0; i < primaries.length; i++) {
-    var elem = mei_graph.getRootNode().createElement('arc')
+    var elem = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'arc')
     elem.setAttribute('from', '#' + he_id)
     elem.setAttribute('to', '#' + primaries[i].getAttribute('xml:id'))
     elem.setAttribute('type', 'primary')
@@ -77,7 +77,7 @@ export function add_metarelation(mei_graph, primaries, secondaries, type, he_id_
     added.push(elem)
   }
   for (var i = 0; i < secondaries.length; i++) {
-    var elem = mei_graph.getRootNode().createElement('arc')
+    var elem = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'arc')
     elem.setAttribute('from', '#' + he_id)
     elem.setAttribute('to', '#' + secondaries[i].getAttribute('xml:id'))
     elem.setAttribute('type', 'secondary')

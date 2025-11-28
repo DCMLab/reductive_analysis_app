@@ -509,10 +509,10 @@ export function add_mei_node_for(mei_graph, note) {
   if (elem != null) {
     return elem
   }
-  elem = mei_graph.getRootNode().createElement('node')
+  elem = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'node')
   // This node represent that note
-  var label = mei_graph.getRootNode().createElement('label')
-  var note = mei_graph.getRootNode().createElement('note')
+  var label = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'label')
+  var note = mei_graph.getRootNode().createElementNS('http://www.music-encoding.org/ns/mei', 'note')
   note.setAttribute('corresp', '#' + id)
   elem.appendChild(label)
   label.appendChild(note)
@@ -771,7 +771,7 @@ export function fix_layers(mei) {
         if (prefix_re.test(score_id)) {
           // We almost certainly have a layer thingy
           let score_prefix = prefix_re.exec(score_id)[1]
-          var new_mdiv_elem = mei.createElement('mdiv')
+          var new_mdiv_elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'mdiv')
           if (sliced_re.test(score_id))
             new_mdiv_elem.setAttribute('xml:id', score_prefix + '-' + mdiv_id + '-sliced')
           else

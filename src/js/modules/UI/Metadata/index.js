@@ -125,7 +125,7 @@ class Metadata {
     this.scoreHead[name] = this.scoreHead.titleStmt.getElementsByTagName(name)
 
     if (!this.scoreHead[name].length) {
-      const el = score.mei.createElement(name)
+      const el = score.mei.createElementNS('http://www.music-encoding.org/ns/mei', name)
       this.scoreHead.titleStmt.appendChild(el)
     }
   }
@@ -153,7 +153,9 @@ class Metadata {
   // Add freshly-created element in score for the missing role.
 
   initRole(role) {
-    const missingRoleEl = parser.parseFromString(`<persName role="${role}" xml:id="${role}" />`, 'text/xml').firstChild
+    // const missingRoleEl = parser.parseFromString(`<persName role="${role}" xmlns="http://www.music-encoding.org/ns/mei"/>`, 'text/xml').firstChild
+    const missingRoleEl = document.createElementNS('http://www.music-encoding.org/ns/mei', 'persName')
+    missingRoleEl.setAttribute('role', role)
     this.scoreHead.respStmt[0].appendChild(missingRoleEl)
 
     this.persNames.push({

@@ -51,11 +51,11 @@ function slicify(draw_context, mdiv_elem, tied = false) {
 
   var modified_scoreDef = score_elem.getElementsByTagName('scoreDef')[0].cloneNode(true)
   var staffDefs = modified_scoreDef.getElementsByTagName('staffDef')
-  var new_mdiv_elem = mei.createElement('mdiv')
+  var new_mdiv_elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'mdiv')
   new_mdiv_elem.setAttribute('xml:id', mdiv_elem.getAttribute('xml:id') + '-sliced')
-  var new_score_elem = mei.createElement('score')
+  var new_score_elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'score')
   new_score_elem.setAttribute('xml:id', score_elem.getAttribute('xml:id') + '-sliced')
-  var new_section_elem = mei.createElement('section')
+  var new_section_elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'section')
   new_section_elem.setAttribute('xml:id', score_elem.getAttribute('xml:id') + '-slicedsection')
   new_mdiv_elem.appendChild(new_score_elem)
   new_score_elem.appendChild(modified_scoreDef)
@@ -65,11 +65,11 @@ function slicify(draw_context, mdiv_elem, tied = false) {
   for (var ix in ts) {
     let t = ts[ix]
     let ids = time_id_map[t]
-    let new_measure = mei.createElement('measure')
+    let new_measure = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'measure')
     new_measure.setAttribute('xml:id', 'measure-' + t)
     new_section_elem.appendChild(new_measure)
     for (var staffDef of staffDefs) {
-      let new_staff = mei.createElement('staff')
+      let new_staff = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'staff')
       // TODO: set ID
       new_staff.setAttribute('n', staffDef.getAttribute('n'))
       new_measure.appendChild(new_staff)
@@ -92,7 +92,7 @@ function slicify(draw_context, mdiv_elem, tied = false) {
       }
       let layer = staff.querySelector('layer[n="' + layer_n + '"]')
       if (!layer) {
-        layer = mei.createElement('layer')
+        layer = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'layer')
         layer.setAttribute('n', layer_n)
         // TODO: set ID
         staff.appendChild(layer)
@@ -103,7 +103,7 @@ function slicify(draw_context, mdiv_elem, tied = false) {
         let chord_id = old_chord.getAttribute('xml:id')
         let new_chord = layer.querySelector('chord[corresp="' + chord_id + '"]')
         if (!new_chord) {
-	  new_chord = mei.createElement('chord')
+	  new_chord = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'chord')
 	  new_chord.setAttribute('corresp', chord_id)
 	  new_chord.setAttribute('dur', 4)
 	  new_chord.setAttribute('dur.ges', 4)
@@ -121,7 +121,7 @@ function slicify(draw_context, mdiv_elem, tied = false) {
       if (ix > 0 && (time_id_map[ts[ix - 1]]).includes(id)) {
         // Change the ID
         new_note.setAttribute('xml:id', t + id)
-        let tie = mei.createElement('tie')
+        let tie = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'tie')
         tie.setAttribute('xml:id', 'tie' + t + id)
         tie.setAttribute('endid', t + id)
         // Was the previous note also tied?
@@ -137,11 +137,11 @@ function slicify(draw_context, mdiv_elem, tied = false) {
       if (!staff.querySelector('note')) {
         let layer = staff.querySelector('layer')
         if (!layer) {
-	  layer = mei.createElement('layer')
+	  layer = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'layer')
 	  // TODO: set ID
 	  staff.appendChild(layer)
         }
-        let rest = mei.createElement('rest')
+        let rest = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'rest')
         rest.setAttribute('dur', 4)
         rest.setAttribute('dur.ges', 4)
         rest.setAttribute('dur.ppq', 2)

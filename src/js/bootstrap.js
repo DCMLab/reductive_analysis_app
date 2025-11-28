@@ -269,17 +269,10 @@ function add_or_fetch_graph() {
     // TODO: Not just grab the first one.
     return existing[0]
   }
-  var elem = mei.createElement('graph')
+  var elem = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'graph')
   elem.setAttribute('type', 'directed')
   mei.getElementsByTagName('body')[0].appendChild(elem)
   return elem
-}
-
-function _remove_empty_xmlns(mei) {
-  mei.querySelectorAll('*').forEach(el => {
-    if (el.getAttribute('xmlns') === '') el.removeAttribute('xmlns')
-  })
-  return mei
 }
 
 export function save_mei() {
@@ -292,14 +285,12 @@ export function save_mei() {
       console.log('Found and tried to remove ', layer_elem)
     }
   }
-  mei_clone = _remove_empty_xmlns(mei_clone)
   var saved = new XMLSerializer().serializeToString(mei_clone)
   downloadAs(saved, filename + '.mei', 'text/xml')
 }
 
 export function save_txt() {
   var mei_clone = mei.cloneNode(true)
-  mei_clone = _remove_empty_xmlns(mei_clone)
 
   const mei_walker = mei_clone.createTreeWalker(
     mei_clone,

@@ -275,13 +275,6 @@ function add_or_fetch_graph() {
   return elem
 }
 
-function _remove_empty_xmlns(mei) {
-  mei.querySelectorAll('*').forEach(el => {
-    if (el.getAttribute('xmlns') === '') el.removeAttribute('xmlns')
-  })
-  return mei
-}
-
 export function save_mei() {
   var mei_clone = mei.cloneNode(true)
   for (var dc of draw_contexts) {
@@ -292,14 +285,12 @@ export function save_mei() {
       console.log('Found and tried to remove ', layer_elem)
     }
   }
-  mei_clone = _remove_empty_xmlns(mei_clone)
   var saved = new XMLSerializer().serializeToString(mei_clone)
   downloadAs(saved, filename + '.mei', 'text/xml')
 }
 
 export function save_txt() {
   var mei_clone = mei.cloneNode(true)
-  mei_clone = _remove_empty_xmlns(mei_clone)
 
   const mei_walker = mei_clone.createTreeWalker(
     mei_clone,

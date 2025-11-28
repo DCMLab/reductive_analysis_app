@@ -67,8 +67,10 @@ class Metadata {
   }
 
   updateScoreMetadata(name) {
-    const field = [...this.formDOM.inputs].find(({ id }) => id = `metadata-${name}`)
-    if (!field) { return }
+    const field = [...this.formDOM.inputs].find(({ id }) => id == `metadata-${name}`)
+    if (!field) {
+      return
+    }
 
     const value = field.value
 
@@ -85,21 +87,9 @@ class Metadata {
     role.value = value
     role.el.innerHTML = value
 
-    if (name == 'composer') { return }
-
-    // For other roles than composer, add resp. name on a note or a relation.
-
-    score.flatSelection.forEach(el => {
-      const meiId = get_id(el)
-      const meiEl = get_by_id(score.mei, meiId)
-
-      // A <note> or the <label> inside <node [type="(meta)relation"]>.
-      const target = meiEl.tagName == 'note'
-        ? meiEl
-        : meiEl.firstChild
-
-      target.setAttribute('resp', name)
-    })
+    if (name == 'composer') {
+      return
+    }
   }
 
   /**
@@ -107,10 +97,11 @@ class Metadata {
    */
 
   initScore() {
-
     // MEI XML structure is documented in `./config.js`.
     this.scoreHead.titleStmt = score.mei.querySelector('meiHead fileDesc titleStmt')
-    if (!this.scoreHead.titleStmt) { return }
+    if (!this.scoreHead.titleStmt) {
+      return
+    }
 
     // Initialize <title>, <respStmt> and its content (the roles).
 
@@ -141,7 +132,7 @@ class Metadata {
         el: pers,
         role: pers.getAttribute('role'),
         value: pers.innerHTML,
-        config: config.roles[pers.getAttribute('role')]
+        config: config.roles[pers.getAttribute('role')],
       }))
 
     // Find and initialize missing roles
@@ -153,8 +144,10 @@ class Metadata {
   // Add freshly-created element in score for the missing role.
 
   initRole(role) {
-    // const missingRoleEl = parser.parseFromString(`<persName role="${role}" xmlns="http://www.music-encoding.org/ns/mei"/>`, 'text/xml').firstChild
-    const missingRoleEl = document.createElementNS('http://www.music-encoding.org/ns/mei', 'persName')
+    const missingRoleEl = document.createElementNS(
+      'http://www.music-encoding.org/ns/mei',
+      'persName'
+    )
     missingRoleEl.setAttribute('role', role)
     this.scoreHead.respStmt[0].appendChild(missingRoleEl)
 
@@ -162,7 +155,7 @@ class Metadata {
       el: missingRoleEl,
       role,
       value: '',
-      config: config.roles[role]
+      config: config.roles[role],
     })
   }
 
@@ -170,9 +163,9 @@ class Metadata {
 
   initFields() {
     this.formDOM.ctn.innerHTML =
-      createField('title', config.title, this.scoreHead.title[0].innerHTML)
-      + createUpdateBtn('title', config.title)
-      + createRolesFields(this.persNames)
+      createField('title', config.title, this.scoreHead.title[0].innerHTML) +
+      createUpdateBtn('title', config.title) +
+      createRolesFields(this.persNames)
   }
 }
 

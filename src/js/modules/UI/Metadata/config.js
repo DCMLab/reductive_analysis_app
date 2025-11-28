@@ -26,25 +26,25 @@
 export default {
   title: {
     label: 'Title',
-    saveBtn: 'Update title',
-    placeholder: 'The name ♪ of the song ♫',
+    saveBtn: 'Update',
+    placeholder: '',
   },
 
   roles: {
     composer: {
       label: 'Composer',
-      saveBtn: 'Update composer',
-      placeholder: 'Wolfgang Amadeus Mozart',
+      saveBtn: 'Update',
+      placeholder: '',
     },
     analyst: {
       label: 'Analyst',
-      saveBtn: 'Assign responsibility',
-      placeholder: 'Maybe you?',
+      saveBtn: 'Update',
+      placeholder: '',
     },
     annotator: {
       label: 'Annotator',
-      saveBtn: 'Assign responsibility',
-      placeholder: 'Maybe you?',
+      saveBtn: 'Update',
+      placeholder: '',
     },
   },
 }

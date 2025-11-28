@@ -91,6 +91,12 @@ export function scrollDoc(down = true) {
 export function toggle_selected(item, extra = null) {
   const itemType = get_class_from_classlist(item)
 
+  let view_number = getViewNumberForElement(item)
+
+  if (typeof item == 'undefined' || typeof item.classList == 'undefined' || view_number !== '0') return false
+
+  if (view_number !== '0') return false
+
   if (!['relation', 'metarelation', 'note'].includes(itemType)) {
     return
   }

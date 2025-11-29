@@ -5,7 +5,7 @@ body {
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently */
-  height: 100vh;
+  height: max-content;
 }
 
 /* *::-webkit-scrollbar {

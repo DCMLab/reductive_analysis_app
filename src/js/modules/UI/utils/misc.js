@@ -93,13 +93,7 @@ export function toggle_selected(item, extra = null) {
 
   let view_number = getViewNumberForElement(item)
 
-  if (typeof item == 'undefined' || typeof item.classList == 'undefined' || view_number !== '0') return false
-
-  if (view_number !== '0') return false
-
-  if (!['relation', 'metarelation', 'note'].includes(itemType)) {
-    return
-  }
+  if (typeof item == 'undefined' || !item.classList.contains(itemType) || view_number != '0') return false
 
   let draw_context = getCurrentDrawContext()
   if (draw_context.svg_elem.classList.contains('locked')) {

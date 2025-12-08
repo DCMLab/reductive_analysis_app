@@ -1,5 +1,5 @@
-@use "../../../abstract/mixins/all-but";
-@use "../../../variables/colors";
+@use '../../../abstract/mixins/all-but';
+@use '../../../variables/colors';
 
 // Modifier for a group of tab buttons with a separator between them.
 
@@ -11,16 +11,16 @@
   &:hover,
   &:focus,
   &:focus-within {
-    --btn-transition: .1s;
+    --btn-transition: 0.1s;
 
     .btn-tabs__btn {
       --btn-border: var(--primary); // overwrite default hover/focus
 
       // Fade out other buttons.
 
-      &:not(:hover):not(:focus) {
-        --btn-color: #{colors.$alto};
-      }
+      // &:not(:hover):not(:focus) {
+      //   --btn-color: #{colors.$alto};
+      // }
 
       /**
        * Removing transition on background-color and color to only keep the
@@ -52,14 +52,14 @@
     @include all-but.all-but(1) {
       &::before {
         content: var(--with-separator, unset);
-        size: .2rem var(--tab-separator-height, 2rem);
+        size: 0.2rem var(--tab-separator-height, 2rem);
         position: absolute;
-        left: -.1rem;
+        left: -0.1rem;
 
         pointer-events: none;
 
         background: var(--tab-separator, unset);
-        border-radius: .1rem;
+        border-radius: 0.1rem;
       }
     }
 

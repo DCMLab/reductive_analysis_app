@@ -346,6 +346,9 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
       intersectX = x + (dx * halfHeight / Math.abs(dy))
     }
 
+    // Make sure the line is not perfectly vertical.
+    info.point[0] = info.point[0] == intersectX ? info.point[0] + 1 : info.point[0]
+
     // Draw the connection line from the intersection point
     var line_elem = line([intersectX, intersectY], info.point)
     g_elem.appendChild(line_elem)

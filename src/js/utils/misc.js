@@ -15,18 +15,18 @@ import { toggle_selected, getMouseX, getMouseY } from '../modules/UI/utils/misc'
 
 // Vector operations, taken from
 // http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
-var vecScale = function (scale, v) {
+var vecScale = function(scale, v) {
   // Returns the vector 'v' scaled by 'scale'.
   return [scale * v[0], scale * v[1]]
 }
 
-var vecSum = function (pv1, pv2) {
+var vecSum = function(pv1, pv2) {
   // Returns the sum of two vectors, or a combination of a point and a
   // vector.
   return [pv1[0] + pv2[0], pv1[1] + pv2[1]]
 }
 
-var unitNormal = function (p0, p1) {
+var unitNormal = function(p0, p1) {
   // Returns the unit normal to the line segment from p0 to p1.
   var n = [p0[1] - p1[1], p1[0] - p0[0]]
   var nLength = Math.sqrt(n[0] * n[0] + n[1] * n[1])
@@ -34,7 +34,7 @@ var unitNormal = function (p0, p1) {
 }
 
 // Returns the path for a rounded hull around a single point (a circle).
-var roundedHull1 = function (polyPoints, hullPadding) {
+var roundedHull1 = function(polyPoints, hullPadding) {
   const p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding]
   const p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)]
 
@@ -45,7 +45,7 @@ var roundedHull1 = function (polyPoints, hullPadding) {
 }
 
 // Returns the path for a rounded hull around two points (a "capsule" shape).
-var roundedHull2 = function (polyPoints, hullPadding) {
+var roundedHull2 = function(polyPoints, hullPadding) {
   var offsetVector = vecScale(hullPadding, unitNormal(polyPoints[0], polyPoints[1]))
   var invOffsetVector = vecScale(-1, offsetVector)
   // around that note coordinates are not at the centroids
@@ -62,7 +62,7 @@ var roundedHull2 = function (polyPoints, hullPadding) {
 }
 
 // Returns the SVG path data string representing the polygon, expanded and rounded.
-var roundedHullN = function (polyPoints, hullPadding) {
+var roundedHullN = function(polyPoints, hullPadding) {
 
   // Handle special cases
   if (!polyPoints || polyPoints.length < 1) return ''
@@ -84,7 +84,7 @@ var roundedHullN = function (polyPoints, hullPadding) {
 
   var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',')
 
-  segments = segments.map(function (segment, index) {
+  segments = segments.map(function(segment, index) {
     var pathFragment = ''
     if (index === 0) {
       var pathFragment = 'M ' + segments[segments.length - 1][1] + ' '
@@ -203,22 +203,33 @@ export function g() {
   return newElement
 }
 
-export function random_id() {
-  return Math.floor(Math.random() * (1 << 28)).toString(16)
+export function random_id(length = 8) {
+  const l = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  const d = '0123456789'
+  const v = l + d + '-._'
+
+  const firstChar = (l + '_')[Math.floor(Math.random() * (l.length + 1))]
+
+  let remaining = ''
+  for (let i = 0; i < length - 1; i++) {
+    remaining += v[Math.floor(Math.random() * v.length)]
+  }
+
+  return firstChar + remaining
 }
 
 export function pitch_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
   // Pitch offset in MIDI steps
   return vrvToolkit.getMIDIValuesForElement(get_id(n1)).pitch -
-	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).pitch
+    vrvToolkit.getMIDIValuesForElement(get_id(n2)).pitch
 }
 
 export function time_offset(n1, n2) {
   var vrvToolkit = getVerovioToolkit()
   // Time offset in MIDI milliseconds
   return vrvToolkit.getMIDIValuesForElement(get_id(n1)).time -
-	 vrvToolkit.getMIDIValuesForElement(get_id(n2)).time
+    vrvToolkit.getMIDIValuesForElement(get_id(n2)).time
 }
 
 export function notes_template(ns) {
@@ -251,15 +262,15 @@ export function notes_in_range(n_ref, min_p_off, max_p_off, max_t_off) {
         console.log('in time')
         let p_off = pitch_offset(m, n_ref)
         if (p_off >= min_p_off && p_off <= max_p_off) {
-	  console.log('in pitch')
-	  none_added = false
-	  ns.push(m)
+          console.log('in pitch')
+          none_added = false
+          ns.push(m)
         }
       }
     }
     if (none_added) // TODO: Better check - there could be measures with no
-    // notes in the pitch range that are still in the time
-		   // range
+      // notes in the pitch range that are still in the time
+      // range
       curr_measure = null
     else
       curr_measure = next_measure(curr_measure)
@@ -390,7 +401,7 @@ export function node_referred_to(id) {
   return Array.from(mei.getElementsByTagName('arc'))
     .filter((x) => {
       return (x.getAttribute('from') == '#' + id.slice(1) ||
-                x.getAttribute('to') == '#' + id.slice(1))
+        x.getAttribute('to') == '#' + id.slice(1))
     }).length > 0
 }
 
@@ -471,7 +482,7 @@ export function relation_primaries(mei_graph, he) {
   var nodes = []
   arcs_array.forEach((a) => {
     if (a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
-       a.getAttribute('type') == 'primary') {
+      a.getAttribute('type') == 'primary') {
       nodes.push(get_by_id(mei_graph.getRootNode(), a.getAttribute('to')))
     }
   })
@@ -484,7 +495,7 @@ export function relation_secondaries(mei_graph, he) {
   var nodes = []
   arcs_array.forEach((a) => {
     if (a.getAttribute('from') == '#' + he.getAttribute('xml:id') &&
-       a.getAttribute('type') == 'secondary') {
+      a.getAttribute('type') == 'secondary') {
       nodes.push(get_by_id(mei_graph.getRootNode(), a.getAttribute('to')))
     }
   })
@@ -626,7 +637,7 @@ export function get_class_from_classlist(elem) {
 }
 
 // Get the center of the bounding box
-function getBoundingBoxCenter (elem) {
+function getBoundingBoxCenter(elem) {
   // use the native SVG interface to get the bounding box
   var bbox = elem.getBBox()
   // return the center of the bounding box
@@ -989,7 +1000,7 @@ export function check_for_duplicate_relations(type, prospective_primaries, prosp
     s = s.map(i => i.getAttribute('xml:id'))
       .sort((a, b) => a < b)
     if (JSON.stringify(primaries) == JSON.stringify(p)
-          && JSON.stringify(secondaries) == JSON.stringify(s)) {
+      && JSON.stringify(secondaries) == JSON.stringify(s)) {
       alert('Warning: This relation already exists.\nCreating a duplicate anyway.')
       return false
     }
@@ -1013,7 +1024,7 @@ function count_existing_slurs(noteElement) {
     const slurs = Array.from(relation.getElementsByTagName('path'))
     slurs.forEach(slur => {
       if (slur.getAttribute('start-note') === noteElement.id ||
-          slur.getAttribute('end-note') === noteElement.id) {
+        slur.getAttribute('end-note') === noteElement.id) {
         count++
       }
     })

@@ -115,7 +115,7 @@ export function pitch_grid(staff) {
     const staves = Array.from(sys.getElementsByClassName('staff'))
     // For something that has the same height as this
     const sibling_staff = staves.find((st) => staff_midpoint(st) == mid &&
-	st.getElementsByClassName('note').length > 0)
+      st.getElementsByClassName('note').length > 0)
     // And a note we can compare heights with
     if (sibling_staff)
       note = sibling_staff.getElementsByClassName('note')[0]
@@ -128,7 +128,7 @@ export function pitch_grid(staff) {
     const staves = Array.from(sys.getElementsByClassName('staff'))
     // For something that has the same height as this
     const sibling_staff = staves.find((st) => staff_midpoint(st) == mid &&
-	st.getElementsByClassName('clef').length > 0)
+      st.getElementsByClassName('clef').length > 0)
     // And a clef we can compare heights with
     const clef = sibling_staff.getElementsByClassName('clef')[0]
     // CLEF Y IS WHAT YOU EXPECT
@@ -311,7 +311,7 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
 }
 
 export function do_note(pname, oct, note, offset, id, redoing = false) {
-  var new_element_id = 'added-' + random_id()
+  var new_element_id = 'added-' + random_id(8)
   let n = note
   if (typeof (id) != 'undefined')
     new_element_id = id
@@ -347,7 +347,7 @@ export function start_placing_note() {
     if (!current_draw_context.canEdit)
       return
     let [pname, oct, note] = note_params()
-    placing_note = 'temp' + random_id()
+    placing_note = 'temp' + random_id(8)
     setPlacingNote(placing_note)
     document.getElementById('layers').style.cursor = 'crosshair'
     if (pname)

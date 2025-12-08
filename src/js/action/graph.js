@@ -22,7 +22,7 @@ export function add_relation(mei_graph, primaries, secondaries, type, he_id_para
   var he_id
   // If we're given a parameter ID, use that, otherwise generate a new one
   if (typeof he_id_param == 'undefined')
-    he_id = 'he-' + Math.floor(Math.random() * (1 << 20)).toString(16)
+    he_id = 'he-' + random_id(8)
   else
     he_id = he_id_param
   he_elem.setAttribute('xml:id', he_id)
@@ -60,7 +60,7 @@ export function add_metarelation(mei_graph, primaries, secondaries, type, he_id_
   // Use the given ID parameter if given
   var he_id
   if (typeof he_id_param == 'undefined')
-    he_id = 'he-' + Math.floor(Math.random() * (1 << 20)).toString(16)
+    he_id = 'he-' + random_id(8)
   else
     he_id = he_id_param
   he_elem.setAttribute('xml:id', he_id)

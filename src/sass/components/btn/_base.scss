@@ -1,5 +1,5 @@
-@use "../../utility/easings";
-@use "../../variables/colors";
+@use '../../utility/easings';
+@use '../../variables/colors';
 
 .btn {
   padding: 1rem 1.5rem;
@@ -10,15 +10,14 @@
   white-space: nowrap;
 
   background: var(--btn-bg, var(--bg, transparent));
-  border: solid .2rem var(--btn-border, inherit);
+  border: solid 0.2rem var(--btn-border, inherit);
   border-radius: var(--btn-radius, var(--btn-default-radius, 0));
   color: var(--btn-color, primary);
 
-  transition: var(--btn-transition, .1s) easings.$in-out-quad;
+  transition: var(--btn-transition, 0.1s) easings.$in-out-quad;
   transition-property: background-color, border-color, color;
 
-  &:hover,
-  &:focus {
+  &:hover {
     --btn-bg: var(--bg);
     --btn-border: var(--primary);
     --btn-color: var(--primary);
@@ -36,7 +35,7 @@
 
 .btn--hollow {
   --btn-border: #{colors.$alto};
-  --btn-transition: .4s;
+  --btn-transition: 0.4s;
   --btn-hover-transition: 0s;
 }
 
@@ -45,8 +44,7 @@
   --btn-border: var(--primary);
   --btn-color: var(--bg);
 
-  &:hover,
-  &:focus {
+  &:hover {
     --btn-bg: #{colors.$lacquered-licorice};
     --btn-border: #{colors.$lacquered-licorice};
     --btn-color: var(--bg);
@@ -63,7 +61,7 @@
 }
 
 .btn--small {
-  padding: .8rem;
+  padding: 0.8rem;
 }
 
 .btn--naked {

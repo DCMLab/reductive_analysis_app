@@ -64,7 +64,7 @@
     "puppeteer": "^24.10.0",
     "rollup-plugin-license": "^3.6.0",
     "sass": "^1.89.1",
-    "vite": "^6.3.5",
+    "vite": "^7.2.7",
     "vite-plugin-eslint": "^1.8.1"
   }
 }

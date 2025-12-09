@@ -1,166 +1,22 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6395095.svg)](https://doi.org/10.5281/zenodo.6395095)
 
-# Reductive score annotation app
-
-This is an app to facilitate music analysis using a reductive (e.g. Schenkerian) paradigm.
-
-The app is continually under construction but may be tested [here](https://dcmlab.github.io/reductive_analysis_app/index.html)
-
-## Table of contents
-
-- [The basics](#the-basics)
-- [A short example](#a-short-example)
-- [Hierarchical analysis](#hierarchical-analysis)
-  - [Showcase: Schenkerian analysis](#showcase-schenkerian-analysis)
-  - [Showcase: GTTM Tree](#showcase-gttm-Tree)
-  - [Showcase: MOP annotation](#showcase-mop-annotation)
-- [Funding and publications](#funding-and-publications)
-- [Development](#development)
-
-## The basics
-
-The basics are as follows:
- 
- * Clicking selects notes. Shift-click selects them as _primary_
- * Linking together the selected notes into a _relation_ can be done either without giving the
-   relation a type at all, by clicking one of the preset buttons or their
-   key bindings, or by writing a custom type into the text field and
-   clicking the "Assign" button.
- * Relations with both primary and secondary notes imply a priority among
-   the notes. If we add a number of relations such that no circular
-   priorities are introduced, we have defined a type of _hierarchy_ among
-   the notes and relations.
- * After having annotated a number of relations/relations, we can _reduce_
-   the lowest-ranked notes in our hierarchy by clicking the "Reduce" button. 
-   We can also select a subset of the existing
-   relations to attempt to reduce. The basic algorithm is this: Each
-   reduced relation also removes its secondary notes, and leaves its
-   primary notes to the next step.  However, any relations that are _not_
-   removed in this step needs to have all of its notes remain. Thus, the
-   removed relations have, as secondaries, only notes that are removed in
-   this step, and the removed notes are only secondaries of removed
-   relations.
-
-## A short example
-
-Let us load a familiar piece into the annotation app: Bach's Prelude in C
-Major from The Well-tempered Clavier (BWV 846). This is done by selecting
-the file from your computer through the file selector accessed from the 
-"Open a score" button. Once chosen, the app should render it directly as in
-
-![](documentation/images/tutorial21.png?raw=true)
-
-This done, we can begin selecting notes by clicking them. We can also select notes as _primary_ by shift-clicking them.
-
-After selecting a number of notes, we can associate them using a relation,
-either of some specific type, or untyped. There are a number of predefined
-relation types with dedicated buttons and keybindings, and a textfield for
-entering a custom type in the expanded menu.
-
-Let us select the first E in the upper voice as primary, and the rest of the E's in that measure as secondary:
-
-![](documentation/images/tutorial22.png?raw=true)
-
-We can do this either by clicking and shift-clicking the individual notes,
-and then either clicking the button marked "Repeat" or
-using the "+" keyboard shortcut. However, specifically for the situation
-that all the notes of the same pitch in a single bar should be selected and
-related as repeats, it is also possible to just select the primary note of
-the repeat and then hitting "+".
-
-![](documentation/images/tutorial23.png?raw=true)
-
-After having created a number of relations, we can choose to do a "Reduce"
-step (by clicking the button in the layer menu on the left) which hides 
-the "lowest" level of edges, as described above. For
-example, if we have made similar relations for the other parts in the
-arpeggio, we can reduce the first bar of the Prelude from this:
-
-![](documentation/images/tutorial24.png?raw=true)
-
-To this:
-
-![](documentation/images/tutorial25.png?raw=true)
-
-However, this doesn't look very nice, as we only hide the notes, and not
-the beams and other things related to notes. We can hide stems and beams
-and such things with the button "Stems etc." in the "More options" menu, or the keyboard
-shortcut "s".
-
-![](documentation/images/tutorial26.png?raw=true)
-
-But this still leaves us with an embarrassing amount of unused space, as
-well as unused ledger lines. We can, however, create a _new layer_, which
-will be added in the app below the first layer, where such unused spaced can be
-significantly reduced, and features like note editing becomes available.
-
-![](documentation/images/tutorial27.png?raw=true)
-
-Slightly better!
-
-Having done a number of reductions and new layers, we can end up with something similar to:
-
-![](documentation/images/tutorial28.png?raw=true)
-
-Which starts to be useful for further analysis.
-
-By clicking the "Save" button, you will get the option to save the original
-MEI, any selection of additional layers, plus the graph as currently envisioned. For example, saving the above
-state and then loading the resulting file will show this view:
-
-![](documentation/images/tutorial29.png?raw=true)
-
-## Hierarchical analysis
-
-More exciting possibilities are open by having overlapping and interacting
-relations, though this is beyond the scope of this simple example. For
-presenting an earlier version of this work as a Late-Breaking Demo at ISMIR2020, the following
-illustrative gifs were produced, showcasing some more advanced ideas:
-
-**Update**: In the GIFs below, reference is made to needing to delete edges in order to see relations "behind" them. This is no longer required: instead, by scrolling with the scroll wheel (up or down), the currently highlighted edge is sent to the "bottom" of the stack, showing the edges that were "hidden".
-
-### Showcase: Schenkerian analysis
-
-![](documentation/images/schenker.gif?raw=true)
-
-### Showcase: GTTM Tree
-
-![](documentation/images/gttm.gif?raw=true)
-
-### Showcase: MOP annotation
-
-![](documentation/images/mop.gif?raw=true)
-
-
-## Funding and publications
-
-The present work has been presented at ISMIR 2020 as a Late-Breaking Demo,
-with this [extended abstract](documentation/papers/ismir_2020_lbd_extended_abstract.pdf)
-and [poster](documentation/papers/ismir_2020_lbd_poster.pdf).
-
-This project has received funding from the European Research Council (ERC)
-under the European Union's Horizon 2020 research and innovation program
-under grant agreement No 760081 – PMSB. We thank Claude Latour
-for supporting this research through the Latour Chair in Digital
-Musicology. Additionally, the members of the Digital and Cognitive
-Musicology Lab (DCML) have contributed valuable insights through
-discussions and user testing.
+This branch contains the actively maintained version of the app. Rarely used features are removed or disabled, with focus shifted towards bug fixes, usability, and core annotation features.
 
 ## Building the app
 
-The app is in `/src`. Assets called by the app needs to be compiled using some front-end tooling, detailed below.
+The app resides in `/src`. Assets need to be compiled using frontend tooling, as detailed below.
 
 ### Development
 
 1. Duplicate `.env.example` to `.env` and edit it.
-2. Run `npm install` (Node > 12.13) to install all the required packages and tools.
+2. Run `npm install` (Node > 12.13) to install all required packages and tools.
 3. Run `npm run dev` and open the URL returned by the CLI.
 4. **After a code merge in the main branch**, update the modified build (`npm run build`) and push it, too.
 
 ### Production
 
 1. Duplicate `.env.example` to `.env` and edit it.
-2. Run `npm install` (Node > 12.13) to install all the required packages and tools.
+2. Run `npm install` (Node > 12.13) to install all required packages and tools.
 3. Run `npm run build` to compile the app. The compiled app goes in `/public`.
 
 ### Various

@@ -974,6 +974,82 @@ export function sanitize_xml(xml) {
   return sanitized_xml
 }
 
+export function prune_mei_graph(mei) {
+  let removedArcs = 0
+  let removedNodes = 0
+
+  try {
+    // All all existing node id's to a map
+    const nodes = mei.querySelectorAll('node')
+    const existingNodeIds = new Set()
+
+    nodes.forEach(node => {
+      const id = node.getAttribute('xml:id')
+      if (id) existingNodeIds.add(id)
+    })
+
+    // Helper to strip leading hashtag if present (though in practice it should be present)
+    const strip = (val) => (val && val.startsWith('#') ? val.slice(1) : val)
+
+    // Remove "broken" arcs (i.e. arcs with `from` or `to` references to nonexistent node)
+    const arcs = mei.querySelectorAll('arc')
+    arcs.forEach(arc => {
+      try {
+        const fromRaw = arc.getAttribute('from')
+        const toRaw = arc.getAttribute('to')
+
+        const fromId = strip(fromRaw)
+        const toId = strip(toRaw)
+
+        if (!fromId || !toId || !existingNodeIds.has(fromId) || !existingNodeIds.has(toId)) {
+          arc.remove()
+          removedArcs++
+        }
+      } catch (e) {
+        console.warn('Export: Skipping arc element with broken reference.', e)
+      }
+    })
+
+    // Identify nodes referenced by the remaining valid arcs
+    const remainingArcs = mei.querySelectorAll('arc')
+    const referencedNodeIds = new Set()
+
+    remainingArcs.forEach(arc => {
+      try {
+        const f = strip(arc.getAttribute('from'))
+        const t = strip(arc.getAttribute('to'))
+        if (f) referencedNodeIds.add(f)
+        if (t) referencedNodeIds.add(t)
+      } catch (e) {
+        console.warn('Export: Skipping potentially arc element during reference collection. This is probably a bug, not a sign of data corruption.', e)
+      }
+    })
+
+    // Remove any nodes not found in the referenced set
+    nodes.forEach(node => {
+      try {
+        const id = node.getAttribute('xml:id')
+        if (!referencedNodeIds.has(id)) {
+          node.remove()
+          removedNodes++
+        }
+      } catch (e) {
+        console.warn('Export: Skipping potentially corrupt node element.', e)
+      }
+    })
+
+    // Final Report
+    console.log(`Export: ${removedArcs} arcs pruned away.`)
+    console.log(`Export: ${removedNodes} nodes pruned away.`)
+
+    return mei
+  } catch (error) {
+    alert('Since the pruning process encountered errors, the exported MEI file may be corrupt.')
+    console.error('Pruning error context:', error)
+    return mei
+  }
+}
+
 export function check_for_duplicate_relations(type, prospective_primaries, prospective_secondaries) {
   var mei_graph = getMeiGraph()
 

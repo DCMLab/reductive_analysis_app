@@ -60,6 +60,7 @@ import {
   new_view_elements,
   note_coords,
   note_to_rest,
+  prune_mei_graph,
   relation_get_notes,
   sanitize_xml,
 } from './utils/misc'
@@ -120,7 +121,7 @@ var layer_contexts = []
 
 // Prevent unsaved data loss by warning user before browser unload events (reload, close).
 // Attempting to do this in compliant fashion (https://html.spec.whatwg.org/#prompt-to-unload-a-document).
-window.addEventListener('beforeunload', function (e) {
+window.addEventListener('beforeunload', function(e) {
   var confirmationMessage = 'Leave app? You may lose unsaved changes.'
 
   e.preventDefault()
@@ -276,6 +277,7 @@ function add_or_fetch_graph() {
 }
 
 export function save_mei() {
+  prune_mei_graph(mei)
   var mei_clone = mei.cloneNode(true)
   for (var dc of draw_contexts) {
     if (!dc.canSave) {
@@ -307,17 +309,17 @@ export function save_txt() {
 
       const attributes = Object.fromEntries(
         Array.from(mei_node.attributes).map(attr => [attr.name, attr.value]))
-      
+
       if (Object.keys(attributes).length > 0) {
         const mei_node_dict = {
           tagName: mei_node.tagName,
           attributes: attributes
         }
-        
+
         if (mei_node.tagName == 'note') {
           mei_node_dict.tagName = 'mei_note'
         }
-        
+
         if (mei_node.tagName == 'node' && attributes['type'] == 'relation') {
           do {
             mei_node = mei_walker.nextNode()
@@ -345,7 +347,7 @@ export function save_txt() {
             console.log('MEI to plaintext: Suspected parsing error! Check for lost graph content in text output.')
           }
         }
-        
+
         if (mei_node.tagName == 'arc') {
           mei_node_dict.attributes['from'] = mei_node_dict.attributes['from'].slice(1)
           mei_node_dict.attributes['to'] = mei_node_dict.attributes['to'].slice(1)
@@ -421,7 +423,7 @@ export function load(event) {
   window.relationTreeInstance = null
 
   if (files.length == 1) {
-    reader.onload = function (e) {
+    reader.onload = function(e) {
       data = reader.result
       load_finish()
     }

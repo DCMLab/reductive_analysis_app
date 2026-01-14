@@ -28,6 +28,7 @@ import { add_metarelation, add_relation } from './action/graph'
 import { mei_for_layer, new_layer } from './utils/layers'
 import { new_sliced_layer } from './utils/slicing'
 import { draw_relation, draw_metarelation } from './action/draw'
+import { pitchTimeGraph } from './utils/misc'
 
 import {
   adjustAllLayersSvgDimensions,
@@ -359,6 +360,8 @@ export function save_txt() {
   }
 
   downloadAs(saved, filename + '.txt', 'text/plain')
+  console.log('Converting to pitch-time graph...')
+  console.log(pitchTimeGraph(mei))
 }
 
 const inlineStyles = element => {
@@ -510,8 +513,10 @@ function load_finish() {
   if (mei.documentElement.namespaceURI != 'http://www.music-encoding.org/ns/mei') {
     // We didn't get a MEI? Try if it's a musicXML
     try {
-      let new_svg = vrvToolkit.renderData(data, { pageWidth: 20000,
-        pageHeight: 10000, breaks: 'none' })
+      let new_svg = vrvToolkit.renderData(data, {
+        pageWidth: 20000,
+        pageHeight: 10000, breaks: 'none'
+      })
     } catch {
       if (!new_svg) {
         console.log('Verovio could not generate SVG from non-MEI file.')

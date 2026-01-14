@@ -1189,3 +1189,82 @@ export function handleFlip(e) {
   e.preventDefault()
   scrollThroughRelations()
 }
+
+/**
+ * Get the onset of a note node.
+ */
+function getNodeOnsets(mei) {
+  let onsets = {}
+  const note_elements = Array.from(mei.getElementsByTagName('node')).filter(n => n.getAttribute('type') == '' || n.getAttribute('type') == null)
+  if (note_elements.length > 0) {
+    note_elements.forEach(n => onsets[n.getAttribute('xml:id')] = document.querySelector('svg #' + n.getAttribute('xml:id').slice(3)).dataset.onset)
+    return onsets
+  } else {
+    return null
+  }
+}
+
+export function pitchTimeGraph(mei) {
+  const arcs = Array.from(mei.getElementsByTagName('arc'))
+  const note_onsets = getNodeOnsets(mei)
+  console.log('Obtaining onset array...')
+  console.log(note_onsets)
+
+  const edges = []
+
+  // Gather arcs from a relation to a note
+  const validArcs = arcs.filter(arc => {
+    let fromId = arc.getAttribute('from')
+    let toId = arc.getAttribute('to')
+    let fromEl = get_by_id(mei, fromId.replace('#', ''))
+    let toEl = get_by_id(mei, toId.replace('#', ''))
+    return (fromEl.getAttribute('type') == 'relation' && (toEl.getAttribute('type') == '' || toEl.getAttribute('type') == null))
+  })
+
+  // Group these arcs by relation id
+  const relations = {}
+  validArcs.forEach(arc => {
+    let fromId = arc.getAttribute('from').slice(1)
+    let toId = arc.getAttribute('to').slice(1)
+    if (!relations[fromId]) relations[fromId] = []
+    relations[fromId].push(arc)
+  })
+
+  // Convert each relation
+  for (const relId in relations) {
+    const relation = relations[relId]
+
+    relation.sort((a, b) => note_onsets[a.getAttribute('to')] - note_onsets[b.getAttribute('to')])
+
+    for (let i = 0; i < relation.length - 1; i++) {
+      const arc1 = relation[i]
+      const arc2 = relation[i + 1]
+
+      const n1Id = arc1.getAttribute('to').slice(1)
+      const n2Id = arc2.getAttribute('to').slice(1)
+
+      // Calculate direction value (+1 or -1) based on onset
+      const getWeight = (sourceId, targetId) =>
+        note_onsets[targetId] >= note_onsets[sourceId] ? 1 : -1
+
+      const isP1 = arc1.type === 'primary'
+      const isS1 = arc1.type === 'secondary'
+      const isP2 = arc2.type === 'primary'
+      const isS2 = arc2.type === 'secondary'
+
+      const n1 = get_by_id(mei, n1Id)
+      const n2 = get_by_id(mei, n2Id)
+      if (isP1 && isS2) {
+        edges.push({ from: n1, to: n2, weight: getWeight(n1Id, n2Id) })
+      } else if (isS1 && isP2) {
+        edges.push({ from: n2, to: n1, weight: getWeight(n2Id, n1Id) })
+      } else {
+        edges.push({ from: n1, to: n2, weight: getWeight(n1Id, n2Id) })
+        edges.push({ from: n2, to: n1, weight: getWeight(n2Id, n1Id) })
+      }
+    }
+  }
+
+  return edges
+}
+

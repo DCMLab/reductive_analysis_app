@@ -267,6 +267,7 @@ function draw_note(pname, oct, note, sim = true, id = '') {
     g.id = id
     g.classList.add('note')
     gh.classList.add('notehead')
+    g.dataset.onset = 'TBD'
     gh.appendChild(u)
     g.appendChild(gh)
     note.parentElement.appendChild(g)
@@ -277,10 +278,16 @@ function draw_note(pname, oct, note, sim = true, id = '') {
 }
 
 function add_note(layer_context, pname, oct, note, sim = true, id = '') {
-  var l = get_by_id(mei, get_raw_id(note))
+  var l_id = get_raw_id(note)
+  var l = get_by_id(mei, l_id)
   if (!layer_context.score_elem.contains(l)) {
     return false
   }
+
+  var onset = document.querySelector('svg #' + l_id).dataset.onset
+  var svg_l = document.querySelector('[data-onset="TBD"]')
+  svg_l.dataset.onset = onset
+
   var n = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'note')
   console.log('Note: ', n)
   var added = []

@@ -375,14 +375,14 @@ export function handle_keypress(ev) {
     bookmarks.toggle()
   } else if (ev.key == custom_conf.relation) {
     // Custom relations.
-    setTimeout(function () {
+    setTimeout(function() {
       relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
       document.getElementById('free-field-relations').focus()
       document.getElementById('free-field-relations').value = ''
     }, 200)
   } else if (ev.key == custom_conf.meta_relation) {
     // Custom meta-relations.
-    setTimeout(function () {
+    setTimeout(function() {
       relationsMenu.compact(relationsMenu.ctn.el.classList.contains('fly-out__compact'))
       document.getElementById('free-field-metarelations').focus()
       document.getElementById('free-field-metarelations').value = ''

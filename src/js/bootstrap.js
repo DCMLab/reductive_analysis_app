@@ -576,6 +576,12 @@ function load_finish() {
     var [view_element, svg_element] = new_view_elements(layer_element)
     svg_element.innerHTML = new_svg
 
+    // Add onset timestamp to each SVG note.
+    svg_element.querySelectorAll('.note').forEach(n => {
+      let id = n.getAttribute('id')
+      n.dataset.onset = vrvToolkit.getTimeForElement(id)
+    })
+
     var layer_context = {
       mei: new_mei,
       layer_elem: layer_element,

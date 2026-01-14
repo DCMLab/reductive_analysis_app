@@ -5,7 +5,6 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import $ from 'jquery'
 import { polygonHull } from 'd3-polygon'
 // import fuzzysearch from 'fuzzysearch'
 
@@ -290,8 +289,7 @@ export function next_measure(m) {
 // Note coordinates are off center by a bit
 export function note_coords(note) {
   // Computes useful coordinates of a note
-  return [note.getElementsByClassName('notehead')[0].getBBox().x + 100,
-    note.getElementsByClassName('notehead')[0].getBBox().y]
+  return [note.getElementsByClassName('notehead')[0].getBBox().x + 100, note.getElementsByClassName('notehead')[0].getBBox().y]
 }
 
 // Gets all elements from the doc with the oldid
@@ -1038,7 +1036,6 @@ export function prune_mei_graph(mei) {
       }
     })
 
-    // Final Report
     console.log(`Export: ${removedArcs} arcs pruned away.`)
     console.log(`Export: ${removedNodes} nodes pruned away.`)
 

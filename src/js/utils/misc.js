@@ -1225,7 +1225,6 @@ export function pitchTimeGraph(mei) {
   const relations = {}
   validArcs.forEach(arc => {
     let fromId = arc.getAttribute('from').slice(1)
-    let toId = arc.getAttribute('to').slice(1)
     if (!relations[fromId]) relations[fromId] = []
     relations[fromId].push(arc)
   })

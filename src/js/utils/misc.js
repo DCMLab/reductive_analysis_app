@@ -1268,3 +1268,101 @@ export function pitchTimeGraph(mei) {
   return edges
 }
 
+function in_edges(graph, node) {
+  return graph.filter(edge => edge.to === node)
+}
+
+/**
+ * Returns a list of all node elements one directed edge away from the given node.
+ */
+function neighbors(graph, node) {
+  return graph
+    .filter(edge => edge.from === node)
+    .map(edge => edge.to)
+}
+
+/**
+ * Yannis's extension to topological sort ported from his Python code.
+ * Returns {[Array, boolean]} [sortedNodes, updatesOccurred].
+ */
+export function topologicalSort(graph) {
+
+  // Housekeeping preliminaries.
+  const nodeSet = new Set()
+  graph.forEach(edge => {
+    nodeSet.add(edge.from)
+    nodeSet.add(edge.to)
+  })
+
+  const allNodes = Array.from(nodeSet) // First reset the element state, so that the reduction process can be restarted on a clean slate.
+  allNodes.forEach(node => {
+    delete node.generation
+  })
+
+  const removedEdges = new Set()
+  const result = []
+  const sourceNodes = []
+
+  const getActiveInEdges = (n) => in_edges(graph, n).filter(e => !removedEdges.has(e))
+
+  // Identify initial source nodes (nodes with no active incoming edges).
+  allNodes.forEach(node => {
+    const predecessors = getActiveInEdges(node)
+    if (predecessors.length === 0) {
+      node.generation = 0
+      sourceNodes.push(node)
+    }
+  })
+
+  let updates = false
+
+  // The main Kahn-based loop.
+  while (sourceNodes.length !== 0) {
+    const n_from = sourceNodes.pop()
+    result.push(n_from)
+
+    // Find outgoing edges from this node that haven't been "removed."
+    const neighborEdges = graph.filter(e => e.from === n_from && !removedEdges.has(e))
+
+    for (const edge of neighborEdges) {
+      const n_to = edge.to
+      const oldGen = n_to.generation
+
+      // Logic for generation updates based on edge type
+      if (edge.type === 'p-s') {
+        if ((n_to.generation ?? -1) <= n_from.generation) {
+          n_to.generation = n_from.generation + 1
+        }
+      } else if (edge.type === 's-s' || edge.type === 'p-p') {
+        if (n_from.generation > (n_to.generation ?? -1)) {
+          n_to.generation = n_from.generation
+        }
+      } else if (edge.type === 's-p') {
+        throw new Error('Inconsistent graph: secondary-to-primary label does not match actual edge direction.')
+      }
+
+      // Check if a change actually occurred
+      if (oldGen !== n_to.generation) {
+        updates = true
+      }
+
+      // Mark the edge, so that it will not be revisited (effectively "removing" it, as in the original Python code).
+      removedEdges.add(edge)
+
+      // If n_to now has no active incoming edges, it becomes a source node.
+      if (getActiveInEdges(n_to).length === 0) {
+        sourceNodes.push(n_to)
+      }
+    }
+  }
+
+  // If edges remain at the end of the traversal, the directed part of the graph has a cycle.
+  if (removedEdges.size === graph.length) {
+    return [result, updates]
+  } else {
+    console.error('Inconsistent graph: the non-trivially directed part of the graph contains cycles.') // TODO <========================= DELETE THIS LINE!!!!!!!!
+
+    return [result, updates] // TODO <========================= DELETE THIS LINE!!!!!!!!
+    throw new Error('Inconsistent graph: the non-trivially directed part of the graph contains cycles.')
+  }
+}

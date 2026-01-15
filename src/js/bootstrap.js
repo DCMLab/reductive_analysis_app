@@ -28,7 +28,7 @@ import { add_metarelation, add_relation } from './action/graph'
 import { mei_for_layer, new_layer } from './utils/layers'
 import { new_sliced_layer } from './utils/slicing'
 import { draw_relation, draw_metarelation } from './action/draw'
-import { pitchTimeGraph } from './utils/misc'
+import { pitchTimeGraph, topologicalSort } from './utils/misc'
 
 import {
   adjustAllLayersSvgDimensions,
@@ -361,7 +361,10 @@ export function save_txt() {
 
   downloadAs(saved, filename + '.txt', 'text/plain')
   console.log('Converting to pitch-time graph...')
-  console.log(pitchTimeGraph(mei))
+  var ptg = pitchTimeGraph(mei)
+  console.log(ptg)
+  var ptg_sorted = topologicalSort(ptg)
+  console.log(ptg_sorted)
 }
 
 const inlineStyles = element => {

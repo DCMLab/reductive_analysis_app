@@ -1254,12 +1254,13 @@ export function pitchTimeGraph(mei) {
       const n1 = get_by_id(mei, n1Id)
       const n2 = get_by_id(mei, n2Id)
       if (isP1 && isS2) {
-        edges.push({ from: n1, to: n2, weight: getWeight(n1Id, n2Id) })
+        edges.push({ from: n1, to: n2, weight: getWeight(n1Id, n2Id), type: 'p-s' })
       } else if (isS1 && isP2) {
-        edges.push({ from: n2, to: n1, weight: getWeight(n2Id, n1Id) })
+        edges.push({ from: n2, to: n1, weight: getWeight(n2Id, n1Id), type: 's-p' })
+        alert('Graph inconsistency: Cannot convert to pitch-time graph.')
       } else {
-        edges.push({ from: n1, to: n2, weight: getWeight(n1Id, n2Id) })
-        edges.push({ from: n2, to: n1, weight: getWeight(n2Id, n1Id) })
+        edges.push({ from: n1, to: n2, weight: getWeight(n1Id, n2Id), type: isS1 ? 's-s' : 'p-p' })
+        edges.push({ from: n2, to: n1, weight: getWeight(n2Id, n1Id), type: isS1 ? 's-s' : 'p-p' })
       }
     }
   }

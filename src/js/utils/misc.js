@@ -1246,10 +1246,10 @@ export function pitchTimeGraph(mei) {
       const getWeight = (sourceId, targetId) =>
         note_onsets[targetId] >= note_onsets[sourceId] ? 1 : -1
 
-      const isP1 = arc1.type === 'primary'
-      const isS1 = arc1.type === 'secondary'
-      const isP2 = arc2.type === 'primary'
-      const isS2 = arc2.type === 'secondary'
+      const isP1 = arc1.getAttribute('type') === 'primary'
+      const isS1 = arc1.getAttribute('type') === 'secondary'
+      const isP2 = arc2.getAttribute('type') === 'primary'
+      const isS2 = arc2.getAttribute('type') === 'secondary'
 
       const n1 = get_by_id(mei, n1Id)
       const n2 = get_by_id(mei, n2Id)

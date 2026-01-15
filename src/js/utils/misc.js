@@ -1243,7 +1243,7 @@ export function pitchTimeGraph(mei) {
       const n2Id = arc2.getAttribute('to').slice(1)
 
       // Calculate direction value (+1 or -1) based on onset
-      const getWeight = (sourceId, targetId) =>
+      const getDirection = (sourceId, targetId) =>
         note_onsets[targetId] >= note_onsets[sourceId] ? 1 : -1
 
       const isP1 = arc1.getAttribute('type') === 'primary'

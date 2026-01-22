@@ -973,6 +973,7 @@ export function sanitize_xml(xml) {
 }
 
 export function prune_mei_graph(mei) {
+  // TODO: Ideally render this kludge of a function unnecessary by eliminating the numerous undo/redo bugs that leave ghost elements behind.
   let removedArcs = 0
   let removedNodes = 0
 
@@ -1008,7 +1009,7 @@ export function prune_mei_graph(mei) {
       }
     })
 
-    // Identify note nodes referenced by the remaining valid arcs
+    // Remove note or relation nodes that are not referenced in any arc.
     const remainingArcs = mei.querySelectorAll('arc')
     const referencedNodeIds = new Set()
 
@@ -1023,7 +1024,6 @@ export function prune_mei_graph(mei) {
       }
     })
 
-    // Remove any note nodes not referenced
     nodes.forEach(node => {
       try {
         const id = node.getAttribute('xml:id')

@@ -478,13 +478,13 @@ export function draw_graph(draw_context) {
   $(draw_context.view_elem).find('.relation').not('.hidden-reduced').remove()
   $(draw_context.view_elem).find('.metarelation').not('.hidden-reduced').remove()
 
-  // Verify that no relations contain duplicate notes, otherwise alert the user.
+  // Verify that no relations contain duplicate nodes, otherwise alert the user.
   visible_mei_rel_nodes.forEach((g_elem) => {
     let nodes = relation_get_notes(g_elem)
     for (let i in nodes) {
       for (let j in nodes) {
         if (nodes[i].isSameNode(nodes[j]) && i !== j) {
-          alert(`Graph error: Multiple instances of note ${nodes[i].getAttribute('xml:id')} found in relation ${g_elem.getAttribute('xml:id')}.\n\nAttempting to continue drawing, although the graph plot is likely to be inconsistent.`)
+          alert(`Graph error: Multiple instances of node ${nodes[i].getAttribute('xml:id')} found in relation ${g_elem.getAttribute('xml:id')}.\n\nAttempting to continue drawing, although the graph plot is likely to be inconsistent.`)
           return false
         }
       }

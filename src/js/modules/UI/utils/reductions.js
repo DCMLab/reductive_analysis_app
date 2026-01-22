@@ -147,6 +147,10 @@ function do_reduce(draw_context, mei_graph, sel, extra) {
     if (graphicals.length > 0) {
       draw_context.distance_from_surface += 1
       draw_context.svg_elem.classList.add('locked')
+      document.getElementById('undo').classList.add('locked')
+      document.getElementById('undo').disabled = true
+      document.getElementById('redo').classList.add('locked')
+      document.getElementById('redo').disabled = true
       document.getElementById('reduction-counter').innerText = `Reductive iteration: -${draw_context.distance_from_surface}`
     }
 
@@ -180,6 +184,10 @@ export function undo_reduce() {
   document.getElementById('reduction-counter').innerText = `Reductive iteration: -${draw_context.distance_from_surface}`
   if (draw_context.distance_from_surface == 0) {
     draw_context.svg_elem.classList.remove('locked')
+    document.getElementById('undo').classList.remove('locked')
+    document.getElementById('undo').disabled = false
+    document.getElementById('redo').classList.remove('locked')
+    document.getElementById('redo').disabled = false
     document.getElementById('reduction-counter').innerText = ''
   }
 }

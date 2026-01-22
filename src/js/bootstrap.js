@@ -855,7 +855,7 @@ function render_mei(mei) {
 console.log('Main webapp library is loaded')
 
 export const getDrawContexts = () => draw_contexts
-export const getMeiGraph = () => mei_graph
+export const getMeiGraph = () => prune_mei_graph(mei_graph)
 export const getOrigMidi = () => orig_midi
 export const getVerovioToolkit = () => vrvToolkit
 export const getData = () => data

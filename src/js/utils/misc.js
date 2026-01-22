@@ -1385,12 +1385,9 @@ export function topologicalSort(graph) {
   }
 
   // If edges remain at the end of the traversal, the directed part of the graph has a cycle.
-  if (removedEdges.size === graph.length) {
-    return [result, updates]
-  } else {
-    console.error('Inconsistent graph: the non-trivially directed part of the graph contains cycles.') // TODO <========================= DELETE THIS LINE!!!!!!!!
-
-    return [result, updates] // TODO <========================= DELETE THIS LINE!!!!!!!!
-    throw new Error('Inconsistent graph: the non-trivially directed part of the graph contains cycles.')
+  if (removedEdges.size !== graph.length) {
+    alert('Inconsistent graph: the non-trivially directed part of the graph contains cycles.')
   }
+
+  return [result, updates]
 }

@@ -512,6 +512,8 @@ function load_finish() {
     return false
   }
 
+  mei = prune_mei_graph(mei)
+
   vrvToolkit = new verovio.toolkit()
   if (mei.documentElement.namespaceURI != 'http://www.music-encoding.org/ns/mei') {
     // We didn't get a MEI? Try if it's a musicXML

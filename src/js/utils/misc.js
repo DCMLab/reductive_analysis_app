@@ -1008,7 +1008,7 @@ export function prune_mei_graph(mei) {
       }
     })
 
-    // Identify nodes referenced by the remaining valid arcs
+    // Identify note nodes referenced by the remaining valid arcs
     const remainingArcs = mei.querySelectorAll('arc')
     const referencedNodeIds = new Set()
 
@@ -1023,7 +1023,7 @@ export function prune_mei_graph(mei) {
       }
     })
 
-    // Remove any nodes not found in the referenced set
+    // Remove any note nodes not referenced
     nodes.forEach(node => {
       try {
         const id = node.getAttribute('xml:id')
@@ -1036,8 +1036,36 @@ export function prune_mei_graph(mei) {
       }
     })
 
-    console.log(`Export: ${removedArcs} arcs pruned away.`)
-    console.log(`Export: ${removedNodes} nodes pruned away.`)
+    // Remove duplicate arc elements.
+    const visited = new Map()
+    const duplicates = []
+
+    for (const arc of remainingArcs) {
+      const from = arc.getAttribute('from') || ''
+      const to = arc.getAttribute('to') || ''
+      const type = arc.getAttribute('type') || ''
+
+      const key = `${from}|${to}|${type}`
+
+      if (visited.has(key)) {
+        duplicates.push({
+          arc: arc,
+          from: from,
+          to: to,
+          type: type,
+          firstOccurrence: visited.get(key)
+        })
+      } else {
+        // First time seeing this combination
+        visited.set(key, arc)
+      }
+    }
+    removedArcs = removedArcs + duplicates.length
+    // Delete all duplicates
+    duplicates.forEach(dup => dup.arc.remove())
+
+    console.log(`Pruning graph: ${removedArcs} arcs pruned away.`)
+    console.log(`Pruning graph: ${removedNodes} nodes pruned away.`)
 
     return mei
   } catch (error) {

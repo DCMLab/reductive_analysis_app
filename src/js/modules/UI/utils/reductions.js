@@ -15,16 +15,18 @@ export function reduce() {
 
   const draw_context = getDrawContexts().find(e => e.canEdit)
   let fetched_note_diffs = []
+  let fetched_relation_diffs = []
 
   if (draw_context.note_diffs == null || draw_context.note_diffs.flat(1).length == 0) {
-    // TODO: Fetch layer diffs in exchange for MEI files (incl. graph).
+    // TODO: Fetch (and reverse!) layer diffs in exchange for MEI files (incl. graph).
     fetched_note_diffs = [['n1chcnfk', 'n16f07tm'], ['n1a2gxcu', 'nbqirrf'], ['nmdr98l', 'nmm59d4'], ['n6roxr5', 'nmc9aoo'], ['nvqsyar']].reverse()
-    // TODO fetched_relation_diffs = [...].reverse()
+    fetched_relation_diffs = [['he-9faaa'], ['he-9bda8', 'he-6301f', 'he-de1ec'], ['he-1d22e', 'he-ce40a', 'he-2cc5e', 'he-b4322'], ['he-ed17b', 'he-64da1', 'he-849c6', 'he-39e8d', 'he-3807'], ['he-9199d']].reverse()
 
     let reductionWasFetched = true ? fetched_note_diffs.flat(1).length > 0 : false
     if (reductionWasFetched) {
       draw_context.current_layer_number = 0
       draw_context.note_diffs = fetched_note_diffs
+      draw_context.relation_diffs = fetched_relation_diffs
     } else return
   }
 
@@ -33,24 +35,26 @@ export function reduce() {
   if (layerContainsReduction) {
     // Block the UI.
     do_deselect()
-    document.getElementById('undo').classList.add('locked')
-    document.getElementById('undo').disabled = true
-    document.getElementById('redo').classList.add('locked')
-    document.getElementById('redo').disabled = true
-
     const number_of_layers = draw_context.note_diffs.length - 1
     let current_layer_number = draw_context.current_layer_number
 
     if (current_layer_number < number_of_layers) {
       draw_context.current_layer_number += 1
       draw_context.svg_elem.classList.add('locked')
+      document.getElementById('undo').classList.add('locked')
+      document.getElementById('undo').disabled = true
+      document.getElementById('redo').classList.add('locked')
+      document.getElementById('redo').disabled = true
       document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number}`
       // Hide the diff corresponding to that layer.
       draw_context.note_diffs[current_layer_number].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.add('hidden-reduced')
       })
-      // TODO: Hide relations, as well.
+      draw_context.relation_diffs[current_layer_number].forEach(n => {
+        let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
+        n_el.classList.add('hidden-reduced')
+      })
     }
 
   }
@@ -59,7 +63,6 @@ export function reduce() {
 export function unreduce() {
 
   const draw_context = getDrawContexts().find(e => e.canEdit)
-  let fetched_note_diffs = []
 
   let layerContainsReduction = ((draw_context.note_diffs != null) && (draw_context.note_diffs.flat(1).length > 0))
 
@@ -74,11 +77,14 @@ export function unreduce() {
       let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
       n_el.classList.remove('hidden-reduced')
     })
-    // TODO: Hide relations, as well.
+    draw_context.relation_diffs[current_layer_number].forEach(n => {
+      let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
+      n_el.classList.remove('hidden-reduced')
+    })
     draw_context.current_layer_number -= 1
-    draw_context.svg_elem.classList.add('locked')
     document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1}`
     if (current_layer_number == 0) {
+      draw_context.svg_elem.classList.remove('locked')
       document.getElementById('undo').classList.remove('locked')
       document.getElementById('undo').disabled = false
       document.getElementById('redo').classList.remove('locked')

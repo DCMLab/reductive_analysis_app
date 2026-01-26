@@ -1,4 +1,4 @@
-import { do_reduce_pre, undo_reduce } from '../utils/reductions'
+import { reduce, unreduce } from '../utils/reductions'
 import { getReducedMidi } from '../utils/misc'
 import { getCurrentDrawContext } from '../utils/misc'
 import player from '../../Player'
@@ -13,9 +13,9 @@ export default class Reductions {
     this.playReductionBtn = document.getElementById('layers-menu-play-reduction')
   }
 
-  reduce = drawContext => do_reduce_pre()
+  reduce = () => reduce()
 
-  unreduce = drawContext => undo_reduce()
+  unreduce = () => unreduce()
 
   play(drawContext) {
     const midi = getReducedMidi(drawContext)

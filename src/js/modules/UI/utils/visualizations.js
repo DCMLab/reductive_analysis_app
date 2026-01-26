@@ -25,7 +25,6 @@ import {
   text,
   tspan,
 } from '../../../utils/misc'
-import { calc_reduce } from './reductions'
 import { captureEvent } from '../../../events/options'
 
 // Returns a list of list of IDs

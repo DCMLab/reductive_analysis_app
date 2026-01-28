@@ -39,12 +39,12 @@ export async function reduce() {
         alert('Graph cycle.')
       }
 
-      // Case 3: We received another exception.
+      // Case 3: We received another algorithmic exception.
       if (Array.isArray(verdict) && verdict.length === 2 && typeof (verdict[0]) == 'string' && verdict[0] == 'Error' && typeof (verdict[1]) == 'string') {
         alert(`${verdict[1]}`)
       }
 
-    } catch (error) {
+    } catch (error) { // We received a POST request exception.
       alert('Error:', error)
       return
     }

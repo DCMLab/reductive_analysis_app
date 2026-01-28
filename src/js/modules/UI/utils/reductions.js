@@ -11,16 +11,31 @@ import {
   get_by_id
 } from '../../../utils/misc'
 
-export function reduce() {
+export async function reduce() {
 
   const draw_context = getDrawContexts().find(e => e.canEdit)
   let fetched_note_diffs = []
   let fetched_relation_diffs = []
 
-  if (draw_context.note_diffs == null || draw_context.note_diffs.flat(1).length == 0) {
-    // TODO: Fetch (and reverse!) layer diffs in exchange for MEI files (incl. graph).
-    fetched_note_diffs = [['n1chcnfk', 'n16f07tm'], ['n1a2gxcu', 'nbqirrf'], ['nmdr98l', 'nmm59d4'], ['n6roxr5', 'nmc9aoo'], ['nvqsyar']].reverse()
-    fetched_relation_diffs = [['he-9faaa'], ['he-9bda8', 'he-6301f', 'he-de1ec'], ['he-1d22e', 'he-ce40a', 'he-2cc5e', 'he-b4322'], ['he-ed17b', 'he-64da1', 'he-849c6', 'he-39e8d', 'he-3807'], ['he-9199d']].reverse()
+  if ((draw_context.note_diffs == null & draw_context.relation_diffs == null) || (draw_context.note_diffs.flat(1).length == 0 && draw_context.relation_diffs.flat(1).length == 0)) {
+    try {
+      const response = await fetch('http://localhost:5100/api/stages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/xml' },
+        body: new XMLSerializer().serializeToString(mei)
+      })
+      const verdict = await response.json()
+      console.log('analysis = ', verdict)
+      if (Array.isArray(verdict) && verdict.length === 2 && Array.isArray(verdict[0]) && Array.isArray(verdict[1])) {
+        fetched_note_diffs = verdict[0].reverse()
+        fetched_relation_diffs = verdict[1].reverse()
+        console.log(fetched_note_diffs)
+        console.log(fetched_relation_diffs)
+      }
+    } catch (error) {
+      alert('Failed to fetch reductive stages:', error)
+      return
+    }
 
     let reductionWasFetched = true ? fetched_note_diffs.flat(1).length > 0 : false
     if (reductionWasFetched) {

@@ -16,8 +16,9 @@ export async function reduce() {
   const draw_context = getDrawContexts().find(e => e.canEdit)
   let fetched_note_diffs = []
   let fetched_relation_diffs = []
+  let fetched_cycle = []
 
-  if ((draw_context.note_diffs == null & draw_context.relation_diffs == null) || (draw_context.note_diffs.flat(1).length == 0 && draw_context.relation_diffs.flat(1).length == 0)) {
+  if ((draw_context.note_diffs == null || draw_context.note_diffs.flat(1).length == 0) && (draw_context.relation_diffs == null || draw_context.relation_diffs.flat(1).length == 0) && (draw_context.cycle == null || draw_context.cycle.length == 0)) {
     try {
       const response = await fetch('http://localhost:5100/api/stages', {
         method: 'POST',
@@ -30,13 +31,12 @@ export async function reduce() {
       if (Array.isArray(verdict) && verdict.length === 2 && Array.isArray(verdict[0]) && Array.isArray(verdict[1])) {
         fetched_note_diffs = verdict[0].reverse()
         fetched_relation_diffs = verdict[1].reverse()
-        console.log(fetched_note_diffs)
-        console.log(fetched_relation_diffs)
       }
 
       // Case 2: We received a graph cycle.
-      if (Array.isArray(verdict) && verdict.length === 2 && typeof (verdict[0]) == 'string' && verdict[0] == 'GraphCycleError' && Array.isArray(verdict[1])) {
-        alert('Graph cycle.')
+      if (Array.isArray(verdict) && verdict.length === 2 && typeof (verdict[0]) == 'string' && verdict[0] == 'GraphCycleError' && Array.isArray(verdict[1]) && verdict[1].length > 0) {
+        fetched_cycle = verdict[1]
+        document.getElementById('reduction-counter').innerText = `Cycle found.`
       }
 
       // Case 3: We received another algorithmic exception.
@@ -54,10 +54,17 @@ export async function reduce() {
       draw_context.current_layer_number = 0
       draw_context.note_diffs = fetched_note_diffs
       draw_context.relation_diffs = fetched_relation_diffs
-    } else return
+    }
+
+    let cycleWasFetched = true ? fetched_cycle.length > 0 : false
+    if (cycleWasFetched) {
+      draw_context.cycle = fetched_cycle
+    }
   }
 
-  let layerContainsReduction = ((draw_context.note_diffs != null) && (draw_context.note_diffs.flat(1).length > 0))
+  let layerContainsReduction = ((draw_context.note_diffs != null) && (draw_context.note_diffs.flat(1).length > 0) && (draw_context.relation_diffs != null) && (draw_context.relation_diffs.flat(1).length > 0))
+
+  let layerContainsCycle = ((draw_context.cycle != null) && (draw_context.cycle.length > 0))
 
   if (layerContainsReduction) {
     // Block the UI.
@@ -83,7 +90,21 @@ export async function reduce() {
         n_el.classList.add('hidden-reduced')
       })
     }
+  }
 
+  if (layerContainsCycle) {
+    draw_context.cycle.forEach(id => {
+      const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
+      const notehead = el?.querySelector('.notehead')
+      if (notehead) notehead.style.fill = 'red'
+    })
+    // Block the UI.
+    do_deselect()
+    draw_context.svg_elem.classList.add('locked')
+    document.getElementById('undo').classList.add('locked')
+    document.getElementById('undo').disabled = true
+    document.getElementById('redo').classList.add('locked')
+    document.getElementById('redo').disabled = true
   }
 }
 
@@ -91,34 +112,58 @@ export function unreduce() {
 
   const draw_context = getDrawContexts().find(e => e.canEdit)
 
-  let layerContainsReduction = ((draw_context.note_diffs != null) && (draw_context.note_diffs.flat(1).length > 0))
+  let layerContainsReduction = ((draw_context.note_diffs != null) && Array.isArray(draw_context.note_diffs) && (draw_context.note_diffs.flat(1).length > 0) && (draw_context.relation_diffs != null) && Array.isArray(draw_context.relation_diffs) && (draw_context.relation_diffs.flat(1).length > 0))
 
-  if (!layerContainsReduction) return
+  let layerContainsCycle = (draw_context.cycle != null && Array.isArray(draw_context.cycle) && draw_context.cycle.length > 0)
 
-  const number_of_layers = draw_context.note_diffs.length - 1
-  let current_layer_number = draw_context.current_layer_number
+  if (layerContainsReduction) {
+    const number_of_layers = draw_context.note_diffs.length - 1
+    let current_layer_number = draw_context.current_layer_number
 
-  if (current_layer_number > 0) {
-    let current_layer_number = draw_context.current_layer_number - 1
-    draw_context.note_diffs[current_layer_number].forEach(n => {
-      let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
-      n_el.classList.remove('hidden-reduced')
-    })
-    draw_context.relation_diffs[current_layer_number].forEach(n => {
-      let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
-      n_el.classList.remove('hidden-reduced')
-    })
-    draw_context.current_layer_number -= 1
-    document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1}`
-    if (current_layer_number == 0) {
-      draw_context.svg_elem.classList.remove('locked')
-      document.getElementById('undo').classList.remove('locked')
-      document.getElementById('undo').disabled = false
-      document.getElementById('redo').classList.remove('locked')
-      document.getElementById('redo').disabled = false
-      document.getElementById('reduction-counter').innerText = ``
+    if (current_layer_number > 0) {
+      let current_layer_number = draw_context.current_layer_number - 1
+      draw_context.note_diffs[current_layer_number].forEach(n => {
+        let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
+        n_el.classList.remove('hidden-reduced')
+      })
+      draw_context.relation_diffs[current_layer_number].forEach(n => {
+        let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
+        n_el.classList.remove('hidden-reduced')
+      })
+      draw_context.current_layer_number -= 1
+      document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1}`
+      if (current_layer_number == 0) {
+        // Unblock the UI.
+        draw_context.svg_elem.classList.remove('locked')
+        document.getElementById('undo').classList.remove('locked')
+        document.getElementById('undo').disabled = false
+        document.getElementById('redo').classList.remove('locked')
+        document.getElementById('redo').disabled = false
+        document.getElementById('reduction-counter').innerText = ``
+
+        // Reset the draw context.
+        draw_context.note_diffs = null
+        draw_context.relation_diffs = null
+      }
     }
   }
 
+  if (layerContainsCycle) {
+    draw_context.cycle.forEach(id => {
+      const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
+      const notehead = el?.querySelector('.notehead')
+      if (notehead) notehead.style.fill = ''
+    })
+    // Unblock the UI.
+    draw_context.svg_elem.classList.remove('locked')
+    document.getElementById('undo').classList.remove('locked')
+    document.getElementById('undo').disabled = false
+    document.getElementById('redo').classList.remove('locked')
+    document.getElementById('redo').disabled = false
+    document.getElementById('reduction-counter').innerText = ``
+
+    // Reset the draw context.
+    draw_context.cycle = null
+  }
 }
 

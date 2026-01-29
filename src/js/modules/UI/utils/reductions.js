@@ -131,12 +131,11 @@ export async function reduce() {
     if (draw_context.current_layer_index < max_layer_index - 1) {
       draw_context.current_layer_index += 1
     }
+    // Update the UI counter.
+    document.getElementById('reduction-counter').innerText = `Reductive stage: ${max_layer_index - draw_context.current_layer_index} / ${max_layer_index + 1}`
     console.log(`draw_context.current_layer_index: ${draw_context.current_layer_index}`)
 
     if (draw_context.current_layer_index >= 0 && draw_context.current_layer_index < max_layer_index) {
-      // Update the UI counter.
-      document.getElementById('reduction-counter').innerText = `Reductive stage: ${max_layer_index - draw_context.current_layer_index} / ${max_layer_index + 1}`
-
       // Hide the diff of the layer.
       draw_context.note_diffs[draw_context.current_layer_index].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)

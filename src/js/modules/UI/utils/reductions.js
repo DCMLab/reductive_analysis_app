@@ -83,6 +83,35 @@ export async function reduce() {
 
       lockUI()
 
+      // Add stage numbers to notes
+      const noteToStage = new Map()
+      ;[...fetched_note_diffs].reverse().forEach((stageNotes, stageIndex) => {
+        stageNotes.forEach(noteId => {
+          noteToStage.set(noteId, stageIndex)
+        })
+      })
+      fetched_note_diffs.flat(1).forEach(noteId => {
+        const stageIndex = noteToStage.get(noteId)
+        const noteEl = get_by_id(draw_context.svg_elem.getRootNode(), noteId)
+        if (noteEl) {
+          const useEl = noteEl.querySelector('.notehead use')
+          if (useEl) {
+            const transform = useEl.getAttribute('transform')
+            const match = transform.match(/translate\(([^,]+),\s*([^)]+)\)/)
+            if (match) {
+              const x = parseFloat(match[1])
+              const y = parseFloat(match[2])
+              const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+              text.setAttribute('x', x - 300)
+              text.setAttribute('y', y)
+              text.setAttribute('class', 'stage-number')
+              text.textContent = stageIndex + 1
+              noteEl.appendChild(text)
+            }
+          }
+        }
+      })
+
       // Save meta-relation toggle state and hide meta-relations if the toggle is unset.
       const meta_toggle_on = document.getElementById('meta-relation-on')
       if (meta_toggle_on.getAttribute('saved-state') == '' || meta_toggle_on.getAttribute('saved-state') == null) {
@@ -206,6 +235,9 @@ export function unreduce() {
   if (terminate) {
 
     unlockUI()
+
+    // Remove stage numbers
+    draw_context.svg_elem.querySelectorAll('.stage-number').forEach(el => el.remove())
 
     // Restore meta-relation toggle state and unset its attribute.
     const meta_toggle_on = document.getElementById('meta-relation-on')

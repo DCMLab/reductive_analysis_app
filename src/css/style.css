@@ -31,6 +31,10 @@ body {
   min-width: 100%;
 }
 
+svg .system {
+  color: dark-gray;
+}
+
 .file-input {
     width: 0.1px;
     height: 0.1px;

@@ -317,23 +317,39 @@ body:not(.mousedown) .note:hover {
   filter: url('#glowFilter');
 }
 
-.extraselectednote {
+svg .system .extraselectednote,
+svg .system .extraselectednote * {
   color: red;
+  fill: red;
 }
-.selectednote {
+svg .system .selectednote,
+svg .system .selectednote * {
   color: green;
+  fill: green;
 }
-.extrahover,
-.relation-select-primary {
+svg .system .extrahover,
+svg .system .relation-select-primary {
   transform: translate3d(0, 0, 0);
   filter: url('#extraFilter');
-  color: red;
 }
-.selecthover,
-.relation-select-secondary {
+svg .system .extrahover,
+svg .system .extrahover *,
+svg .system .relation-select-primary,
+svg .system .relation-select-primary * {
+  color: red;
+  fill: red;
+}
+svg .system .selecthover,
+svg .system .relation-select-secondary {
   transform: translate3d(0, 0, 0);
   filter: url('#selectFilter');
+}
+svg .system .selecthover,
+svg .system .selecthover *,
+svg .system .relation-select-secondary,
+svg .system .relation-select-secondary * {
   color: hsl(199, 98%, 55%);
+  fill: hsl(199, 98%, 55%);
 }
 /* .secondarynote { */
 /*   opacity: calc(1.0 / var(--how-secondary)); */

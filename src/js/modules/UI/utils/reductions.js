@@ -126,7 +126,10 @@ export async function reduce() {
     draw_context.cycle.forEach(id => {
       const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
       const notehead = el?.querySelector('.notehead')
-      if (notehead) notehead.style.fill = 'red'
+      if (notehead) {
+        notehead.style.fill = 'red'
+        notehead.classList.add('cycle')
+      }
     })
   }
 }
@@ -187,7 +190,10 @@ export function unreduce() {
     draw_context.cycle.forEach(id => {
       const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
       const notehead = el?.querySelector('.notehead')
-      if (notehead) notehead.style.fill = ''
+      if (notehead) {
+        notehead.style.fill = ''
+        notehead.classList.remove('cycle')
+      }
     })
 
     // Reset the draw context.

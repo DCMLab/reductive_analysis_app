@@ -32,8 +32,14 @@ body {
 }
 
 svg .system * {
-  color: rosybrown !important;
-  fill: rosybrown !important;
+  color: rosybrown;
+  fill: rosybrown;
+}
+
+svg .system .cycle,
+svg .system .cycle * {
+  color: unset;
+  fill: unset;
 }
 
 .file-input {

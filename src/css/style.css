@@ -13,15 +13,15 @@ body {
 } */
 
 /* * { */
-  /* -ms-overflow-style: none;  IE and Edge */
-  /* scrollbar-width: none;  Firefox */
+/* -ms-overflow-style: none;  IE and Edge */
+/* scrollbar-width: none;  Firefox */
 /* } */
 
 #app {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 1044px;
-    padding: 0 10px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1044px;
+  padding: 0 10px;
 }
 
 /* General visual stuff */
@@ -32,39 +32,37 @@ body {
 }
 
 svg .system * {
-  color: darkgray !important;
-  fill: darkgray !important;
+  color: rosybrown !important;
+  fill: rosybrown !important;
 }
 
 .file-input {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
 }
 
-
-
 .button-danger {
-    background: #d62728;
-    color: #fff;
+  background: #d62728;
+  color: #fff;
 }
 
 .button-checked {
-    background-color: #2ca02c;
-    color: #fff;
+  background-color: #2ca02c;
+  color: #fff;
 }
 
 .button-primary,
 .button-selected {
-    background-color: #1f77b4;
-    color: #fff;
+  background-color: #1f77b4;
+  color: #fff;
 }
 
 .placeholder {
-    min-height: 1em;
+  min-height: 1em;
 }
 
 .ds-selector {
@@ -83,85 +81,85 @@ svg .system * {
 /* annotation component */
 
 .view_buttons label {
-font-size: 12px;
-margin-left: 0.25rem;
+  font-size: 12px;
+  margin-left: 0.25rem;
 }
 
 @media screen and (min-width: 48em) {
-    .gh-input .load-padder {
-        margin-top: 28px;
-    }
+  .gh-input .load-padder {
+    margin-top: 28px;
+  }
 }
 
 .annotations .instance-list {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .annotations .instance {
-    padding: 0.5em 0;
-    margin-left: 0.5em;
+  padding: 0.5em 0;
+  margin-left: 0.5em;
 }
 
 .annotations .instance .instance-name {
-    padding: 0.5em 0;
+  padding: 0.5em 0;
 }
 
 .annotations .instance-selected {
-    background-color: #aec7e8;
+  background-color: #aec7e8;
 }
 
 .annotations .instance-checked {
-    background-color: #98df8a;
+  background-color: #98df8a;
 }
 
 .annotations .instance-checked.instance-selected {
-    background-color: #aec7e8;/* #2ca02c; */
+  background-color: #aec7e8; /* #2ca02c; */
 }
 
 .annotations .validation-error {
-    color: #d62728;
+  color: #d62728;
 }
 
 select.instance-select {
-    border-radius: 0;
-    border: none;
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
+  border-radius: 0;
+  border: none;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
 }
 
 .automatic {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .automatic .pure-button-group {
-    /* min-width: 100px; */
+  /* min-width: 100px; */
 }
 
 .automatic label {
-    padding: 0 .5em;
-    /* min-width: 100px; */
+  padding: 0 0.5em;
+  /* min-width: 100px; */
 }
 
 .automatic input {
-    margin-right: .5em;
-    flex-grow: 1;
+  margin-right: 0.5em;
+  flex-grow: 1;
 }
 
 /* verovio component: note selection and highlight styling */
 
 .verovio-cmp svg {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
-    /* fill: #1f77b4; */
-    transform: translate3d(0,0,0);
-    filter: url("#glowFilter");
+  /* fill: #1f77b4; */
+  transform: translate3d(0, 0, 0);
+  filter: url('#glowFilter');
 }
 
 /* .verovio-cmp.loading { */
@@ -171,13 +169,13 @@ body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
 /* } */
 
 .loading {
-    position: relative;
-    min-height: 100px;
-    width: 100%;
+  position: relative;
+  min-height: 100px;
+  width: 100%;
 }
 
 .loading:after {
-  content: " ";
+  content: ' ';
   display: block;
   width: 64px;
   height: 64px;
@@ -209,57 +207,57 @@ body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
 .vrv-highlighted-7,
 .vrv-highlighted-8,
 .vrv-selected {
-    color: #fff;
+  color: #fff;
 }
 
 .vrv-highlighted-0 {
-    background-color: #ff7f0e;
-    fill: #ff7f0e;
+  background-color: #ff7f0e;
+  fill: #ff7f0e;
 }
 
 .vrv-highlighted-1 {
-    background-color: #2ca02c;
-    fill: #2ca02c;
+  background-color: #2ca02c;
+  fill: #2ca02c;
 }
 
 .vrv-highlighted-2 {
-    background-color: #d62728;
-    fill: #d62728;
+  background-color: #d62728;
+  fill: #d62728;
 }
 
 .vrv-highlighted-3 {
-    background-color: #9467bd;
-    fill: #9467bd;
+  background-color: #9467bd;
+  fill: #9467bd;
 }
 
 .vrv-highlighted-4 {
-    background-color: #8c564b;
-    fill: #8c564b;
+  background-color: #8c564b;
+  fill: #8c564b;
 }
 
 .vrv-highlighted-5 {
-    background-color: #e377c2;
-    fill: #e377c2;
+  background-color: #e377c2;
+  fill: #e377c2;
 }
 
 .vrv-highlighted-6 {
-    background-color: #7f7f7f;
-    fill: #7f7f7f;
+  background-color: #7f7f7f;
+  fill: #7f7f7f;
 }
 
 .vrv-highlighted-7 {
-    background-color: #bcbd22;
-    fill: #bcbd22;
+  background-color: #bcbd22;
+  fill: #bcbd22;
 }
 
 .vrv-highlighted-8 {
-    background-color: #17becf;
-    fill: #17becf;
+  background-color: #17becf;
+  fill: #17becf;
 }
 
 .vrv-selected {
-    background-color: #1f77b4;
-    fill: #1f77b4;
+  background-color: #1f77b4;
+  fill: #1f77b4;
 }
 
 /* Alternative Color Scheme
@@ -299,33 +297,31 @@ body:not(.mousedown) .verovio-cmp.allow-select .note:hover {
 /*     fill: #999999; */
 /* } */
 
-
 /* .vrv-selected { */
 /*     fill: #e41a1c; */
 /* } */
 
-
 body:not(.mousedown) .note:hover {
-      transform: translate3d(0,0,0);
-       filter: url("#glowFilter");
+  transform: translate3d(0, 0, 0);
+  filter: url('#glowFilter');
 }
 
 .extraselectednote {
-    color: red;
+  color: red;
 }
 .selectednote {
   color: green;
 }
 .extrahover,
 .relation-select-primary {
-  transform: translate3d(0,0,0);
-  filter: url("#extraFilter");
+  transform: translate3d(0, 0, 0);
+  filter: url('#extraFilter');
   color: red;
 }
 .selecthover,
 .relation-select-secondary {
-  transform: translate3d(0,0,0);
-  filter: url("#selectFilter");
+  transform: translate3d(0, 0, 0);
+  filter: url('#selectFilter');
   color: hsl(199, 98%, 55%);
 }
 /* .secondarynote { */
@@ -339,7 +335,7 @@ body:not(.mousedown) .note:hover {
 .relation,
 .metarelation {
   fill: var(--shade, currentColor);
-  fill-opacity: 0.8 ;
+  fill-opacity: 0.8;
 }
 
 html.shades-alternate .relation,
@@ -349,22 +345,22 @@ html.shades-alternate .metarelation {
 
 body:not(.mousedown) .metarelation:hover line,
 body:not(.mousedown) .metarelation:hover rect {
-      transform: translate3d(0,0,0);
-       filter: url("#glowFilter");
-       stroke: blue;
-       stroke-width: 20px;
+  transform: translate3d(0, 0, 0);
+  filter: url('#glowFilter');
+  stroke: blue;
+  stroke-width: 20px;
 }
 .extraselectedmetarelation {
-    fill-opacity : 0.9;
-    stroke-opacity : 0.8;
-    transform : translate3d(0,0,0);
-    filter : url("#extraFilter");
+  fill-opacity: 0.9;
+  stroke-opacity: 0.8;
+  transform: translate3d(0, 0, 0);
+  filter: url('#extraFilter');
 }
 .selectedmetarelation {
-    fill-opacity : 0.9;
-    stroke-opacity : 0.8;
-    transform : translate3d(0,0,0);
-    filter : url("#selectFilter");
+  fill-opacity: 0.9;
+  stroke-opacity: 0.8;
+  transform: translate3d(0, 0, 0);
+  filter: url('#selectFilter');
 }
 .relation line {
   visibility: hidden;
@@ -375,29 +371,29 @@ body:not(.mousedown) .metarelation:hover rect {
   visibility: visible;
 }
 body:not(.mousedown) .relation:hover {
-  transform: translate3d(0,0,0);
-  filter: url("#selectFilter");
+  transform: translate3d(0, 0, 0);
+  filter: url('#selectFilter');
 }
 body:not(.mousedown) .shift-pressed .relation:hover path,
 body:not(.mousedown) .shift-pressed .metarelation:hover line,
 body:not(.mousedown) .shift-pressed .metarelation:hover rect {
-      transform: translate3d(0,0,0);
-       filter: url("#glowFilter");
-       stroke: red !important;
-       stroke-width: 15px;
-       stroke-opacity: 0.8;
+  transform: translate3d(0, 0, 0);
+  filter: url('#glowFilter');
+  stroke: red !important;
+  stroke-width: 15px;
+  stroke-opacity: 0.8;
 }
 .selectedrelation line:not(.relation-jot-line),
 .selectedrelation rect {
-    fill-opacity : 0.7;
-    stroke-opacity : 0.8;
-    stroke: blue !important;
-    stroke-dasharray: 100 100;
-    stroke-width: 15px;
-    filter : url("#selectFilter");
+  fill-opacity: 0.7;
+  stroke-opacity: 0.8;
+  stroke: blue !important;
+  stroke-dasharray: 100 100;
+  stroke-width: 15px;
+  filter: url('#selectFilter');
 }
 .selectedrelation path {
-  filter : url("#selectFilter");
+  filter: url('#selectFilter');
 }
 .selectedrelation .relation-jot-line {
   stroke: blue !important;
@@ -406,23 +402,23 @@ body:not(.mousedown) .shift-pressed .metarelation:hover rect {
 }
 body:not(.mousedown) .extraselectedrelation:hover path,
 body:not(.mousedown) .extraselectedrelation:hover line,
-body:not(.mousedown) .extraselectedrelation:hover rect{
-    transform : translate3d(0,0,0);
-    filter : url("#glowFilter");
-    stroke: red !important;
-    stroke-width: 15px;
-    stroke-opacity: 0.8;
+body:not(.mousedown) .extraselectedrelation:hover rect {
+  transform: translate3d(0, 0, 0);
+  filter: url('#glowFilter');
+  stroke: red !important;
+  stroke-width: 15px;
+  stroke-opacity: 0.8;
 }
 .extraselectedrelation path,
 .extraselectedrelation line:not(.relation-jot-line),
 .extraselectedrelation rect {
-    fill-opacity : 0.7;
-    stroke-opacity : 0.8;
-    stroke: red !important;
-    stroke-dasharray: 80 80;
-    stroke-width: 15px;
-    transform : translate3d(0,0,0);
-    filter : url("#extraFilter");
+  fill-opacity: 0.7;
+  stroke-opacity: 0.8;
+  stroke: red !important;
+  stroke-dasharray: 80 80;
+  stroke-width: 15px;
+  transform: translate3d(0, 0, 0);
+  filter: url('#extraFilter');
 }
 .extraselectedrelation .relation-jot-line {
   stroke: red !important;
@@ -430,25 +426,24 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   stroke-opacity: 0.8;
 }
 .relationhover {
-  transform: translate3d(0,0,0);
-  filter: url("#selectFilter");
+  transform: translate3d(0, 0, 0);
+  filter: url('#selectFilter');
 }
 .relationhover.metarelation rect,
 .relationhover.metarelation line {
-  transform: translate3d(0,0,0);
-  filter: url("#selectFilter");
+  transform: translate3d(0, 0, 0);
+  filter: url('#selectFilter');
   stroke: blue;
   stroke-width: 20px;
 }
 
 .extrarelationhover {
-      transform: translate3d(0,0,0);
-       filter: url("#extraFilter");
+  transform: translate3d(0, 0, 0);
+  filter: url('#extraFilter');
 }
 
-
 .hidden {
-  visibility: hidden
+  visibility: hidden;
 }
 
 #layers-wrapper {
@@ -461,11 +456,11 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
 }
 
 .layer {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .definition-scale {
-    overflow-y: visible;
+  overflow-y: visible;
 }
 
 .view,
@@ -479,11 +474,11 @@ body:not(.mousedown) .extraselectedrelation:hover rect{
   height: 100%;
 }
 
-
 .view_buttons {
   width: 30px;
   z-index: 1;
-  height: 21px;  backdrop-filter: blur(2px);
+  height: 21px;
+  backdrop-filter: blur(2px);
   background: lightgray;
   font-family: Arial;
   font-size: 14px;
@@ -526,26 +521,28 @@ input {
   font-family: arial;
 }
 
-input[type="button"] {
+input[type='button'] {
   border: solid 1px;
   border-color: lightgray;
   padding: 4px;
   margin: 2px;
 }
 
-input[type="button"]:active, input[type="button"].active {
+input[type='button']:active,
+input[type='button'].active {
   background: darkgray;
 }
 
-body:not(.mousedown) input[type="button"]:hover {
+body:not(.mousedown) input[type='button']:hover {
   border-color: blue;
 }
 
 .zoom_buttons {
-margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
-.zoominbutton, .zoomoutbutton {
+.zoominbutton,
+.zoomoutbutton {
   width: 3rem;
   font-weight: bold;
 }
@@ -553,7 +550,7 @@ margin-top: 0.5rem;
 #relations_panel:not(input) {
   position: fixed;
   z-index: 9;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   border: 1px solid #d3d3d3;
   text-align: center;
   top: 50vh;
@@ -599,8 +596,8 @@ margin-top: 0.5rem;
 }
 
 .collapsed #relations_panel_header {
-    width: 50px;
-    height: 50px;
+  width: 50px;
+  height: 50px;
 }
 
 body:not(.mousedown) #relations_panel_toggle:hover {
@@ -613,11 +610,11 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 }
 
 .select2-container {
-  background: rgba(255,255,255,0.5) !important;
+  background: rgba(255, 255, 255, 0.5) !important;
 }
 
 .select2-container--default .select2-selection--single {
-  background-color: rgba(0,0,0,0.5) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -628,7 +625,8 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   display: none;
 }
 
-:disabled, .disabled {
+:disabled,
+.disabled {
   -webkit-filter: grayscale(100%) !important;
   -moz-filter: grayscale(100%) !important;
   -ms-filter: grayscale(100%) !important;

@@ -126,6 +126,9 @@ export function unreduce() {
 
   let layerContainsCycle = (draw_context.cycle != null && Array.isArray(draw_context.cycle) && draw_context.cycle.length > 0)
 
+  // Not yet ready to exit reduction mode.
+  let terminate = false
+
   if (layerContainsReduction) {
     const number_of_layers = draw_context.note_diffs.length - 1
     let current_layer_number = draw_context.current_layer_number
@@ -164,6 +167,9 @@ export function unreduce() {
         // Reset the draw context.
         draw_context.note_diffs = null
         draw_context.relation_diffs = null
+
+        // Ready to exit reduction mode.
+        terminate = true
       }
     }
   }
@@ -175,6 +181,14 @@ export function unreduce() {
       if (notehead) notehead.style.fill = ''
     })
 
+    // Reset the draw context.
+    draw_context.cycle = null
+
+    // Ready to exit reduction mode.
+    terminate = true
+  }
+
+  if (terminate) {
     // Unblock the UI.
     draw_context.svg_elem.classList.remove('locked')
     document.getElementById('undo').classList.remove('locked')
@@ -189,9 +203,6 @@ export function unreduce() {
 
     // Update the UI indicator.
     document.getElementById('reduction-counter').innerText = ``
-
-    // Reset the draw context.
-    draw_context.cycle = null
   }
 }
 

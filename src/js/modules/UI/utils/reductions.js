@@ -68,7 +68,7 @@ export async function reduce() {
 
     let reductionWasFetched = true ? fetched_note_diffs.flat(1).length > 0 : false
     if (reductionWasFetched) {
-      draw_context.current_layer_number = -1
+      draw_context.current_layer_index = -2
       draw_context.note_diffs = fetched_note_diffs
       draw_context.relation_diffs = fetched_relation_diffs
     }
@@ -127,20 +127,22 @@ export async function reduce() {
   let layerContainsCycle = ((draw_context.cycle != null) && (draw_context.cycle.length > 0))
 
   if (layerContainsReduction) {
-    const number_of_layers = draw_context.note_diffs.length - 1
-    let current_layer_number = draw_context.current_layer_number
+    const max_layer_index = draw_context.note_diffs.length - 1
+    if (draw_context.current_layer_index < max_layer_index - 1) {
+      draw_context.current_layer_index += 1
+    }
+    console.log(`draw_context.current_layer_index: ${draw_context.current_layer_index}`)
 
-    if (current_layer_number < number_of_layers) {
+    if (draw_context.current_layer_index >= 0 && draw_context.current_layer_index < max_layer_index) {
       // Update the UI counter.
-      document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number} / ${number_of_layers + 1}`
+      document.getElementById('reduction-counter').innerText = `Reductive stage: ${max_layer_index - draw_context.current_layer_index} / ${max_layer_index + 1}`
 
       // Hide the diff of the layer.
-      draw_context.current_layer_number += 1
-      draw_context.note_diffs[current_layer_number].forEach(n => {
+      draw_context.note_diffs[draw_context.current_layer_index].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.add('hidden-reduced')
       })
-      draw_context.relation_diffs[current_layer_number].forEach(n => {
+      draw_context.relation_diffs[draw_context.current_layer_index].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.add('hidden-reduced')
       })
@@ -175,27 +177,26 @@ export function unreduce() {
   let terminate = false
 
   if (layerContainsReduction) {
-    const number_of_layers = draw_context.note_diffs.length - 1
-    let current_layer_number = draw_context.current_layer_number
+    console.log(`draw_context.current_layer_index: ${draw_context.current_layer_index}`)
+    const max_layer_index = draw_context.note_diffs.length - 1
 
-    if (current_layer_number > 0) {
+    if (draw_context.current_layer_index >= 0) {
       // Reveal the diff of the layer.
-      let current_layer_number = draw_context.current_layer_number - 1
-      draw_context.note_diffs[current_layer_number].forEach(n => {
+      draw_context.note_diffs[draw_context.current_layer_index].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.remove('hidden-reduced')
       })
-      draw_context.relation_diffs[current_layer_number].forEach(n => {
+      draw_context.relation_diffs[draw_context.current_layer_index].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.remove('hidden-reduced')
       })
-      document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1} / ${number_of_layers + 1}`
+      document.getElementById('reduction-counter').innerText = `Reductive stage: ${max_layer_index - draw_context.current_layer_index + 1} / ${max_layer_index + 1}`
     }
 
-    draw_context.current_layer_number -= 1
+    if (draw_context.current_layer_index > -2) draw_context.current_layer_index = draw_context.current_layer_index - 1
 
     // If we reached the surface:
-    if (current_layer_number == 0) {
+    if (draw_context.current_layer_index == -2) {
 
       unlockUI()
 

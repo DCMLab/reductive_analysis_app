@@ -89,7 +89,7 @@ export async function reduce() {
 
     if (current_layer_number < number_of_layers) {
       // Update the UI counter.
-      document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number}`
+      document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number} / ${number_of_layers + 1}`
 
       // Hide the diff of the layer.
       draw_context.current_layer_number += 1
@@ -141,7 +141,7 @@ export function unreduce() {
         n_el.classList.remove('hidden-reduced')
       })
       draw_context.current_layer_number -= 1
-      document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1}`
+      document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1} / ${number_of_layers + 1}`
 
       // If we reached the surface:
       if (current_layer_number == 0) {

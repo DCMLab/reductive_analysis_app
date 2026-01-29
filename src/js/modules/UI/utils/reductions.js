@@ -59,29 +59,30 @@ export async function reduce() {
     if (cycleWasFetched) {
       draw_context.cycle = fetched_cycle
     }
+
+    if (reductionWasFetched || cycleWasFetched) {
+      do_deselect()
+
+      // Block the UI
+      draw_context.svg_elem.classList.add('locked')
+      document.getElementById('undo').classList.add('locked')
+      document.getElementById('undo').disabled = true
+      document.getElementById('redo').classList.add('locked')
+      document.getElementById('redo').disabled = true
+
+      // Save meta-relation toggle state and hide meta-relations if the toggle is unset.
+      const meta_toggle_on = document.getElementById('meta-relation-on')
+      if (meta_toggle_on.getAttribute('saved-state') == '' || meta_toggle_on.getAttribute('saved-state') == null) {
+        meta_toggle_on.setAttribute('saved-state', meta_toggle_on.checked ? 'on' : 'off')
+        document.getElementById('meta-relation-off').click()
+      }
+
+    }
   }
 
   let layerContainsReduction = ((draw_context.note_diffs != null) && (draw_context.note_diffs.flat(1).length > 0) && (draw_context.relation_diffs != null) && (draw_context.relation_diffs.flat(1).length > 0))
 
   let layerContainsCycle = ((draw_context.cycle != null) && (draw_context.cycle.length > 0))
-
-  if (layerContainsReduction || layerContainsCycle) {
-    do_deselect()
-
-    // Block the UI
-    draw_context.svg_elem.classList.add('locked')
-    document.getElementById('undo').classList.add('locked')
-    document.getElementById('undo').disabled = true
-    document.getElementById('redo').classList.add('locked')
-    document.getElementById('redo').disabled = true
-
-    // Save meta-relation toggle state and hide meta-relations if the toggle is unset.
-    const meta_toggle_on = document.getElementById('meta-relation-on')
-    if (meta_toggle_on.getAttribute('saved-state') == '' || meta_toggle_on.getAttribute('saved-state') == null) {
-      meta_toggle_on.setAttribute('saved-state', meta_toggle_on.checked ? 'on' : 'off')
-      document.getElementById('meta-relation-off').click()
-    }
-  }
 
   if (layerContainsReduction) {
     const number_of_layers = draw_context.note_diffs.length - 1

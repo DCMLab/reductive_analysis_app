@@ -42,6 +42,11 @@ svg .system .cycle * {
   fill: unset;
 }
 
+.stage-number {
+  font-size: 400px;
+  fill: #666;
+}
+
 .file-input {
   width: 0.1px;
   height: 0.1px;

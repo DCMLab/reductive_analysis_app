@@ -36,7 +36,6 @@ export async function reduce() {
       // Case 2: We received a graph cycle.
       if (Array.isArray(verdict) && verdict.length === 2 && typeof (verdict[0]) == 'string' && verdict[0] == 'GraphCycleError' && Array.isArray(verdict[1]) && verdict[1].length > 0) {
         fetched_cycle = verdict[1]
-        document.getElementById('reduction-counter').innerText = `Cycle found.`
       }
 
       // Case 3: We received another algorithmic exception.
@@ -66,21 +65,34 @@ export async function reduce() {
 
   let layerContainsCycle = ((draw_context.cycle != null) && (draw_context.cycle.length > 0))
 
-  if (layerContainsReduction) {
-    // Block the UI.
+  if (layerContainsReduction || layerContainsCycle) {
     do_deselect()
+
+    // Block the UI
+    draw_context.svg_elem.classList.add('locked')
+    document.getElementById('undo').classList.add('locked')
+    document.getElementById('undo').disabled = true
+    document.getElementById('redo').classList.add('locked')
+    document.getElementById('redo').disabled = true
+
+    // Save meta-relation toggle state and hide meta-relations if the toggle is unset.
+    const meta_toggle_on = document.getElementById('meta-relation-on')
+    if (meta_toggle_on.getAttribute('saved-state') == '' || meta_toggle_on.getAttribute('saved-state') == null) {
+      meta_toggle_on.setAttribute('saved-state', meta_toggle_on.checked ? 'on' : 'off')
+      document.getElementById('meta-relation-off').click()
+    }
+  }
+
+  if (layerContainsReduction) {
     const number_of_layers = draw_context.note_diffs.length - 1
     let current_layer_number = draw_context.current_layer_number
 
     if (current_layer_number < number_of_layers) {
-      draw_context.current_layer_number += 1
-      draw_context.svg_elem.classList.add('locked')
-      document.getElementById('undo').classList.add('locked')
-      document.getElementById('undo').disabled = true
-      document.getElementById('redo').classList.add('locked')
-      document.getElementById('redo').disabled = true
+      // Update the UI counter.
       document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number}`
-      // Hide the diff corresponding to that layer.
+
+      // Hide the diff of the layer.
+      draw_context.current_layer_number += 1
       draw_context.note_diffs[current_layer_number].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.add('hidden-reduced')
@@ -93,18 +105,15 @@ export async function reduce() {
   }
 
   if (layerContainsCycle) {
+    // Update the UI indicator.
+    document.getElementById('reduction-counter').innerText = `Cycle found.`
+
+    // Color the cycle red.
     draw_context.cycle.forEach(id => {
       const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
       const notehead = el?.querySelector('.notehead')
       if (notehead) notehead.style.fill = 'red'
     })
-    // Block the UI.
-    do_deselect()
-    draw_context.svg_elem.classList.add('locked')
-    document.getElementById('undo').classList.add('locked')
-    document.getElementById('undo').disabled = true
-    document.getElementById('redo').classList.add('locked')
-    document.getElementById('redo').disabled = true
   }
 }
 
@@ -121,6 +130,7 @@ export function unreduce() {
     let current_layer_number = draw_context.current_layer_number
 
     if (current_layer_number > 0) {
+      // Reveal the diff of the layer.
       let current_layer_number = draw_context.current_layer_number - 1
       draw_context.note_diffs[current_layer_number].forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
@@ -132,6 +142,8 @@ export function unreduce() {
       })
       draw_context.current_layer_number -= 1
       document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1}`
+
+      // If we reached the surface:
       if (current_layer_number == 0) {
         // Unblock the UI.
         draw_context.svg_elem.classList.remove('locked')
@@ -139,6 +151,13 @@ export function unreduce() {
         document.getElementById('undo').disabled = false
         document.getElementById('redo').classList.remove('locked')
         document.getElementById('redo').disabled = false
+
+        // Restore meta-relation toggle state and unset its attribute.
+        const meta_toggle_on = document.getElementById('meta-relation-on')
+        if (meta_toggle_on.getAttribute('saved-state') === 'on') meta_toggle_on.click()
+        meta_toggle_on.removeAttribute('saved-state')
+
+        // Update the UI counter.
         document.getElementById('reduction-counter').innerText = ``
 
         // Reset the draw context.
@@ -154,12 +173,20 @@ export function unreduce() {
       const notehead = el?.querySelector('.notehead')
       if (notehead) notehead.style.fill = ''
     })
+
     // Unblock the UI.
     draw_context.svg_elem.classList.remove('locked')
     document.getElementById('undo').classList.remove('locked')
     document.getElementById('undo').disabled = false
     document.getElementById('redo').classList.remove('locked')
     document.getElementById('redo').disabled = false
+
+    // Restore meta-relation toggle state and unset its attribute.
+    const meta_toggle_on = document.getElementById('meta-relation-on')
+    if (meta_toggle_on.getAttribute('saved-state') === 'on') meta_toggle_on.click()
+    meta_toggle_on.removeAttribute('saved-state')
+
+    // Update the UI indicator.
     document.getElementById('reduction-counter').innerText = ``
 
     // Reset the draw context.

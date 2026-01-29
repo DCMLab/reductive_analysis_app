@@ -68,7 +68,7 @@ export async function reduce() {
 
     let reductionWasFetched = true ? fetched_note_diffs.flat(1).length > 0 : false
     if (reductionWasFetched) {
-      draw_context.current_layer_number = 0
+      draw_context.current_layer_number = -1
       draw_context.note_diffs = fetched_note_diffs
       draw_context.relation_diffs = fetched_relation_diffs
     }
@@ -189,29 +189,30 @@ export function unreduce() {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.remove('hidden-reduced')
       })
-      draw_context.current_layer_number -= 1
       document.getElementById('reduction-counter').innerText = `Reductive stage: ${number_of_layers - current_layer_number + 1} / ${number_of_layers + 1}`
+    }
 
-      // If we reached the surface:
-      if (current_layer_number == 0) {
+    draw_context.current_layer_number -= 1
 
-        unlockUI()
+    // If we reached the surface:
+    if (current_layer_number == 0) {
 
-        // Restore meta-relation toggle state and unset its attribute.
-        const meta_toggle_on = document.getElementById('meta-relation-on')
-        if (meta_toggle_on.getAttribute('saved-state') === 'on') meta_toggle_on.click()
-        meta_toggle_on.removeAttribute('saved-state')
+      unlockUI()
 
-        // Update the UI counter.
-        document.getElementById('reduction-counter').innerText = ``
+      // Restore meta-relation toggle state and unset its attribute.
+      const meta_toggle_on = document.getElementById('meta-relation-on')
+      if (meta_toggle_on.getAttribute('saved-state') === 'on') meta_toggle_on.click()
+      meta_toggle_on.removeAttribute('saved-state')
 
-        // Reset the draw context.
-        draw_context.note_diffs = null
-        draw_context.relation_diffs = null
+      // Update the UI counter.
+      document.getElementById('reduction-counter').innerText = ``
 
-        // Ready to exit reduction mode.
-        terminate = true
-      }
+      // Reset the draw context.
+      draw_context.note_diffs = null
+      draw_context.relation_diffs = null
+
+      // Ready to exit reduction mode.
+      terminate = true
     }
   }
 

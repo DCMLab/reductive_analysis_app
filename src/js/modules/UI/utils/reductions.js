@@ -11,6 +11,24 @@ import {
   get_by_id
 } from '../../../utils/misc'
 
+function unlockUI() {
+  const draw_context = getDrawContexts().find(e => e.canEdit)
+  draw_context.svg_elem.classList.remove('locked')
+  document.getElementById('undo').classList.remove('locked')
+  document.getElementById('undo').disabled = false
+  document.getElementById('redo').classList.remove('locked')
+  document.getElementById('redo').disabled = false
+}
+
+function lockUI() {
+  const draw_context = getDrawContexts().find(e => e.canEdit)
+  draw_context.svg_elem.classList.add('locked')
+  document.getElementById('undo').classList.add('locked')
+  document.getElementById('undo').disabled = true
+  document.getElementById('redo').classList.add('locked')
+  document.getElementById('redo').disabled = true
+}
+
 export async function reduce() {
 
   const draw_context = getDrawContexts().find(e => e.canEdit)
@@ -63,12 +81,7 @@ export async function reduce() {
     if (reductionWasFetched || cycleWasFetched) {
       do_deselect()
 
-      // Block the UI
-      draw_context.svg_elem.classList.add('locked')
-      document.getElementById('undo').classList.add('locked')
-      document.getElementById('undo').disabled = true
-      document.getElementById('redo').classList.add('locked')
-      document.getElementById('redo').disabled = true
+      lockUI()
 
       // Save meta-relation toggle state and hide meta-relations if the toggle is unset.
       const meta_toggle_on = document.getElementById('meta-relation-on')
@@ -149,12 +162,8 @@ export function unreduce() {
 
       // If we reached the surface:
       if (current_layer_number == 0) {
-        // Unblock the UI.
-        draw_context.svg_elem.classList.remove('locked')
-        document.getElementById('undo').classList.remove('locked')
-        document.getElementById('undo').disabled = false
-        document.getElementById('redo').classList.remove('locked')
-        document.getElementById('redo').disabled = false
+
+        unlockUI()
 
         // Restore meta-relation toggle state and unset its attribute.
         const meta_toggle_on = document.getElementById('meta-relation-on')
@@ -189,12 +198,8 @@ export function unreduce() {
   }
 
   if (terminate) {
-    // Unblock the UI.
-    draw_context.svg_elem.classList.remove('locked')
-    document.getElementById('undo').classList.remove('locked')
-    document.getElementById('undo').disabled = false
-    document.getElementById('redo').classList.remove('locked')
-    document.getElementById('redo').disabled = false
+
+    unlockUI()
 
     // Restore meta-relation toggle state and unset its attribute.
     const meta_toggle_on = document.getElementById('meta-relation-on')

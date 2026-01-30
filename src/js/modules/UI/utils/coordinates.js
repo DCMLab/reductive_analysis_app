@@ -176,8 +176,12 @@ function coord_pitch(dc, pt, staff) {
 }
 
 // Same procedure as for coord_staff, if we're not allowing new chords
-function closest_note(dc, pt, staff) {
-  var notes = Array.from(staff.getElementsByClassName('note')).map((n) => [note_coords(n)[0], n])
+function closest_note(dc, pt, staff, measure) {
+  // Search all staves in the measure to find note closest to x-position (beat)
+  // This ensures we find a note at the same beat even if the target staff is empty there
+  var notes = measure
+    ? Array.from(measure.getElementsByClassName('note')).map((n) => [note_coords(n)[0], n])
+    : Array.from(staff.getElementsByClassName('note')).map((n) => [note_coords(n)[0], n])
   if (notes.length == 0)
     return null
   notes.sort((a, b) => a[0] - b[0])
@@ -209,17 +213,19 @@ function note_params() {
   }
   const staff = coord_staff(dc, pt, measure)
   const [pname, oct] = coord_pitch(dc, pt, staff)
-  const sim_note = closest_note(dc, pt, staff)
+  const sim_note = closest_note(dc, pt, staff, measure)
   if (!sim_note)
     return [null, null, null]
   //  const [rel_event,simul] = coord_event(dc,pt, staff, measure);
-  return [pname, oct, sim_note]
+  return [pname, oct, sim_note, staff, measure]
 }
 
 function note_params_coords_sim(pname, oct, note) {
-  var staff = note.closest('.staff') // Assume we're in the same staff
-  // TODO: Handle if there are no notes in the current staff
-  //  var [y_to_p,p_to_y] = pitch_grid(staff,note);
+  // Get the staff under the cursor, not the staff containing the reference note
+  var dc = getCurrentDrawContext()
+  var pt = getPointerSVGCoords()
+  var measure = coord_measure(dc, pt)
+  var staff = measure ? coord_staff(dc, pt, measure) : note.closest('.staff')
   return [note_coords(note)[0], staff.p_to_y(pname, oct)]
 }
 
@@ -277,37 +283,96 @@ function draw_note(pname, oct, note, sim = true, id = '') {
   return added.reverse()
 }
 
-function add_note(layer_context, pname, oct, note, sim = true, id = '') {
-  var l_id = get_raw_id(note)
-  var l = get_by_id(mei, l_id)
-  if (!layer_context.score_elem.contains(l)) {
+function add_note(layer_context, pname, oct, note, sim = true, id = '', targetStaff = null, targetMeasure = null) {
+  var ref_id = get_raw_id(note)
+  var ref_mei = get_by_id(mei, ref_id)
+  if (!layer_context.score_elem.contains(ref_mei)) {
     return false
   }
 
-  var onset = document.querySelector('svg #' + l_id).dataset.onset
+  var onset = document.querySelector('svg #' + ref_id).dataset.onset
   var svg_l = document.querySelector('[data-onset="TBD"]')
   svg_l.dataset.onset = onset
 
+  // Use passed-in target staff/measure, or fall back to cursor position
+  var svg_measure = targetMeasure
+  var svg_staff = targetStaff
+  if (!svg_staff || !svg_measure) {
+    var dc = getCurrentDrawContext()
+    var pt = getPointerSVGCoords()
+    svg_measure = coord_measure(dc, pt)
+    svg_staff = coord_staff(dc, pt, svg_measure)
+  }
+  // Sort staves by y-position (same as coord_staff does) to get correct index
+  var svg_staves = Array.from(svg_measure.getElementsByClassName('staff'))
+    .map(s => [staff_midpoint(s), s])
+    .sort((a, b) => a[0] - b[0])
+    .map(pair => pair[1])
+  var target_staff_n = svg_staves.indexOf(svg_staff) + 1
+
+  // Get reference note's staff number
+  var ref_staff_n = parseInt(ref_mei.closest('staff').getAttribute('n'))
+
+  console.log('add_note:', { pname, oct, target_staff_n, ref_staff_n, svg_staff, svg_measure })
+
   var n = mei.createElementNS('http://www.music-encoding.org/ns/mei', 'note')
-  console.log('Note: ', n)
   var added = []
   n.setAttribute('xml:id', id)
-  console.log('With ID: ', n)
+  n.setAttribute('pname', pname)
+  // TODO Figure out accidentals, gestural or otherwise
+  n.setAttribute('oct', oct)
+
   if (sim) {
-    let c
-    if (l.closest('chord'))
-      c = l.closest('chord')
-    else {
-      c = note_to_chord(mei, l)
-      l.parentElement.insertBefore(c, l)
-      l.parentElement.removeChild(l)
-      c.appendChild(l)
-      added.push(c)
+    if (target_staff_n === ref_staff_n) {
+      // Same staff - use existing logic
+      let c
+      if (ref_mei.closest('chord'))
+        c = ref_mei.closest('chord')
+      else {
+        c = note_to_chord(mei, ref_mei)
+        ref_mei.parentElement.insertBefore(c, ref_mei)
+        ref_mei.parentElement.removeChild(ref_mei)
+        c.appendChild(ref_mei)
+        added.push(c)
+      }
+      c.appendChild(n)
+    } else {
+      // Different staff - find target staff and layer
+      var mei_measure = ref_mei.closest('measure')
+      var target_staff = mei_measure.querySelector('staff[n="' + target_staff_n + '"]')
+      var target_layer = target_staff.querySelector('layer')
+
+      // Find existing event at same onset in target staff
+      var existing = Array.from(target_layer.querySelectorAll('note, chord'))
+        .find(el => {
+          var el_id = el.getAttribute('xml:id')
+          var svg_el = document.querySelector('svg [id$="' + el_id + '"]')
+          return svg_el && svg_el.dataset.onset === onset
+        })
+
+      if (existing) {
+        // Add to existing chord or convert note to chord
+        if (existing.tagName === 'chord') {
+          existing.appendChild(n)
+        } else {
+          let c = note_to_chord(mei, existing)
+          existing.parentElement.insertBefore(c, existing)
+          existing.parentElement.removeChild(existing)
+          c.appendChild(existing)
+          c.appendChild(n)
+          added.push(c)
+        }
+      } else {
+        // No existing event - create standalone note
+        // Copy duration attributes from reference note (or its parent chord)
+        var dur_source = ref_mei.closest('chord') || ref_mei
+        for (const attr of ['dur', 'dots']) {
+          if (dur_source.hasAttribute(attr))
+            n.setAttribute(attr, dur_source.getAttribute(attr))
+        }
+        target_layer.appendChild(n)
+      }
     }
-    n.setAttribute('pname', pname)
-    // TODO Figure out accidentals, gestural or otherwise
-    n.setAttribute('oct', oct)
-    c.appendChild(n)
     added.push(n)
     layer_context.id_mapping.push([id, id])
   } else {
@@ -317,7 +382,7 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '') {
   return added.reverse()
 }
 
-export function do_note(pname, oct, note, offset, id, redoing = false) {
+export function do_note(pname, oct, note, offset, id, redoing = false, targetStaff = null, targetMeasure = null) {
   var new_element_id = 'added-' + random_id(8)
   let n = note
   if (typeof (id) != 'undefined')
@@ -327,7 +392,7 @@ export function do_note(pname, oct, note, offset, id, redoing = false) {
   added.push(draw_note(pname, oct, note, offset, new_element_id))
   // Add it to the current layer
   var current_draw_context = getCurrentDrawContext()
-  added.push(add_note(current_draw_context.layer, pname, oct, note, offset, new_element_id))
+  added.push(add_note(current_draw_context.layer, pname, oct, note, offset, new_element_id, targetStaff, targetMeasure))
   toggle_placing_note()
   if (!redoing)
     flush_redo()
@@ -339,10 +404,10 @@ export function place_note() {
   var current_draw_context = getCurrentDrawContext()
   var placing_note = getPlacingNote()
   if (placing_note != '' && current_draw_context.canEdit) {
-    let [pname, oct, note] = note_params()
+    let [pname, oct, note, targetStaff, targetMeasure] = note_params()
     if (!pname)
       return
-    do_note(pname, oct, note, true)
+    do_note(pname, oct, note, true, undefined, false, targetStaff, targetMeasure)
     newNote.toggle()
   }
 }

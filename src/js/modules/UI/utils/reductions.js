@@ -97,10 +97,18 @@ export async function reduce() {
           const useEl = noteEl.querySelector('.notehead use')
           if (useEl) {
             const transform = useEl.getAttribute('transform')
-            const match = transform.match(/translate\(([^,]+),\s*([^)]+)\)/)
+            const match = transform?.match(/translate\(([^,]+),\s*([^)]+)\)/)
+            let x, y
             if (match) {
-              const x = parseFloat(match[1])
-              const y = parseFloat(match[2])
+              x = parseFloat(match[1])
+              y = parseFloat(match[2])
+            } else {
+              // Fallback: use bounding box for elements without transform
+              const bbox = useEl.getBBox()
+              x = bbox.x
+              y = bbox.y + bbox.height / 2
+            }
+            {
               const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
               text.setAttribute('x', x - 300)
               text.setAttribute('y', y)

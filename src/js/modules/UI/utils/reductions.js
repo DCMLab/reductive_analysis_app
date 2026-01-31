@@ -159,6 +159,7 @@ export async function reduce() {
   if (layerContainsCycle) {
     // Update the UI indicator.
     document.getElementById('reduction-counter').innerText = `Cycle found.`
+    document.getElementById('reduction-counter').classList.add('cycle')
 
     // Color the cycle red.
     draw_context.cycle.forEach(id => {
@@ -231,6 +232,7 @@ export function unreduce() {
       if (notehead) {
         notehead.style.fill = ''
         notehead.classList.remove('cycle')
+        document.getElementById('reduction-counter').classList.remove('cycle')
       }
     })
 

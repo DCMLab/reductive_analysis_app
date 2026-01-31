@@ -667,3 +667,14 @@ body:not(.mousedown) #relations_panel_toggle:hover {
 .locked * {
   cursor: not-allowed;
 }
+
+#reduction-counter {
+  font-weight: bold;
+  font-family: system-ui;
+  font-size: large;
+  color: saddlebrown;
+}
+
+#reduction-counter.cycle {
+  color: darkred;
+}

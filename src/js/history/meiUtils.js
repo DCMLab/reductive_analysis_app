@@ -243,12 +243,24 @@ export function restoreRelationFromSnapshot(mei, meiGraph, snapshot) {
   // First restore any parent metarelations (in reverse order - parents before children)
   const sortedMetas = [...snapshot.metarelations].reverse()
   for (const metaSnapshot of sortedMetas) {
-    // Check if it already exists
+    // Check if metarelation node already exists
     if (!getById(mei, metaSnapshot.id)) {
       const metaNode = deserializeElement(mei, metaSnapshot.nodeXml)
       meiGraph.appendChild(metaNode)
-      for (const arcXml of metaSnapshot.arcsXml) {
-        const arc = deserializeElement(mei, arcXml)
+    }
+    // Always check and restore missing arcs (even if node existed)
+    for (const arcXml of metaSnapshot.arcsXml) {
+      const arc = deserializeElement(mei, arcXml)
+      const from = arc.getAttribute('from')
+      const to = arc.getAttribute('to')
+      const type = arc.getAttribute('type')
+      // Check for duplicate arcs
+      const existing = Array.from(meiGraph.getElementsByTagName('arc')).find(
+        a => a.getAttribute('from') === from &&
+             a.getAttribute('to') === to &&
+             a.getAttribute('type') === type
+      )
+      if (!existing) {
         meiGraph.appendChild(arc)
       }
     }

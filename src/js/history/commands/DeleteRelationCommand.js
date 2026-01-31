@@ -19,6 +19,7 @@ import {
   renderMetarelation,
   unmarkRelationSecondaries,
   markRelationSecondaries,
+  clearRelationHover,
   updateRelationTree,
   deselectAll,
   restoreSelection,
@@ -94,6 +95,15 @@ export class DeleteRelationCommand extends Command {
 
     // Capture connection circle state before deletion
     this._captureConnectionCircles(meiGraph, allMetarelationIds)
+
+    // Clear hover highlights from all relations and their children before deletion
+    // This prevents orphaned highlight classes when deleting while hovering
+    for (const relationId of this.relationIds) {
+      clearRelationHover(drawContext, meiGraph, relationId)
+    }
+    for (const metaId of allMetarelationIds) {
+      clearRelationHover(drawContext, meiGraph, metaId)
+    }
 
     // Now delete the relations
     for (const relationId of this.relationIds) {

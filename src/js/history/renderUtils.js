@@ -13,7 +13,7 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  * based on MEI state, rather than trying to manipulate stored DOM references.
  */
 
-import { draw_relation, draw_metarelation } from '../action/draw'
+import { draw_relation, draw_metarelation, removeHoverClassToChildren } from '../action/draw'
 import { mark_secondaries, unmark_secondaries, get_by_id, get_id } from '../utils/misc'
 import { toggle_shade, adjustAllLayersSvgDimensions } from '../modules/UI/utils/misc'
 import { getById } from './meiUtils'
@@ -167,6 +167,21 @@ export function markRelationSecondaries(drawContext, meiGraph, relationId) {
   const meiNode = getById(meiGraph.getRootNode(), relationId)
   if (meiNode && meiNode.getAttribute('type') === 'relation') {
     mark_secondaries(drawContext, meiGraph, meiNode)
+  }
+}
+
+/**
+ * Clear hover highlight classes from a relation's children.
+ * This should be called before deleting a relation to ensure no orphaned highlights remain.
+ * @param {Object} drawContext - The draw context
+ * @param {Element} meiGraph - The MEI graph element
+ * @param {string} relationId - The relation's xml:id
+ */
+export function clearRelationHover(drawContext, meiGraph, relationId) {
+  const cleanId = relationId.startsWith('#') ? relationId.slice(1) : relationId
+  const svgElem = document.getElementById(drawContext.id_prefix + cleanId)
+  if (svgElem) {
+    removeHoverClassToChildren(svgElem, true, true, drawContext, meiGraph)
   }
 }
 

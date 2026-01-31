@@ -12,8 +12,14 @@ import {
   getCurrentDrawContext
 } from '../modules/UI/utils/misc'
 import { flush_redo } from './undo_redo'
-import { get_by_id, get_class_from_classlist, get_id, unmark_secondaries } from '../utils/misc'
+import { get_by_id, get_class_from_classlist, get_id, id_or_oldid, unmark_secondaries } from '../utils/misc'
 import { removeHoverClassToChildren } from './draw'
+import {
+  USE_NEW_HISTORY,
+  getHistoryManager,
+  createContext,
+  DeleteRelationCommand
+} from '../history'
 
 // This also delete meta-relations
 function delete_relation(elem) {
@@ -213,6 +219,21 @@ export function delete_relations(redoing = false) {
     console.log('No (meta)relation selected!')
     return
   }
+
+  if (USE_NEW_HISTORY && !redoing) {
+    // Use new command-based history system
+    const relationIds = sel.map(elem => id_or_oldid(elem))
+    const context = createContext({
+      mei: window.mei,
+      meiGraph: getMeiGraph(),
+      drawContexts: getDrawContexts()
+    })
+    const command = new DeleteRelationCommand(relationIds)
+    getHistoryManager().execute(command, context)
+    return
+  }
+
+  // Legacy system (or redoing from legacy)
   var removed = sel.flatMap(delete_relation)
 
   var undo_actions = getUndoActions()

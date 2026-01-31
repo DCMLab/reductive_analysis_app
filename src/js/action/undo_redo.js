@@ -19,6 +19,7 @@ import { do_note } from '../modules/UI/utils/coordinates'
 import { delete_relations } from './delete'
 import { toggle_selected, toggle_shade, adjustAllLayersSvgDimensions } from '../modules/UI/utils/misc'
 import { get_id, get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, mark_secondaries, unmark_secondaries } from '../utils/misc'
+import { USE_NEW_HISTORY, getHistoryManager, createContext } from '../history'
 
 // Oops, undo whatever we did last.
 export function do_undo() {
@@ -30,6 +31,23 @@ export function do_undo() {
     return
   }
 
+  // Use new history system if enabled
+  if (USE_NEW_HISTORY) {
+    const historyManager = getHistoryManager()
+    if (!historyManager.canUndo()) {
+      console.log('Nothing to undo')
+      return
+    }
+    const context = createContext({
+      mei: window.mei,
+      meiGraph: getMeiGraph(),
+      drawContexts: getDrawContexts()
+    })
+    historyManager.undo(context)
+    return
+  }
+
+  // Legacy system below
   // Get latest undo_actions
   var undo_actions = getUndoActions()
   if (undo_actions.length == 0) {
@@ -211,6 +229,24 @@ export function do_redo() {
   if (draw_context.svg_elem.classList.contains('locked')) {
     return
   }
+
+  // Use new history system if enabled
+  if (USE_NEW_HISTORY) {
+    const historyManager = getHistoryManager()
+    if (!historyManager.canRedo()) {
+      console.log('Nothing to redo')
+      return
+    }
+    const context = createContext({
+      mei: window.mei,
+      meiGraph: getMeiGraph(),
+      drawContexts: getDrawContexts()
+    })
+    historyManager.redo(context)
+    return
+  }
+
+  // Legacy system below
   // Get latest redo_actions
   var redo_actions = getRedoActions()
   if (redo_actions.length == 0) {

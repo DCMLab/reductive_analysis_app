@@ -66,6 +66,15 @@ import {
 } from './utils/misc'
 import { compute_measure_map, pitch_grid } from './modules/UI/utils/coordinates'
 import { flush_redo } from './action/undo_redo'
+import {
+  USE_NEW_HISTORY,
+  getHistoryManager,
+  resetHistoryManager,
+  createContext,
+  ChangeRelationTypeCommand,
+  CreateRelationCommand,
+  CreateMetarelationCommand
+} from './history'
 import { comboRelationTypes } from './modules/Relations/config'
 import { setAttributes } from './utils/dom'
 
@@ -160,40 +169,62 @@ export function do_relation(type, id, redoing = false) {
 
   var he_id, mei_elems
   if (selected.concat(extraselected)[0].classList.contains('relation')) {
-    var types = []
-    selected.concat(extraselected).forEach((he) => {
-      // TODO: move type_synonym application so that this
-      // is the right type == the one from the MEI
-      types.push([he.getAttribute('type'), type])
-      var id = id_or_oldid(he)
-      var hes = [get_by_id(document, id)].concat(get_by_oldid(document, id))
-      hes.forEach((he) => he.setAttribute('type', type))
-      var mei_he = get_by_id(mei, id)
-      mei_he.getElementsByTagName('label')[0].setAttribute('type', type)
-      hes.forEach(toggle_shade)
-    })
-    // update_text()
-    undo_actions.push(['change relation type', types.reverse(), selected, extraselected])
-  } else if (selected.concat(extraselected)[0].classList.contains('note')) {
-    check_for_duplicate_relations(type, extraselected, selected)
-    var added = []
-    // Add new nodes for all notes
-    var primaries = extraselected.map((e) => add_mei_node_for(mei_graph, e))
-    var secondaries = selected.map((e) => add_mei_node_for(mei_graph, e))
-    added.push(primaries.concat(secondaries));
-    [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
-    added.push(mei_elems)
-
-    let g_elem = draw_relation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
-    if (g_elem) {
-      added.push(g_elem) // Draw the edge
-      mark_secondaries(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+    // Changing relation type
+    if (USE_NEW_HISTORY && !redoing) {
+      // Use new command-based history system
+      const relationIds = selected.concat(extraselected).map(he => id_or_oldid(he))
+      const context = createContext({ mei, meiGraph: mei_graph, drawContexts: draw_contexts })
+      const command = new ChangeRelationTypeCommand(relationIds, type)
+      getHistoryManager().execute(command, context)
+    } else {
+      // Legacy system (or redoing from legacy)
+      var types = []
+      selected.concat(extraselected).forEach((he) => {
+        // TODO: move type_synonym application so that this
+        // is the right type == the one from the MEI
+        types.push([he.getAttribute('type'), type])
+        var id = id_or_oldid(he)
+        var hes = [get_by_id(document, id)].concat(get_by_oldid(document, id))
+        hes.forEach((he) => he.setAttribute('type', type))
+        var mei_he = get_by_id(mei, id)
+        mei_he.getElementsByTagName('label')[0].setAttribute('type', type)
+        hes.forEach(toggle_shade)
+      })
+      // update_text()
+      undo_actions.push(['change relation type', types.reverse(), selected, extraselected])
     }
+  } else if (selected.concat(extraselected)[0].classList.contains('note')) {
+    // Creating a new relation
+    check_for_duplicate_relations(type, extraselected, selected)
 
-    undo_actions.push(['relation', added.reverse(), selected, extraselected])
-    selected.concat(extraselected).forEach(toggle_selected) // De-select
+    if (USE_NEW_HISTORY && !redoing) {
+      // Use new command-based history system
+      const primaryNoteIds = extraselected.map(e => e.id)
+      const secondaryNoteIds = selected.map(e => e.id)
+      const context = createContext({ mei, meiGraph: mei_graph, drawContexts: draw_contexts })
+      const command = new CreateRelationCommand(primaryNoteIds, secondaryNoteIds, type, id)
+      getHistoryManager().execute(command, context)
+    } else {
+      // Legacy system (or redoing from legacy)
+      var added = []
+      // Add new nodes for all notes
+      var primaries = extraselected.map((e) => add_mei_node_for(mei_graph, e))
+      var secondaries = selected.map((e) => add_mei_node_for(mei_graph, e))
+      added.push(primaries.concat(secondaries));
+      [he_id, mei_elems] = add_relation(mei_graph, primaries, secondaries, type, id)
+      added.push(mei_elems)
+
+      let g_elem = draw_relation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+      if (g_elem) {
+        added.push(g_elem) // Draw the edge
+        mark_secondaries(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
+      }
+
+      undo_actions.push(['relation', added.reverse(), selected, extraselected])
+      selected.concat(extraselected).forEach(toggle_selected) // De-select
+    }
   }
-  if (!redoing)
+  if (!redoing && !USE_NEW_HISTORY)
     flush_redo()
 
   // Update hierarchy tree if visible
@@ -236,21 +267,33 @@ export function do_metarelation(type, id, redoing = false) {
   if (!(ci == 'relation' || ci == 'metarelation')) {
     return
   }
-  var added = []
-  var he_id, mei_elems
 
-  var primaries = extraselected.map((e) =>
-    get_by_id(mei_graph.getRootNode(), id_or_oldid(e)))
-  var secondaries = selected.map((e) =>
-    get_by_id(mei_graph.getRootNode(), id_or_oldid(e)))
-  var [he_id, mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type, id)
-  added.push(mei_elems)
+  if (USE_NEW_HISTORY && !redoing) {
+    // Use new command-based history system
+    const primaryIds = extraselected.map(e => id_or_oldid(e))
+    const secondaryIds = selected.map(e => id_or_oldid(e))
+    const context = createContext({ mei, meiGraph: mei_graph, drawContexts: draw_contexts })
+    const command = new CreateMetarelationCommand(primaryIds, secondaryIds, type, id)
+    getHistoryManager().execute(command, context)
+  } else {
+    // Legacy system (or redoing from legacy)
+    var added = []
+    var he_id, mei_elems
 
-  added.push(draw_metarelation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
+    var primaries = extraselected.map((e) =>
+      get_by_id(mei_graph.getRootNode(), id_or_oldid(e)))
+    var secondaries = selected.map((e) =>
+      get_by_id(mei_graph.getRootNode(), id_or_oldid(e)))
+    var [he_id, mei_elems] = add_metarelation(mei_graph, primaries, secondaries, type, id)
+    added.push(mei_elems)
 
-  undo_actions.push(['metarelation', added, selected, extraselected])
-  selected.concat(extraselected).forEach(toggle_selected) // De-select
-  if (!redoing)
+    added.push(draw_metarelation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))) // Draw the edge
+
+    undo_actions.push(['metarelation', added, selected, extraselected])
+    selected.concat(extraselected).forEach(toggle_selected) // De-select
+  }
+
+  if (!redoing && !USE_NEW_HISTORY)
     flush_redo()
 
   // Update hierarchy tree if visible
@@ -421,6 +464,13 @@ export function load(event) {
   extraselected = []
   mei = ''
   window.relationTreeInstance = null
+
+  // Reset undo/redo history when loading a new file
+  if (USE_NEW_HISTORY) {
+    resetHistoryManager()
+  }
+  undo_actions = []
+  redo_actions = []
 
   if (files.length == 1) {
     reader.onload = function(e) {

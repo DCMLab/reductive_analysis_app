@@ -10,6 +10,7 @@ import { getCurrentDrawContext, getMouseX, getMouseY, getPlacingNote, setPlacing
 import { flush_redo } from '../../../action/undo_redo'
 import { average2, get_by_id, get_raw_id, get_id, mod, note_coords, note_to_chord, random_id } from '../../../utils/misc'
 import newNote from '../Note'
+import { USE_NEW_HISTORY, getHistoryManager, AddNoteCommand } from '../../../history'
 
 // The functions in this file are all about converting clicks and mouse
 // positions to musically salient information (pitch and time) given a
@@ -249,13 +250,22 @@ function show_note(pname, oct, note, sim = true, id = '') {
   }
 }
 
-function draw_note(pname, oct, note, sim = true, id = '') {
+function draw_note(pname, oct, note, sim = true, id = '', storedX = null, storedY = null) {
   var curr_elem = document.getElementById(id)
   var added = []
   if (curr_elem)
     curr_elem.parentElement.removeChild(curr_elem)
   if (sim) {
-    let [x, y] = note_params_coords_sim(pname, oct, note)
+    // Use stored coordinates if provided (for redo), otherwise calculate
+    let x, y
+    if (storedX !== null && storedY !== null) {
+      x = storedX
+      y = storedY
+      console.debug('draw_note: using stored coordinates', { x, y, storedX, storedY })
+    } else {
+      [x, y] = note_params_coords_sim(pname, oct, note)
+      console.debug('draw_note: calculated coordinates', { x, y })
+    }
     // "Copy" the other note
     // TODO use Smart(tm) computations to draw it independently, with smart
     // stem and notehead directions
@@ -274,6 +284,9 @@ function draw_note(pname, oct, note, sim = true, id = '') {
     g.classList.add('note')
     gh.classList.add('notehead')
     g.dataset.onset = 'TBD'
+    // Store coordinates for redo
+    g.dataset.noteX = x
+    g.dataset.noteY = y
     gh.appendChild(u)
     g.appendChild(gh)
     note.parentElement.appendChild(g)
@@ -382,22 +395,46 @@ function add_note(layer_context, pname, oct, note, sim = true, id = '', targetSt
   return added.reverse()
 }
 
-export function do_note(pname, oct, note, offset, id, redoing = false, targetStaff = null, targetMeasure = null) {
+export function do_note(pname, oct, note, offset, id, redoing = false, targetStaff = null, targetMeasure = null, storedX = null, storedY = null) {
   var new_element_id = 'added-' + random_id(8)
   let n = note
   if (typeof (id) != 'undefined')
     new_element_id = id
   var added = []
   // Draw it temporarily
-  added.push(draw_note(pname, oct, note, offset, new_element_id))
+  added.push(draw_note(pname, oct, note, offset, new_element_id, storedX, storedY))
   // Add it to the current layer
   var current_draw_context = getCurrentDrawContext()
   added.push(add_note(current_draw_context.layer, pname, oct, note, offset, new_element_id, targetStaff, targetMeasure))
   toggle_placing_note()
-  if (!redoing)
-    flush_redo()
-  var undo_actions = getUndoActions()
-  undo_actions.push(['add note', added.reverse(), [n], []])
+
+  if (USE_NEW_HISTORY && !redoing) {
+    // Use new command-based history system
+    // Create a command that captures what was done for undo
+    const command = new AddNoteCommand(pname, oct, note.id, new_element_id, targetStaff, targetMeasure)
+    // Store the added elements info directly on the command for undo
+    command._addedElements = added
+    command._executed = true // Mark as already executed
+    // Store callback for redo (avoids circular dependency)
+    command._doNoteCallback = do_note
+    // Capture coordinates from the created SVG element for redo
+    const svgElem = document.getElementById(new_element_id)
+    if (svgElem && svgElem.dataset) {
+      command.storedX = svgElem.dataset.noteX ? parseFloat(svgElem.dataset.noteX) : null
+      command.storedY = svgElem.dataset.noteY ? parseFloat(svgElem.dataset.noteY) : null
+      console.debug('do_note: captured coordinates for redo', { storedX: command.storedX, storedY: command.storedY, noteId: new_element_id })
+    }
+    // Push directly to history (execute was already done above)
+    getHistoryManager().undoStack.push(command)
+    getHistoryManager().redoStack = []
+    getHistoryManager()._emitChange()
+  } else {
+    // Legacy system
+    if (!redoing)
+      flush_redo()
+    var undo_actions = getUndoActions()
+    undo_actions.push(['add note', added.reverse(), [n], []])
+  }
 }
 
 export function place_note() {

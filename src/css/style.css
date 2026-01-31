@@ -660,7 +660,6 @@ body:not(.mousedown) #relations_panel_toggle:hover {
   -o-filter: grayscale(100%) !important;
   filter: grayscale(100%) !important;
   filter: gray !important;
-  opacity: 50% !important;
   cursor: not-allowed !important;
 }
 

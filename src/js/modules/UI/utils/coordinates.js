@@ -471,7 +471,7 @@ export function stop_placing_note() {
     elem.parentElement.removeChild(elem)
   placing_note = ''
   setPlacingNote(placing_note)
-  document.getElementById('layers').style.cursor = 'default'
+  document.getElementById('layers').style.cursor = ''
 }
 
 export function toggle_placing_note() {

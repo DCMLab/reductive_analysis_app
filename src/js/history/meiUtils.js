@@ -371,9 +371,11 @@ export function setRelationType(relationNode, type) {
  * Check for orphaned elements in MEI and SVG.
  * Alerts if any issues are found.
  * @param {Element} meiGraph - The MEI graph element
+ * @param {Element} [svgContainer=document] - The SVG container to search within (defaults to document).
+ *   Pass the editable layer's SVG element to exclude snapshot layers from the check.
  * @returns {Object} Report of found issues
  */
-export function checkForOrphans(meiGraph) {
+export function checkForOrphans(meiGraph, svgContainer = document) {
   if (!meiGraph) return { hasIssues: false }
 
   const issues = {
@@ -451,7 +453,8 @@ export function checkForOrphans(meiGraph) {
   })
 
   // Check for SVG relation/metarelation elements without MEI counterparts
-  const svgRelations = document.querySelectorAll('.relation, .metarelation')
+  // Only check within the provided svgContainer (editable layer) to exclude snapshots
+  const svgRelations = svgContainer.querySelectorAll('.relation, .metarelation')
   svgRelations.forEach(svgElem => {
     const id = svgElem.getAttribute('id')
     if (id && !existingNodeIds.has(id)) {
@@ -463,11 +466,15 @@ export function checkForOrphans(meiGraph) {
   })
 
   // Check for MEI relation/metarelation nodes without SVG counterparts
+  // Only check within the provided svgContainer to match the scope above
   nodes.forEach(node => {
     const type = node.getAttribute('type')
     if (type === 'relation' || type === 'metarelation') {
       const id = node.getAttribute('xml:id')
-      if (id && !document.getElementById(id)) {
+      const svgElem = svgContainer === document
+        ? document.getElementById(id)
+        : svgContainer.querySelector(`#${CSS.escape(id)}`)
+      if (id && !svgElem) {
         issues.meiWithoutSvg.push({
           nodeId: id,
           type

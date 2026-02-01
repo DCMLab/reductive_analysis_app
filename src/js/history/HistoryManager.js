@@ -79,8 +79,11 @@ export class HistoryManager {
       this._emitChange()
 
       // Check for orphaned elements after undo
+      // Pass the editable draw context's SVG to exclude snapshot layers from the check
       if (context.meiGraph) {
-        checkForOrphans(context.meiGraph)
+        const editableDrawContext = context.getEditableDrawContext?.()
+        const svgContainer = editableDrawContext?.svg_elem || document
+        checkForOrphans(context.meiGraph, svgContainer)
       }
 
       return true
@@ -108,8 +111,11 @@ export class HistoryManager {
       this._emitChange()
 
       // Check for orphaned elements after redo
+      // Pass the editable draw context's SVG to exclude snapshot layers from the check
       if (context.meiGraph) {
-        checkForOrphans(context.meiGraph)
+        const editableDrawContext = context.getEditableDrawContext?.()
+        const svgContainer = editableDrawContext?.svg_elem || document
+        checkForOrphans(context.meiGraph, svgContainer)
       }
 
       return true

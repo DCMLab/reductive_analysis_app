@@ -6,6 +6,7 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import { getDrawContexts } from '../../../bootstrap'
+import { getHistoryManager } from '../../../history'
 import { do_deselect } from './misc'
 import {
   get_by_id
@@ -14,10 +15,14 @@ import {
 function unlockUI() {
   const draw_context = getDrawContexts().find(e => e.canEdit)
   draw_context.svg_elem.classList.remove('locked')
-  document.getElementById('undo').classList.remove('locked')
-  document.getElementById('undo').disabled = false
-  document.getElementById('redo').classList.remove('locked')
-  document.getElementById('redo').disabled = false
+  const undoBtn = document.getElementById('undo')
+  const redoBtn = document.getElementById('redo')
+  undoBtn.classList.remove('locked')
+  redoBtn.classList.remove('locked')
+  // Set disabled state based on HistoryManager stack lengths
+  const historyManager = getHistoryManager()
+  undoBtn.disabled = historyManager.undoStack.length === 0
+  redoBtn.disabled = historyManager.redoStack.length === 0
 }
 
 function lockUI() {
@@ -177,7 +182,7 @@ export function unreduce() {
 
   const draw_context = getDrawContexts().find(e => e.canEdit)
 
-  let layerContainsReduction = ((draw_context.note_diffs != null) && Array.isArray(draw_context.note_diffs) && (draw_context.note_diffs.flat(1).length > 0) && (draw_context.relation_diffs != null) && Array.isArray(draw_context.relation_diffs) && (draw_context.relation_diffs.flat(1).length > 0))
+  let layerContainsReduction = ((draw_context.note_diffs != null) && Array.isArray(draw_context.note_diffs) && (draw_context.note_diffs.flat(1).length > 0))
 
   let layerContainsCycle = (draw_context.cycle != null && Array.isArray(draw_context.cycle) && draw_context.cycle.length > 0)
 
@@ -194,7 +199,7 @@ export function unreduce() {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.remove('hidden-reduced')
       })
-      draw_context.relation_diffs[draw_context.current_layer_index].forEach(n => {
+      draw_context.relation_diffs?.[draw_context.current_layer_index]?.forEach(n => {
         let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
         n_el.classList.remove('hidden-reduced')
       })

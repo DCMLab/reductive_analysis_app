@@ -3,44 +3,72 @@ import {
   stop_placing_note,
   toggle_placing_note,
 } from '../utils/coordinates'
+import { getPlacingNote, getCurrentDrawContext } from '../utils/misc'
 
 class NewNote {
   constructor() {
-    this.btn = document.getElementById('new-note')
+    this.btn = null
     this.isActive = false
   }
 
   /**
-   * `toggle`, `enable` and `disable` should evolve when the related
-   * x_placing_note functions are (at least partly) moved to this
-   * file.
+   * Initialize - must be called after DOM is ready.
    */
+  init() {
+    this.btn = document.getElementById('new-note')
+    if (this.btn) {
+      this.btn.addEventListener('click', (e) => {
+        e.stopPropagation() // Prevent any other handlers
+        this.toggle()
+      })
+    }
+  }
 
-  toggle() {
-    this.isActive = toggle_placing_note() ?? false
-
-    /**
-     * @todo: update active styles of this button on press + kb shortcut
-     */
+  /**
+   * Sync button appearance with actual placing_note state.
+   */
+  syncButton() {
+    if (!this.btn) return
+    this.isActive = getPlacingNote() !== ''
     this.btn.classList.toggle('btn--placing-new-note', this.isActive)
   }
 
+  /**
+   * Check if editing is allowed.
+   */
+  canEdit() {
+    const ctx = getCurrentDrawContext()
+    return ctx && ctx.canEdit
+  }
+
+  toggle() {
+    const result = toggle_placing_note()
+    if (result !== undefined) {
+      this.isActive = result
+      if (this.btn) {
+        this.btn.classList.toggle('btn--placing-new-note', this.isActive)
+      }
+    }
+  }
+
   enable() {
+    if (!this.canEdit()) return
     start_placing_note()
-    this.btn.classList.add('btn--placing-new-note')
+    // Assume success since canEdit passed
     this.isActive = true
+    if (this.btn) {
+      this.btn.classList.add('btn--placing-new-note')
+    }
   }
 
   disable() {
     stop_placing_note()
-    this.btn.classList.remove('btn--placing-new-note')
-    this.isActive = false
+    this.syncButton()
   }
 
   onTap({ target }) {
-    if (target == this.btn) {
-      this.toggle()
-    }
+    // Click is now handled by direct event listener on button
+    // This method is kept for compatibility but does nothing for button clicks
   }
 }
 

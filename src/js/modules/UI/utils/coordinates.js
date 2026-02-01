@@ -406,7 +406,6 @@ export function do_note(pname, oct, note, offset, id, redoing = false, targetSta
   // Add it to the current layer
   var current_draw_context = getCurrentDrawContext()
   added.push(add_note(current_draw_context.layer, pname, oct, note, offset, new_element_id, targetStaff, targetMeasure))
-  toggle_placing_note()
 
   if (USE_NEW_HISTORY && !redoing) {
     // Use new command-based history system
@@ -445,7 +444,6 @@ export function place_note() {
     if (!pname)
       return
     do_note(pname, oct, note, true, undefined, false, targetStaff, targetMeasure)
-    newNote.toggle()
   }
 }
 

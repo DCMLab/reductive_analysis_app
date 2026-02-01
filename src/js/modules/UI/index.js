@@ -91,6 +91,7 @@ class UI {
 
     this.bookmarks.init()
     this.accidentals.init()
+    this.newNote.init()
   }
 }
 

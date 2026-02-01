@@ -1,3 +1,14 @@
+Name: verovio
+Version: 6.0.1
+License: LGPL-3.0-or-later
+Private: false
+Description: This is the stable version of the verovio package
+Repository: https://github.com/rism-digital/verovio.git
+Homepage: https://www.verovio.org
+Author: Laurent Pugin and others
+
+---
+
 Name: jquery
 Version: 3.7.1
 License: MIT

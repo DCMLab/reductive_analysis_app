@@ -27,7 +27,6 @@ import {
 } from '../../../bootstrap'
 
 import { reduce, unreduce } from './reductions'
-import { draw_hierarchy_graph } from './visualizations'
 
 import { do_copy, do_paste } from './copy_paste'
 
@@ -436,20 +435,6 @@ export function do_deselect() {
   }
 }
 
-export function getReducedMidi(draw_context = null) {
-  if (!draw_context) {
-    draw_context = getDrawContexts()[0]
-  }
-  var vrvToolkit = getVerovioToolkit()
-  var mei2 = rerender_mei(true, draw_context)
-  var data2 = new XMLSerializer().serializeToString(mei2)
-  vrvToolkit.loadData(data2)
-  const midi = vrvToolkit.renderToMIDI()
-  var data = getData()
-  vrvToolkit.loadData(data)
-  return midi
-}
-
 export function handle_curvature_controller(value) {
   var mei_graph = getMeiGraph()
   var draw_contexts = getDrawContexts()
@@ -463,12 +448,6 @@ export function handle_curvature_controller(value) {
   })
   draw_contexts.curvatureFactor = value
   draw_graph(ctxt)
-
-  // update hierarchy trees
-  draw_contexts.forEach(context => {
-    if (context.svg_elem.getRootNode().getElementById('hier' + context.id_prefix))
-      draw_hierarchy_graph(context)
-  })
 }
 
 export function drag_selector_installer() {

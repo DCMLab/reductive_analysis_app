@@ -241,9 +241,6 @@ export function delete_relations(redoing = false) {
   sel.forEach(toggle_selected)
   if (!redoing)
     flush_redo()
-
-  // Update hierarchy tree if visible
-  window.relationTreeInstance?.updateIfVisible()
 }
 
 /**

@@ -9,7 +9,6 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 
 import { doc }    from './utils/document'
 import initEvents from './events'
-import player     from './modules/Player'
 import ui         from './modules/UI'
 import score      from './modules/Score'
 import history    from './modules/History'
@@ -32,7 +31,6 @@ class App {
     // … when the first score is loaded…
     this.ui = ui
     this.score = score
-    this.player = player
 
     // … and when a first action is done.
     this.history = history

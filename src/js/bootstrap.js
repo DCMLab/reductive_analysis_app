@@ -94,9 +94,6 @@ var vrvToolkit
 window.mei = null
 // And the graph node in the MEI
 var mei_graph
-// And the MIDI
-var midi
-var orig_midi
 // This is the MEI as text (pre-parse)
 var data
 // We need a reader
@@ -227,9 +224,6 @@ export function do_relation(type, id, redoing = false) {
   if (!redoing && !USE_NEW_HISTORY)
     flush_redo()
 
-  // Update hierarchy tree if visible
-  window.relationTreeInstance?.updateIfVisible()
-
   adjustAllLayersSvgDimensions()
 }
 
@@ -250,9 +244,6 @@ export function do_comborelation(type) {
   selected = all
 
   do_relation(comboRelationTypes.main[type].total)
-
-  // Update hierarchy tree if visible
-  window.relationTreeInstance?.updateIfVisible()
 }
 
 export function do_metarelation(type, id, redoing = false) {
@@ -295,9 +286,6 @@ export function do_metarelation(type, id, redoing = false) {
 
   if (!redoing && !USE_NEW_HISTORY)
     flush_redo()
-
-  // Update hierarchy tree if visible
-  window.relationTreeInstance?.updateIfVisible()
 
   adjustAllLayersSvgDimensions()
 }
@@ -463,7 +451,6 @@ export function load(event) {
   selected = []
   extraselected = []
   mei = ''
-  window.relationTreeInstance = null
 
   // Reset undo/redo history when loading a new file
   if (USE_NEW_HISTORY) {
@@ -542,7 +529,7 @@ export function draw_graph(draw_context) {
 
 // Do all of this when we have the MEI in memory
 function load_finish() {
-  console.debug('Using globals data, parser, mei, jquery document, document, midi, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action')
+  console.debug('Using globals data, parser, mei, jquery document, document, changes, undo_cations, redo_actions, reduce_actions, rerendered_after_action')
 
   // Parse the original document
   var parser = new DOMParser()
@@ -667,10 +654,7 @@ function load_finish() {
       canEdit: isFirstLayer,
     }
 
-    if (isFirstLayer) {
-      midi = vrvToolkit.renderToMIDI()
-      orig_midi = midi
-    } else
+    if (!isFirstLayer)
       draw_context.id_prefix = draw_contexts.length
 
     finalize_draw_context(draw_context)
@@ -900,7 +884,6 @@ console.log('Main webapp library is loaded')
 
 export const getDrawContexts = () => draw_contexts
 export const getMeiGraph = () => prune_mei_graph(mei_graph)
-export const getOrigMidi = () => orig_midi
 export const getVerovioToolkit = () => vrvToolkit
 export const getData = () => data
 export const getUndoActions = () => undo_actions

@@ -187,9 +187,10 @@ export function clearRelationHover(drawContext, meiGraph, relationId) {
 
 /**
  * Update the relation tree UI if it's visible.
+ * (Hierarchy tree feature has been removed - this is now a no-op)
  */
 export function updateRelationTree() {
-  window.relationTreeInstance?.updateIfVisible()
+  // No-op: hierarchy tree feature removed
 }
 
 /**

@@ -1,8 +1,6 @@
 import { getDrawContexts } from '../../../bootstrap'
-import JsonTree       from './jsonTree'
 import LayerControls  from './new'
 import Reductions     from './reductions'
-import RelationsTree  from './relationsTree'
 import MetaRelation   from './metaRelation'
 import { navigation_conf } from '../../../conf'
 import {
@@ -25,8 +23,6 @@ class LayersMenu {
 
     this.new = new LayerControls(this)
     this.reductions = new Reductions(this)
-    this.tree = new RelationsTree(this)
-    this.jsonTree = new JsonTree(this)
     this.metaRelation = new MetaRelation(this)
 
     this.$saveSettingsCtn = document.getElementById('layer-menu-settings')
@@ -53,13 +49,11 @@ class LayersMenu {
     this.updateLayersCount()
 
     this.reductions.onTap(e)
-    this.jsonTree.onTap(e)
   }
 
   onChange(e) {
     if (!e.composedPath().includes(this.ctn)) { return }
 
-    this.tree.onChange(e)
     this.new.onChange(e)
     this.metaRelation.onChange(e)
   }
@@ -68,7 +62,6 @@ class LayersMenu {
     this.addMouseListeners()
     this.setDataPosition()
     this.updateLayersCount()
-    this.tree.onScoreLoad()
     this.metaRelation.onScoreLoad()
   }
 
@@ -96,7 +89,6 @@ class LayersMenu {
 
     this.activeLayer = layerPosition
     this.updateLayersCount()
-    this.tree.updateToggles(layer)
     this.metaRelation.updateToggles(layer)
     bookmarks.setCount()
   }

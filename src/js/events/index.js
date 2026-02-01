@@ -70,7 +70,6 @@ class EventsManager {
 
   onTap(e) {
     this.app.score?.onTap(e)
-    this.app.player?.onTap(e)
     this.app.ui?.onTap(e)
     this.app.history?.onTap(e)
   }
@@ -124,7 +123,6 @@ class EventsManager {
   // Forms events
 
   onChange(e) {
-    this.app.player?.onChange(e)
     this.app.ui?.filters?.onChange(e)
     this.app.ui?.mainMenu?.onChange(e)
     this.app.ui?.startScreen?.onChange(e)
@@ -138,7 +136,6 @@ class EventsManager {
 
   onSubmit(e) {
     this.app.ui?.relations?.onSubmit(e)
-    this.app.ui?.layersMenu?.jsonTree?.onSubmit(e)
   }
 
   // App custom events
@@ -150,7 +147,6 @@ class EventsManager {
   onScoreLoad(e) {
     this.app.score?.onScoreLoad(e)
     this.app.ui?.onScoreLoad(e)
-    this.app.player?.reset()
 
     if (this.app.ui.startScreen) {
       this.app.ui.startScreen.destroy()

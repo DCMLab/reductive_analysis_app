@@ -7,7 +7,6 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 */
 import '/sass/app.scss'
 import '/css/style.css'
-import '/css/select2.min.css'
 
 import $ from 'jquery'
 

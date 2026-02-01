@@ -473,25 +473,6 @@ export function draw_metarelation(draw_context, mei_graph, g_elem) {
   return added
 }
 
-/**
- * Gets the element by old ID, and gets it by ID if not found
- *
- * @param {MEI_graph} mei_graph The graph to look the element into
- * @param {element} el The element to look for
- *
- * @return {MEI_node} The node in the MEI of the element
- */
-function get_by_oldid_and_id(mei_graph, el) {
-
-  let meiNode = get_by_oldid(mei_graph, el.getAttribute('oldid'))
-  if (!meiNode || !meiNode.length) {
-    let id = el.id.slice(el.id.match(/^\d/))
-    meiNode = [get_by_id(mei_graph, id)]
-  }
-
-  return meiNode
-}
-
 // Recursively add hover class to elements and their children
 export function addHoverClassToChildren(element, isRoot, isPrimary, draw_context, mei_graph) {
   if (!element) return

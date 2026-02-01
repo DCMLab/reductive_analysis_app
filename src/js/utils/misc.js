@@ -5,123 +5,9 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
-import { polygonHull } from 'd3-polygon'
-// import fuzzysearch from 'fuzzysearch'
-
 import { getDrawContexts, getMeiGraph, getVerovioToolkit } from '../bootstrap'
 import { strip_mei_tags, strip_xml_tags } from '../conf'
 import { toggle_selected, getMouseX, getMouseY } from '../modules/UI/utils/misc'
-
-// Vector operations, taken from
-// http://bl.ocks.org/hollasch/f70f1fe7700f092b5a505e3efd1d9232
-var vecScale = function(scale, v) {
-  // Returns the vector 'v' scaled by 'scale'.
-  return [scale * v[0], scale * v[1]]
-}
-
-var vecSum = function(pv1, pv2) {
-  // Returns the sum of two vectors, or a combination of a point and a
-  // vector.
-  return [pv1[0] + pv2[0], pv1[1] + pv2[1]]
-}
-
-var unitNormal = function(p0, p1) {
-  // Returns the unit normal to the line segment from p0 to p1.
-  var n = [p0[1] - p1[1], p1[0] - p0[0]]
-  var nLength = Math.sqrt(n[0] * n[0] + n[1] * n[1])
-  return [n[0] / nLength, n[1] / nLength]
-}
-
-// Returns the path for a rounded hull around a single point (a circle).
-var roundedHull1 = function(polyPoints, hullPadding) {
-  const p1 = [polyPoints[0][0], polyPoints[0][1] - hullPadding]
-  const p2 = [polyPoints[0][0], parseInt(polyPoints[0][1]) + parseInt(hullPadding)]
-
-  return `M ${p1} A `
-    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-    + ' A '
-    + [hullPadding, hullPadding, '0,0,0', p1].join(',')
-}
-
-// Returns the path for a rounded hull around two points (a "capsule" shape).
-var roundedHull2 = function(polyPoints, hullPadding) {
-  var offsetVector = vecScale(hullPadding, unitNormal(polyPoints[0], polyPoints[1]))
-  var invOffsetVector = vecScale(-1, offsetVector)
-  // around that note coordinates are not at the centroids
-
-  var p0 = vecSum(polyPoints[0], offsetVector)
-  var p1 = vecSum(polyPoints[1], offsetVector)
-  var p2 = vecSum(polyPoints[1], invOffsetVector)
-  var p3 = vecSum(polyPoints[0], invOffsetVector)
-
-  return `M ${p0} L ${p1} A `
-    + [hullPadding, hullPadding, '0,0,0', p2].join(',')
-    + ` L ${p3} A `
-    + [hullPadding, hullPadding, '0,0,0', p0].join(',')
-}
-
-// Returns the SVG path data string representing the polygon, expanded and rounded.
-var roundedHullN = function(polyPoints, hullPadding) {
-
-  // Handle special cases
-  if (!polyPoints || polyPoints.length < 1) return ''
-  if (polyPoints.length === 1) return roundedHull1(polyPoints, hullPadding)
-  if (polyPoints.length === 2) return roundedHull2(polyPoints, hullPadding)
-
-  var segments = new Array(polyPoints.length)
-
-  // Calculate each offset (outwards) segment of the convex hull.
-  for (var segmentIndex = 0; segmentIndex < segments.length; ++segmentIndex) {
-    var p0 = (segmentIndex === 0) ? polyPoints[polyPoints.length - 1] : polyPoints[segmentIndex - 1]
-    var p1 = polyPoints[segmentIndex]
-
-    // Compute the offset vector for the line segment, with length = hullPadding.
-    var offset = vecScale(hullPadding, unitNormal(p0, p1))
-
-    segments[segmentIndex] = [vecSum(p0, offset), vecSum(p1, offset)]
-  }
-
-  var arcData = 'A ' + [hullPadding, hullPadding, '0,0,0,'].join(',')
-
-  segments = segments.map(function(segment, index) {
-    var pathFragment = ''
-    if (index === 0) {
-      var pathFragment = 'M ' + segments[segments.length - 1][1] + ' '
-    }
-    pathFragment += arcData + segment[0] + ' L ' + segment[1]
-
-    return pathFragment
-  })
-
-  return segments.join(' ')
-}
-
-export function roundedHull(points) {
-  var draw_contexts = getDrawContexts()
-  var hullPadding = draw_contexts.hullPadding || 200
-
-  // Returns an SVG path for a rounded hull around the points
-  var path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-  // TODO: Better colour picking
-  path.style.setProperty('--shade-alternate', randomColor())
-  if (points.length == 1) {
-    path.setAttribute('d', roundedHull1(points, hullPadding))
-  } else if (points.length == 2) {
-    path.setAttribute('d', roundedHull2(points, hullPadding))
-  } else {
-    path.setAttribute('d', roundedHullN(polygonHull(points), hullPadding))
-  }
-  return path
-}
-
-function randomColor() {
-  const hexChars = '456789AB' // characters pool for hex color
-  let color = '#'
-  for (let i = 0; i < 6; i++) {
-    color += hexChars[Math.floor(Math.random() * hexChars.length)]
-  }
-  return color
-}
 
 // Draw a line between points p1 and p2
 export function line(p1, p2) {
@@ -143,40 +29,6 @@ export function circle(p, rad) {
   newElement.setAttribute('r', rad)
   newElement.style.stroke = '#000'
   newElement.style.strokeWidth = '15px'
-  return newElement
-}
-
-// Draw a rectangle at point p with width/height
-export function rect(p, width, height) {
-  var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-  newElement.setAttribute('x', p[0])
-  newElement.setAttribute('y', p[1])
-  newElement.setAttribute('width', width)
-  newElement.setAttribute('height', height)
-  newElement.style.stroke = '#000'
-  newElement.style.fill = 'white'
-  newElement.style.strokeWidth = '15px'
-  return newElement
-}
-
-// Draw a text at point p
-export function text(text, p) {
-  var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-  if (p) {
-    newElement.setAttribute('x', p[0])
-    newElement.setAttribute('y', p[1])
-  }
-  newElement.append(text)
-  return newElement
-}
-
-// Make a tspan with dx,dy
-export function tspan(text, p, dy, dx = 0) {
-  var newElement = document.createElementNS('http://www.w3.org/2000/svg', 'tspan')
-  newElement.setAttribute('x', p[0])
-  newElement.setAttribute('dx', dx)
-  newElement.setAttribute('dy', dy)
-  newElement.append(text)
   return newElement
 }
 
@@ -528,38 +380,6 @@ export function add_mei_node_for(mei_graph, note) {
   // But should have a separate XML ID
   elem.setAttribute('xml:id', 'gn-' + id)
   mei_graph.appendChild(elem)
-  return elem
-}
-
-// Find graphical element corresponding to an MEI graph node and hide it
-export function hide_note(draw_context, note) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(), id_in_svg(draw_context, node_to_note_id(note)))
-  if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('hidden-reduced')
-  return elem
-}
-
-// Find graphical element corresponding to an MEI graph node and hide it
-export function hide_note_hier(draw_context, note) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + id_in_svg(draw_context, node_to_note_id(note)))
-  if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('hidden-reduced')
-  return elem
-}
-
-// Find graphical element corresponding to an MEI graph node and hide it
-export function hide_he(draw_context, he) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(), draw_context.id_prefix + he.getAttribute('xml:id'))
-  if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('hidden-reduced')
-  return elem
-}
-
-// Find graphical element corresponding to an MEI graph node and hide it
-export function hide_he_hier(draw_context, he) {
-  var elem = get_by_id(draw_context.svg_elem.getRootNode(), 'hier' + draw_context.id_prefix + he.getAttribute('xml:id'))
-  if (elem && draw_context.svg_elem.contains(elem))
-    elem.classList.add('hidden-reduced')
   return elem
 }
 
@@ -939,20 +759,6 @@ export function new_view_elements(layer_element) {
   return [new_view, new_svg]
 }
 
-export function checkbox(value) {
-  var checkbox = document.createElement('input')
-  checkbox.setAttribute('type', 'checkbox')
-  checkbox.setAttribute('value', value)
-  return checkbox
-}
-
-export function button(value) {
-  var button = document.createElement('input')
-  button.setAttribute('type', 'button')
-  button.setAttribute('value', value)
-  return button
-}
-
 export function sanitize_xml(xml) {
 
   var sanitized_xml = xml
@@ -1217,18 +1023,3 @@ export function handleFlip(e) {
   e.preventDefault()
   scrollThroughRelations()
 }
-
-/**
- * Get the onset of a note node.
- */
-function getNodeOnsets(mei) {
-  let onsets = {}
-  const note_elements = Array.from(mei.getElementsByTagName('node')).filter(n => n.getAttribute('type') == '' || n.getAttribute('type') == null)
-  if (note_elements.length > 0) {
-    note_elements.forEach(n => onsets[n.getAttribute('xml:id')] = document.querySelector('svg #' + n.getAttribute('xml:id').slice(3)).dataset.onset)
-    return onsets
-  } else {
-    return null
-  }
-}
-

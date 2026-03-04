@@ -12,6 +12,55 @@ import {
   get_by_id
 } from '../../../utils/misc'
 
+/**
+ * Add generation-stage numbers to notes in an SVG draw context.
+ * @param {Object} draw_context - The draw context whose SVG will be annotated
+ * @param {string[][]} note_diffs - Stage arrays as returned by /api/stages (already reversed)
+ */
+export function applyStageNumbers(draw_context, note_diffs) {
+  const noteToStage = new Map()
+  ;[...note_diffs].reverse().forEach((stageNotes, stageIndex) => {
+    stageNotes.forEach(noteId => {
+      noteToStage.set(noteId, stageIndex)
+    })
+  })
+  note_diffs.flat(1).forEach(noteId => {
+    const stageIndex = noteToStage.get(noteId)
+    const noteEl = get_by_id(draw_context.svg_elem.getRootNode(), noteId)
+    if (noteEl) {
+      const useEl = noteEl.querySelector('.notehead use')
+      if (useEl) {
+        const transform = useEl.getAttribute('transform')
+        const match = transform?.match(/translate\(([^,]+),\s*([^)]+)\)/)
+        let x, y
+        if (match) {
+          x = parseFloat(match[1])
+          y = parseFloat(match[2])
+        } else {
+          const bbox = useEl.getBBox()
+          x = bbox.x
+          y = bbox.y + bbox.height / 2
+        }
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+        text.setAttribute('x', x - 300)
+        text.setAttribute('y', y)
+        text.setAttribute('class', 'stage-number')
+        text.textContent = stageIndex + 1
+        noteEl.appendChild(text)
+      }
+    }
+  })
+}
+
+/**
+ * Remove all stage-number SVG text elements from a draw context.
+ * @param {Object} draw_context - The draw context to clear
+ */
+export function clearStageNumbers(draw_context) {
+  if (!draw_context) return
+  draw_context.svg_elem.querySelectorAll('.stage-number').forEach(el => el.remove())
+}
+
 function unlockUI() {
   const draw_context = getDrawContexts().find(e => e.canEdit)
   draw_context.svg_elem.classList.remove('locked')
@@ -23,6 +72,15 @@ function unlockUI() {
   const historyManager = getHistoryManager()
   undoBtn.disabled = historyManager.undoStack.length === 0
   redoBtn.disabled = historyManager.redoStack.length === 0
+  // Re-enable generation numbers toggle
+  const genOn = document.getElementById('gen-numbers-on')
+  const genOff = document.getElementById('gen-numbers-off')
+  if (genOn) genOn.disabled = false
+  if (genOff) genOff.disabled = false
+  // If the toggle was ON, trigger a debounced refresh via the shared event
+  if (genOn?.checked) {
+    document.dispatchEvent(new CustomEvent('relation-modified'))
+  }
 }
 
 function lockUI() {
@@ -32,6 +90,13 @@ function lockUI() {
   document.getElementById('undo').disabled = true
   document.getElementById('redo').classList.add('locked')
   document.getElementById('redo').disabled = true
+  // Disable generation numbers toggle and clear any shown numbers
+  // (reduction mode will apply its own stage numbers)
+  const genOn = document.getElementById('gen-numbers-on')
+  const genOff = document.getElementById('gen-numbers-off')
+  if (genOn) genOn.disabled = true
+  if (genOff) genOff.disabled = true
+  clearStageNumbers(draw_context)
 }
 
 export async function reduce() {
@@ -89,41 +154,7 @@ export async function reduce() {
       lockUI()
 
       // Add stage numbers to notes
-      const noteToStage = new Map()
-      ;[...fetched_note_diffs].reverse().forEach((stageNotes, stageIndex) => {
-        stageNotes.forEach(noteId => {
-          noteToStage.set(noteId, stageIndex)
-        })
-      })
-      fetched_note_diffs.flat(1).forEach(noteId => {
-        const stageIndex = noteToStage.get(noteId)
-        const noteEl = get_by_id(draw_context.svg_elem.getRootNode(), noteId)
-        if (noteEl) {
-          const useEl = noteEl.querySelector('.notehead use')
-          if (useEl) {
-            const transform = useEl.getAttribute('transform')
-            const match = transform?.match(/translate\(([^,]+),\s*([^)]+)\)/)
-            let x, y
-            if (match) {
-              x = parseFloat(match[1])
-              y = parseFloat(match[2])
-            } else {
-              // Fallback: use bounding box for elements without transform
-              const bbox = useEl.getBBox()
-              x = bbox.x
-              y = bbox.y + bbox.height / 2
-            }
-            {
-              const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-              text.setAttribute('x', x - 300)
-              text.setAttribute('y', y)
-              text.setAttribute('class', 'stage-number')
-              text.textContent = stageIndex + 1
-              noteEl.appendChild(text)
-            }
-          }
-        }
-      })
+      applyStageNumbers(draw_context, fetched_note_diffs)
 
       // Save meta-relation toggle state and hide meta-relations if the toggle is unset.
       const meta_toggle_on = document.getElementById('meta-relation-on')
@@ -253,7 +284,7 @@ export function unreduce() {
     unlockUI()
 
     // Remove stage numbers
-    draw_context.svg_elem.querySelectorAll('.stage-number').forEach(el => el.remove())
+    clearStageNumbers(draw_context)
 
     // Restore meta-relation toggle state and unset its attribute.
     const meta_toggle_on = document.getElementById('meta-relation-on')

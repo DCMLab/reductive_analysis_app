@@ -2,6 +2,7 @@ import { getDrawContexts } from '../../../bootstrap'
 import LayerControls  from './new'
 import Reductions     from './reductions'
 import MetaRelation   from './metaRelation'
+import GenerationNumbers from '../utils/generationNumbers'
 import { navigation_conf } from '../../../conf'
 import {
   getCurrentDrawContext,
@@ -24,6 +25,7 @@ class LayersMenu {
     this.new = new LayerControls(this)
     this.reductions = new Reductions(this)
     this.metaRelation = new MetaRelation(this)
+    this.generationNumbers = new GenerationNumbers()
 
     this.$saveSettingsCtn = document.getElementById('layer-menu-settings')
   }
@@ -56,6 +58,7 @@ class LayersMenu {
 
     this.new.onChange(e)
     this.metaRelation.onChange(e)
+    this.generationNumbers.onChange(e)
   }
 
   onScoreLoad() {

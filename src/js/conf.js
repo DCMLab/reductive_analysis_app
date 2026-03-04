@@ -20,6 +20,7 @@ export const action_conf = {
   copy: 'C',
   paste: 'V',
   toggle_metarelations: 'm',
+  toggle_generations: 'g'
 }
 
 // Navigation shortcuts.

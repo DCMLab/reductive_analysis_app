@@ -186,11 +186,12 @@ export function clearRelationHover(drawContext, meiGraph, relationId) {
 }
 
 /**
- * Update the relation tree UI if it's visible.
- * (Hierarchy tree feature has been removed - this is now a no-op)
+ * Notify listeners that the relation graph has been modified (e.g. after
+ * every command execute / undo / redo). The 'relation-modified' event is
+ * consumed by the GenerationNumbers module to trigger a debounced refresh.
  */
 export function updateRelationTree() {
-  // No-op: hierarchy tree feature removed
+  document.dispatchEvent(new CustomEvent('relation-modified'))
 }
 
 /**

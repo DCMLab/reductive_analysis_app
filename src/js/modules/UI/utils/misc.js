@@ -337,6 +337,9 @@ export function handle_keypress(ev) {
   } else if (ev.key == action_conf.toggle_metarelations) {
     // Toggle meta-relation visibility
     newApp.ui.layersMenu.metaRelation.toggle()
+  } else if (ev.key == action_conf.toggle_generations) {
+    // Toggle generation number visibility
+    newApp.ui.layersMenu.generationNumbers.toggle()
   } else if (ev.key == navigation_conf.pan_left) {
     // Move to the left
     let wrap = document.getElementById('layers-wrapper')

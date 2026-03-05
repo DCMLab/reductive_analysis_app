@@ -43,8 +43,7 @@ svg .system .cycle * {
 }
 
 .stage-number {
-  font-size: 400px;
-  fill: saddlebrown !important;
+  pointer-events: none;
 }
 
 .placeholder {

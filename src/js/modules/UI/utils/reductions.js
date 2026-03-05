@@ -28,24 +28,32 @@ export function applyStageNumbers(draw_context, note_diffs) {
     const stageIndex = noteToStage.get(noteId)
     const noteEl = get_by_id(draw_context.svg_elem.getRootNode(), noteId)
     if (noteEl) {
-      const useEl = noteEl.querySelector('.notehead use')
-      if (useEl) {
-        const transform = useEl.getAttribute('transform')
-        const match = transform?.match(/translate\(([^,]+),\s*([^)]+)\)/)
-        let x, y
-        if (match) {
-          x = parseFloat(match[1])
-          y = parseFloat(match[2])
-        } else {
-          const bbox = useEl.getBBox()
-          x = bbox.x
-          y = bbox.y + bbox.height / 2
-        }
+      const notehead = noteEl.querySelector('.notehead')
+      if (notehead) {
+        const bbox = notehead.getBBox()
+        const cx = bbox.x + bbox.width / 2
+        const cy = bbox.y + bbox.height / 2
+        const label = String(stageIndex + 1)
+        const fontSize = label.length === 1 ? bbox.height * 0.9 : bbox.height * 0.6
+        const useEl = notehead.querySelector('use')
+        const href = useEl
+          ? (useEl.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || useEl.getAttribute('href') || '')
+          : ''
+        const isFilled = href.includes('E0A4')
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-        text.setAttribute('x', x - 300)
-        text.setAttribute('y', y)
+        text.setAttribute('x', cx)
+        text.setAttribute('y', cy)
+        text.setAttribute('font-size', fontSize)
         text.setAttribute('class', 'stage-number')
-        text.textContent = stageIndex + 1
+        text.setAttribute('text-anchor', 'middle')
+        text.setAttribute('dominant-baseline', 'central')
+        text.style.fill = isFilled ? 'white' : 'saddlebrown'
+        if (!isFilled) {
+          text.setAttribute('stroke', 'white')
+          text.setAttribute('stroke-width', fontSize * 0.15)
+          text.style.paintOrder = 'stroke fill'
+        }
+        text.textContent = label
         noteEl.appendChild(text)
       }
     }

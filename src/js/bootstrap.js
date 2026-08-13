@@ -14,7 +14,7 @@ import $ from 'jquery'
 import { debug } from './conf'
 
 import newApp from './app'
-import { downloadAs } from './utils/file'
+import { downloadAs, withMeiHeader } from './utils/file'
 
 // Clicking selects, exposed globally
 window.selected = []
@@ -318,7 +318,7 @@ export function save_mei() {
       console.log('Found and tried to remove ', layer_elem)
     }
   }
-  var saved = new XMLSerializer().serializeToString(mei_clone)
+  var saved = withMeiHeader(new XMLSerializer().serializeToString(mei_clone))
   downloadAs(saved, filename + '.mei', 'text/xml')
 }
 

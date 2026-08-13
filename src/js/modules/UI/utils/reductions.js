@@ -9,8 +9,45 @@ import { getDrawContexts } from '../../../bootstrap'
 import { getHistoryManager } from '../../../history'
 import { do_deselect } from './misc'
 import {
-  get_by_id
+  get_by_id,
+  id_in_svg
 } from '../../../utils/misc'
+
+/**
+ * Resolve an MEI note or relation ID to its element in one draw context.
+ *
+ * Prefers id_in_svg(), which accounts for the 'gn-' graph-node prefix and the
+ * draw context's own ID prefix. The fallback is scoped to the draw context's SVG:
+ * searching from the root node would match the first view's element whenever
+ * several views are open.
+ *
+ * @param {Object} draw_context - The draw context to search
+ * @param {string} id - MEI ID as returned by /api/stages
+ * @returns {Element|null} The element, or null if it cannot be resolved
+ */
+export function resolve_in_context(draw_context, id) {
+  if (!draw_context) return null
+  // id_in_svg() dereferences layer.id_mapping unguarded. Both draw-context
+  // constructors populate it, but fall back rather than throw if one ever does not:
+  // an unresolved ID should stay a reported miss, never an exception.
+  if (!draw_context.layer?.id_mapping) return get_by_id(draw_context.svg_elem, id)
+  const svg_id = id_in_svg(draw_context, id)
+  const by_svg_id = svg_id ? document.getElementById(svg_id) : null
+  if (by_svg_id && draw_context.svg_elem.contains(by_svg_id)) return by_svg_id
+  return get_by_id(draw_context.svg_elem, id)
+}
+
+/**
+ * Report IDs that could not be resolved, rather than failing silently.
+ * An unresolved ID means a note that can be neither numbered nor reduced away.
+ *
+ * @param {string} context - Where the failure occurred
+ * @param {string[]} ids - The unresolved IDs
+ */
+function warn_unresolved(context, ids) {
+  if (ids.length === 0) return
+  console.warn(`${context}: ${ids.length} ID(s) could not be resolved to score elements; the corresponding notes will not be numbered or hidden.`, ids)
+}
 
 /**
  * Add generation-stage numbers to notes in an SVG draw context.
@@ -24,12 +61,17 @@ export function applyStageNumbers(draw_context, note_diffs) {
       noteToStage.set(noteId, stageIndex)
     })
   })
+  const unresolved = []
   note_diffs.flat(1).forEach(noteId => {
     const stageIndex = noteToStage.get(noteId)
-    const noteEl = get_by_id(draw_context.svg_elem.getRootNode(), noteId)
-    if (noteEl) {
+    const noteEl = resolve_in_context(draw_context, noteId)
+    if (!noteEl) {
+      unresolved.push(noteId)
+    } else {
       const notehead = noteEl.querySelector('.notehead')
-      if (notehead) {
+      if (!notehead) {
+        unresolved.push(`${noteId} (no notehead)`)
+      } else {
         const bbox = notehead.getBBox()
         const cx = bbox.x + bbox.width / 2
         const cy = bbox.y + bbox.height / 2
@@ -58,6 +100,7 @@ export function applyStageNumbers(draw_context, note_diffs) {
       }
     }
   })
+  warn_unresolved('applyStageNumbers', unresolved)
 }
 
 /**
@@ -188,15 +231,18 @@ export async function reduce() {
     console.log(`draw_context.current_layer_index: ${draw_context.current_layer_index}`)
 
     if (draw_context.current_layer_index >= 0 && draw_context.current_layer_index < max_layer_index) {
-      // Hide the diff of the layer.
-      draw_context.note_diffs[draw_context.current_layer_index].forEach(n => {
-        let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
-        n_el.classList.add('hidden-reduced')
-      })
-      draw_context.relation_diffs[draw_context.current_layer_index].forEach(n => {
-        let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
-        n_el.classList.add('hidden-reduced')
-      })
+      // Hide the diff of the layer. An ID that resolves to nothing is collected
+      // and reported: left unguarded it would throw and abort the loop, leaving
+      // every later note in the stage visible as well.
+      const unresolved = []
+      const hide = n => {
+        let n_el = resolve_in_context(draw_context, n)
+        if (n_el) n_el.classList.add('hidden-reduced')
+        else unresolved.push(n)
+      }
+      draw_context.note_diffs[draw_context.current_layer_index].forEach(hide)
+      draw_context.relation_diffs[draw_context.current_layer_index].forEach(hide)
+      warn_unresolved(`reduce (stage ${draw_context.current_layer_index})`, unresolved)
     }
   }
 
@@ -207,7 +253,7 @@ export async function reduce() {
 
     // Color the cycle red.
     draw_context.cycle.forEach(id => {
-      const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
+      const el = resolve_in_context(draw_context, id)
       const notehead = el?.querySelector('.notehead')
       if (notehead) {
         notehead.style.fill = 'red'
@@ -234,14 +280,15 @@ export function unreduce() {
 
     if (draw_context.current_layer_index >= 0) {
       // Reveal the diff of the layer.
-      draw_context.note_diffs[draw_context.current_layer_index].forEach(n => {
-        let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
-        n_el.classList.remove('hidden-reduced')
-      })
-      draw_context.relation_diffs[draw_context.current_layer_index].forEach(n => {
-        let n_el = get_by_id(draw_context.svg_elem.getRootNode(), n)
-        n_el.classList.remove('hidden-reduced')
-      })
+      const unresolved = []
+      const reveal = n => {
+        let n_el = resolve_in_context(draw_context, n)
+        if (n_el) n_el.classList.remove('hidden-reduced')
+        else unresolved.push(n)
+      }
+      draw_context.note_diffs[draw_context.current_layer_index].forEach(reveal)
+      draw_context.relation_diffs[draw_context.current_layer_index].forEach(reveal)
+      warn_unresolved(`unreduce (stage ${draw_context.current_layer_index})`, unresolved)
       document.getElementById('reduction-counter').innerText = `Reductive stage: ${max_layer_index - draw_context.current_layer_index + 1} / ${max_layer_index + 1}`
     }
 
@@ -271,7 +318,7 @@ export function unreduce() {
 
   if (layerContainsCycle) {
     draw_context.cycle.forEach(id => {
-      const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
+      const el = resolve_in_context(draw_context, id)
       const notehead = el?.querySelector('.notehead')
       if (notehead) {
         notehead.style.fill = ''

@@ -6,8 +6,7 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import { getDrawContexts } from '../../../bootstrap'
-import { applyStageNumbers, clearStageNumbers } from './reductions'
-import { get_by_id } from '../../../utils/misc'
+import { applyStageNumbers, clearStageNumbers, resolve_in_context } from './reductions'
 
 /**
  * Manages live generation-number display in edit mode.
@@ -99,7 +98,7 @@ export default class GenerationNumbers {
         document.getElementById('reduction-counter').innerText = '∞ Cycle found'
         document.getElementById('reduction-counter').classList.add('cycle')
         cycle.forEach(id => {
-          const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
+          const el = resolve_in_context(draw_context, id)
           const notehead = el?.querySelector('.notehead')
           if (notehead) {
             notehead.style.fill = 'red'
@@ -116,7 +115,7 @@ export default class GenerationNumbers {
 
   _clearCycle(draw_context) {
     this.currentCycle.forEach(id => {
-      const el = get_by_id(draw_context.svg_elem.getRootNode(), id)
+      const el = resolve_in_context(draw_context, id)
       const notehead = el?.querySelector('.notehead')
       if (notehead) {
         notehead.style.fill = ''

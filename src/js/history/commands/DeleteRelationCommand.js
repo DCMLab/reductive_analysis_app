@@ -17,8 +17,6 @@ import {
   removeSvgRelation,
   renderRelation,
   renderMetarelation,
-  unmarkRelationSecondaries,
-  markRelationSecondaries,
   clearRelationHover,
   updateRelationTree,
   deselectAll,
@@ -109,13 +107,6 @@ export class DeleteRelationCommand extends Command {
     for (const relationId of this.relationIds) {
       const node = getById(mei, relationId)
       if (!node) continue
-
-      const nodeType = node.getAttribute('type')
-
-      // Unmark secondaries before removing (only for relations, not metarelations)
-      if (nodeType === 'relation') {
-        unmarkRelationSecondaries(drawContext, meiGraph, relationId)
-      }
 
       // Remove from SVG
       removeSvgRelation(drawContexts, relationId)

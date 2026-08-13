@@ -18,7 +18,6 @@ import {
   do_relation,
   do_comborelation,
   do_metarelation,
-  getMeiGraph,
   draw_graph,
   rerender_mei,
   getVerovioToolkit,
@@ -33,7 +32,6 @@ import { do_copy, do_paste } from './copy_paste'
 import {
   scrollThroughRelations,
   get_class_from_classlist,
-  unmark_secondaries,
   draw_context_of,
 } from '../../../utils/misc'
 
@@ -439,16 +437,10 @@ export function do_deselect() {
 }
 
 export function handle_curvature_controller(value) {
-  var mei_graph = getMeiGraph()
   var draw_contexts = getDrawContexts()
   let ctxt = draw_contexts.find(c => c.canEdit)
 
   do_deselect()
-  var nodes_array = Array.from(mei_graph.getElementsByTagName('node'))
-  var relations_nodes = nodes_array.filter(x => x.getAttribute('type') == 'relation')
-  draw_contexts.forEach(draw_context => {
-    relations_nodes.forEach(g_elem => unmark_secondaries(draw_context, mei_graph, g_elem))
-  })
   draw_contexts.curvatureFactor = value
   draw_graph(ctxt)
 }

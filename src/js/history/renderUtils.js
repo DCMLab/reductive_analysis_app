@@ -14,7 +14,6 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
  */
 
 import { draw_relation, draw_metarelation, removeHoverClassToChildren } from '../action/draw'
-import { mark_secondaries, unmark_secondaries, get_by_id, get_id } from '../utils/misc'
 import { toggle_shade, adjustAllLayersSvgDimensions } from '../modules/UI/utils/misc'
 import { getById } from './meiUtils'
 
@@ -83,9 +82,6 @@ export function renderRelation(drawContext, meiGraph, relationId) {
   }
 
   const svgElem = draw_relation(drawContext, meiGraph, meiNode)
-  if (svgElem) {
-    mark_secondaries(drawContext, meiGraph, meiNode)
-  }
 
   adjustAllLayersSvgDimensions()
   return svgElem
@@ -141,32 +137,6 @@ export function updateRelationType(drawContexts, relationId, type) {
       elem.setAttribute('type', type)
       toggle_shade(elem)
     })
-  }
-}
-
-/**
- * Unmark secondary notes for a relation before removing it.
- * @param {Object} drawContext - The draw context
- * @param {Element} meiGraph - The MEI graph element
- * @param {string} relationId - The relation's xml:id
- */
-export function unmarkRelationSecondaries(drawContext, meiGraph, relationId) {
-  const meiNode = getById(meiGraph.getRootNode(), relationId)
-  if (meiNode && meiNode.getAttribute('type') === 'relation') {
-    unmark_secondaries(drawContext, meiGraph, meiNode)
-  }
-}
-
-/**
- * Mark secondary notes for a relation after adding it.
- * @param {Object} drawContext - The draw context
- * @param {Element} meiGraph - The MEI graph element
- * @param {string} relationId - The relation's xml:id
- */
-export function markRelationSecondaries(drawContext, meiGraph, relationId) {
-  const meiNode = getById(meiGraph.getRootNode(), relationId)
-  if (meiNode && meiNode.getAttribute('type') === 'relation') {
-    mark_secondaries(drawContext, meiGraph, meiNode)
   }
 }
 

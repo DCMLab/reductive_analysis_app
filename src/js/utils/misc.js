@@ -383,57 +383,6 @@ export function add_mei_node_for(mei_graph, note) {
   return elem
 }
 
-// Secondaries are greyed out
-function mark_secondary(item) {
-  if (!item) {
-    console.log('Not a note')
-    return
-  }
-  if (item.classList.contains('secondarynote')) {
-    var level = getComputedStyle(item).getPropertyValue('--how-secondary')
-    item.style.setProperty('--how-secondary', level * 2)
-  } else {
-    item.classList.add('secondarynote')
-    item.style.setProperty('--how-secondary', 2)
-  }
-}
-
-// No longer as much of a secondary
-function unmark_secondary(item) {
-  if (!item) {
-    console.log('Not a note')
-    return
-  }
-  var level = getComputedStyle(item).getPropertyValue('--how-secondary')
-  item.style.setProperty('--how-secondary', level / 2)
-  if (level / 2 == 1)
-    item.classList.remove('secondarynote')
-}
-
-// For a certain MEI relation node, find its secondaries and mark them as
-// secondary in the draw context
-export function mark_secondaries(draw_context, mei_graph, he) {
-  if (he.tagName != 'node') // TODO: Probably bad, but shouldn't happen from do_relation
-    he = get_by_id(mei_graph.getRootNode(), he.id)
-  var secondaries = relation_secondaries(mei_graph, he)
-  secondaries.forEach((n) => {
-    var svg_note = document.getElementById(id_in_svg(draw_context, node_to_note_id(n)))
-    mark_secondary(svg_note)
-  })
-}
-
-// For a certain MEI relation node, find its secondaries and unmark them as
-// secondary in the draw context
-export function unmark_secondaries(draw_context, mei_graph, he) {
-  if (he.tagName != 'node')
-    he = get_by_id(mei_graph.getRootNode(), he.id)
-  var secondaries = relation_secondaries(mei_graph, he)
-  secondaries.forEach((n) => {
-    var svg_note = document.getElementById(id_in_svg(draw_context, node_to_note_id(n)))
-    unmark_secondary(svg_note)
-  })
-}
-
 // Find the measure this MEI score element occurs in
 function get_measure(elem) { if (elem.tagName == 'measure') return elem; else return get_measure(elem.parentElement) }
 

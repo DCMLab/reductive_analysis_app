@@ -12,7 +12,7 @@ import {
   getCurrentDrawContext
 } from '../modules/UI/utils/misc'
 import { flush_redo } from './undo_redo'
-import { get_by_id, get_class_from_classlist, get_id, id_or_oldid, unmark_secondaries } from '../utils/misc'
+import { get_by_id, get_class_from_classlist, get_id, id_or_oldid } from '../utils/misc'
 import { removeHoverClassToChildren } from './draw'
 import {
   USE_NEW_HISTORY,
@@ -37,14 +37,12 @@ function delete_relation(elem) {
   const mei_he = get_by_id(mei, mei_id)
   const svg_hes = []
   const is_meta_relation = get_class_from_classlist(elem) == 'metarelation'
-  const mei_graph = getMeiGraph()
 
   const draw_context = getDrawContexts().find(e => e.canEdit)
 
   const svg_he = get_by_id(document, draw_context.id_prefix + mei_id)
   if (svg_he) {
     svg_hes.push(svg_he)
-    if (!is_meta_relation) unmark_secondaries(draw_context, mei_graph, mei_he)
   }
 
   // Find all arcs related to this element

@@ -56,7 +56,6 @@ import {
   get_id_pairs,
   id_in_svg,
   id_or_oldid,
-  mark_secondaries,
   new_layer_element,
   new_view_elements,
   note_coords,
@@ -215,7 +214,6 @@ export function do_relation(type, id, redoing = false) {
       let g_elem = draw_relation(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
       if (g_elem) {
         added.push(g_elem) // Draw the edge
-        mark_secondaries(draw_context, mei_graph, get_by_id(mei_graph.getRootNode(), he_id))
       }
 
       undo_actions.push(['relation', added.reverse(), selected, extraselected])
@@ -521,9 +519,7 @@ export function draw_graph(draw_context) {
         }
       }
     }
-    let d = draw_relation(draw_context, mei_graph, g_elem)
-    if (d)
-      mark_secondaries(draw_context, mei_graph, g_elem)
+    draw_relation(draw_context, mei_graph, g_elem)
   })
   metarelations_nodes.forEach((g_elem) => draw_metarelation(draw_context, mei_graph, g_elem))
 }

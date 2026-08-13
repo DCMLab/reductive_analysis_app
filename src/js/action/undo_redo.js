@@ -18,7 +18,7 @@ import {
 import { do_note } from '../modules/UI/utils/coordinates'
 import { delete_relations } from './delete'
 import { toggle_selected, toggle_shade, adjustAllLayersSvgDimensions } from '../modules/UI/utils/misc'
-import { get_id, get_by_id, get_by_oldid, get_class_from_classlist, id_or_oldid, node_referred_to, mark_secondaries, unmark_secondaries } from '../utils/misc'
+import { get_id, get_by_id, get_by_oldid, id_or_oldid, node_referred_to } from '../utils/misc'
 import { USE_NEW_HISTORY, getHistoryManager, createContext } from '../history'
 
 // Oops, undo whatever we did last.
@@ -90,8 +90,6 @@ export function do_undo() {
           if (svg_he) corresp_hes.push(svg_he)
         })
       })
-      if (what == 'relation')
-        unmark_secondaries(dc, getMeiGraph(), g_elem)
     }
     added = added.concat(corresp_hes)
     added.flat().forEach(x => {
@@ -132,13 +130,6 @@ export function do_undo() {
         x[1].appendChild(x[0])
       }
 
-      let dc = draw_contexts.find((d) => d.svg_elem.contains(x[0]))
-      let rel = get_class_from_classlist(x[0]) == 'relation'
-      if (dc && rel) {
-        let mei_id = get_id(x[0])
-        let mei_he = get_by_id(mei, mei_id)
-        mark_secondaries(dc, getMeiGraph(), mei_he)
-      }
       adjustAllLayersSvgDimensions()
     })
 

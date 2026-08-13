@@ -11,7 +11,6 @@ import { getById, findArcsForNode, serializeElement, deserializeElement } from '
 import {
   removeSvgRelation,
   renderRelation,
-  unmarkRelationSecondaries,
   updateRelationTree,
   deselectAll,
   restoreSelection,
@@ -151,15 +150,11 @@ export class CreateRelationCommand extends Command {
 
   undo(context) {
     const { mei, meiGraph, drawContexts } = context
-    const drawContext = drawContexts.find(dc => dc.canEdit)
 
     // Deselect current selection
     deselectAll(toggle_selected)
 
     if (this.relationId) {
-      // Unmark secondaries before removing
-      unmarkRelationSecondaries(drawContext, meiGraph, this.relationId)
-
       // Remove SVG elements
       removeSvgRelation(drawContexts, this.relationId)
 

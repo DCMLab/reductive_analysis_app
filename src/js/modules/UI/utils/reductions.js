@@ -38,15 +38,83 @@ export function resolve_in_context(draw_context, id) {
 }
 
 /**
- * Report IDs that could not be resolved, rather than failing silently.
- * An unresolved ID means a note that can be neither numbered nor reduced away.
+ * Report IDs that could not be resolved, rather than failing silently. An
+ * unresolved ID means a note or relation that can be neither numbered, nor
+ * reduced away, nor assigned a structural layer.
  *
  * @param {string} context - Where the failure occurred
  * @param {string[]} ids - The unresolved IDs
  */
 function warn_unresolved(context, ids) {
   if (ids.length === 0) return
-  console.warn(`${context}: ${ids.length} ID(s) could not be resolved to score elements; the corresponding notes will not be numbered or hidden.`, ids)
+  console.warn(`${context}: ${ids.length} ID(s) could not be resolved; the corresponding notes or relations go untreated.`, ids)
+}
+
+// Attribute carrying a graph node's structural layer in exported MEI. Declared
+// on <node> by the graphic-analysis customization; see src/js/utils/file.js.
+const STRUCTURAL_LAYER_ATTRIBUTE = 'strucl'
+
+/**
+ * Map each ID to its structural layer, counting the background as 1.
+ *
+ * The stage arrays reach the UI reversed (foreground first); reversing them
+ * back recovers the server's own generation order, whose index is the layer.
+ *
+ * @param {string[][]} diffs - Stage arrays as held by the UI (already reversed)
+ * @returns {Map<string, number>} ID to 1-based structural layer
+ */
+function stage_map(diffs) {
+  const map = new Map()
+  ;[...diffs].reverse().forEach((stage, index) => {
+    stage.forEach(id => map.set(id, index + 1))
+  })
+  return map
+}
+
+/**
+ * Record structural layers on the MEI graph, so that they survive export.
+ *
+ * Note IDs arrive as score xml:ids and stand for the graph node 'gn-' + id;
+ * relation IDs are already the xml:id of their <node>. Any previous values are
+ * dropped first: a node whose layer the server no longer reports must not keep
+ * the one it last had.
+ *
+ * @param {string[][]} note_diffs - Note stage arrays as held by the UI
+ * @param {string[][]} relation_diffs - Relation stage arrays as held by the UI
+ */
+export function writeStructuralLayers(note_diffs, relation_diffs) {
+  if (typeof mei == 'undefined' || !mei) return
+  clearStructuralLayers()
+
+  // Index the graph nodes once. Resolving each ID separately would rescan the
+  // whole document per note, and could stray outside <graph> besides.
+  const nodes = new Map()
+  mei.querySelectorAll('graph node').forEach(node => {
+    const id = node.getAttribute('xml:id')
+    if (id) nodes.set(id, node)
+  })
+
+  const unresolved = []
+  const stamp = (map, to_node_id) => {
+    map.forEach((layer, id) => {
+      const node = nodes.get(to_node_id(id))
+      if (node) node.setAttribute(STRUCTURAL_LAYER_ATTRIBUTE, layer)
+      else unresolved.push(id)
+    })
+  }
+  stamp(stage_map(note_diffs || []), id => 'gn-' + id)
+  stamp(stage_map(relation_diffs || []), id => id)
+  warn_unresolved('writeStructuralLayers', unresolved)
+}
+
+/**
+ * Remove every structural-layer attribute from the MEI graph. Called before
+ * each write, and after any edit that invalidates the layers on record.
+ */
+export function clearStructuralLayers() {
+  if (typeof mei == 'undefined' || !mei) return
+  mei.querySelectorAll(`[${STRUCTURAL_LAYER_ATTRIBUTE}]`)
+    .forEach(node => node.removeAttribute(STRUCTURAL_LAYER_ATTRIBUTE))
 }
 
 /**
@@ -55,12 +123,7 @@ function warn_unresolved(context, ids) {
  * @param {string[][]} note_diffs - Stage arrays as returned by /api/stages (already reversed)
  */
 export function applyStageNumbers(draw_context, note_diffs) {
-  const noteToStage = new Map()
-  ;[...note_diffs].reverse().forEach((stageNotes, stageIndex) => {
-    stageNotes.forEach(noteId => {
-      noteToStage.set(noteId, stageIndex)
-    })
-  })
+  const noteToStage = stage_map(note_diffs)
   const unresolved = []
   note_diffs.flat(1).forEach(noteId => {
     const stageIndex = noteToStage.get(noteId)
@@ -75,7 +138,7 @@ export function applyStageNumbers(draw_context, note_diffs) {
         const bbox = notehead.getBBox()
         const cx = bbox.x + bbox.width / 2
         const cy = bbox.y + bbox.height / 2
-        const label = String(stageIndex + 1)
+        const label = String(stageIndex)
         const fontSize = label.length === 1 ? bbox.height * 0.9 : bbox.height * 0.6
         const useEl = notehead.querySelector('use')
         const href = useEl
@@ -206,6 +269,10 @@ export async function reduce() {
 
       // Add stage numbers to notes
       applyStageNumbers(draw_context, fetched_note_diffs)
+
+      // A cycle yields no layers at all; leave none on record either.
+      if (cycleWasFetched) clearStructuralLayers()
+      else writeStructuralLayers(fetched_note_diffs, fetched_relation_diffs)
 
       // Save meta-relation toggle state and hide meta-relations if the toggle is unset.
       const meta_toggle_on = document.getElementById('meta-relation-on')

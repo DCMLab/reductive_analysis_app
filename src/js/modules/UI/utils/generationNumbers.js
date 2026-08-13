@@ -6,7 +6,13 @@ Copyright (C) 2022  Petter Ericson, Yannis Rammos, Mehdi Merah, and the EPFL Dig
 MuseReduce is free software: you can redistribute it and/or modify it under the terms of the Affero General Public License as published by the Free Software Foundation. MuseReduce is distributed without explicit or implicit warranty. See the Affero General Public License at https://www.gnu.org/licenses/agpl-3.0.en.html for more details.
 */
 import { getDrawContexts } from '../../../bootstrap'
-import { applyStageNumbers, clearStageNumbers, resolve_in_context } from './reductions'
+import {
+  applyStageNumbers,
+  clearStageNumbers,
+  clearStructuralLayers,
+  resolve_in_context,
+  writeStructuralLayers
+} from './reductions'
 
 /**
  * Manages live generation-number display in edit mode.
@@ -42,6 +48,10 @@ export default class GenerationNumbers {
   }
 
   onRelationModified() {
+    // Structural layers are cleared whether or not the toggle is on: an edited
+    // graph invalidates them at once, and an export must never carry layers
+    // computed from a graph the user has since changed.
+    clearStructuralLayers()
     if (!this.enabled) return
     clearTimeout(this.debounceTimer)
     this.debounceTimer = setTimeout(() => this.refresh(), 300)
@@ -67,8 +77,10 @@ export default class GenerationNumbers {
       const draw_context = getDrawContexts().find(e => e.canEdit)
       if (!draw_context) return
 
-      // Clear previous state before applying new results
+      // Clear previous state before applying new results. Structural layers go
+      // too, so that an outcome carrying none (a cycle, an error) leaves none.
       clearStageNumbers(draw_context)
+      clearStructuralLayers()
       this._clearCycle(draw_context)
 
       // Case 1: Valid reductive analysis
@@ -79,9 +91,11 @@ export default class GenerationNumbers {
         Array.isArray(verdict[1])
       ) {
         const note_diffs = verdict[0].reverse()
+        const relation_diffs = verdict[1].reverse()
         if (note_diffs.flat(1).length > 0) {
           applyStageNumbers(draw_context, note_diffs)
         }
+        writeStructuralLayers(note_diffs, relation_diffs)
       }
 
       // Case 2: Graph cycle — mirrors reduction mode behaviour

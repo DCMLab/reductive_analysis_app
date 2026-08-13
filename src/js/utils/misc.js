@@ -516,6 +516,50 @@ export function fix_synonyms(mei) {
   return mei
 }
 
+const MEI_NS = 'http://www.music-encoding.org/ns/mei'
+const XMLNS_NS = 'http://www.w3.org/2000/xmlns/'
+
+// Rebuild an element and its descendants in the MEI namespace.
+function in_mei_namespace(doc, elem) {
+  const new_elem = doc.createElementNS(MEI_NS, elem.localName)
+  Array.from(elem.attributes).forEach((attr) => {
+    // Drop namespace declarations; the rebuilt element carries the MEI namespace.
+    if (attr.namespaceURI == XMLNS_NS)
+      return
+    if (attr.namespaceURI)
+      new_elem.setAttributeNS(attr.namespaceURI, attr.name, attr.value)
+    else
+      new_elem.setAttribute(attr.name, attr.value)
+  })
+  Array.from(elem.childNodes).forEach((child) => {
+    new_elem.appendChild(child.nodeType == Node.ELEMENT_NODE ?
+      in_mei_namespace(doc, child) : child.cloneNode(true))
+  })
+  return new_elem
+}
+
+// Analyses saved by earlier versions wrote <graph xmlns="">, which puts the graph
+// and everything under it outside the MEI namespace. The reduction server looks up
+// graphs and arcs by namespaced name and so finds nothing in such a file, failing
+// with an opaque error. Editing one is worse still: add_or_fetch_graph() matches by
+// tag name irrespective of namespace, so new namespaced nodes land inside the old
+// namespace-less graph. Rebuild any such graph on load.
+// Returns the number of graphs converted.
+export function fix_graph_namespace(mei) {
+  let converted = 0
+  Array.from(mei.getElementsByTagName('graph')).forEach((graph) => {
+    const stray = graph.namespaceURI != MEI_NS ||
+      Array.from(graph.getElementsByTagName('*')).some((e) => e.namespaceURI != MEI_NS)
+    if (!stray)
+      return
+    graph.parentNode.replaceChild(in_mei_namespace(mei, graph), graph)
+    converted += 1
+  })
+  if (converted)
+    console.log(`Migrated ${converted} graph(s) into the MEI namespace.`)
+  return converted
+}
+
 // sameas/copyof for layers and graphs is deprecated, all should be corresp
 export function fix_corresp(mei_elem) {
   Array.from(mei_elem.children).forEach(fix_corresp) // recurse

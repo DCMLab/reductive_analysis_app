@@ -45,6 +45,7 @@ import {
 import {
   add_mei_node_for,
   check_for_duplicate_relations,
+  fix_graph_namespace,
   fix_synonyms,
   fix_corresp,
   fix_layers,
@@ -571,6 +572,7 @@ function load_finish() {
   } else {
     // We got a MEI, it could be from a previous version of the app, so we
     // should fix previous, now deprecated practises, if present.
+    fix_graph_namespace(mei)
     fix_synonyms(mei)
     fix_corresp(mei.children[0])
     fix_layers(mei)

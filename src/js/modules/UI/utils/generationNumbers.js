@@ -8,9 +8,10 @@ MuseReduce is free software: you can redistribute it and/or modify it under the 
 import { getDrawContexts } from '../../../bootstrap'
 import {
   applyStageNumbers,
+  clear_cycle_marks,
   clearStageNumbers,
   clearStructuralLayers,
-  resolve_in_context,
+  mark_cycle,
   writeStructuralLayers
 } from './reductions'
 
@@ -28,6 +29,10 @@ export default class GenerationNumbers {
     this.debounceTimer = null
     this.abortController = null
     this.currentCycle = []
+    // Kept in step with currentCycle: _clearCycle() runs before every re-mark and
+    // clears what the *previous* verdict marked, so the relations must be
+    // remembered too or their dotted strokes accumulate across edits.
+    this.currentCycleRelations = []
 
     document.addEventListener('relation-modified', () => this.onRelationModified())
   }
@@ -98,27 +103,21 @@ export default class GenerationNumbers {
         writeStructuralLayers(note_diffs, relation_diffs)
       }
 
-      // Case 2: Graph cycle — mirrors reduction mode behaviour
+      // Case 2: Graph cycle — mirrors reduction mode behaviour. The third element,
+      // holding the relations along the offending path, is optional.
       if (
         Array.isArray(verdict) &&
-        verdict.length === 2 &&
+        verdict.length >= 2 &&
         typeof verdict[0] === 'string' &&
         verdict[0] === 'GraphCycleError' &&
         Array.isArray(verdict[1]) &&
         verdict[1].length > 0
       ) {
-        const cycle = verdict[1]
-        this.currentCycle = cycle
+        this.currentCycle = verdict[1]
+        this.currentCycleRelations = Array.isArray(verdict[2]) ? verdict[2] : []
         document.getElementById('reduction-counter').innerText = '∞ Cycle found'
         document.getElementById('reduction-counter').classList.add('cycle')
-        cycle.forEach(id => {
-          const el = resolve_in_context(draw_context, id)
-          const notehead = el?.querySelector('.notehead')
-          if (notehead) {
-            notehead.style.fill = 'red'
-            notehead.classList.add('cycle')
-          }
-        })
+        mark_cycle(draw_context, this.currentCycle, this.currentCycleRelations)
       }
     } catch (err) {
       if (err.name !== 'AbortError') {
@@ -128,20 +127,11 @@ export default class GenerationNumbers {
   }
 
   _clearCycle(draw_context) {
-    this.currentCycle.forEach(id => {
-      const el = resolve_in_context(draw_context, id)
-      const notehead = el?.querySelector('.notehead')
-      if (notehead) {
-        notehead.style.fill = ''
-        notehead.classList.remove('cycle')
-      }
-    })
-    if (this.currentCycle.length > 0) {
-      const counter = document.getElementById('reduction-counter')
-      counter.classList.remove('cycle')
-      counter.innerText = ''
-    }
+    const had_cycle = this.currentCycle.length > 0
+    clear_cycle_marks(draw_context, this.currentCycle, this.currentCycleRelations)
+    if (had_cycle) document.getElementById('reduction-counter').innerText = ''
     this.currentCycle = []
+    this.currentCycleRelations = []
   }
 
   toggle() {

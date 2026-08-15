@@ -215,6 +215,13 @@ body:not(.mousedown) .extraselectedrelation:hover rect {
   stroke-width: 30px;
   stroke-opacity: 0.8;
 }
+/* A relation lying on the path that made a graph irreducible. The notes on that
+   path are coloured red, so this signal has to be something other than a colour.
+   The selector must stay unscoped: relation groups are inserted before .system,
+   not within it, so nothing under 'svg .system' would ever match them. */
+.relation.cycle-relation path {
+  stroke-dasharray: 40 60;
+}
 .relationhover {
   transform: translate3d(0, 0, 0);
   filter: url('#selectFilter');

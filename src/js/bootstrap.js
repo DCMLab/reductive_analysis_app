@@ -520,6 +520,15 @@ export function draw_graph(draw_context) {
       }
     }
     draw_relation(draw_context, mei_graph, g_elem)
+    // Relations are redrawn from scratch here, so a refused graph's dotted
+    // marking has to be laid on again: it would otherwise vanish the first time
+    // the curvature slider moved. Set directly rather than through reductions.js,
+    // which imports from this module.
+    const relation_id = g_elem.getAttribute('xml:id')
+    if (draw_context.cycle_relations?.includes(relation_id)) {
+      document.getElementById(draw_context.id_prefix + relation_id)
+        ?.classList.add('cycle-relation')
+    }
   })
   metarelations_nodes.forEach((g_elem) => draw_metarelation(draw_context, mei_graph, g_elem))
 }

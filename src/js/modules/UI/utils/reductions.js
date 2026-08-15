@@ -50,6 +50,73 @@ function warn_unresolved(context, ids) {
   console.warn(`${context}: ${ids.length} ID(s) could not be resolved; the corresponding notes or relations go untreated.`, ids)
 }
 
+// Class marking a relation that lies on a refused graph's offending path. The
+// notes on that path are coloured red, so the relations are dotted instead: two
+// signals that can be read at once. The rule is in src/css/style.css; it must
+// stay unscoped, since relation groups are siblings of .system rather than its
+// descendants.
+const CYCLE_RELATION_CLASS = 'cycle-relation'
+
+/**
+ * Mark the path on which a graph was refused: red noteheads for its notes, a
+ * dotted stroke for the relations linking them.
+ *
+ * The relation list is empty whenever the server refused on a rule that
+ * implicates a pair of notes rather than a path, so callers get the previous
+ * notes-only marking for free.
+ *
+ * @param {Object} draw_context - The draw context to mark in
+ * @param {string[]} nodes - MEI IDs of the notes on the path
+ * @param {string[]} relations - MEI IDs of the relations along the path
+ */
+export function mark_cycle(draw_context, nodes, relations = []) {
+  const unresolved = []
+
+  ;(nodes || []).forEach(id => {
+    const notehead = resolve_in_context(draw_context, id)?.querySelector('.notehead')
+    if (notehead) {
+      notehead.style.fill = 'red'
+      notehead.classList.add('cycle')
+    } else unresolved.push(id)
+  })
+
+  ;(relations || []).forEach(id => {
+    const el = resolve_in_context(draw_context, id)
+    if (el) el.classList.add(CYCLE_RELATION_CLASS)
+    else unresolved.push(id)
+  })
+
+  warn_unresolved('cycle marking', unresolved)
+}
+
+/**
+ * Undo mark_cycle(). Relations carry no inline style, so removing the class
+ * suffices and can leave nothing behind.
+ *
+ * The counter is cleared once, outside the loops: it used to be cleared per
+ * resolved note, and so kept its red styling whenever nothing resolved. Its text
+ * belongs to the caller, which alone knows what should replace it.
+ *
+ * @param {Object} draw_context - The draw context to clear
+ * @param {string[]} nodes - MEI IDs of the notes on the path
+ * @param {string[]} relations - MEI IDs of the relations along the path
+ */
+export function clear_cycle_marks(draw_context, nodes, relations = []) {
+  ;(nodes || []).forEach(id => {
+    const notehead = resolve_in_context(draw_context, id)?.querySelector('.notehead')
+    if (notehead) {
+      notehead.style.fill = ''
+      notehead.classList.remove('cycle')
+    }
+  })
+
+  ;(relations || []).forEach(id => {
+    resolve_in_context(draw_context, id)?.classList.remove(CYCLE_RELATION_CLASS)
+  })
+
+  document.getElementById('reduction-counter').classList.remove('cycle')
+}
+
 // Attribute carrying a graph node's structural layer in exported MEI. Declared
 // on <node> by the graphic-analysis customization; see src/js/utils/file.js.
 const STRUCTURAL_LAYER_ATTRIBUTE = 'strucl'
@@ -219,6 +286,7 @@ export async function reduce() {
   let fetched_note_diffs = []
   let fetched_relation_diffs = []
   let fetched_cycle = []
+  let fetched_cycle_relations = []
 
   if ((draw_context.note_diffs == null || draw_context.note_diffs.flat(1).length == 0) && (draw_context.relation_diffs == null || draw_context.relation_diffs.flat(1).length == 0) && (draw_context.cycle == null || draw_context.cycle.length == 0)) {
     try {
@@ -235,9 +303,12 @@ export async function reduce() {
         fetched_relation_diffs = verdict[1].reverse()
       }
 
-      // Case 2: We received a graph cycle.
-      if (Array.isArray(verdict) && verdict.length === 2 && typeof (verdict[0]) == 'string' && verdict[0] == 'GraphCycleError' && Array.isArray(verdict[1]) && verdict[1].length > 0) {
+      // Case 2: We received a graph cycle. A third element, holding the relations
+      // along the offending path, is optional: servers predating it send two, and
+      // the sites that refuse on a note pair rather than a path send it empty.
+      if (Array.isArray(verdict) && verdict.length >= 2 && typeof (verdict[0]) == 'string' && verdict[0] == 'GraphCycleError' && Array.isArray(verdict[1]) && verdict[1].length > 0) {
         fetched_cycle = verdict[1]
+        fetched_cycle_relations = Array.isArray(verdict[2]) ? verdict[2] : []
       }
 
       // Case 3: We received another algorithmic exception.
@@ -260,6 +331,7 @@ export async function reduce() {
     let cycleWasFetched = true ? fetched_cycle.length > 0 : false
     if (cycleWasFetched) {
       draw_context.cycle = fetched_cycle
+      draw_context.cycle_relations = fetched_cycle_relations
     }
 
     if (reductionWasFetched || cycleWasFetched) {
@@ -318,15 +390,8 @@ export async function reduce() {
     document.getElementById('reduction-counter').innerText = `∞ Cycle found`
     document.getElementById('reduction-counter').classList.add('cycle')
 
-    // Color the cycle red.
-    draw_context.cycle.forEach(id => {
-      const el = resolve_in_context(draw_context, id)
-      const notehead = el?.querySelector('.notehead')
-      if (notehead) {
-        notehead.style.fill = 'red'
-        notehead.classList.add('cycle')
-      }
-    })
+    // Mark the offending path.
+    mark_cycle(draw_context, draw_context.cycle, draw_context.cycle_relations)
   }
 }
 
@@ -384,18 +449,11 @@ export function unreduce() {
   }
 
   if (layerContainsCycle) {
-    draw_context.cycle.forEach(id => {
-      const el = resolve_in_context(draw_context, id)
-      const notehead = el?.querySelector('.notehead')
-      if (notehead) {
-        notehead.style.fill = ''
-        notehead.classList.remove('cycle')
-        document.getElementById('reduction-counter').classList.remove('cycle')
-      }
-    })
+    clear_cycle_marks(draw_context, draw_context.cycle, draw_context.cycle_relations)
 
     // Reset the draw context.
     draw_context.cycle = null
+    draw_context.cycle_relations = null
 
     // Ready to exit reduction mode.
     terminate = true

@@ -1,6 +1,8 @@
 # Graphic Music Annotation App
 
-This branch contains the actively maintained version of the app. Rarely used features are removed or disabled, with focus shifted towards bug fixes, usability, and core annotation features.
+This branch contains the frontend of the client-server version of the app. It only works in conjunction with the Reductive Analysis App Server, which is a separate repo.
+
+This version also features substantial visualization and usability improvements, including support for the cycle detection API of the server.
 
 ## Building the app
 
